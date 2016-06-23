@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using RGiesecke.DllExport.Parsing.Actions;
@@ -16,7 +17,9 @@ namespace RGiesecke.DllExport.Parsing
 {
     public sealed class IlParser: IDllExportNotifier, IDisposable
     {
+        private static readonly string[] _DefaultMethodAttributes = new string[20] { "static", "public", "private", "family", "final", "specialname", "virtual", "abstract", "assembly", "famandassem", "famorassem", "privatescope", "hidebysig", "newslot", "strict", "rtspecialname", "flags", "unmanagedexp", "reqsecobj", "pinvokeimpl" };
         private readonly DllExportNotifier _Notifier = new DllExportNotifier();
+        private HashSet<string> _MethodAttributes;
 
         public string DllExportAttributeAssemblyName
         {
@@ -76,6 +79,14 @@ namespace RGiesecke.DllExport.Parsing
             set;
         }
 
+        public HashSet<string> MethodAttributes
+        {
+            get {
+                lock(this)
+                    return this._MethodAttributes ?? (this._MethodAttributes = this.GetMethodAttributes());
+            }
+        }
+
         public event EventHandler<DllExportNotificationEventArgs> Notification
         {
             add {
@@ -84,6 +95,16 @@ namespace RGiesecke.DllExport.Parsing
             remove {
                 this._Notifier.Notification -= value;
             }
+        }
+
+        public void Notify(int severity, string code, string message, params object[] values)
+        {
+            this._Notifier.Notify(severity, code, message, values);
+        }
+
+        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
+        {
+            this._Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
         }
 
         public void Dispose()
@@ -95,7 +116,7 @@ namespace RGiesecke.DllExport.Parsing
         {
             Dictionary<ParserState, IParserStateAction> actionsByState = IlParser.ParserStateAction.GetActionsByState(this);
             List<string> stringList = new List<string>(1000000);
-            ParserStateValues state = new ParserStateValues(cpu, IlParser.GetClassDeclareRegex(RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace), IlParser.GetMethodDeclareRegex(RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace), (IList<string>)stringList) {
+            ParserStateValues state = new ParserStateValues(cpu, (IList<string>)stringList) {
                 State = ParserState.Normal
             };
             Stopwatch stopwatch1 = Stopwatch.StartNew();
@@ -129,7 +150,7 @@ namespace RGiesecke.DllExport.Parsing
                 IParserStateAction parserStateAction;
                 if(!actionsByState.TryGetValue(state.State, out parserStateAction))
                 {
-                    this._Notifier.Notify(2, "EXP0007", Resources.No_action_for_parser_state_0_, (object)state.State);
+                    this._Notifier.Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, (object)state.State);
                 }
                 else
                 {
@@ -152,14 +173,25 @@ namespace RGiesecke.DllExport.Parsing
             return (IEnumerable<string>)state.Result;
         }
 
-        private static Regex GetClassDeclareRegex(RegexOptions regexOptions)
+        private HashSet<string> GetMethodAttributes()
         {
-            return new Regex(Regexes.TypeDeclaration, regexOptions);
-        }
-
-        private static Regex GetMethodDeclareRegex(RegexOptions regexOptions)
-        {
-            return new Regex(Regexes.MethodDeclaration.Replace("{methodAttributes}", string.Join(")|(?:", new string[19] { "static", "public", "private", "family", "final", "specialname", "virtual", "abstract", "assembly", "famandassem", "famorassem", "privatescope", "hidebysig", "newslot", "strict", "rtspecialname", "unmanagedexp", "reqsecobj", "pinvokeimpl" })), regexOptions);
+            string str = (this.InputValues.MethodAttributes ?? "").Trim();
+            object obj;
+            if(!string.IsNullOrEmpty(str))
+                obj = (object)((IEnumerable<string>)str.Split(new char[6]
+            {
+            ' ',
+            ',',
+            ';',
+            '\t',
+            '\n',
+            '\r'
+            }, StringSplitOptions.RemoveEmptyEntries)).Distinct<string>();
+            else
+            {
+                obj = (object)IlParser._DefaultMethodAttributes;
+            }
+            return new HashSet<string>((IEnumerable<string>)obj);
         }
 
         internal static string GetExePath(string toolFileName, string installPath, string settingsName)
@@ -191,7 +223,7 @@ namespace RGiesecke.DllExport.Parsing
             string withoutExtension = Path.GetFileNameWithoutExtension(fileName);
             using(Process process = new Process())
             {
-                notifier.Notify(0, toolLoggingCode, Resources.calling_0_with_1_, (object)exePath, (object)arguments);
+                notifier.Notify(-2, toolLoggingCode, Resources.calling_0_with_1_, (object)exePath, (object)arguments);
                 ProcessStartInfo processStartInfo = new ProcessStartInfo(exePath, arguments) {
                     UseShellExecute = false,
                     CreateNoWindow = true,
@@ -225,13 +257,13 @@ namespace RGiesecke.DllExport.Parsing
                 }
                 if(hasExited)
                 {
-                    notifier.Notify(0, toolLoggingCode, Resources.R_0_1_returned_gracefully, (object)withoutExtension, (object)exePath);
+                    notifier.Notify(-2, toolLoggingCode, Resources.R_0_1_returned_gracefully, (object)withoutExtension, (object)exePath);
                     int exitCode = process.ExitCode;
                     if(exitCode != 0)
                     {
                         throw new InvalidOperationException(stringBuilder.ToString());
                     }
-                    notifier.Notify(-2, verboseLoggingCode, stringBuilder.ToString());
+                    notifier.Notify(-3, verboseLoggingCode, stringBuilder.ToString());
                     return exitCode;
                 }
                 bool flag = false;
@@ -253,8 +285,6 @@ namespace RGiesecke.DllExport.Parsing
 
         public abstract class ParserStateAction: IParserStateAction
         {
-            private static readonly Regex LineNumberRegex = new Regex(Regexes.LineNumbers);
-
             protected string DllExportAttributeAssemblyName
             {
                 get {
@@ -297,43 +327,22 @@ namespace RGiesecke.DllExport.Parsing
 
             public abstract void Execute(ParserStateValues state, string trimmedLine);
 
-            protected static bool TryGetLineNumbers(ParserStateValues state, out string fileName, out SourceCodePosition startPosition, out SourceCodePosition endPosition)
+            protected void Notify(int severity, string code, string message, params object[] values)
             {
-                Regex regex = IlParser.ParserStateAction.LineNumberRegex;
-                fileName = (string)null;
-                startPosition = new SourceCodePosition();
-                endPosition = new SourceCodePosition();
-                for(int inputPosition = state.InputPosition; inputPosition < state.InputLines.Count; ++inputPosition)
+                this.Notify((ParserStateValues)null, severity, code, message, values);
+            }
+
+            protected void Notify(ParserStateValues stateValues, int severity, string code, string message, params object[] values)
+            {
+                SourceCodeRange range;
+                if(stateValues != null && (range = stateValues.GetRange()) != null)
                 {
-                    string input1 = state.InputLines[inputPosition];
-                    if(input1.NullSafeCall<string, bool>((Func<string, bool>)(l => l.Trim().StartsWith(".line", StringComparison.Ordinal))))
-                    {
-                        Match match1 = regex.Match(input1);
-                        if(match1.Success)
-                        {
-                            Match matchCopy = match1;
-                            Func<int, int> func = (Func<int, int>)(g => {
-                                if(!matchCopy.Groups[g].Success)
-                                {
-                                    return 0;
-                                }
-                                return int.Parse(matchCopy.Groups[g].Value, (IFormatProvider)CultureInfo.InvariantCulture);
-                            });
-                            startPosition = new SourceCodePosition(func(1), func(3));
-                            endPosition = new SourceCodePosition(func(2), func(4));
-                            fileName = match1.Groups[5].Success ? match1.Groups[5].Value : (string)null;
-                            while(inputPosition >= 0 && string.IsNullOrEmpty(fileName))
-                            {
-                                --inputPosition;
-                                string input2 = state.InputLines[inputPosition];
-                                Match match2 = regex.Match(input2);
-                                fileName = match2.Groups[5].Success ? match2.Groups[5].Value : (string)null;
-                            }
-                            return !string.IsNullOrEmpty(fileName);
-                        }
-                    }
+                    this.Notifier.Notify(severity, code, range.FileName, new SourceCodePosition?(range.StartPosition), new SourceCodePosition?(range.EndPosition), message, values);
                 }
-                return false;
+                else
+                {
+                    this.Notifier.Notify(severity, code, message, values);
+                }
             }
 
             protected bool ValidateExportNameAndLogError(ExportedMethod exportMethod, ParserStateValues stateValues)
@@ -345,17 +354,7 @@ namespace RGiesecke.DllExport.Parsing
                 }
                 else if(exportMethod.ExportName != null && (exportMethod.ExportName.Contains("'") || Regex.IsMatch(exportMethod.ExportName, "\\P{IsBasicLatin}")))
                 {
-                    string fileName;
-                    SourceCodePosition startPosition;
-                    SourceCodePosition endPosition;
-                    if(IlParser.ParserStateAction.TryGetLineNumbers(stateValues, out fileName, out startPosition, out endPosition))
-                    {
-                        this.Notifier.Notify(3, "EXP00011", fileName, new SourceCodePosition?(startPosition), new SourceCodePosition?(endPosition), Resources.Export_name_0_on_1__2_is_Unicode_windows_export_names_have_to_be_basic_latin, (object)exportMethod.ExportName, (object)exportMethod.ExportedClass.FullTypeName, (object)exportMethod.MemberName);
-                    }
-                    else
-                    {
-                        this.Notifier.Notify(3, "EXP00011", Resources.Export_name_0_on_1__2_is_Unicode_windows_export_names_have_to_be_basic_latin, (object)exportMethod.ExportName, (object)exportMethod.ExportedClass.FullTypeName, (object)exportMethod.MemberName);
-                    }
+                    this.Notify(stateValues, 3, DllExportLogginCodes.ExportNamesHaveToBeBasicLatin, Resources.Export_name_0_on_1__2_is_Unicode_windows_export_names_have_to_be_basic_latin, (object)exportMethod.ExportName, (object)exportMethod.ExportedClass.FullTypeName, (object)exportMethod.MemberName);
                     flag = false;
                 }
                 else

@@ -1,9 +1,9 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
-using System.Text.RegularExpressions;
+using System.Text;
 
 namespace RGiesecke.DllExport.Parsing.Actions
 {
@@ -15,24 +15,47 @@ namespace RGiesecke.DllExport.Parsing.Actions
             if(trimmedLine.StartsWith("{"))
             {
                 state.State = ParserState.Class;
-                string str = "";
-                Match match = state.MatchClass(state.ClassDeclaration);
-                if(match.Groups.Count > 1)
-                {
-                    str = match.Groups[1].Value.NullSafeCall<string, string>((Func<string, string>)(v => v.Replace("'", "")));
-                }
+                string str = ClassDeclarationParserAction.GetClassName(state);
                 if(state.ClassNames.Count > 0)
                 {
-                    str = state.ClassNames.Peek() + "+" + str;
+                    str = state.ClassNames.Peek() + "/" + str;
                 }
                 state.ClassNames.Push(str);
-                state.Result.Add(state.ClassDeclaration);
             }
             else
             {
                 state.ClassDeclaration = state.ClassDeclaration + " " + trimmedLine;
-                state.AddLine = false;
+                state.AddLine = true;
             }
+        }
+
+        private static string GetClassName(ParserStateValues state)
+        {
+            bool hadClassName = false;
+            StringBuilder classNameBuilder = new StringBuilder(state.ClassDeclaration.Length);
+            IlParsingUtils.ParseIlSnippet(state.ClassDeclaration, ParsingDirection.Forward, (Func<IlParsingUtils.IlSnippetLocation, bool>)(s => {
+                if(s.WithinString)
+                {
+                    hadClassName = true;
+                    if((int)s.CurrentChar != 39)
+                    {
+                        classNameBuilder.Append(s.CurrentChar);
+                    }
+                }
+                else if(hadClassName)
+                {
+                    if((int)s.CurrentChar == 46 || (int)s.CurrentChar == 47)
+                    {
+                        classNameBuilder.Append(s.CurrentChar);
+                    }
+                    else if((int)s.CurrentChar != 39)
+                    {
+                        return false;
+                    }
+                }
+                return true;
+            }), (Action<IlParsingUtils.IlSnippetFinalizaton>)null);
+            return classNameBuilder.ToString();
         }
     }
 }

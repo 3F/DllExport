@@ -1,8 +1,9 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
+using RGiesecke.DllExport.Properties;
 
 namespace RGiesecke.DllExport.Parsing.Actions
 {
@@ -15,7 +16,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
             {
                 state.AddLine = false;
                 state.State = ParserState.DeleteExportAttribute;
-                this.Notifier.Notify(-1, "EXP0008", "Removing {0} from {1}", (object)Utilities.DllExportAttributeFullName, (object)(state.ClassNames.Peek() + "." + state.Method.Name));
+                this.Notifier.Notify(-1, DllExportLogginCodes.RemovingDllExportAttribute, Resources.Removing_0_from_1_, (object)Utilities.DllExportAttributeFullName, (object)(state.ClassNames.Peek() + "." + state.Method.Name));
             }
             else
             {

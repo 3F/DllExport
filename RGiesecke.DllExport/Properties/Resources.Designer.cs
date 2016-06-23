@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -11,9 +11,9 @@ using System.Runtime.CompilerServices;
 
 namespace RGiesecke.DllExport.Properties
 {
-[CompilerGenerated]
 [DebuggerNonUserCode]
 [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+[CompilerGenerated]
 public class Resources
 {
     private static ResourceManager resourceMan;
@@ -44,11 +44,43 @@ public class Resources
         }
     }
 
+    public static string AddingVtEntry_0_export_1_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("AddingVtEntry_0_export_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string Ambiguous_export_name_0_on_1_2_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Ambiguous_export_name_0_on_1_2_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string An_error_occurred_while_calling_0_1_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("An_error_occurred_while_calling_0_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
     public static string calling_0_with_1_
     {
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("calling_0_with_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string Deleting_reference_to_0_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Deleting_reference_to_0_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 
@@ -100,6 +132,14 @@ public class Resources
         }
     }
 
+    public static string NewDeclaration_0_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("NewDeclaration_0_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
     public static string No_action_for_parser_state_0_
     {
         get
@@ -113,6 +153,14 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("No_paramaters_provided__at_least_the_input_assembly_name_is_needed", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string OldDeclaration_0_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("OldDeclaration_0_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 
@@ -169,6 +217,38 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("R_0_did_not_return_after_1_ms_and_it_could_not_be_stopped", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string Removing_0_from_1_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Removing_0_from_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string The_method_1_2_is_generic_export_name_0_Generic_methods_cannot_be_exported_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("The_method_1_2_is_generic_export_name_0_Generic_methods_cannot_be_exported_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string The_method_1_2_is_not_static_export_name_0_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("The_method_1_2_is_not_static_export_name_0_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string The_type_1_cannot_export_the_method_2_as_0_because_it_is_generic_or_is_nested_within_a_generic_type
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("The_type_1_cannot_export_the_method_2_as_0_because_it_is_generic_or_is_nested_within_a_generic_type", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 

@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.2.23707, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.3.29767, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -15,6 +15,24 @@ namespace RGiesecke.DllExport.MSBuild
     public class DllExportAppDomainIsolatedTask: AppDomainIsolatedTask, IDllExportTask, IInputValues
     {
         private readonly ExportTaskImplementation<DllExportAppDomainIsolatedTask> _ExportTaskImplementation;
+
+        public string MethodAttributes
+        {
+            get {
+                return this._ExportTaskImplementation.MethodAttributes;
+            }
+
+            set {
+                this._ExportTaskImplementation.MethodAttributes = value;
+            }
+        }
+
+        public IDllExportNotifier Notifier
+        {
+            get {
+                return this._ExportTaskImplementation.Notifier;
+            }
+        }
 
         public bool? SkipOnAnyCpu
         {
@@ -280,6 +298,16 @@ namespace RGiesecke.DllExport.MSBuild
         : base(taskResources, helpKeywordPrefix)
         {
             this._ExportTaskImplementation = new ExportTaskImplementation<DllExportAppDomainIsolatedTask>(this);
+        }
+
+        public void Notify(int severity, string code, string message, params object[] values)
+        {
+            this._ExportTaskImplementation.Notify(severity, code, message, values);
+        }
+
+        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
+        {
+            this._ExportTaskImplementation.Notify(severity, code, fileName, startPosition, endPosition, message, values);
         }
 
         [CLSCompliant(false)]

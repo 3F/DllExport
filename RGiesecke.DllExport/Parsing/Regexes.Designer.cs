@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -11,9 +11,9 @@ using System.Runtime.CompilerServices;
 
 namespace RGiesecke.DllExport.Parsing
 {
+[DebuggerNonUserCode]
 [CompilerGenerated]
 [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
-[DebuggerNonUserCode]
 public class Regexes
 {
     private static ResourceManager resourceMan;
@@ -41,30 +41,6 @@ public class Regexes
         set
         {
             Regexes.resourceCulture = value;
-        }
-    }
-
-    public static string LineNumbers
-    {
-        get
-        {
-            return Regexes.ResourceManager.GetString("LineNumbers", Regexes.resourceCulture);
-        }
-    }
-
-    public static string MethodDeclaration
-    {
-        get
-        {
-            return Regexes.ResourceManager.GetString("MethodDeclaration", Regexes.resourceCulture);
-        }
-    }
-
-    public static string TypeDeclaration
-    {
-        get
-        {
-            return Regexes.ResourceManager.GetString("TypeDeclaration", Regexes.resourceCulture);
         }
     }
 

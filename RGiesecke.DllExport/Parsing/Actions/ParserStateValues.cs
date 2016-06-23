@@ -1,10 +1,10 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text.RegularExpressions;
 
 namespace RGiesecke.DllExport.Parsing.Actions
 {
@@ -13,10 +13,8 @@ namespace RGiesecke.DllExport.Parsing.Actions
         public readonly Stack<string> ClassNames = new Stack<string>();
         public readonly ParserStateValues.MethodStateValues Method = new ParserStateValues.MethodStateValues();
         private readonly List<string> _Result = new List<string>();
-        private readonly Regex _ClassDeclareRegex;
         private readonly CpuPlatform _Cpu;
         private readonly ReadOnlyCollection<string> _InputLines;
-        private readonly Regex _MethodDeclareRegex;
         public bool AddLine;
         public string ClassDeclaration;
         public int MethodPos;
@@ -49,27 +47,35 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
         }
 
-        public ParserStateValues(CpuPlatform cpu, Regex classDeclareRegex, Regex methodDeclareRegex, IList<string> inputLines)
+        public ParserStateValues(CpuPlatform cpu, IList<string> inputLines)
         {
             this._Cpu = cpu;
             this._InputLines = new ReadOnlyCollection<string>(inputLines);
-            this._ClassDeclareRegex = classDeclareRegex;
-            this._MethodDeclareRegex = methodDeclareRegex;
         }
 
-        public Match MatchClass(string input)
+        public SourceCodeRange GetRange()
         {
-            return this._ClassDeclareRegex.Match(input);
-        }
-
-        public Match MatchMethod(string input)
-        {
-            return this._MethodDeclareRegex.Match(input);
+            for(int inputPosition = this.InputPosition; inputPosition < this.InputLines.Count; ++inputPosition)
+            {
+                string str = this.InputLines[inputPosition];
+                string line;
+                if(str != null && (line = str.Trim()).StartsWith(".line", StringComparison.Ordinal))
+                {
+                    return SourceCodeRange.FromMsIlLine(line);
+                }
+            }
+            return (SourceCodeRange)null;
         }
 
         public sealed class MethodStateValues
         {
             public string Declaration
+            {
+                get;
+                set;
+            }
+
+            public string ResultAttributes
             {
                 get;
                 set;
@@ -88,12 +94,6 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
 
             public string Result
-            {
-                get;
-                set;
-            }
-
-            public string ResultAttributes
             {
                 get;
                 set;

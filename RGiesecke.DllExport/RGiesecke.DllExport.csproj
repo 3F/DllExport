@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.2.23707\tools\RGiesecke.DllExport.dll-->
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.3-beta\tools\RGiesecke.DllExport.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{B7D5EE70-38AF-4B5E-AC84-8DFADB43E133}</ProjectGuid>
+    <ProjectGuid>{D3FD44A3-8BE9-4A82-B737-517D1CB87A40}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <ApplicationVersion>1.2.2.23706</ApplicationVersion>
+    <ApplicationVersion>1.2.3.29766</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>RGiesecke.DllExport</RootNamespace>
     <FileUpgradeFlags>
@@ -44,6 +44,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DllExportLogginCodes.cs" />
     <Compile Include="GenericDisposable.cs" />
     <Compile Include="AssemblyBinaryProperties.cs" />
     <Compile Include="AssemblyExports.cs" />
@@ -59,12 +60,14 @@
     <Compile Include="Null.cs" />
     <Compile Include="Set.cs" />
     <Compile Include="SourceCodePosition.cs" />
+    <Compile Include="SourceCodeRange.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="ValueDisposable.cs" />
     <Compile Include="Parsing\IlParser.cs" />
     <Compile Include="Parsing\ILAsm.cs" />
     <Compile Include="Parsing\ILDasm.cs" />
     <Compile Include="Parsing\Regexes.Designer.cs" />
+    <Compile Include="Parsing\Actions\IlParsingUtils.cs" />
     <Compile Include="Parsing\Actions\ClassDeclarationParserAction.cs" />
     <Compile Include="Parsing\Actions\ClassParserAction.cs" />
     <Compile Include="Parsing\Actions\DeleteExportAttributeParserAction.cs" />
@@ -86,6 +89,7 @@
     <Compile Include="ExtractExportHandler.cs" />
     <Compile Include="IInputValues.cs" />
     <Compile Include="Parsing\ParserState.cs" />
+    <Compile Include="Parsing\Actions\ParsingDirection.cs" />
     <Compile Include="Parsing\Actions\IParserStateAction.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>

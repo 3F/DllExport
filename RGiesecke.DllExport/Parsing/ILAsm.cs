@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -54,6 +54,16 @@ namespace RGiesecke.DllExport.Parsing
         public IlAsm()
         {
             this._Notifier.Context = (object)this;
+        }
+
+        public void Notify(int severity, string code, string message, params object[] values)
+        {
+            this._Notifier.Notify(severity, code, message, values);
+        }
+
+        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
+        {
+            this._Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
         }
 
         public void Dispose()
@@ -170,32 +180,46 @@ namespace RGiesecke.DllExport.Parsing
                 }
             }
             string fullPath = Path.GetFullPath(Path.GetDirectoryName(fileName));
-            int num = IlParser.RunIlTool(this.InputValues.FrameworkPath, "ILAsm.exe", (string)null, (string)null, "ILAsmPath", this.GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), "EXP0005", "EXP0006", this._Notifier, this.Timeout);
-            if(num == 0 && !string.IsNullOrEmpty(this.InputValues.LibToolPath))
+            int num = IlParser.RunIlTool(this.InputValues.FrameworkPath, "ILAsm.exe", (string)null, (string)null, "ILAsmPath", this.GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), DllExportLogginCodes.IlAsmLogging, DllExportLogginCodes.VerboseToolLogging, this._Notifier, this.Timeout);
+            if(num == 0)
             {
-                string libraryFileNameRoot = IlAsm.GetLibraryFileNameRoot(fileName);
-                string defFile = this.CreateDefFile(cpu, fullPath, libraryFileNameRoot);
-                try
-                {
-                    num = this.RunLibTool(cpu, fullPath, defFile);
-                }
-                finally
-                {
-                    if(File.Exists(defFile))
-                    {
-                        File.Delete(defFile);
-                    }
-                }
+                this.RunLibTool(cpu, fileName, fullPath);
             }
             return num;
         }
 
-        private int RunLibTool(CpuPlatform cpu, string directory, string defFileName)
+        private int RunLibTool(CpuPlatform cpu, string fileName, string directory)
+        {
+            if(string.IsNullOrEmpty(this.InputValues.LibToolPath))
+            {
+                return 0;
+            }
+            string libraryFileNameRoot = IlAsm.GetLibraryFileNameRoot(fileName);
+            string defFile = this.CreateDefFile(cpu, directory, libraryFileNameRoot);
+            try
+            {
+                return this.RunLibToolCore(cpu, directory, defFile);
+            }
+            catch(Exception ex)
+            {
+                this.Notify(1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, (object)ex.Message);
+                return -1;
+            }
+            finally
+            {
+                if(File.Exists(defFile))
+                {
+                    File.Delete(defFile);
+                }
+            }
+        }
+
+        private int RunLibToolCore(CpuPlatform cpu, string directory, string defFileName)
         {
             string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(this.InputValues.OutputFileName)) + ".lib";
             try
             {
-                return IlParser.RunIlTool(this.InputValues.LibToolPath, "Lib.exe", string.IsNullOrEmpty(this.InputValues.LibToolDllPath) || !Directory.Exists(this.InputValues.LibToolDllPath) ? (string)null : this.InputValues.LibToolDllPath, (string)null, "LibToolPath", string.Format("\"/def:{0}\" /machine:{1} \"/out:{2}\"", (object)defFileName, (object)cpu, (object)path), "EXP0011", "EXP0012", this._Notifier, this.Timeout);
+                return IlParser.RunIlTool(this.InputValues.LibToolPath, "Lib.exe", string.IsNullOrEmpty(this.InputValues.LibToolDllPath) || !Directory.Exists(this.InputValues.LibToolDllPath) ? (string)null : this.InputValues.LibToolDllPath, (string)null, "LibToolPath", string.Format("\"/def:{0}\" /machine:{1} \"/out:{2}\"", (object)defFileName, (object)cpu, (object)path), DllExportLogginCodes.LibToolLooging, DllExportLogginCodes.LibToolVerboseLooging, this._Notifier, this.Timeout);
             }
             catch(Exception ex)
             {

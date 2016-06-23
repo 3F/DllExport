@@ -1,9 +1,10 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
 using System.Globalization;
+using RGiesecke.DllExport.Properties;
 
 namespace RGiesecke.DllExport.Parsing.Actions
 {
@@ -23,7 +24,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
             else if(trimmedLine.StartsWith(".class", StringComparison.Ordinal))
             {
                 state.State = ParserState.ClassDeclaration;
-                state.AddLine = false;
+                state.AddLine = true;
                 state.ClassDeclaration = trimmedLine;
             }
             else
@@ -34,7 +35,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 }
                 state.AddLine = false;
                 state.State = ParserState.DeleteExportDependency;
-                this.Notifier.Notify(-1, "EXP0010", "Deleting " + this.DllExportAttributeAssemblyName + " dependency.");
+                this.Notifier.Notify(-1, DllExportLogginCodes.RemovingReferenceToDllExportAttributeAssembly, string.Format(Resources.Deleting_reference_to_0_, (object)this.DllExportAttributeAssemblyName));
             }
         }
 

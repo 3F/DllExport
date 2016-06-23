@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using Mono.Cecil;
 
 namespace RGiesecke.DllExport
@@ -29,7 +30,16 @@ namespace RGiesecke.DllExport
         public IInputValues InputValues
         {
             get;
-            set;
+            private set;
+        }
+
+        public ExportAssemblyInspector(IInputValues inputValues)
+        {
+            if(inputValues == null)
+            {
+                throw new ArgumentNullException("inputValues");
+            }
+            this.InputValues = inputValues;
         }
 
         public AssemblyExports ExtractExports(AssemblyDefinition assemblyDefinition)
@@ -47,23 +57,33 @@ namespace RGiesecke.DllExport
             return this.ExtractExports(this.LoadAssembly(fileName));
         }
 
+        private IList<TypeDefinition> TraverseNestedTypes(ICollection<TypeDefinition> types)
+        {
+            List<TypeDefinition> typeDefinitionList = new List<TypeDefinition>(types.Count);
+            foreach(TypeDefinition type in (IEnumerable<TypeDefinition>)types)
+            {
+                typeDefinitionList.Add(type);
+                if(type.HasNestedTypes)
+                {
+                    typeDefinitionList.AddRange((IEnumerable<TypeDefinition>)this.TraverseNestedTypes((ICollection<TypeDefinition>)type.NestedTypes));
+                }
+            }
+            return (IList<TypeDefinition>)typeDefinitionList;
+        }
+
         public AssemblyExports ExtractExports(AssemblyDefinition assemblyDefinition, ExtractExportHandler exportFilter)
         {
-            List<TypeDefinition> typeDefinitionList = new List<TypeDefinition>();
-            foreach(ModuleDefinition module in assemblyDefinition.Modules)
-            {
-                typeDefinitionList.AddRange((IEnumerable<TypeDefinition>)module.Types);
-            }
+            IList<TypeDefinition> typeDefinitionList = this.TraverseNestedTypes((ICollection<TypeDefinition>)assemblyDefinition.Modules.SelectMany<ModuleDefinition, TypeDefinition>((Func<ModuleDefinition, IEnumerable<TypeDefinition>>)(m => (IEnumerable<TypeDefinition>)m.Types)).ToList<TypeDefinition>());
             AssemblyExports result = new AssemblyExports() {
                 InputValues = this.InputValues
             };
-            foreach(TypeDefinition td in typeDefinitionList)
+            foreach(TypeDefinition td in (IEnumerable<TypeDefinition>)typeDefinitionList)
             {
                 List<ExportedMethod> exportMethods = new List<ExportedMethod>();
                 foreach(MethodDefinition method in td.Methods)
                 {
                     TypeDefinition typeRefCopy = td;
-                    ExportAssemblyInspector.CheckForExportedMethods((Func<ExportedMethod>)(() => new ExportedMethod(this.GetExportedClass(typeRefCopy, result))), exportFilter, exportMethods, method);
+                    this.CheckForExportedMethods((Func<ExportedMethod>)(() => new ExportedMethod(this.GetExportedClass(typeRefCopy, result))), exportFilter, exportMethods, method);
                 }
                 foreach(ExportedMethod exportedMethod in exportMethods)
                 {
@@ -79,9 +99,12 @@ namespace RGiesecke.DllExport
             ExportedClass exportedClass;
             if(!result.ClassesByName.TryGetValue(td.FullName, out exportedClass))
             {
-                exportedClass = new ExportedClass() {
-                    FullTypeName = td.FullName
-                };
+                TypeDefinition typeDefinition = td;
+                while(!typeDefinition.HasGenericParameters && typeDefinition.IsNested)
+                {
+                    typeDefinition = typeDefinition.DeclaringType;
+                }
+                exportedClass = new ExportedClass(td.FullName, typeDefinition.HasGenericParameters);
                 result.ClassesByName.Add(exportedClass.FullTypeName, exportedClass);
             }
             return exportedClass;
@@ -160,7 +183,7 @@ namespace RGiesecke.DllExport
             return flag;
         }
 
-        private static void CheckForExportedMethods(Func<ExportedMethod> createExportMethod, ExtractExportHandler exportFilter, List<ExportedMethod> exportMethods, MethodDefinition mi)
+        private void CheckForExportedMethods(Func<ExportedMethod> createExportMethod, ExtractExportHandler exportFilter, List<ExportedMethod> exportMethods, MethodDefinition mi)
         {
             IExportInfo exportInfo;
             if(!exportFilter(mi, out exportInfo))
@@ -168,7 +191,25 @@ namespace RGiesecke.DllExport
                 return;
             }
             ExportedMethod exportedMethod = createExportMethod();
-            exportedMethod.MemberName = mi.Name;
+            exportedMethod.IsStatic = mi.IsStatic;
+            exportedMethod.IsGeneric = mi.HasGenericParameters;
+            StringBuilder stringBuilder = new StringBuilder(mi.Name, mi.Name.Length + 5);
+            if(mi.HasGenericParameters)
+            {
+                stringBuilder.Append("<");
+                int num = 0;
+                foreach(GenericParameter genericParameter in mi.GenericParameters)
+                {
+                    ++num;
+                    if(num > 1)
+                    {
+                        stringBuilder.Append(",");
+                    }
+                    stringBuilder.Append(genericParameter.Name);
+                }
+                stringBuilder.Append(">");
+            }
+            exportedMethod.MemberName = stringBuilder.ToString();
             exportedMethod.AssignFrom(exportInfo);
             if(string.IsNullOrEmpty(exportedMethod.ExportName))
             {
@@ -188,7 +229,6 @@ namespace RGiesecke.DllExport
             {
                 if(customAttribute.Constructor.DeclaringType.FullName == this.DllExportAttributeFullName)
                 {
-                    int num = customAttribute.IsResolved ? 1 : 0;
                     exportInfo = (IExportInfo)new ExportInfo();
                     IExportInfo ei = exportInfo;
                     int index = -1;

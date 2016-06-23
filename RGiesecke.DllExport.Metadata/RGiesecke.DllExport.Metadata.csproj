@@ -1,10 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.2.23707\tools\RGiesecke.DllExport.Metadata.dll-->
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.3-beta\tools\RGiesecke.DllExport.Metadata.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{E8CEDE75-CA43-4E1D-B080-62073D6613A3}</ProjectGuid>
+    <ProjectGuid>{6015EAB7-F4AB-474A-A47A-CA088E78AC0B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport.Metadata</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>

@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -56,6 +56,16 @@ namespace RGiesecke.DllExport
             this._Notifier.Context = (object)this;
         }
 
+        public void Notify(int severity, string code, string message, params object[] values)
+        {
+            this._Notifier.Notify(severity, code, message, values);
+        }
+
+        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
+        {
+            this._Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
+        }
+
         public void Dispose()
         {
             this._Notifier.Dispose();
@@ -95,7 +105,6 @@ namespace RGiesecke.DllExport
             }
             using(ValueDisposable<string> tempDirectory = Utilities.CreateTempDirectory())
             {
-                Console.WriteLine(tempDirectory.Value);
                 this.RunIlDasm(tempDirectory.Value);
                 using(IlAsm ilAsm = this.PrepareIlAsm(tempDirectory.Value))
                     this.RunIlAsm(ilAsm);
@@ -112,7 +121,7 @@ namespace RGiesecke.DllExport
                 {
                     throw new DirectoryNotFoundException(string.Format(Resources.Directory_0_does_not_exist, (object)str));
                 }
-                this._Notifier.Notify(1, "EXP0009", Resources.Platform_is_0_creating_binaries_for_each_CPU_platform_in_a_separate_subfolder, (object)this.InputValues.Cpu);
+                this._Notifier.Notify(1, DllExportLogginCodes.CreatingBinariesForEachPlatform, Resources.Platform_is_0_creating_binaries_for_each_CPU_platform_in_a_separate_subfolder, (object)this.InputValues.Cpu);
                 ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x86"), fileName), ".x86", CpuPlatform.X86);
                 ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x64"), fileName), ".x64", CpuPlatform.X64);
             }

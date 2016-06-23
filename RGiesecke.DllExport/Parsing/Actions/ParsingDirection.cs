@@ -2,17 +2,11 @@
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
-using System;
-
-namespace RGiesecke.DllExport
+namespace RGiesecke.DllExport.Parsing.Actions
 {
-    [CLSCompliant(true)]
-    public enum CpuPlatform
+    internal enum ParsingDirection
     {
-        None,
-        X86,
-        X64,
-        Itanium,
-        AnyCpu,
+        Forward = 1,
+        Backward = 2,
     }
 }

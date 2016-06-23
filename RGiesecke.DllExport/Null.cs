@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -59,6 +59,15 @@ namespace RGiesecke.DllExport
             if(input != null)
             {
                 return input.TrimStart(trimChars);
+            }
+            return (string)null;
+        }
+
+        public static string NullIfEmpty(this string input)
+        {
+            if(!string.IsNullOrEmpty(input))
+            {
+                return input;
             }
             return (string)null;
         }

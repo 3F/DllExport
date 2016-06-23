@@ -1,9 +1,8 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System.Collections.Generic;
-using System.Threading;
 
 namespace RGiesecke.DllExport
 {
@@ -15,7 +14,13 @@ namespace RGiesecke.DllExport
         public string FullTypeName
         {
             get;
-            set;
+            private set;
+        }
+
+        public bool HasGenericContext
+        {
+            get;
+            private set;
         }
 
         internal Dictionary<string, List<ExportedMethod>> MethodsByName
@@ -32,25 +37,26 @@ namespace RGiesecke.DllExport
             }
         }
 
+        public ExportedClass(string fullTypeName, bool hasGenericContext)
+        {
+            this.FullTypeName = fullTypeName;
+            this.HasGenericContext = hasGenericContext;
+        }
+
         internal void Refresh()
         {
-            Monitor.Enter((object)this);
-            try
+            lock(this)
             {
                 this.MethodsByName.Clear();
-                foreach(ExportedMethod method in this.Methods)
+                foreach(ExportedMethod item_0 in this.Methods)
                 {
-                    List<ExportedMethod> exportedMethodList;
-                    if(!this.MethodsByName.TryGetValue(method.Name, out exportedMethodList))
+                    List<ExportedMethod> local_1;
+                    if(!this.MethodsByName.TryGetValue(item_0.Name, out local_1))
                     {
-                        this.MethodsByName.Add(method.Name, exportedMethodList = new List<ExportedMethod>());
+                        this.MethodsByName.Add(item_0.Name, local_1 = new List<ExportedMethod>());
                     }
-                    exportedMethodList.Add(method);
+                    local_1.Add(item_0);
                 }
-            }
-            finally
-            {
-                Monitor.Exit((object)this);
             }
         }
     }

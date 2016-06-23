@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.2.23707, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.3.29767, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -24,6 +24,24 @@ namespace RGiesecke.DllExport.MSBuild
         private const string UndefinedPropertyValue = "*Undefined*";
         private readonly TTask _ActualTask;
         private int _ErrorCount;
+
+        public string MethodAttributes
+        {
+            get {
+                return this._Values.MethodAttributes;
+            }
+
+            set {
+                this._Values.MethodAttributes = value;
+            }
+        }
+
+        public IDllExportNotifier Notifier
+        {
+            get {
+                return this._Values.Notifier;
+            }
+        }
 
         public CpuPlatform Cpu
         {
@@ -266,6 +284,16 @@ namespace RGiesecke.DllExport.MSBuild
         public ExportTaskImplementation(TTask actualTask)
         {
             this._ActualTask = actualTask;
+        }
+
+        public void Notify(int severity, string code, string message, params object[] values)
+        {
+            this.Notifier.Notify(severity, code, message, values);
+        }
+
+        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
+        {
+            this.Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
         }
 
         [CLSCompliant(false)]
@@ -564,12 +592,12 @@ namespace RGiesecke.DllExport.MSBuild
 
         private bool ValidateLibToolPath()
         {
-            string str = (string)null;
+            string str1 = (string)null;
             if(ExportTaskImplementation<TTask>.PropertyHasValue(this.LibToolPath))
             {
-                if(ExportTaskImplementation<TTask>.TrySearchToolPath(this.LibToolPath, "lib.exe", out str))
+                if(ExportTaskImplementation<TTask>.TrySearchToolPath(this.LibToolPath, "lib.exe", out str1))
                 {
-                    this.LibToolPath = str;
+                    this.LibToolPath = str1;
                 }
                 else
                 {
@@ -580,12 +608,12 @@ namespace RGiesecke.DllExport.MSBuild
             }
             else
             {
-                string environmentVariable = Environment.GetEnvironmentVariable("DevEnvDir");
-                if(ExportTaskImplementation<TTask>.PropertyHasValue(environmentVariable))
+                string str2 = Null.NullIfEmpty(Environment.GetEnvironmentVariable("DevEnvDir")) ?? ExportTaskImplementation<TTask>.GetVsPath();
+                if(ExportTaskImplementation<TTask>.PropertyHasValue(str2))
                 {
-                    if(ExportTaskImplementation<TTask>.TrySearchToolPath(environmentVariable, "lib.exe", out str))
+                    if(ExportTaskImplementation<TTask>.TrySearchToolPath(str2, "lib.exe", out str1) || ExportTaskImplementation<TTask>.TrySearchToolPath(Path.Combine(str2, "VC"), "lib.exe", out str1) || ExportTaskImplementation<TTask>.TrySearchToolPath(Path.Combine(Path.Combine(str2, "VC"), "bin"), "lib.exe", out str1))
                     {
-                        this.LibToolPath = str;
+                        this.LibToolPath = str1;
                     }
                     else
                     {
@@ -595,19 +623,52 @@ namespace RGiesecke.DllExport.MSBuild
                     }
                 }
             }
-            if(!ExportTaskImplementation<TTask>.PropertyHasValue(str))
+            if(!ExportTaskImplementation<TTask>.PropertyHasValue(str1))
             {
-                str = (string)null;
+                str1 = (string)null;
             }
-            if(!ExportTaskImplementation<TTask>.PropertyHasValue(this.LibToolDllPath) && ExportTaskImplementation<TTask>.PropertyHasValue(str))
+            if(!ExportTaskImplementation<TTask>.PropertyHasValue(this.LibToolDllPath) && ExportTaskImplementation<TTask>.PropertyHasValue(str1))
             {
-                string fullPath = Path.GetFullPath(Path.Combine(Path.Combine(Path.Combine(Path.Combine(str, ".."), ".."), "Common7"), "IDE"));
-                if(Directory.Exists(fullPath))
+                DirectoryInfo directoryInfo = new DirectoryInfo(str1);
+                while(directoryInfo != null && !Directory.Exists(Path.Combine(Path.Combine(directoryInfo.FullName, "Common7"), "IDE")))
                 {
-                    this.LibToolDllPath = fullPath;
+                    directoryInfo = directoryInfo.Parent;
+                }
+                if(directoryInfo != null)
+                {
+                    string path = Path.Combine(Path.Combine(directoryInfo.FullName, "Common7"), "IDE");
+                    if(Directory.Exists(path))
+                    {
+                        this.LibToolDllPath = path;
+                    }
                 }
             }
             return true;
+        }
+
+        private static string GetVsPath()
+        {
+            string version1 = Null.NullIfEmpty(Environment.GetEnvironmentVariable("VisualStudioVersion"));
+            if(version1 == null)
+            {
+                return (string)null;
+            }
+            Version version2 = new Version(version1);
+            string path = Null.NullIfEmpty(Environment.GetEnvironmentVariable(string.Format("VS{0}{1}COMNTOOLS", (object)version2.Major, (object)version2.Minor)));
+            if(path == null)
+            {
+                return (string)null;
+            }
+            DirectoryInfo directoryInfo = new DirectoryInfo(path);
+            if(directoryInfo.Name.Equals("tools", StringComparison.InvariantCultureIgnoreCase) && directoryInfo.Exists)
+            {
+                DirectoryInfo parent = directoryInfo.Parent;
+                if(parent != null && parent.Parent != null && parent.Name.Equals("common7", StringComparison.InvariantCultureIgnoreCase))
+                {
+                    return parent.Parent.FullName;
+                }
+            }
+            return (string)null;
         }
 
         public static bool TrySearchToolPath(string toolPath, string toolFilename, out string value)
