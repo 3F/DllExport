@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>UnmanagedExports</id>
-    <version>1.2.1.28778</version>
+    <version>1.2.2.23707</version>
     <title>Unmanaged Exports (DllExport for .Net)</title>
     <authors>Robert Giesecke</authors>
     <owners>Robert Giesecke</owners>
@@ -13,6 +13,7 @@
       That means, you can create plugins in a managed language like C# or F# for native applications that only have a C-Api (like Notepad++).</description>
     <summary>Adds the ability to declare unmanaged exports.
       IOW: the exact opposite of how DllImport works.</summary>
+    <releaseNotes>- The assembly RGiesecke.DllExport.Metadata.dll wasn't removed from the output assemblies' references.</releaseNotes>
     <language>en-US</language>
     <tags>dllexport unmanaged exports</tags>
     <references>

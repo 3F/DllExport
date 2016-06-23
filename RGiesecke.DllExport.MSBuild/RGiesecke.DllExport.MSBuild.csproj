@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.1.28778\tools\RGiesecke.DllExport.MSBuild.dll-->
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.2.23707\tools\RGiesecke.DllExport.MSBuild.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{799538FA-F161-4ECB-BD6C-5113CA54D8FD}</ProjectGuid>
+    <ProjectGuid>{333E0552-1B30-4638-B871-1A31B7EED5F1}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <ApplicationVersion>1.2.1.28778</ApplicationVersion>
+    <ApplicationVersion>1.2.2.23707</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>RGiesecke.DllExport</RootNamespace>
     <FileUpgradeFlags>

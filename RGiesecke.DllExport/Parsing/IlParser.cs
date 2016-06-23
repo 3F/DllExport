@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.1.28776, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -95,6 +95,9 @@ namespace RGiesecke.DllExport.Parsing
         {
             Dictionary<ParserState, IParserStateAction> actionsByState = IlParser.ParserStateAction.GetActionsByState(this);
             List<string> stringList = new List<string>(1000000);
+            ParserStateValues state = new ParserStateValues(cpu, IlParser.GetClassDeclareRegex(RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace), IlParser.GetMethodDeclareRegex(RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace), (IList<string>)stringList) {
+                State = ParserState.Normal
+            };
             Stopwatch stopwatch1 = Stopwatch.StartNew();
             using(FileStream fileStream = new FileStream(Path.Combine(this.TempDirectory, this.InputValues.FileName + ".il"), FileMode.Open))
             {
@@ -106,9 +109,6 @@ namespace RGiesecke.DllExport.Parsing
                     }
                 }
             }
-            ParserStateValues state = new ParserStateValues(cpu, IlParser.GetClassDeclareRegex(RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace), IlParser.GetMethodDeclareRegex(RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.IgnorePatternWhitespace), (IList<string>)stringList) {
-                State = ParserState.Normal
-            };
             Action<IParserStateAction, string> action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => action.Execute(state, trimmedLine));
             if(this.ProfileActions)
             {

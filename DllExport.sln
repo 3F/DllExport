@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25123.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{500F20B6-45A8-4948-9A9A-6B2D262710E3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{B7D5EE70-38AF-4B5E-AC84-8DFADB43E133}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.Metadata", "RGiesecke.DllExport.Metadata\RGiesecke.DllExport.Metadata.csproj", "{07BE3485-67DC-4A11-9E48-3C96608BB038}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.Metadata", "RGiesecke.DllExport.Metadata\RGiesecke.DllExport.Metadata.csproj", "{E8CEDE75-CA43-4E1D-B080-62073D6613A3}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild", "RGiesecke.DllExport.MSBuild\RGiesecke.DllExport.MSBuild.csproj", "{799538FA-F161-4ECB-BD6C-5113CA54D8FD}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild", "RGiesecke.DllExport.MSBuild\RGiesecke.DllExport.MSBuild.csproj", "{333E0552-1B30-4638-B871-1A31B7EED5F1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,18 +15,18 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{500F20B6-45A8-4948-9A9A-6B2D262710E3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{500F20B6-45A8-4948-9A9A-6B2D262710E3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{500F20B6-45A8-4948-9A9A-6B2D262710E3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{500F20B6-45A8-4948-9A9A-6B2D262710E3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{07BE3485-67DC-4A11-9E48-3C96608BB038}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{07BE3485-67DC-4A11-9E48-3C96608BB038}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{07BE3485-67DC-4A11-9E48-3C96608BB038}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{07BE3485-67DC-4A11-9E48-3C96608BB038}.Release|Any CPU.Build.0 = Release|Any CPU
-		{799538FA-F161-4ECB-BD6C-5113CA54D8FD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{799538FA-F161-4ECB-BD6C-5113CA54D8FD}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{799538FA-F161-4ECB-BD6C-5113CA54D8FD}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{799538FA-F161-4ECB-BD6C-5113CA54D8FD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7D5EE70-38AF-4B5E-AC84-8DFADB43E133}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7D5EE70-38AF-4B5E-AC84-8DFADB43E133}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7D5EE70-38AF-4B5E-AC84-8DFADB43E133}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7D5EE70-38AF-4B5E-AC84-8DFADB43E133}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E8CEDE75-CA43-4E1D-B080-62073D6613A3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E8CEDE75-CA43-4E1D-B080-62073D6613A3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E8CEDE75-CA43-4E1D-B080-62073D6613A3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E8CEDE75-CA43-4E1D-B080-62073D6613A3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{333E0552-1B30-4638-B871-1A31B7EED5F1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{333E0552-1B30-4638-B871-1A31B7EED5F1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{333E0552-1B30-4638-B871-1A31B7EED5F1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{333E0552-1B30-4638-B871-1A31B7EED5F1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

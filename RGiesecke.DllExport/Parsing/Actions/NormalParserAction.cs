@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.1.28776, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.2.23706, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -28,14 +28,19 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
             else
             {
-                if(!trimmedLine.StartsWith(".assembly extern " + this.DllExportAttributeAssemblyName, StringComparison.Ordinal))
+                if(!this.IsExportAttributeAssemblyReference(trimmedLine))
                 {
                     return;
                 }
                 state.AddLine = false;
                 state.State = ParserState.DeleteExportDependency;
-                this.Notifier.Notify(-1, "EXP0010", "Deleting " + this.DllExportAttributeFullName + " dependency.");
+                this.Notifier.Notify(-1, "EXP0010", "Deleting " + this.DllExportAttributeAssemblyName + " dependency.");
             }
+        }
+
+        private bool IsExportAttributeAssemblyReference(string trimmedLine)
+        {
+            return trimmedLine.StartsWith(".assembly extern '" + this.DllExportAttributeAssemblyName + "'", StringComparison.Ordinal);
         }
     }
 }
