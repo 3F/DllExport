@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.6.36228, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.7.38851, Culture=neutral, PublicKeyToken=8f52d83c1a22df51
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -12,7 +12,7 @@ namespace RGiesecke.DllExport.MSBuild
 {
     [LoadInSeparateAppDomain]
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
-    public class DllExportAppDomainIsolatedTask: AppDomainIsolatedTask, IDllExportTask, IInputValues, IServiceProvider
+    public class DllExportAppDomainIsolatedTask: AppDomainIsolatedTask, IDllExportTask, IInputValues, IServiceProvider, ITask
     {
         private readonly ExportTaskImplementation<DllExportAppDomainIsolatedTask> _ExportTaskImplementation;
 
@@ -357,5 +357,13 @@ namespace RGiesecke.DllExport.MSBuild
         {
             return ((IServiceProvider)this._ExportTaskImplementation).GetService(serviceType);
         }
+
+        //[SpecialName]
+        //public TaskLoggingHelper Log
+        //{
+        //    get {
+        //        return this.Log;
+        //    }
+        //}
     }
 }

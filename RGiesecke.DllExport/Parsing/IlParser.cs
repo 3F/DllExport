@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.7.38850, Culture=neutral, PublicKeyToken=8f52d83c1a22df51
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -19,7 +19,29 @@ namespace RGiesecke.DllExport.Parsing
     public sealed class IlParser: HasServiceProvider
     {
         [Localizable(false)]
-        private static readonly string[] _DefaultMethodAttributes = new string[20] { "static", "public", "private", "family", "final", "specialname", "virtual", "abstract", "assembly", "famandassem", "famorassem", "privatescope", "hidebysig", "newslot", "strict", "rtspecialname", "flags", "unmanagedexp", "reqsecobj", "pinvokeimpl" };
+        private static readonly string[] _DefaultMethodAttributes = new string[20]
+        {
+        "static",
+        "public",
+        "private",
+        "family",
+        "final",
+        "specialname",
+        "virtual",
+        "abstract",
+        "assembly",
+        "famandassem",
+        "famorassem",
+        "privatescope",
+        "hidebysig",
+        "newslot",
+        "strict",
+        "rtspecialname",
+        "flags",
+        "unmanagedexp",
+        "reqsecobj",
+        "pinvokeimpl"
+        };
 
         private HashSet<string> _MethodAttributes;
 
@@ -371,7 +393,11 @@ namespace RGiesecke.DllExport.Parsing
                             exception = ex;
                         }
                         if(flag)
-                            throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms, new object[2] { (object)withoutExtension, (object)timeout }));
+                            throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms, new object[2]
+                        {
+                        (object) withoutExtension,
+                        (object) timeout
+                        }));
                         throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms_and_it_could_not_be_stopped, (object)withoutExtension, (object)timeout, (object)exception.Message));
                     }
                 }
@@ -462,7 +488,36 @@ namespace RGiesecke.DllExport.Parsing
 
             public static Dictionary<ParserState, IParserStateAction> GetActionsByState(IlParser parser)
             {
-                Dictionary<ParserState, IParserStateAction> dictionary = new Dictionary<ParserState, IParserStateAction>() { { ParserState.ClassDeclaration, (IParserStateAction) new ClassDeclarationParserAction() }, { ParserState.Class, (IParserStateAction) new ClassParserAction() }, { ParserState.DeleteExportAttribute, (IParserStateAction) new DeleteExportAttributeParserAction() }, { ParserState.MethodDeclaration, (IParserStateAction) new MethodDeclarationParserAction() }, { ParserState.Method, (IParserStateAction) new MethodParserAction() }, { ParserState.MethodProperties, (IParserStateAction) new MethodPropertiesParserAction() }, { ParserState.Normal, (IParserStateAction) new NormalParserAction() }
+                Dictionary<ParserState, IParserStateAction> dictionary = new Dictionary<ParserState, IParserStateAction>()
+                {
+                {
+                    ParserState.ClassDeclaration,
+                    (IParserStateAction) new ClassDeclarationParserAction()
+                },
+                {
+                    ParserState.Class,
+                    (IParserStateAction) new ClassParserAction()
+                },
+                {
+                    ParserState.DeleteExportAttribute,
+                    (IParserStateAction) new DeleteExportAttributeParserAction()
+                },
+                {
+                    ParserState.MethodDeclaration,
+                    (IParserStateAction) new MethodDeclarationParserAction()
+                },
+                {
+                    ParserState.Method,
+                    (IParserStateAction) new MethodParserAction()
+                },
+                {
+                    ParserState.MethodProperties,
+                    (IParserStateAction) new MethodPropertiesParserAction()
+                },
+                {
+                    ParserState.Normal,
+                    (IParserStateAction) new NormalParserAction()
+                }
             };
                 foreach(IParserStateAction parserStateAction in dictionary.Values)
                 {

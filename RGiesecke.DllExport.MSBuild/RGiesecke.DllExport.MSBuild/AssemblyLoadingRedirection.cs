@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.6.36228, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.7.38851, Culture=neutral, PublicKeyToken=8f52d83c1a22df51
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -19,7 +19,11 @@ namespace RGiesecke.DllExport.MSBuild
         {
             AppDomain.CurrentDomain.AssemblyResolve += (ResolveEventHandler)((sender, args) => {
                 AssemblyName assemblyName = new AssemblyName(args.Name);
-                if(((IEnumerable<string>)new string[2] { "Mono.Cecil", "RGiesecke.DllExport" }).Contains<string>(assemblyName.Name))
+                if(((IEnumerable<string>)new string[2]
+            {
+            "Mono.Cecil",
+            "RGiesecke.DllExport"
+            }).Contains<string>(assemblyName.Name))
                 {
                     string str = Path.Combine(Path.GetDirectoryName(new Uri(typeof(AssemblyLoadingRedirection).Assembly.EscapedCodeBase).AbsolutePath), assemblyName.Name + ".dll");
                     if(File.Exists(str))

@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.7.38850, Culture=neutral, PublicKeyToken=8f52d83c1a22df51
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -17,7 +17,28 @@ namespace RGiesecke.DllExport
         private readonly Dictionary<object, ExportedMethod> _DuplicateExportMethodsbyFullName = new Dictionary<object, ExportedMethod>();
         private readonly Dictionary<string, ExportedMethod> _MethodsByExportName = new Dictionary<string, ExportedMethod>();
 
-        internal static readonly Dictionary<CallingConvention, string> ConventionTypeNames = new Dictionary<CallingConvention, string>() { { CallingConvention.Cdecl, typeof (CallConvCdecl).FullName }, { CallingConvention.FastCall, typeof (CallConvFastcall).FullName }, { CallingConvention.StdCall, typeof (CallConvStdcall).FullName }, { CallingConvention.ThisCall, typeof (CallConvThiscall).FullName }, { CallingConvention.Winapi, typeof (CallConvStdcall).FullName }
+        internal static readonly Dictionary<CallingConvention, string> ConventionTypeNames = new Dictionary<CallingConvention, string>()
+        {
+        {
+            CallingConvention.Cdecl,
+            typeof (CallConvCdecl).FullName
+        },
+        {
+            CallingConvention.FastCall,
+            typeof (CallConvFastcall).FullName
+        },
+        {
+            CallingConvention.StdCall,
+            typeof (CallConvStdcall).FullName
+        },
+        {
+            CallingConvention.ThisCall,
+            typeof (CallConvThiscall).FullName
+        },
+        {
+            CallingConvention.Winapi,
+            typeof (CallConvStdcall).FullName
+        }
     };
 
         private readonly ReadOnlyCollection<DuplicateExports> _ReadOnlyDuplicateExportMethods;
@@ -142,7 +163,10 @@ namespace RGiesecke.DllExport
 
         private static object GetKey(string fullTypeName, string memberName)
         {
-            return (object)new { fullTypeName = fullTypeName, memberName = memberName };
+            return (object)new {
+                fullTypeName = fullTypeName,
+                memberName = memberName
+            };
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.6.36228, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.7.38851, Culture=neutral, PublicKeyToken=8f52d83c1a22df51
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -6,9 +6,12 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Design;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
+using Microsoft.Win32;
 using RGiesecke.DllExport.MSBuild.Properties;
 
 namespace RGiesecke.DllExport.MSBuild
@@ -18,6 +21,7 @@ namespace RGiesecke.DllExport.MSBuild
         private static readonly Version _VersionUsingToolLocationHelper = new Version(4, 5);
         private static readonly IDictionary<string, Func<Version, string, string>> _GetFrameworkToolPathByMethodName = (IDictionary<string, Func<Version, string, string>>)new Dictionary<string, Func<Version, string, string>>();
         private static readonly MethodInfo WrapGetToolPathCallMethodInfo = Utilities.GetMethodInfo<Func<string, int, string>>((Expression<Func<Func<string, int, string>>>)(() => ExportTaskImplementation<TTask>.WrapGetToolPathCall<int>(default(MethodInfo)))).GetGenericMethodDefinition();
+        private static readonly Regex MsbuildTaskLibRegex = new Regex("(?<=^|\\\\)Microsoft\\.Build\\.Utilities\\.v(\\d+(?:\\.(\\d+))?)(?:\\.dll)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private readonly IServiceContainer _ServiceProvider = (IServiceContainer)new ServiceContainer();
         private readonly Dictionary<object, string> _LoggedMessages = new Dictionary<object, string>();
         private int _Timeout = 45000;
@@ -268,17 +272,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
-        private static Func<Version, string, string> GetFrameworkToolPath
+        private Func<Version, string, string> GetFrameworkToolPath
         {
             get {
-                return ExportTaskImplementation<TTask>.GetGetToolPath("GetPathToDotNetFrameworkFile");
+                return this.GetGetToolPath("GetPathToDotNetFrameworkFile");
             }
         }
 
-        private static Func<Version, string, string> GetSdkToolPath
+        private Func<Version, string, string> GetSdkToolPath
         {
             get {
-                return ExportTaskImplementation<TTask>.GetGetToolPath("GetPathToDotNetFrameworkSdkFile");
+                return this.GetGetToolPath("GetPathToDotNetFrameworkSdkFile");
             }
         }
 
@@ -411,7 +415,14 @@ namespace RGiesecke.DllExport.MSBuild
             {
                 message = e.Context.Name + ": " + message;
             }
-            var data = new { startPos = sourceCodePosition1, endPos = sourceCodePosition2, fileName = file, Severity = e.Severity, Code = e.Code, Message = message };
+            var data = new {
+                startPos = sourceCodePosition1,
+                endPos = sourceCodePosition2,
+                fileName = file,
+                Severity = e.Severity,
+                Code = e.Code,
+                Message = message
+            };
             if(this._LoggedMessages.ContainsKey((object)data))
             {
                 return;
@@ -448,7 +459,8 @@ namespace RGiesecke.DllExport.MSBuild
 
         private bool ValidateInputValues()
         {
-            bool flag = this.ValidateLibToolPath() & this.ValidateFrameworkPath() & this.ValidateSdkPath();
+            this.ValidateLibToolPath();
+            bool flag = this.ValidateFrameworkPath() & this.ValidateSdkPath();
             if(!string.IsNullOrEmpty(this.CpuType) && (string.IsNullOrEmpty(this.Platform) || string.Equals(this.Platform, "anycpu", StringComparison.OrdinalIgnoreCase)))
             {
                 this.Platform = this.CpuType;
@@ -473,14 +485,14 @@ namespace RGiesecke.DllExport.MSBuild
             this._ActualTask.Log.LogError(Resources.Both_key_values_KeyContainer_0_and_KeyFile_0_are_present_only_one_can_be_specified, (object)this._Values.KeyContainer, (object)this._Values.KeyFile);
         }
 
-        private static Func<Version, string, string> GetGetToolPath(string methodName)
+        private Func<Version, string, string> GetGetToolPath(string methodName)
         {
             lock(ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName)
             {
                 Func<Version, string, string> local_0;
                 if(!ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName.TryGetValue(methodName, out local_0))
                 {
-                    ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName.Add(methodName, local_0 = ExportTaskImplementation<TTask>.GetGetToolPathInternal(methodName));
+                    ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName.Add(methodName, local_0 = this.GetGetToolPathInternal(methodName));
                 }
                 return local_0;
             }
@@ -495,23 +507,27 @@ namespace RGiesecke.DllExport.MSBuild
             });
         }
 
-        private static Func<Version, string, string> GetGetToolPathInternal(string methodName)
+        private Func<Version, string, string> GetGetToolPathInternal(string methodName)
         {
-            Type type = Type.GetType("Microsoft.Build.Utilities.ToolLocationHelper") ?? Type.GetType("Microsoft.Build.Utilities.ToolLocationHelper, Microsoft.Build.Utilities.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+            Type type = this.GetToolLocationHelperTypeFromRegsitry();
             if(type == null)
             {
-                Assembly assembly;
-                try
+                type = Type.GetType("Microsoft.Build.Utilities.ToolLocationHelper") ?? Type.GetType("Microsoft.Build.Utilities.ToolLocationHelper, Microsoft.Build.Utilities.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+                if(type == null)
                 {
-                    assembly = Assembly.Load("Microsoft.Build.Utilities.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
-                }
-                catch(FileNotFoundException ex)
-                {
-                    assembly = (Assembly)null;
-                }
-                if(assembly != null)
-                {
-                    type = assembly.GetType("Microsoft.Build.Utilities.ToolLocationHelper");
+                    Assembly assembly;
+                    try
+                    {
+                        assembly = Assembly.Load("Microsoft.Build.Utilities.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
+                    }
+                    catch(FileNotFoundException ex)
+                    {
+                        assembly = (Assembly)null;
+                    }
+                    if(assembly != null)
+                    {
+                        type = assembly.GetType("Microsoft.Build.Utilities.ToolLocationHelper");
+                    }
                 }
             }
             if(type == null)
@@ -519,12 +535,19 @@ namespace RGiesecke.DllExport.MSBuild
                 return (Func<Version, string, string>)null;
             }
             Type targetDotNetFrameworkVersionType = type.Assembly.GetType("Microsoft.Build.Utilities.TargetDotNetFrameworkVersion");
-            MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public, (Binder)null, new Type[2] { typeof(string), targetDotNetFrameworkVersionType }, (ParameterModifier[])null);
+            MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public, (Binder)null, new Type[2]
+            {
+            typeof (string),
+            targetDotNetFrameworkVersionType
+            }, (ParameterModifier[])null);
             if(method == null)
             {
                 return (Func<Version, string, string>)null;
             }
-            Func<string, int, string> getToolPathCore = (Func<string, int, string>)ExportTaskImplementation<TTask>.WrapGetToolPathCallMethodInfo.MakeGenericMethod(targetDotNetFrameworkVersionType).Invoke((object)null, new object[1] { (object)method });
+            Func<string, int, string> getToolPathCore = (Func<string, int, string>)ExportTaskImplementation<TTask>.WrapGetToolPathCallMethodInfo.MakeGenericMethod(targetDotNetFrameworkVersionType).Invoke((object)null, new object[1]
+            {
+            (object) method
+            });
             Func<string, int, string> getToolPath = (Func<string, int, string>)((n, v) => {
                 try
                 {
@@ -562,10 +585,94 @@ namespace RGiesecke.DllExport.MSBuild
             });
         }
 
+        protected Type GetToolLocationHelperTypeFromRegsitry()
+        {
+            RegistryKey toolVersionsKey = Registry.LocalMachine.OpenSubKey("SOFTWARE\\Microsoft\\MSBuild\\ToolsVersions", false);
+            try
+            {
+                if(toolVersionsKey == null)
+                {
+                    return (Type)null;
+                }
+                Regex nameRegex = new Regex("^v?(\\d+(?:\\.\\d+))$", RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                HashSet<string> utilFileNames = new HashSet<string>((IEqualityComparer<string>)StringComparer.OrdinalIgnoreCase)
+                {
+                "Microsoft.Build.Utilities.Core",
+                "Microsoft.Build.Utilities"
+            };
+                Func<string, Type> getToolhelperType = (Func<string, Type>)(n => {
+                    using(RegistryKey registryKey = toolVersionsKey.OpenSubKey(n, false))
+                    {
+                        if(registryKey == null)
+                        {
+                            return (Type)null;
+                        }
+                        string path = (string)registryKey.GetValue("MSBuildToolsPath");
+                        if(path == null)
+                        {
+                            return (Type)null;
+                        }
+                        string[] files = Directory.GetFiles(path, "*.dll");
+                        if(files.LongLength == 0L)
+                        {
+                            return (Type)null;
+                        }
+                        string assemblyFile = ((IEnumerable<string>)files).Select(dllName => new {
+                            dllName = dllName,
+                            fileName = Path.GetFileNameWithoutExtension(dllName)
+                        }).Select(param0 => new {
+                            __cc__h__TransparentIdentifierc = param0,
+                            isUtil = utilFileNames.Contains(param0.fileName)
+                        }).Select(param0 => new {
+                            __cc__h__TransparentIdentifierd = param0,
+                            utilMatch = ExportTaskImplementation<TTask>.MsbuildTaskLibRegex.Match(param0.__cc__h__TransparentIdentifierc.fileName)
+                        }).Select(param0 => new {
+                            __cc__h__TransparentIdentifiere = param0,
+                            utilVersion = param0.utilMatch.Success ? new Version(param0.utilMatch.Groups[1].Value) : (Version)null
+                        }).Where(param0 => {
+                            if(!param0.__cc__h__TransparentIdentifiere.__cc__h__TransparentIdentifierd.isUtil)
+                            {
+                                return param0.utilVersion != (Version)null;
+                            }
+                            return true;
+                        }).OrderBy(param0 => !(param0.utilVersion != (Version)null) ? 2 : 1).ThenBy(param0 => !param0.__cc__h__TransparentIdentifiere.__cc__h__TransparentIdentifierd.isUtil ? 2 : 1).ThenByDescending(param0 => param0.utilVersion).Select(param0 => new {
+                            __cc__h__TransparentIdentifierf = param0,
+                            asm = Assembly.ReflectionOnlyLoadFrom(param0.__cc__h__TransparentIdentifiere.__cc__h__TransparentIdentifierd.__cc__h__TransparentIdentifierc.dllName)
+                        }).Select(param0 => new {
+                            __cc__h__TransparentIdentifier10 = param0,
+                            t = param0.asm.GetType("Microsoft.Build.Utilities.ToolLocationHelper")
+                        }).Where(param0 => param0.t != null).Select(param0 => param0.__cc__h__TransparentIdentifier10.__cc__h__TransparentIdentifierf.__cc__h__TransparentIdentifiere.__cc__h__TransparentIdentifierd.__cc__h__TransparentIdentifierc.dllName).FirstOrDefault<string>();
+                        if(assemblyFile == null)
+                        {
+                            return (Type)null;
+                        }
+                        return Assembly.LoadFrom(assemblyFile).GetType("Microsoft.Build.Utilities.ToolLocationHelper");
+                    }
+                });
+                return ((IEnumerable<string>)toolVersionsKey.GetSubKeyNames()).Select(n => new {
+                    n = n,
+                    m = nameRegex.Match(n)
+                }).Where(param0 => param0.m.Success).Select(param0 => new {
+                    __cc__h__TransparentIdentifier12 = param0,
+                    version = new Version(param0.m.Groups[1].Value)
+                }).OrderByDescending(param0 => param0.version).Select(param0 => new {
+                    __cc__h__TransparentIdentifier13 = param0,
+                    t = getToolhelperType(param0.__cc__h__TransparentIdentifier12.n)
+                }).Where(param0 => param0.t != null).Select(param0 => param0.t).FirstOrDefault<Type>();
+            }
+            finally
+            {
+                if(toolVersionsKey != null)
+                {
+                    ((IDisposable)toolVersionsKey).Dispose();
+                }
+            }
+        }
+
         private bool ValidateFrameworkPath()
         {
             string foundPath;
-            if(!this.ValidateToolPath("ilasm.exe", this.FrameworkPath, ExportTaskImplementation<TTask>.GetFrameworkToolPath, out foundPath))
+            if(!this.ValidateToolPath("ilasm.exe", this.FrameworkPath, this.GetFrameworkToolPath, out foundPath))
             {
                 return false;
             }
@@ -627,7 +734,7 @@ namespace RGiesecke.DllExport.MSBuild
         private bool ValidateSdkPath()
         {
             string foundPath;
-            if(!this.ValidateToolPath("ildasm.exe", this.SdkPath, ExportTaskImplementation<TTask>.GetSdkToolPath, out foundPath))
+            if(!this.ValidateToolPath("ildasm.exe", this.SdkPath, this.GetSdkToolPath, out foundPath))
             {
                 return false;
             }
