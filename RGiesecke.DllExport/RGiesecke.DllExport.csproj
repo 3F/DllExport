@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.1.28778\tools\RGiesecke.DllExport.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{500F20B6-45A8-4948-9A9A-6B2D262710E3}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>RGiesecke.DllExport</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ApplicationVersion>1.2.1.28776</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>RGiesecke.DllExport</RootNamespace>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Cecil">
+      <HintPath>lib\Mono.Cecil.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GenericDisposable.cs" />
+    <Compile Include="AssemblyBinaryProperties.cs" />
+    <Compile Include="AssemblyExports.cs" />
+    <Compile Include="DllExportNotifier.cs" />
+    <Compile Include="DllExportWeaver.cs" />
+    <Compile Include="DuplicateExports.cs" />
+    <Compile Include="ExportAssemblyInspector.cs" />
+    <Compile Include="ExportedClass.cs" />
+    <Compile Include="ExportInfo.cs" />
+    <Compile Include="ExportedMethod.cs" />
+    <Compile Include="InputValuesCore.cs" />
+    <Compile Include="InputValues.cs" />
+    <Compile Include="Null.cs" />
+    <Compile Include="Set.cs" />
+    <Compile Include="SourceCodePosition.cs" />
+    <Compile Include="Utilities.cs" />
+    <Compile Include="ValueDisposable.cs" />
+    <Compile Include="Parsing\IlParser.cs" />
+    <Compile Include="Parsing\ILAsm.cs" />
+    <Compile Include="Parsing\ILDasm.cs" />
+    <Compile Include="Parsing\Regexes.Designer.cs" />
+    <Compile Include="Parsing\Actions\ClassDeclarationParserAction.cs" />
+    <Compile Include="Parsing\Actions\ClassParserAction.cs" />
+    <Compile Include="Parsing\Actions\DeleteExportAttributeParserAction.cs" />
+    <Compile Include="Parsing\Actions\DeleteExportDependencyParserAction.cs" />
+    <Compile Include="Parsing\Actions\MethodDeclarationParserAction.cs" />
+    <Compile Include="Parsing\Actions\MethodParserAction.cs" />
+    <Compile Include="Parsing\Actions\MethodPropertiesParserAction.cs" />
+    <Compile Include="Parsing\Actions\NormalParserAction.cs" />
+    <Compile Include="Parsing\Actions\ParserStateActionAttribute.cs" />
+    <Compile Include="Parsing\Actions\ParserStateValues.cs" />
+    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="Properties\Settings.Designer.cs" />
+    <Compile Include="DllExportVersion.cs" />
+    <Compile Include="IDllExportNotifier.cs" />
+    <Compile Include="CpuPlatform.cs" />
+    <Compile Include="DllExportNotificationEventArgs.cs" />
+    <Compile Include="IExportAssemblyInspector.cs" />
+    <Compile Include="IExportInfo.cs" />
+    <Compile Include="ExtractExportHandler.cs" />
+    <Compile Include="IInputValues.cs" />
+    <Compile Include="Parsing\ParserState.cs" />
+    <Compile Include="Parsing\Actions\IParserStateAction.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Parsing\Regexes.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

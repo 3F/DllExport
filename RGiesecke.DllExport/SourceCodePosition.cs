@@ -1,0 +1,67 @@
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.1.28776, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+// Author of original assembly (MIT-License): Robert Giesecke
+// Use Readme & LICENSE files for details.
+
+using System;
+
+namespace RGiesecke.DllExport
+{
+    public struct SourceCodePosition: IEquatable<SourceCodePosition>
+    {
+        private readonly int _Character;
+        private readonly int _Line;
+
+        public int Line
+        {
+            get {
+                return this._Line;
+            }
+        }
+
+        public int Character
+        {
+            get {
+                return this._Character;
+            }
+        }
+
+        public SourceCodePosition(int line, int character)
+        {
+            this._Line = line;
+            this._Character = character;
+        }
+
+        public static bool operator ==(SourceCodePosition left, SourceCodePosition right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(SourceCodePosition left, SourceCodePosition right)
+        {
+            return !left.Equals(right);
+        }
+
+        public bool Equals(SourceCodePosition other)
+        {
+            if(other._Line == this._Line)
+            {
+                return other._Character == this._Character;
+            }
+            return false;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if(!object.ReferenceEquals((object)null, obj) && obj.GetType() == typeof(SourceCodePosition))
+            {
+                return this.Equals((SourceCodePosition)obj);
+            }
+            return false;
+        }
+
+        public override int GetHashCode()
+        {
+            return this._Line * 397 ^ this._Character;
+        }
+    }
+}

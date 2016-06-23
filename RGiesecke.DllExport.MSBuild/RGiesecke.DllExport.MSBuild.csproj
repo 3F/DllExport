@@ -1,0 +1,67 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.1.28778\tools\RGiesecke.DllExport.MSBuild.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{799538FA-F161-4ECB-BD6C-5113CA54D8FD}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>RGiesecke.DllExport.MSBuild</AssemblyName>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <ApplicationVersion>1.2.1.28778</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>RGiesecke.DllExport</RootNamespace>
+    <FileUpgradeFlags>
+    </FileUpgradeFlags>
+    <UpgradeBackupLocation>
+    </UpgradeBackupLocation>
+    <OldToolsVersion>3.5</OldToolsVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="RGiesecke.DllExport">
+      <HintPath>lib\RGiesecke.DllExport.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="System.Core" />
+    <Reference Include="Mono.Cecil">
+      <HintPath>lib\Mono.Cecil.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="RGiesecke.DllExport\Null.cs" />
+    <Compile Include="RGiesecke.DllExport\Set.cs" />
+    <Compile Include="RGiesecke.DllExport.MSBuild\AssemblyLoadingRedirection.cs" />
+    <Compile Include="RGiesecke.DllExport.MSBuild\DllExportAppDomainIsolatedTask.cs" />
+    <Compile Include="RGiesecke.DllExport.MSBuild\ExportTaskImplementation.cs" />
+    <Compile Include="RGiesecke.DllExport.MSBuild\DllExportTask.cs" />
+    <Compile Include="RGiesecke.DllExport.MSBuild\Properties\Resources.Designer.cs" />
+    <Compile Include="DllExportVersion.cs" />
+    <Compile Include="RGiesecke.DllExport.MSBuild\IDllExportTask.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="MSBuild\Properties\Resources.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>
