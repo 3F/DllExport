@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.6.36228, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -11,9 +11,16 @@ using Microsoft.Build.Utilities;
 namespace RGiesecke.DllExport.MSBuild
 {
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
-    public class DllExportTask: Task, IDllExportTask, IInputValues
+    public class DllExportTask: Task, IDllExportTask, IInputValues, IServiceProvider
     {
         private readonly ExportTaskImplementation<DllExportTask> _ExportTaskImplementation;
+
+        private IServiceProvider _ServiceProvider
+        {
+            get {
+                return (IServiceProvider)this._ExportTaskImplementation;
+            }
+        }
 
         public string MethodAttributes
         {
@@ -26,14 +33,7 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
-        public IDllExportNotifier Notifier
-        {
-            get {
-                return this._ExportTaskImplementation.Notifier;
-            }
-        }
-
-        public bool? SkipOnAnyCpu
+        bool? IDllExportTask.SkipOnAnyCpu
         {
             get {
                 return this._ExportTaskImplementation.SkipOnAnyCpu;
@@ -41,6 +41,24 @@ namespace RGiesecke.DllExport.MSBuild
 
             set {
                 this._ExportTaskImplementation.SkipOnAnyCpu = value;
+            }
+        }
+
+        public string SkipOnAnyCpu
+        {
+            get {
+                return Convert.ToString((object)this._ExportTaskImplementation.SkipOnAnyCpu);
+            }
+
+            set {
+                if(string.IsNullOrEmpty(value))
+                {
+                    this._ExportTaskImplementation.SkipOnAnyCpu = new bool?();
+                }
+                else
+                {
+                    this._ExportTaskImplementation.SkipOnAnyCpu = new bool?(Convert.ToBoolean(value));
+                }
             }
         }
 
@@ -309,6 +327,16 @@ namespace RGiesecke.DllExport.MSBuild
         : base(taskResources, helpKeywordPrefix)
         {
             this._ExportTaskImplementation = new ExportTaskImplementation<DllExportTask>(this);
+        }
+
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            return this._ServiceProvider.GetService(serviceType);
+        }
+
+        public IDllExportNotifier GetNotifier()
+        {
+            return this._ExportTaskImplementation.GetNotifier();
         }
 
         public void Notify(int severity, string code, string message, params object[] values)

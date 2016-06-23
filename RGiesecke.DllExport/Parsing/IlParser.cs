@@ -1,9 +1,10 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -15,9 +16,11 @@ using RGiesecke.DllExport.Properties;
 
 namespace RGiesecke.DllExport.Parsing
 {
-    public sealed class IlParser: DllExportNotifierWrapper
+    public sealed class IlParser: HasServiceProvider
     {
+        [Localizable(false)]
         private static readonly string[] _DefaultMethodAttributes = new string[20] { "static", "public", "private", "family", "final", "specialname", "virtual", "abstract", "assembly", "famandassem", "famorassem", "privatescope", "hidebysig", "newslot", "strict", "rtspecialname", "flags", "unmanagedexp", "reqsecobj", "pinvokeimpl" };
+
         private HashSet<string> _MethodAttributes;
 
         public string DllExportAttributeAssemblyName
@@ -86,14 +89,14 @@ namespace RGiesecke.DllExport.Parsing
             }
         }
 
-        public IlParser(IDllExportNotifier notifier)
-        : base(notifier)
+        public IlParser(IServiceProvider serviceProvider)
+        : base(serviceProvider)
         {
         }
 
         public IEnumerable<string> GetLines(CpuPlatform cpu)
         {
-            using(this.Notifier.CreateContextName((object)this, "Parse IL"))
+            using(this.GetNotifier().CreateContextName((object)this, Resources.ParseILContextName))
             {
                 Dictionary<ParserState, IParserStateAction> actionsByState = IlParser.ParserStateAction.GetActionsByState(this);
                 List<string> stringList1 = new List<string>(1000000);
@@ -113,7 +116,7 @@ namespace RGiesecke.DllExport.Parsing
                 }
                 Action<IParserStateAction, string> action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
                     string name = action.GetType().Name;
-                    using(this.Notifier.CreateContextName((object)action, name))
+                    using(this.GetNotifier().CreateContextName((object)action, name))
                         action.Execute(state, trimmedLine);
                 });
                 if(this.ProfileActions)
@@ -143,7 +146,7 @@ namespace RGiesecke.DllExport.Parsing
                     IParserStateAction parserStateAction;
                     if(!actionsByState.TryGetValue(state.State, out parserStateAction))
                     {
-                        this.Notifier.Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, (object)state.State);
+                        this.GetNotifier().Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, (object)state.State);
                     }
                     else
                     {
@@ -205,23 +208,28 @@ namespace RGiesecke.DllExport.Parsing
                             }
                             if(num2 > -1)
                             {
-                                this.Notifier.Notify(-1, DllExportLogginCodes.RemovingReferenceToDllExportAttributeAssembly, string.Format(Resources.Deleting_reference_to_0_, (object)assemlyDeclaration.AssemblyName, assemlyDeclaration.AliasName != assemlyDeclaration.AssemblyName ? (object)string.Format(" (alias {0})", (object)assemlyDeclaration.AliasName) : (object)""));
+                                this.GetNotifier().Notify(-2, DllExportLogginCodes.RemovingReferenceToDllExportAttributeAssembly, string.Format(Resources.Deleting_reference_to_0_, (object)assemlyDeclaration.AssemblyName, assemlyDeclaration.AliasName != assemlyDeclaration.AssemblyName ? (object)string.Format(Resources.AssemblyAlias, (object)assemlyDeclaration.AliasName) : (object)""));
                                 stringList2.RemoveRange(assemlyDeclaration.InputLineIndex, num2 - assemlyDeclaration.InputLineIndex + 1);
                             }
                         }
                     }
                 }
                 stopwatch1.Stop();
-                this.Notifier.Notify(-1, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, (object)stringList1.Count, (object)stopwatch1.ElapsedMilliseconds);
+                this.GetNotifier().Notify(-2, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, (object)stringList1.Count, (object)stopwatch1.ElapsedMilliseconds);
                 if(this.ProfileActions)
                 {
                     foreach(KeyValuePair<ParserState, IParserStateAction> keyValuePair in actionsByState)
                     {
-                        this.Notifier.Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, (object)keyValuePair.Key, (object)keyValuePair.Value.Milliseconds);
+                        this.GetNotifier().Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, (object)keyValuePair.Key, (object)keyValuePair.Value.Milliseconds);
                     }
                 }
                 return (IEnumerable<string>)stringList2;
             }
+        }
+
+        internal IDllExportNotifier GetNotifier()
+        {
+            return this.ServiceProvider.GetService<IDllExportNotifier>();
         }
 
         private HashSet<string> GetMethodAttributes()
@@ -390,7 +398,7 @@ namespace RGiesecke.DllExport.Parsing
             protected IDllExportNotifier Notifier
             {
                 get {
-                    return this.Parser.Notifier;
+                    return this.Parser.GetNotifier();
                 }
             }
 

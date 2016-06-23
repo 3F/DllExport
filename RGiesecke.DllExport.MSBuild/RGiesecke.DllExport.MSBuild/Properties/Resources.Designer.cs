@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.6.36228, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -100,11 +100,11 @@ public class Resources
         }
     }
 
-    public static string Input_file_0_is_not_a_DLL__cannot_create_unmanaged_exports
+    public static string Input_file_0_is_not_a_DLL_hint
     {
         get
         {
-            return RGiesecke.DllExport.MSBuild.Properties.Resources.ResourceManager.GetString("Input_file_0_is_not_a_DLL__cannot_create_unmanaged_exports", RGiesecke.DllExport.MSBuild.Properties.Resources.resourceCulture);
+            return RGiesecke.DllExport.MSBuild.Properties.Resources.ResourceManager.GetString("Input_file_0_is_not_a_DLL_hint", RGiesecke.DllExport.MSBuild.Properties.Resources.resourceCulture);
         }
     }
 
@@ -129,6 +129,14 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.MSBuild.Properties.Resources.ResourceManager.GetString("SdkPath_is_empty_continuing_with_0_", RGiesecke.DllExport.MSBuild.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string Skipped_Method_Exports
+    {
+        get
+        {
+            return RGiesecke.DllExport.MSBuild.Properties.Resources.ResourceManager.GetString("Skipped_Method_Exports", RGiesecke.DllExport.MSBuild.Properties.Resources.resourceCulture);
         }
     }
 

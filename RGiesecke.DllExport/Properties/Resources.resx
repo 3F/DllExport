@@ -138,6 +138,9 @@
   <data name="Input_file_required" xml:space="preserve">
     <value>Input file required.</value>
   </data>
+  <data name="ExtractExportsContextName" xml:space="preserve">
+    <value>ExtractExports</value>
+  </data>
   <data name="Parsing_0_lines_of_IL_took_1_ms_" xml:space="preserve">
     <value>Parsing {0} lines of IL took {1} ms.</value>
   </data>
@@ -145,7 +148,7 @@
     <value>The type '{1}' cannot export the method '{2}' as '{0}' because it is generic or is nested within a generic type.</value>
   </data>
   <data name="AddingVtEntry_0_export_1_" xml:space="preserve">
-    <value>Adding .vtentry:{0} .export:{1}</value>
+    <value>exporting as {1} and index {0}</value>
   </data>
   <data name="Directory_0_does_not_exist" xml:space="preserve">
     <value>Directory '{0}' does not exist</value>
@@ -153,17 +156,44 @@
   <data name="Unknown_cpu_platform_0_" xml:space="preserve">
     <value>Unknown cpu platform '{0}'.</value>
   </data>
+  <data name="CreateTempDirectoryContextName" xml:space="preserve">
+    <value>CreateTempDirectory</value>
+  </data>
+  <data name="no_declaration___" xml:space="preserve">
+    <value>no declaration...</value>
+  </data>
+  <data name="ParseILContextName" xml:space="preserve">
+    <value>Parse IL</value>
+  </data>
+  <data name="CopyBeforeContextName" xml:space="preserve">
+    <value>Copy 'Before'</value>
+  </data>
   <data name="Platform_is_0_creating_binaries_for_each_CPU_platform_in_a_separate_subfolder" xml:space="preserve">
     <value>Platform is {0}, creating binaries for each CPU platform in a separate subfolder...</value>
+  </data>
+  <data name="CopyAfterContextName" xml:space="preserve">
+    <value>Copy 'After'</value>
+  </data>
+  <data name="FindDuplicateExportMethodsContextName" xml:space="preserve">
+    <value>FindDuplicateExportMethods</value>
   </data>
   <data name="OldDeclaration_0_" xml:space="preserve">
     <value>old declaration: {0}</value>
   </data>
+  <data name="AssemblyAlias" xml:space="preserve">
+    <value> (alias {0})</value>
+  </data>
   <data name="R_0_did_not_return_after_1_ms" xml:space="preserve">
     <value>{0} did not return after {1} ms.</value>
   </data>
+  <data name="Current_Notifier_Context_is___0____it_should_have_been___1___" xml:space="preserve">
+    <value>Current Notifier Context is '{0}', it should have been '{1}'.</value>
+  </data>
   <data name="Input_file_must_be_a_DLL" xml:space="preserve">
     <value>Input file must be a DLL.</value>
+  </data>
+  <data name="no_name___" xml:space="preserve">
+    <value>no name...</value>
   </data>
   <data name="Found_method_0_1_" xml:space="preserve">
     <value>Found method: {0}.{1}</value>
@@ -201,5 +231,8 @@
   </data>
   <data name="The_method_1_2_is_not_static_export_name_0_" xml:space="preserve">
     <value>The method '{1}'.'{2}' (export name '{0}') is not static. Only static methods can be exported.</value>
+  </data>
+  <data name="The_destination_directory_already_exists_" xml:space="preserve">
+    <value>The destination directory already exists.</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -11,9 +11,9 @@ using System.Runtime.CompilerServices;
 
 namespace RGiesecke.DllExport.Properties
 {
+[CompilerGenerated]
 [DebuggerNonUserCode]
 [GeneratedCode("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
-[CompilerGenerated]
 public class Resources
 {
     private static ResourceManager resourceMan;
@@ -68,11 +68,51 @@ public class Resources
         }
     }
 
+    public static string AssemblyAlias
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("AssemblyAlias", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
     public static string calling_0_with_1_
     {
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("calling_0_with_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string CopyAfterContextName
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("CopyAfterContextName", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string CopyBeforeContextName
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("CopyBeforeContextName", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string CreateTempDirectoryContextName
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("CreateTempDirectoryContextName", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string Current_Notifier_Context_is___0____it_should_have_been___1___
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Current_Notifier_Context_is___0____it_should_have_been___1___", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 
@@ -105,6 +145,22 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Export_name_0_on_1__2_is_Unicode_windows_export_names_have_to_be_basic_latin", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string ExtractExportsContextName
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("ExtractExportsContextName", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string FindDuplicateExportMethodsContextName
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("FindDuplicateExportMethodsContextName", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 
@@ -156,6 +212,22 @@ public class Resources
         }
     }
 
+    public static string no_declaration___
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("no_declaration___", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string no_name___
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("no_name___", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
     public static string No_paramaters_provided__at_least_the_input_assembly_name_is_needed
     {
         get
@@ -169,6 +241,14 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("OldDeclaration_0_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string ParseILContextName
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("ParseILContextName", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 
@@ -233,6 +313,14 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Removing_0_from_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string The_destination_directory_already_exists_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("The_destination_directory_already_exists_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 

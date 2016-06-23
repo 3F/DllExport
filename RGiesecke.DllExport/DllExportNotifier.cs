@@ -1,10 +1,11 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using RGiesecke.DllExport.Properties;
 
 namespace RGiesecke.DllExport
 {
@@ -126,7 +127,7 @@ namespace RGiesecke.DllExport
                 {
                     if(notificationContextStack.Peek() != this.Context)
                     {
-                        throw new InvalidOperationException(string.Format("Current Notifier Context is '{0}', it should have been '{1}'.", (object)notificationContextStack.Peek(), (object)this.Context.Name));
+                        throw new InvalidOperationException(string.Format(Resources.Current_Notifier_Context_is___0____it_should_have_been___1___, (object)notificationContextStack.Peek(), (object)this.Context.Name));
                     }
                     notificationContextStack.Pop();
                 }

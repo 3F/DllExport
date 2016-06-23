@@ -1,14 +1,15 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
+using System;
 using System.IO;
 using System.Threading;
 using RGiesecke.DllExport.Parsing;
 
 namespace RGiesecke.DllExport
 {
-    public class InputValuesCore: DllExportNotifierWrapper, IInputValues
+    public class InputValuesCore: HasServiceProvider, IInputValues
     {
         private string _DllExportAttributeAssemblyName = Utilities.DllExportAttributeAssemblyName;
         private string _DllExportAttributeFullName = Utilities.DllExportAttributeFullName;
@@ -18,13 +19,6 @@ namespace RGiesecke.DllExport
         {
             get;
             set;
-        }
-
-        IDllExportNotifier IInputValues.Notifier
-        {
-            get {
-                return this.Notifier;
-            }
         }
 
         public string LeaveIntermediateFiles
@@ -152,8 +146,8 @@ namespace RGiesecke.DllExport
             }
         }
 
-        public InputValuesCore(IDllExportNotifier notifier)
-        : base(notifier)
+        public InputValuesCore(IServiceProvider serviceProvider)
+        : base(serviceProvider)
         {
         }
 

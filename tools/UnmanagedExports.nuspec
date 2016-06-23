@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>UnmanagedExports</id>
-    <version>1.2.4.23262</version>
+    <version>1.2.6</version>
     <title>Unmanaged Exports (DllExport for .Net)</title>
     <authors>Robert Giesecke</authors>
     <owners>Robert Giesecke</owners>
@@ -19,13 +19,13 @@
       - You cannot put your exports in generic types or export generic methods. (The CLR wouldn't know what type parameters to use)</description>
     <summary>Adds the ability to declare unmanaged function exports.
       IOW: the exact opposite of how DllImport works.</summary>
-    <releaseNotes>- The Metadata assemby is signed now. (So you can create signed assemblies with exports)
-      - Placing [DllExport] on non-static methods will now yield an error.
-      - Placing [DllExport] on methods in generic types (or types nested in generic types) will yield an error.
-      - Errors regarding lib.exe will no longer break the build.
-      - Added support for generic return types. Even the most esotheric corner cases (obfuscated types) should work.
-      - Made the code that checks method names and class names much more resilient and faster.
-      - Most messages are localizable now (and I translated them to German).</releaseNotes>
+    <releaseNotes>- package restore will now work as expected
+      - file extensions otherthan dll are possible now (e.g. .plugin)
+      - some fixes regarding the creation of .exp, .def and .lib files
+      - changed the nuget scripts to be more resilient
+      - added new nuget CmdLets
+      - You will now get warnings in the nuget package manager when a project's platform target is not x86 or x64.
+      - some refactorings WRT notifications (warnings, etc.)</releaseNotes>
     <language>en-US</language>
     <tags>dllexport unmanaged exports export</tags>
     <references>

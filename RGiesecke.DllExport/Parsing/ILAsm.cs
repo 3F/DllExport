@@ -1,9 +1,10 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Globalization;
 using System.IO;
 using System.Security.Permissions;
@@ -24,8 +25,8 @@ namespace RGiesecke.DllExport.Parsing
             set;
         }
 
-        public IlAsm(IInputValues inputValues)
-        : base(inputValues)
+        public IlAsm(IServiceProvider serviceProvider, IInputValues inputValues)
+        : base(serviceProvider, inputValues)
         {
         }
 
@@ -40,7 +41,7 @@ namespace RGiesecke.DllExport.Parsing
                 {
                     Directory.CreateDirectory(directoryName);
                 }
-                using(IlParser ilParser = new IlParser((IDllExportNotifier)this))
+                using(IlParser ilParser = new IlParser(this.ServiceProvider))
                 {
                     ilParser.Exports = this.Exports;
                     ilParser.InputValues = this.InputValues;
@@ -166,7 +167,7 @@ namespace RGiesecke.DllExport.Parsing
             }
             catch(Exception ex)
             {
-                this.Notify(1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, (object)ex.Message);
+                this.Notifier.Notify(1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, (object)"lib.exe", (object)ex.Message);
                 return -1;
             }
             finally
@@ -178,6 +179,7 @@ namespace RGiesecke.DllExport.Parsing
             }
         }
 
+        [Localizable(false)]
         private int RunLibToolCore(CpuPlatform cpu, string directory, string defFileName)
         {
             string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(this.InputValues.OutputFileName)) + ".lib";
@@ -234,6 +236,7 @@ namespace RGiesecke.DllExport.Parsing
             return fileName;
         }
 
+        [Localizable(false)]
         private string GetCommandLineArguments(CpuPlatform cpu, string fileName, string ressourceParam, string ilSuffix, string keyFile)
         {
             return string.Format((IFormatProvider)CultureInfo.InvariantCulture, "/nologo \"/out:{0}\" \"{1}.il\" /DLL{2} {3} {4} {5}", (object)fileName, (object)(Path.Combine(this.TempDirectory, Path.GetFileNameWithoutExtension(this.InputValues.InputFileName)) + ilSuffix), (object)ressourceParam, this.InputValues.EmitDebugSymbols ? (object)"/debug" : (object)"/optimize", cpu == CpuPlatform.X86 ? (object)"" : (object)(" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")), string.IsNullOrEmpty(keyFile) ? (!string.IsNullOrEmpty(this.InputValues.KeyContainer) ? (object)("\"/Key=@" + this.InputValues.KeyContainer + "\"") : (object)(string)null) : (object)("\"/Key=" + keyFile + (object)'"'));

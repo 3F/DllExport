@@ -1,9 +1,10 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.6.36228, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -12,11 +13,12 @@ using RGiesecke.DllExport.MSBuild.Properties;
 
 namespace RGiesecke.DllExport.MSBuild
 {
-    public class ExportTaskImplementation<TTask>: IInputValues where TTask : IDllExportTask, ITask
+    public class ExportTaskImplementation<TTask>: IInputValues, IServiceContainer, IServiceProvider where TTask : IDllExportTask, ITask
     {
         private static readonly Version _VersionUsingToolLocationHelper = new Version(4, 5);
         private static readonly IDictionary<string, Func<Version, string, string>> _GetFrameworkToolPathByMethodName = (IDictionary<string, Func<Version, string, string>>)new Dictionary<string, Func<Version, string, string>>();
         private static readonly MethodInfo WrapGetToolPathCallMethodInfo = Utilities.GetMethodInfo<Func<string, int, string>>((Expression<Func<Func<string, int, string>>>)(() => ExportTaskImplementation<TTask>.WrapGetToolPathCall<int>(default(MethodInfo)))).GetGenericMethodDefinition();
+        private readonly IServiceContainer _ServiceProvider = (IServiceContainer)new ServiceContainer();
         private readonly Dictionary<object, string> _LoggedMessages = new Dictionary<object, string>();
         private int _Timeout = 45000;
         private const string ToolLocationHelperTypeName = "Microsoft.Build.Utilities.ToolLocationHelper";
@@ -33,13 +35,6 @@ namespace RGiesecke.DllExport.MSBuild
 
             set {
                 this._Values.MethodAttributes = value;
-            }
-        }
-
-        public IDllExportNotifier Notifier
-        {
-            get {
-                return this._Values.Notifier;
             }
         }
 
@@ -295,18 +290,59 @@ namespace RGiesecke.DllExport.MSBuild
         public ExportTaskImplementation(TTask actualTask)
         {
             this._ActualTask = actualTask;
-            this._Values = (IInputValues)new InputValuesCore((IDllExportNotifier)new ExportTaskImplementation<TTask>.DN(this._ActualTask));
-            this._Values.Notifier.Notification += new EventHandler<DllExportNotificationEventArgs>(this.OnDllWrapperNotification);
+            this.AddServiceFactory<ExportTaskImplementation<TTask>, IDllExportNotifier>((Func<IServiceProvider, IDllExportNotifier>)(sp => (IDllExportNotifier)new ExportTaskImplementation<TTask>.DllExportNotifierWithTask(this._ActualTask)));
+            this._Values = (IInputValues)new InputValuesCore((IServiceProvider)this);
+            this.GetNotifier().Notification += new EventHandler<DllExportNotificationEventArgs>(this.OnDllWrapperNotification);
+        }
+
+        object IServiceProvider.GetService(Type serviceType)
+        {
+            return this._ServiceProvider.GetService(serviceType);
+        }
+
+        void IServiceContainer.AddService(Type serviceType, object serviceInstance)
+        {
+            this._ServiceProvider.AddService(serviceType, serviceInstance);
+        }
+
+        void IServiceContainer.AddService(Type serviceType, object serviceInstance, bool promote)
+        {
+            this._ServiceProvider.AddService(serviceType, serviceInstance, promote);
+        }
+
+        void IServiceContainer.AddService(Type serviceType, ServiceCreatorCallback callback)
+        {
+            this._ServiceProvider.AddService(serviceType, callback);
+        }
+
+        void IServiceContainer.AddService(Type serviceType, ServiceCreatorCallback callback, bool promote)
+        {
+            this._ServiceProvider.AddService(serviceType, callback, promote);
+        }
+
+        void IServiceContainer.RemoveService(Type serviceType)
+        {
+            this._ServiceProvider.RemoveService(serviceType);
+        }
+
+        void IServiceContainer.RemoveService(Type serviceType, bool promote)
+        {
+            this._ServiceProvider.RemoveService(serviceType, promote);
+        }
+
+        public IDllExportNotifier GetNotifier()
+        {
+            return DllExportServiceProviderExtensions.GetService<IDllExportNotifier>(this);
         }
 
         public void Notify(int severity, string code, string message, params object[] values)
         {
-            this.Notifier.Notify(severity, code, message, values);
+            this.GetNotifier().Notify(severity, code, message, values);
         }
 
         public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
         {
-            this.Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
+            this.GetNotifier().Notify(severity, code, fileName, startPosition, endPosition, message, values);
         }
 
         [CLSCompliant(false)]
@@ -331,6 +367,7 @@ namespace RGiesecke.DllExport.MSBuild
                     bool? skipOnAnyCpu = this.SkipOnAnyCpu;
                     if((skipOnAnyCpu.HasValue ? (skipOnAnyCpu.GetValueOrDefault() ? 1 : 0) : 1) != 0 && this._Values.Cpu == CpuPlatform.AnyCpu)
                     {
+                        this._ActualTask.Log.LogMessage(Resources.Skipped_Method_Exports);
                         return true;
                     }
                     AssemblyBinaryProperties binaryProperties = this._Values.InferAssemblyBinaryProperties();
@@ -344,7 +381,7 @@ namespace RGiesecke.DllExport.MSBuild
                     }
                     this._Values.InferOutputFile();
                     this.ValidateKeyFiles(binaryProperties.IsSigned);
-                    using(DllExportWeaver dllExportWeaver = new DllExportWeaver(this.Notifier) {
+                    using(DllExportWeaver dllExportWeaver = new DllExportWeaver((IServiceProvider)this) {
                         Timeout = this.Timeout
                     })
                     {
@@ -366,11 +403,11 @@ namespace RGiesecke.DllExport.MSBuild
         private void OnDllWrapperNotification(object sender, DllExportNotificationEventArgs e)
         {
             MessageImportance messageImportance = ExportTaskImplementation<TTask>.GetMessageImportance(e.Severity);
-            string file = string.IsNullOrEmpty(e.FileName) ? this.InputFileName : e.FileName;
+            string file = string.IsNullOrEmpty(e.FileName) ? this._ActualTask.BuildEngine.ProjectFileOfTaskNode : e.FileName;
             SourceCodePosition sourceCodePosition1 = e.StartPosition ?? new SourceCodePosition(0, 0);
             SourceCodePosition sourceCodePosition2 = e.EndPosition ?? new SourceCodePosition(0, 0);
             string message = e.Message;
-            if(e.Context != (NotificationContext)null && e.Context.Name != null)
+            if(e.Severity > 0 && e.Context != (NotificationContext)null && e.Context.Name != null)
             {
                 message = e.Context.Name + ": " + message;
             }
@@ -602,7 +639,7 @@ namespace RGiesecke.DllExport.MSBuild
         {
             if(!string.IsNullOrEmpty(propertyValue))
             {
-                return !propertyValue.StartsWith("*Undefined*", StringComparison.OrdinalIgnoreCase);
+                return !propertyValue.Contains("*Undefined*");
             }
             return false;
         }
@@ -625,6 +662,7 @@ namespace RGiesecke.DllExport.MSBuild
             }
             else
             {
+                this.LibToolPath = (string)null;
                 string str2 = Null.NullIfEmpty(Environment.GetEnvironmentVariable("DevEnvDir")) ?? ExportTaskImplementation<TTask>.GetVsPath();
                 if(ExportTaskImplementation<TTask>.PropertyHasValue(str2))
                 {
@@ -644,19 +682,26 @@ namespace RGiesecke.DllExport.MSBuild
             {
                 str1 = (string)null;
             }
-            if(!ExportTaskImplementation<TTask>.PropertyHasValue(this.LibToolDllPath) && ExportTaskImplementation<TTask>.PropertyHasValue(str1))
+            if(!ExportTaskImplementation<TTask>.PropertyHasValue(this.LibToolDllPath))
             {
-                DirectoryInfo directoryInfo = new DirectoryInfo(str1);
-                while(directoryInfo != null && !Directory.Exists(Path.Combine(Path.Combine(directoryInfo.FullName, "Common7"), "IDE")))
+                if(!ExportTaskImplementation<TTask>.PropertyHasValue(str1))
                 {
-                    directoryInfo = directoryInfo.Parent;
+                    this.LibToolDllPath = (string)null;
                 }
-                if(directoryInfo != null)
+                else
                 {
-                    string path = Path.Combine(Path.Combine(directoryInfo.FullName, "Common7"), "IDE");
-                    if(Directory.Exists(path))
+                    DirectoryInfo directoryInfo = new DirectoryInfo(str1);
+                    while(directoryInfo != null && !Directory.Exists(Path.Combine(Path.Combine(directoryInfo.FullName, "Common7"), "IDE")))
                     {
-                        this.LibToolDllPath = path;
+                        directoryInfo = directoryInfo.Parent;
+                    }
+                    if(directoryInfo != null)
+                    {
+                        string path = Path.Combine(Path.Combine(directoryInfo.FullName, "Common7"), "IDE");
+                        if(Directory.Exists(path))
+                        {
+                            this.LibToolDllPath = path;
+                        }
                     }
                 }
             }
@@ -730,18 +775,18 @@ namespace RGiesecke.DllExport.MSBuild
             {
                 this._ActualTask.Log.LogWarning(Resources.Input_file_0_does_not_exist__cannot_create_unmanaged_exports, (object)this._Values.InputFileName);
             }
-            else if(!string.Equals(Path.GetExtension(this._Values.InputFileName).TrimStart('.'), "dll", StringComparison.OrdinalIgnoreCase))
-            {
-                this._ActualTask.Log.LogWarning(Resources.Input_file_0_is_not_a_DLL__cannot_create_unmanaged_exports, (object)this._Values.InputFileName);
-            }
             else
             {
+                if(!string.Equals(Path.GetExtension(this._Values.InputFileName).TrimStart('.'), "dll", StringComparison.OrdinalIgnoreCase))
+                {
+                    this._ActualTask.Log.LogMessage(Resources.Input_file_0_is_not_a_DLL_hint, (object)this._Values.InputFileName);
+                }
                 flag = true;
             }
             return flag;
         }
 
-        private class DN: DllExportNotifier
+        private sealed class DllExportNotifierWithTask: DllExportNotifier
         {
             public TTask ActualTask
             {
@@ -749,7 +794,7 @@ namespace RGiesecke.DllExport.MSBuild
                 private set;
             }
 
-            public DN(TTask actualTask)
+            public DllExportNotifierWithTask(TTask actualTask)
             {
                 this.ActualTask = actualTask;
             }

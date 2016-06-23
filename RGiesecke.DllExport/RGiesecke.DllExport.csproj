@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.4.23262\tools\RGiesecke.DllExport.dll-->
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.6\tools\RGiesecke.DllExport.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{5FFD6DD4-C2BB-4928-9459-F7BD328DE414}</ProjectGuid>
+    <ProjectGuid>{CC0F7DA6-5434-41A5-9263-DDD66F18B1DF}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <ApplicationVersion>1.2.4.23262</ApplicationVersion>
+    <ApplicationVersion>1.2.6.36226</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>RGiesecke.DllExport</RootNamespace>
     <FileUpgradeFlags>
@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DllExportLogginCodes.cs" />
+    <Compile Include="DllExportServiceProviderExtensions.cs" />
     <Compile Include="GenericDisposable.cs" />
     <Compile Include="NotificationContext.cs" />
     <Compile Include="AssemblyBinaryProperties.cs" />
@@ -63,8 +64,9 @@
     <Compile Include="SourceCodeRange.cs" />
     <Compile Include="Utilities.cs" />
     <Compile Include="ValueDisposable.cs" />
-    <Compile Include="Parsing\DllExportNotifierWrapper.cs" />
+    <Compile Include="Parsing\HasServiceProvider.cs" />
     <Compile Include="Parsing\IlParser.cs" />
+    <Compile Include="Parsing\DllExportNotifierWrapper.cs" />
     <Compile Include="Parsing\IlToolBase.cs" />
     <Compile Include="Parsing\ILAsm.cs" />
     <Compile Include="Parsing\ILDasm.cs" />

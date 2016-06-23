@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -14,7 +14,7 @@ using RGiesecke.DllExport.Properties;
 namespace RGiesecke.DllExport
 {
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
-    public sealed class DllExportWeaver: DllExportNotifierWrapper
+    public sealed class DllExportWeaver: HasServiceProvider
     {
         private int _Timeout = 45000;
 
@@ -41,8 +41,8 @@ namespace RGiesecke.DllExport
             set;
         }
 
-        public DllExportWeaver(IDllExportNotifier notifier)
-        : base(notifier)
+        public DllExportWeaver(IServiceProvider serviceProvider)
+        : base(serviceProvider)
         {
         }
 
@@ -51,9 +51,9 @@ namespace RGiesecke.DllExport
             if(this.Exports == null)
             {
                 IExportAssemblyInspector assemblyInspector = Utilities.CreateAssemblyInspector(this.InputValues);
-                using(this.Notifier.CreateContextName((object)this, "ExtractExports"))
+                using(this.GetNotifier().CreateContextName((object)this, Resources.ExtractExportsContextName))
                     this.Exports = assemblyInspector.ExtractExports();
-                using(this.Notifier.CreateContextName((object)this, "FindDuplicateExportMethods"))
+                using(this.GetNotifier().CreateContextName((object)this, Resources.FindDuplicateExportMethodsContextName))
                 {
                     foreach(DuplicateExports duplicateExportMethod in this.Exports.DuplicateExportMethods)
                     {
@@ -72,7 +72,7 @@ namespace RGiesecke.DllExport
             {
                 return;
             }
-            using(this.Notifier.CreateContextName((object)this, "CreateTempDirectory"))
+            using(this.GetNotifier().CreateContextName((object)this, Resources.CreateTempDirectoryContextName))
             {
                 using(ValueDisposable<string> tempDirectory = Utilities.CreateTempDirectory())
                 {
@@ -80,7 +80,7 @@ namespace RGiesecke.DllExport
                     bool flag = ((IEnumerable<string>)new string[2] { "true", "yes" }).Any<string>((Func<string, bool>)(t => t.Equals(this.InputValues.LeaveIntermediateFiles, StringComparison.InvariantCultureIgnoreCase)));
                     if(flag)
                     {
-                        using(this.Notifier.CreateContextName((object)this, "Copy 'Before'"))
+                        using(this.GetNotifier().CreateContextName((object)this, Resources.CopyBeforeContextName))
                             DllExportWeaver.CopyDirectory(tempDirectory.Value, Path.Combine(Path.GetDirectoryName(this.InputValues.OutputFileName), "Before"), true);
                     }
                     using(IlAsm ilAsm = this.PrepareIlAsm(tempDirectory.Value))
@@ -89,10 +89,15 @@ namespace RGiesecke.DllExport
                     {
                         return;
                     }
-                    using(this.Notifier.CreateContextName((object)this, "Copy 'After'"))
+                    using(this.GetNotifier().CreateContextName((object)this, Resources.CopyAfterContextName))
                         DllExportWeaver.CopyDirectory(tempDirectory.Value, Path.Combine(Path.GetDirectoryName(this.InputValues.OutputFileName), "After"), true);
                 }
             }
+        }
+
+        private IDllExportNotifier GetNotifier()
+        {
+            return this.ServiceProvider.GetService<IDllExportNotifier>();
         }
 
         private static string GetCleanedDirectoryPath(string path)
@@ -115,7 +120,7 @@ namespace RGiesecke.DllExport
             destinationDirectory = DllExportWeaver.GetCleanedDirectoryPath(destinationDirectory);
             if(Directory.Exists(destinationDirectory) && !overwrite)
             {
-                throw new IOException("The destination directory already exists.");
+                throw new IOException(Resources.The_destination_directory_already_exists_);
             }
             if(!Directory.Exists(destinationDirectory))
             {
@@ -139,7 +144,7 @@ namespace RGiesecke.DllExport
 
         private void RunIlAsm(IlAsm ilAsm)
         {
-            using(this.Notifier.CreateContextName((object)this, "RunIlAsm"))
+            using(this.GetNotifier().CreateContextName((object)this, "RunIlAsm"))
             {
                 if(this.InputValues.Cpu == CpuPlatform.AnyCpu)
                 {
@@ -149,7 +154,7 @@ namespace RGiesecke.DllExport
                     {
                         throw new DirectoryNotFoundException(string.Format(Resources.Directory_0_does_not_exist, (object)str));
                     }
-                    this.Notifier.Notify(1, DllExportLogginCodes.CreatingBinariesForEachPlatform, Resources.Platform_is_0_creating_binaries_for_each_CPU_platform_in_a_separate_subfolder, (object)this.InputValues.Cpu);
+                    this.GetNotifier().Notify(1, DllExportLogginCodes.CreatingBinariesForEachPlatform, Resources.Platform_is_0_creating_binaries_for_each_CPU_platform_in_a_separate_subfolder, (object)this.InputValues.Cpu);
                     ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x86"), fileName), ".x86", CpuPlatform.X86);
                     ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x64"), fileName), ".x64", CpuPlatform.X64);
                 }
@@ -162,9 +167,9 @@ namespace RGiesecke.DllExport
 
         private IlAsm PrepareIlAsm(string tempDirectory)
         {
-            using(this.Notifier.CreateContextName((object)this, "PrepareIlAsm"))
+            using(this.GetNotifier().CreateContextName((object)this, "PrepareIlAsm"))
             {
-                IlAsm instance = new IlAsm(this.InputValues);
+                IlAsm instance = new IlAsm((IServiceProvider)this, this.InputValues);
                 instance.Timeout = this.Timeout;
                 return instance.TryInitialize<IlAsm>((Action<IlAsm>)(ilAsm => {
                     ilAsm.TempDirectory = tempDirectory;
@@ -175,9 +180,9 @@ namespace RGiesecke.DllExport
 
         private void RunIlDasm(string tempDirectory)
         {
-            using(this.Notifier.CreateContextName((object)this, "RunIlDasm"))
+            using(this.GetNotifier().CreateContextName((object)this, "RunIlDasm"))
             {
-                IlDasm ilDasm1 = new IlDasm(this.InputValues);
+                IlDasm ilDasm1 = new IlDasm((IServiceProvider)this, this.InputValues);
                 ilDasm1.Timeout = this.Timeout;
                 using(IlDasm ilDasm2 = ilDasm1)
                 {

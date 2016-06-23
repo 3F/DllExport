@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.4.23262\tools\RGiesecke.DllExport.MSBuild.dll-->
+  <!--Project was exported from assembly: D:\prg\projects\DllExport\offBinaries\unmanagedexports.1.2.6\tools\RGiesecke.DllExport.MSBuild.dll-->
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{61B3877B-D905-4E28-B6A4-5E4EB9F45BE7}</ProjectGuid>
+    <ProjectGuid>{59DF3780-E947-4483-A3F0-05E4A2259C41}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
-    <ApplicationVersion>1.2.4.23262</ApplicationVersion>
+    <ApplicationVersion>1.2.6.36228</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>RGiesecke.DllExport</RootNamespace>
     <FileUpgradeFlags>
@@ -42,13 +42,14 @@
     </Reference>
     <Reference Include="Microsoft.Build.Utilities" />
     <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="Mono.Cecil">
       <HintPath>lib\Mono.Cecil.dll</HintPath>
     </Reference>
-    <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RGiesecke.DllExport\DllExportServiceProviderExtensions.cs" />
     <Compile Include="RGiesecke.DllExport\Null.cs" />
     <Compile Include="RGiesecke.DllExport\Set.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\AssemblyLoadingRedirection.cs" />

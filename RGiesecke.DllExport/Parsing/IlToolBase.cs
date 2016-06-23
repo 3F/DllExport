@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -6,19 +6,12 @@ using System;
 
 namespace RGiesecke.DllExport.Parsing
 {
-    public abstract class IlToolBase: DllExportNotifierWrapper
+    public abstract class IlToolBase: HasServiceProvider
     {
-        protected override IDllExportNotifier Notifier
+        protected IDllExportNotifier Notifier
         {
             get {
-                return this.InputValues.Notifier;
-            }
-        }
-
-        protected override bool OwnsNotifier
-        {
-            get {
-                return false;
+                return this.ServiceProvider.GetService<IDllExportNotifier>();
             }
         }
 
@@ -40,8 +33,8 @@ namespace RGiesecke.DllExport.Parsing
             set;
         }
 
-        protected IlToolBase(IInputValues inputValues)
-        : base((IDllExportNotifier)null)
+        protected IlToolBase(IServiceProvider serviceProvider, IInputValues inputValues)
+        : base(serviceProvider)
         {
             if(inputValues == null)
             {

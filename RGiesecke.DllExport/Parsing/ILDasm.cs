@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.6.36226, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -12,8 +12,8 @@ namespace RGiesecke.DllExport.Parsing
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
     public sealed class IlDasm: IlToolBase
     {
-        public IlDasm(IInputValues inputValues)
-        : base(inputValues)
+        public IlDasm(IServiceProvider serviceProvider, IInputValues inputValues)
+        : base(serviceProvider, inputValues)
         {
         }
 
