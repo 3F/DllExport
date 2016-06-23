@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -105,6 +105,14 @@ public class Resources
         get
         {
             return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Export_name_0_on_1__2_is_Unicode_windows_export_names_have_to_be_basic_latin", RGiesecke.DllExport.Properties.Resources.resourceCulture);
+        }
+    }
+
+    public static string Found_method_0_1_
+    {
+        get
+        {
+            return RGiesecke.DllExport.Properties.Resources.ResourceManager.GetString("Found_method_0_1_", RGiesecke.DllExport.Properties.Resources.resourceCulture);
         }
     }
 

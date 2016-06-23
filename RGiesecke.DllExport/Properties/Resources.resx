@@ -165,8 +165,11 @@
   <data name="Input_file_must_be_a_DLL" xml:space="preserve">
     <value>Input file must be a DLL.</value>
   </data>
+  <data name="Found_method_0_1_" xml:space="preserve">
+    <value>Found method: {0}.{1}</value>
+  </data>
   <data name="Deleting_reference_to_0_" xml:space="preserve">
-    <value>Deleting reference to {0}.</value>
+    <value>Deleting unused reference to {0}{1}.</value>
   </data>
   <data name="R_0_did_not_return_after_1_ms_and_it_could_not_be_stopped" xml:space="preserve">
     <value>{0} did not return after {1} ms and it could not be stopped.

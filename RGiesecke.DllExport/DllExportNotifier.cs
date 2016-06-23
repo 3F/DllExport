@@ -1,18 +1,53 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 
 namespace RGiesecke.DllExport
 {
-    public sealed class DllExportNotifier: IDllExportNotifier, IDisposable
+    public class DllExportNotifier: IDllExportNotifier, IDisposable
     {
-        public object Context
+        private readonly Stack<NotificationContext> _ContextScopes = new Stack<NotificationContext>();
+
+        public string ContextName
         {
-            get;
-            set;
+            get {
+                NotificationContext context = this.Context;
+                if(!(context != (NotificationContext)null))
+                {
+                    return (string)null;
+                }
+                return context.Name;
+            }
+        }
+
+        public object ContextObject
+        {
+            get {
+                NotificationContext context = this.Context;
+                if(!(context != (NotificationContext)null))
+                {
+                    return (object)null;
+                }
+                return context.Context;
+            }
+        }
+
+        public NotificationContext Context
+        {
+            get {
+                try
+                {
+                    return this._ContextScopes.Peek();
+                }
+                catch(Exception ex)
+                {
+                    throw ex;
+                }
+            }
         }
 
         public event EventHandler<DllExportNotificationEventArgs> Notification;
@@ -22,9 +57,14 @@ namespace RGiesecke.DllExport
             this.Notification = (EventHandler<DllExportNotificationEventArgs>)null;
         }
 
+        public IDisposable CreateContextName(object context, string name)
+        {
+            return (IDisposable)new DllExportNotifier.ContextScope(this, new NotificationContext(name, context));
+        }
+
         public void Notify(DllExportNotificationEventArgs e)
         {
-            this.OnNotification(this.Context ?? (object)this, e);
+            this.OnNotification((object)(this.Context ?? new NotificationContext((string)null, (object)this)), e);
         }
 
         private void OnNotification(object sender, DllExportNotificationEventArgs e)
@@ -58,6 +98,39 @@ namespace RGiesecke.DllExport
                 return;
             }
             this.Notify(e);
+        }
+
+        private sealed class ContextScope: IDisposable
+        {
+            private readonly DllExportNotifier _Notifier;
+
+            public NotificationContext Context
+            {
+                get;
+                private set;
+            }
+
+            public ContextScope(DllExportNotifier notifier, NotificationContext context)
+            {
+                this.Context = context;
+                this._Notifier = notifier;
+                Stack<NotificationContext> notificationContextStack = this._Notifier._ContextScopes;
+                lock(notificationContextStack)
+                    notificationContextStack.Push(context);
+            }
+
+            public void Dispose()
+            {
+                Stack<NotificationContext> notificationContextStack = this._Notifier._ContextScopes;
+                lock(notificationContextStack)
+                {
+                    if(notificationContextStack.Peek() != this.Context)
+                    {
+                        throw new InvalidOperationException(string.Format("Current Notifier Context is '{0}', it should have been '{1}'.", (object)notificationContextStack.Peek(), (object)this.Context.Name));
+                    }
+                    notificationContextStack.Pop();
+                }
+            }
         }
     }
 }

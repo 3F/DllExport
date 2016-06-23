@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.3.29767, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -18,11 +18,11 @@ namespace RGiesecke.DllExport.MSBuild
         private static readonly IDictionary<string, Func<Version, string, string>> _GetFrameworkToolPathByMethodName = (IDictionary<string, Func<Version, string, string>>)new Dictionary<string, Func<Version, string, string>>();
         private static readonly MethodInfo WrapGetToolPathCallMethodInfo = Utilities.GetMethodInfo<Func<string, int, string>>((Expression<Func<Func<string, int, string>>>)(() => ExportTaskImplementation<TTask>.WrapGetToolPathCall<int>(default(MethodInfo)))).GetGenericMethodDefinition();
         private readonly Dictionary<object, string> _LoggedMessages = new Dictionary<object, string>();
-        private readonly IInputValues _Values = (IInputValues)new InputValuesCore();
         private int _Timeout = 45000;
         private const string ToolLocationHelperTypeName = "Microsoft.Build.Utilities.ToolLocationHelper";
         private const string UndefinedPropertyValue = "*Undefined*";
         private readonly TTask _ActualTask;
+        private readonly IInputValues _Values;
         private int _ErrorCount;
 
         public string MethodAttributes
@@ -74,6 +74,17 @@ namespace RGiesecke.DllExport.MSBuild
 
             set {
                 this._Values.EmitDebugSymbols = value;
+            }
+        }
+
+        public string LeaveIntermediateFiles
+        {
+            get {
+                return this._Values.LeaveIntermediateFiles;
+            }
+
+            set {
+                this._Values.LeaveIntermediateFiles = value;
             }
         }
 
@@ -284,6 +295,8 @@ namespace RGiesecke.DllExport.MSBuild
         public ExportTaskImplementation(TTask actualTask)
         {
             this._ActualTask = actualTask;
+            this._Values = (IInputValues)new InputValuesCore((IDllExportNotifier)new ExportTaskImplementation<TTask>.DN(this._ActualTask));
+            this._Values.Notifier.Notification += new EventHandler<DllExportNotificationEventArgs>(this.OnDllWrapperNotification);
         }
 
         public void Notify(int severity, string code, string message, params object[] values)
@@ -331,11 +344,10 @@ namespace RGiesecke.DllExport.MSBuild
                     }
                     this._Values.InferOutputFile();
                     this.ValidateKeyFiles(binaryProperties.IsSigned);
-                    using(DllExportWeaver dllExportWeaver = new DllExportWeaver() {
+                    using(DllExportWeaver dllExportWeaver = new DllExportWeaver(this.Notifier) {
                         Timeout = this.Timeout
                     })
                     {
-                        dllExportWeaver.Notification += new EventHandler<DllExportNotificationEventArgs>(this.OnDllWrapperNotification);
                         dllExportWeaver.InputValues = (IInputValues)this._ActualTask;
                         dllExportWeaver.Run();
                     }
@@ -357,24 +369,29 @@ namespace RGiesecke.DllExport.MSBuild
             string file = string.IsNullOrEmpty(e.FileName) ? this.InputFileName : e.FileName;
             SourceCodePosition sourceCodePosition1 = e.StartPosition ?? new SourceCodePosition(0, 0);
             SourceCodePosition sourceCodePosition2 = e.EndPosition ?? new SourceCodePosition(0, 0);
-            var data = new { startPos = sourceCodePosition1, endPos = sourceCodePosition2, fileName = file, Severity = e.Severity, Code = e.Code, Message = e.Message };
+            string message = e.Message;
+            if(e.Context != (NotificationContext)null && e.Context.Name != null)
+            {
+                message = e.Context.Name + ": " + message;
+            }
+            var data = new { startPos = sourceCodePosition1, endPos = sourceCodePosition2, fileName = file, Severity = e.Severity, Code = e.Code, Message = message };
             if(this._LoggedMessages.ContainsKey((object)data))
             {
                 return;
             }
-            this._LoggedMessages.Add((object)data, e.Message);
+            this._LoggedMessages.Add((object)data, message);
             if(e.Severity == 1)
             {
-                this._ActualTask.Log.LogWarning("Export", e.Code, (string)null, file, sourceCodePosition1.Line, sourceCodePosition1.Character, sourceCodePosition2.Line, sourceCodePosition2.Character, e.Message);
+                this._ActualTask.Log.LogWarning("Export", e.Code, (string)null, file, sourceCodePosition1.Line, sourceCodePosition1.Character, sourceCodePosition2.Line, sourceCodePosition2.Character, message);
             }
             else if(e.Severity > 1)
             {
                 ++this._ErrorCount;
-                this._ActualTask.Log.LogError("Export", e.Code, (string)null, file, sourceCodePosition1.Line, sourceCodePosition1.Character, sourceCodePosition2.Line, sourceCodePosition2.Character, e.Message);
+                this._ActualTask.Log.LogError("Export", e.Code, (string)null, file, sourceCodePosition1.Line, sourceCodePosition1.Character, sourceCodePosition2.Line, sourceCodePosition2.Character, message);
             }
             else
             {
-                this._ActualTask.Log.LogMessage(messageImportance, e.Message, new object[0]);
+                this._ActualTask.Log.LogMessage(messageImportance, message, new object[0]);
             }
         }
 
@@ -722,6 +739,20 @@ namespace RGiesecke.DllExport.MSBuild
                 flag = true;
             }
             return flag;
+        }
+
+        private class DN: DllExportNotifier
+        {
+            public TTask ActualTask
+            {
+                get;
+                private set;
+            }
+
+            public DN(TTask actualTask)
+            {
+                this.ActualTask = actualTask;
+            }
         }
     }
 }

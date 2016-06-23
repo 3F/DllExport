@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.3.29767, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using RGiesecke.DllExport.MSBuild.Properties;
 
 namespace RGiesecke.DllExport.MSBuild
 {
@@ -35,7 +36,7 @@ namespace RGiesecke.DllExport.MSBuild
         {
             if(!AssemblyLoadingRedirection.IsSetup)
             {
-                throw new InvalidOperationException(string.Format("{0} has not been setup.", (object)typeof(AssemblyLoadingRedirection).FullName));
+                throw new InvalidOperationException(string.Format(Resources.AssemblyRedirection_for_0_has_not_been_setup_, (object)typeof(AssemblyLoadingRedirection).FullName));
             }
         }
     }

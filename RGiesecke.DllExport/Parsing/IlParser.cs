@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -15,10 +15,9 @@ using RGiesecke.DllExport.Properties;
 
 namespace RGiesecke.DllExport.Parsing
 {
-    public sealed class IlParser: IDllExportNotifier, IDisposable
+    public sealed class IlParser: DllExportNotifierWrapper
     {
         private static readonly string[] _DefaultMethodAttributes = new string[20] { "static", "public", "private", "family", "final", "specialname", "virtual", "abstract", "assembly", "famandassem", "famorassem", "privatescope", "hidebysig", "newslot", "strict", "rtspecialname", "flags", "unmanagedexp", "reqsecobj", "pinvokeimpl" };
-        private readonly DllExportNotifier _Notifier = new DllExportNotifier();
         private HashSet<string> _MethodAttributes;
 
         public string DllExportAttributeAssemblyName
@@ -87,90 +86,142 @@ namespace RGiesecke.DllExport.Parsing
             }
         }
 
-        public event EventHandler<DllExportNotificationEventArgs> Notification
+        public IlParser(IDllExportNotifier notifier)
+        : base(notifier)
         {
-            add {
-                this._Notifier.Notification += value;
-            }
-            remove {
-                this._Notifier.Notification -= value;
-            }
-        }
-
-        public void Notify(int severity, string code, string message, params object[] values)
-        {
-            this._Notifier.Notify(severity, code, message, values);
-        }
-
-        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
-        {
-            this._Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
-        }
-
-        public void Dispose()
-        {
-            this._Notifier.Dispose();
         }
 
         public IEnumerable<string> GetLines(CpuPlatform cpu)
         {
-            Dictionary<ParserState, IParserStateAction> actionsByState = IlParser.ParserStateAction.GetActionsByState(this);
-            List<string> stringList = new List<string>(1000000);
-            ParserStateValues state = new ParserStateValues(cpu, (IList<string>)stringList) {
-                State = ParserState.Normal
-            };
-            Stopwatch stopwatch1 = Stopwatch.StartNew();
-            using(FileStream fileStream = new FileStream(Path.Combine(this.TempDirectory, this.InputValues.FileName + ".il"), FileMode.Open))
+            using(this.Notifier.CreateContextName((object)this, "Parse IL"))
             {
-                using(StreamReader streamReader = new StreamReader((Stream)fileStream, Encoding.Unicode))
+                Dictionary<ParserState, IParserStateAction> actionsByState = IlParser.ParserStateAction.GetActionsByState(this);
+                List<string> stringList1 = new List<string>(1000000);
+                ParserStateValues state = new ParserStateValues(cpu, (IList<string>)stringList1) {
+                    State = ParserState.Normal
+                };
+                Stopwatch stopwatch1 = Stopwatch.StartNew();
+                using(FileStream fileStream = new FileStream(Path.Combine(this.TempDirectory, this.InputValues.FileName + ".il"), FileMode.Open))
                 {
-                    while(!streamReader.EndOfStream)
+                    using(StreamReader streamReader = new StreamReader((Stream)fileStream, Encoding.Unicode))
                     {
-                        stringList.Add(streamReader.ReadLine());
+                        while(!streamReader.EndOfStream)
+                        {
+                            stringList1.Add(streamReader.ReadLine());
+                        }
                     }
                 }
-            }
-            Action<IParserStateAction, string> action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => action.Execute(state, trimmedLine));
-            if(this.ProfileActions)
-            {
-                Action<IParserStateAction, string> executeActionCore = action1;
-                action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
-                    Stopwatch stopwatch2 = Stopwatch.StartNew();
-                    executeActionCore(action, trimmedLine);
-                    stopwatch2.Stop();
-                    action.Milliseconds += stopwatch2.ElapsedMilliseconds;
+                Action<IParserStateAction, string> action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
+                    string name = action.GetType().Name;
+                    using(this.Notifier.CreateContextName((object)action, name))
+                        action.Execute(state, trimmedLine);
                 });
+                if(this.ProfileActions)
+                {
+                    Action<IParserStateAction, string> executeActionCore = action1;
+                    action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
+                        Stopwatch stopwatch = Stopwatch.StartNew();
+                        executeActionCore(action, trimmedLine);
+                        stopwatch.Stop();
+                        action.Milliseconds += stopwatch.ElapsedMilliseconds;
+                    });
+                }
+                Dictionary<string, int> usedScopeNames = new Dictionary<string, int>();
+                for(int index = 0; index < stringList1.Count; ++index)
+                {
+                    state.InputPosition = index;
+                    string str1 = stringList1[index];
+                    IlParsingUtils.ParseIlSnippet(str1, ParsingDirection.Forward, (Func<IlParsingUtils.IlSnippetLocation, bool>)(current => {
+                        if(!current.WithinString && (int)current.CurrentChar == 93 && (current.LastIdentifier != null && !usedScopeNames.ContainsKey(current.LastIdentifier)))
+                        {
+                            usedScopeNames.Add(current.LastIdentifier, usedScopeNames.Count);
+                        }
+                        return true;
+                    }), (Action<IlParsingUtils.IlSnippetFinalizaton>)null);
+                    string str2 = str1.NullSafeTrim();
+                    state.AddLine = true;
+                    IParserStateAction parserStateAction;
+                    if(!actionsByState.TryGetValue(state.State, out parserStateAction))
+                    {
+                        this.Notifier.Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, (object)state.State);
+                    }
+                    else
+                    {
+                        action1(parserStateAction, str2);
+                    }
+                    if(state.AddLine)
+                    {
+                        state.Result.Add(str1);
+                    }
+                }
+                List<string> stringList2 = state.Result;
+                if(state.ExternalAssemlyDeclarations.Count > 0)
+                {
+                    stringList2 = new List<string>(state.Result.Count);
+                    stringList2.AddRange((IEnumerable<string>)state.Result);
+                    List<ExternalAssemlyDeclaration> assemlyDeclarationList = new List<ExternalAssemlyDeclaration>(state.ExternalAssemlyDeclarations.Count);
+                    Dictionary<string, int> foundAliases = new Dictionary<string, int>();
+                    foreach(string inputText in stringList2)
+                    {
+                        if(inputText.Length >= 3 && inputText.Contains("["))
+                            IlParsingUtils.ParseIlSnippet(inputText, ParsingDirection.Forward, (Func<IlParsingUtils.IlSnippetLocation, bool>)(current => {
+                                if(current.WithinScope && !current.WithinString && (current.LastIdentifier != null && !foundAliases.ContainsKey(current.LastIdentifier)))
+                                {
+                                    foundAliases.Add(current.LastIdentifier, foundAliases.Count);
+                                }
+                                return true;
+                            }), (Action<IlParsingUtils.IlSnippetFinalizaton>)null);
+                    }
+                    foreach(ExternalAssemlyDeclaration assemlyDeclaration in (IEnumerable<ExternalAssemlyDeclaration>)state.ExternalAssemlyDeclarations)
+                    {
+                        if(!foundAliases.ContainsKey(assemlyDeclaration.AliasName))
+                        {
+                            assemlyDeclarationList.Add(assemlyDeclaration);
+                        }
+                    }
+                    if(assemlyDeclarationList.Count > 0)
+                    {
+                        assemlyDeclarationList.Reverse();
+                        foreach(ExternalAssemlyDeclaration assemlyDeclaration in assemlyDeclarationList)
+                        {
+                            int num1 = 0;
+                            int num2 = -1;
+                            for(int inputLineIndex = assemlyDeclaration.InputLineIndex; inputLineIndex < stringList2.Count; ++inputLineIndex)
+                            {
+                                string str = stringList2[inputLineIndex].TrimStart();
+                                if(str == "{")
+                                {
+                                    ++num1;
+                                }
+                                else if(str == "}")
+                                {
+                                    if(num1 == 1)
+                                    {
+                                        num2 = inputLineIndex;
+                                        break;
+                                    }
+                                    --num1;
+                                }
+                            }
+                            if(num2 > -1)
+                            {
+                                this.Notifier.Notify(-1, DllExportLogginCodes.RemovingReferenceToDllExportAttributeAssembly, string.Format(Resources.Deleting_reference_to_0_, (object)assemlyDeclaration.AssemblyName, assemlyDeclaration.AliasName != assemlyDeclaration.AssemblyName ? (object)string.Format(" (alias {0})", (object)assemlyDeclaration.AliasName) : (object)""));
+                                stringList2.RemoveRange(assemlyDeclaration.InputLineIndex, num2 - assemlyDeclaration.InputLineIndex + 1);
+                            }
+                        }
+                    }
+                }
+                stopwatch1.Stop();
+                this.Notifier.Notify(-1, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, (object)stringList1.Count, (object)stopwatch1.ElapsedMilliseconds);
+                if(this.ProfileActions)
+                {
+                    foreach(KeyValuePair<ParserState, IParserStateAction> keyValuePair in actionsByState)
+                    {
+                        this.Notifier.Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, (object)keyValuePair.Key, (object)keyValuePair.Value.Milliseconds);
+                    }
+                }
+                return (IEnumerable<string>)stringList2;
             }
-            for(int index = 0; index < stringList.Count; ++index)
-            {
-                state.InputPosition = index;
-                string input = stringList[index];
-                string str = input.NullSafeTrim();
-                state.AddLine = true;
-                IParserStateAction parserStateAction;
-                if(!actionsByState.TryGetValue(state.State, out parserStateAction))
-                {
-                    this._Notifier.Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, (object)state.State);
-                }
-                else
-                {
-                    action1(parserStateAction, str);
-                }
-                if(state.AddLine)
-                {
-                    state.Result.Add(input);
-                }
-            }
-            stopwatch1.Stop();
-            this._Notifier.Notify(-1, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, (object)stringList.Count, (object)stopwatch1.ElapsedMilliseconds);
-            if(this.ProfileActions)
-            {
-                foreach(KeyValuePair<ParserState, IParserStateAction> keyValuePair in actionsByState)
-                {
-                    this._Notifier.Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, (object)keyValuePair.Key, (object)keyValuePair.Value.Milliseconds);
-                }
-            }
-            return (IEnumerable<string>)state.Result;
         }
 
         private HashSet<string> GetMethodAttributes()
@@ -194,7 +245,7 @@ namespace RGiesecke.DllExport.Parsing
             return new HashSet<string>((IEnumerable<string>)obj);
         }
 
-        internal static string GetExePath(string toolFileName, string installPath, string settingsName)
+        private static string GetExePath(string toolFileName, string installPath, string settingsName)
         {
             string path = "";
             if(!string.IsNullOrEmpty(installPath))
@@ -216,70 +267,107 @@ namespace RGiesecke.DllExport.Parsing
             return path;
         }
 
-        internal static int RunIlTool(string installPath, string toolFileName, string requiredPaths, string workingDirectory, string settingsName, string arguments, string toolLoggingCode, string verboseLoggingCode, DllExportNotifier notifier, int timeout)
+        private static IEnumerable<string> EnumerateStreamLines(StreamReader streamReader)
         {
-            string fileName = Path.GetFileName(toolFileName);
-            string exePath = IlParser.GetExePath(fileName, installPath, settingsName);
-            string withoutExtension = Path.GetFileNameWithoutExtension(fileName);
-            using(Process process = new Process())
+            while(!streamReader.EndOfStream)
             {
-                notifier.Notify(-2, toolLoggingCode, Resources.calling_0_with_1_, (object)exePath, (object)arguments);
-                ProcessStartInfo processStartInfo = new ProcessStartInfo(exePath, arguments) {
-                    UseShellExecute = false,
-                    CreateNoWindow = true,
-                    RedirectStandardOutput = true
-                };
-                if(!string.IsNullOrEmpty(workingDirectory))
+                yield return streamReader.ReadLine();
+            }
+        }
+
+        internal static int RunIlTool(string installPath, string toolFileName, string requiredPaths, string workingDirectory, string settingsName, string arguments, string toolLoggingCode, string verboseLoggingCode, IDllExportNotifier notifier, int timeout, Func<string, bool> suppressErrorOutputLine = null)
+        {
+            using(notifier.CreateContextName((object)null, toolFileName))
+            {
+                if(suppressErrorOutputLine != null)
                 {
-                    processStartInfo.WorkingDirectory = Path.GetFullPath(workingDirectory);
+                    Func<string, bool> suppressErrorOutputLineCore = suppressErrorOutputLine;
+                    suppressErrorOutputLine = (Func<string, bool>)(line => {
+                        if(line != null)
+                        {
+                            return suppressErrorOutputLineCore(line);
+                        }
+                        return false;
+                    });
                 }
-                if(!string.IsNullOrEmpty(requiredPaths))
+                else
                 {
-                    processStartInfo.EnvironmentVariables["PATH"] = requiredPaths.Trim(';') + ";" + (processStartInfo.EnvironmentVariables.ContainsKey("PATH") ? processStartInfo.EnvironmentVariables["PATH"] : (string)null);
+                    suppressErrorOutputLine = (Func<string, bool>)(l => false);
                 }
-                process.StartInfo = processStartInfo;
-                process.Start();
-                Stopwatch stopwatch = Stopwatch.StartNew();
-                StringBuilder stringBuilder = new StringBuilder();
-                while(stopwatch.ElapsedMilliseconds < (long)timeout && !process.HasExited)
+                string fileName = Path.GetFileName(toolFileName);
+                string exePath = IlParser.GetExePath(fileName, installPath, settingsName);
+                string withoutExtension = Path.GetFileNameWithoutExtension(fileName);
+                int num;
+                using(Process process = new Process())
                 {
-                    while(!process.StandardOutput.EndOfStream)
+                    notifier.Notify(-2, toolLoggingCode, Resources.calling_0_with_1_, (object)exePath, (object)arguments);
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo(exePath, arguments) {
+                        UseShellExecute = false,
+                        CreateNoWindow = true,
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true
+                    };
+                    if(!string.IsNullOrEmpty(workingDirectory))
                     {
-                        string str = process.StandardOutput.ReadLine();
-                        stringBuilder.AppendLine(str);
+                        processStartInfo.WorkingDirectory = Path.GetFullPath(workingDirectory);
+                    }
+                    if(!string.IsNullOrEmpty(requiredPaths))
+                    {
+                        processStartInfo.EnvironmentVariables["PATH"] = requiredPaths.Trim(';') + ";" + (processStartInfo.EnvironmentVariables.ContainsKey("PATH") ? processStartInfo.EnvironmentVariables["PATH"] : (string)null);
+                    }
+                    process.StartInfo = processStartInfo;
+                    process.Start();
+                    Stopwatch stopwatch = Stopwatch.StartNew();
+                    StringBuilder stringBuilder1 = new StringBuilder();
+                    StringBuilder stringBuilder2 = new StringBuilder();
+                    Action<IEnumerable<string>, StringBuilder> appendLines = (Action<IEnumerable<string>, StringBuilder>)((lines, sb) => lines.Aggregate<string, StringBuilder>(sb, (Func<StringBuilder, string, StringBuilder>)((r, line) => r.AppendLine(line))));
+                    Action<StreamReader, StringBuilder> action1 = (Action<StreamReader, StringBuilder>)((sr, sb) => appendLines(IlParser.EnumerateStreamLines(sr), sb));
+                    Action<StreamReader, StringBuilder> action2 = (Action<StreamReader, StringBuilder>)((sr, sb) => appendLines(IlParser.EnumerateStreamLines(sr).Where<string>((Func<string, bool>)(line => !suppressErrorOutputLine(line))), sb));
+                    while(stopwatch.ElapsedMilliseconds < (long)timeout && !process.HasExited)
+                    {
+                        action1(process.StandardOutput, stringBuilder1);
+                        action2(process.StandardError, stringBuilder2);
+                    }
+                    bool hasExited = process.HasExited;
+                    action1(process.StandardOutput, stringBuilder1);
+                    action2(process.StandardError, stringBuilder2);
+                    if(hasExited)
+                    {
+                        notifier.Notify(-2, toolLoggingCode, Resources.R_0_1_returned_gracefully, (object)withoutExtension, (object)exePath);
+                        int exitCode = process.ExitCode;
+                        if(exitCode != 0 || stringBuilder2.Length > 0)
+                        {
+                            throw new InvalidOperationException((stringBuilder2.Length > 0 ? (object)stringBuilder2 : (object)stringBuilder1).ToString());
+                        }
+                        if(stringBuilder2.Length > 0)
+                        {
+                            notifier.Notify(-3, verboseLoggingCode, stringBuilder2.ToString());
+                        }
+                        if(stringBuilder1.Length > 0)
+                        {
+                            notifier.Notify(-3, verboseLoggingCode, stringBuilder1.ToString());
+                        }
+                        num = exitCode;
+                    }
+                    else
+                    {
+                        bool flag = false;
+                        Exception exception = (Exception)null;
+                        try
+                        {
+                            process.Kill();
+                            flag = true;
+                        }
+                        catch(Exception ex)
+                        {
+                            exception = ex;
+                        }
+                        if(flag)
+                            throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms, new object[2] { (object)withoutExtension, (object)timeout }));
+                        throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms_and_it_could_not_be_stopped, (object)withoutExtension, (object)timeout, (object)exception.Message));
                     }
                 }
-                bool hasExited = process.HasExited;
-                while(!process.StandardOutput.EndOfStream)
-                {
-                    string str = process.StandardOutput.ReadLine();
-                    stringBuilder.AppendLine(str);
-                }
-                if(hasExited)
-                {
-                    notifier.Notify(-2, toolLoggingCode, Resources.R_0_1_returned_gracefully, (object)withoutExtension, (object)exePath);
-                    int exitCode = process.ExitCode;
-                    if(exitCode != 0)
-                    {
-                        throw new InvalidOperationException(stringBuilder.ToString());
-                    }
-                    notifier.Notify(-3, verboseLoggingCode, stringBuilder.ToString());
-                    return exitCode;
-                }
-                bool flag = false;
-                Exception exception = (Exception)null;
-                try
-                {
-                    process.Kill();
-                    flag = true;
-                }
-                catch(Exception ex)
-                {
-                    exception = ex;
-                }
-                if(flag)
-                    throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms, new object[2] { (object)withoutExtension, (object)timeout }));
-                throw new InvalidOperationException(string.Format((IFormatProvider)CultureInfo.InvariantCulture, Resources.R_0_did_not_return_after_1_ms_and_it_could_not_be_stopped, (object)withoutExtension, (object)timeout, (object)exception.Message));
+                return num;
             }
         }
 
@@ -299,10 +387,10 @@ namespace RGiesecke.DllExport.Parsing
                 }
             }
 
-            protected DllExportNotifier Notifier
+            protected IDllExportNotifier Notifier
             {
                 get {
-                    return this.Parser._Notifier;
+                    return this.Parser.Notifier;
                 }
             }
 
@@ -366,7 +454,7 @@ namespace RGiesecke.DllExport.Parsing
 
             public static Dictionary<ParserState, IParserStateAction> GetActionsByState(IlParser parser)
             {
-                Dictionary<ParserState, IParserStateAction> dictionary = new Dictionary<ParserState, IParserStateAction>() { { ParserState.ClassDeclaration, (IParserStateAction) new ClassDeclarationParserAction() }, { ParserState.Class, (IParserStateAction) new ClassParserAction() }, { ParserState.DeleteExportAttribute, (IParserStateAction) new DeleteExportAttributeParserAction() }, { ParserState.DeleteExportDependency, (IParserStateAction) new DeleteExportDependencyParserAction() }, { ParserState.MethodDeclaration, (IParserStateAction) new MethodDeclarationParserAction() }, { ParserState.Method, (IParserStateAction) new MethodParserAction() }, { ParserState.MethodProperties, (IParserStateAction) new MethodPropertiesParserAction() }, { ParserState.Normal, (IParserStateAction) new NormalParserAction() }
+                Dictionary<ParserState, IParserStateAction> dictionary = new Dictionary<ParserState, IParserStateAction>() { { ParserState.ClassDeclaration, (IParserStateAction) new ClassDeclarationParserAction() }, { ParserState.Class, (IParserStateAction) new ClassParserAction() }, { ParserState.DeleteExportAttribute, (IParserStateAction) new DeleteExportAttributeParserAction() }, { ParserState.MethodDeclaration, (IParserStateAction) new MethodDeclarationParserAction() }, { ParserState.Method, (IParserStateAction) new MethodParserAction() }, { ParserState.MethodProperties, (IParserStateAction) new MethodPropertiesParserAction() }, { ParserState.Normal, (IParserStateAction) new NormalParserAction() }
             };
                 foreach(IParserStateAction parserStateAction in dictionary.Values)
                 {

@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -24,7 +24,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
                     StringBuilder stringBuilder = new StringBuilder(250);
                     stringBuilder.Append(".method ").Append(state.Method.Attributes.NullSafeTrim()).Append(" ");
                     stringBuilder.Append(state.Method.Result.NullSafeTrim());
-                    stringBuilder.Append(" modopt([mscorlib]").Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append(") ");
+                    stringBuilder.Append(" modopt(['mscorlib']'").Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append("') ");
                     if(!string.IsNullOrEmpty(state.Method.ResultAttributes))
                     {
                         stringBuilder.Append(" ").Append(state.Method.ResultAttributes);

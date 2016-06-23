@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <PropertyGroup>
     <PostBuildEventDependsOn>
       $(PostBuildEventDependsOn);
@@ -31,12 +31,19 @@
       DllExportAttributeAssemblyName="$(MyDllExportAttributeAssemblyName)"
       DllExportAttributeFullName="$(MyDllExportAttributeFullName)"
     -->
+    <PropertyGroup>
+      <DllExportLeaveIntermediateFiles Condition="'$(DllExportLeaveIntermediateFiles)'==''">
+        false
+      </DllExportLeaveIntermediateFiles>
 
+
+    </PropertyGroup>
 
     <DllExportAppDomainIsolatedTask Platform="$(Platform)"
                                     PlatformTarget="$(PlatformTarget)"
                                     CpuType="$(CpuType)"
                                     EmitDebugSymbols="$(DebugSymbols)"
+                                    LeaveIntermediateFiles="$(DllExportLeaveIntermediateFiles)"
                                     Timeout="$(DllExportTimeout)"
                                     KeyContainer="$(KeyContainerName)$(AssemblyKeyContainerName)"
                                     KeyFile="$(KeyOriginatorFile)"

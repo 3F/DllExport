@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -22,7 +22,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 ExportedClass exportedClass;
                 if(this.GetIsExport(state, out exportedClass))
                 {
-                    this.Notify(-1, DllExportLogginCodes.MethodFound, "Found method: " + exportedClass.FullTypeName + "." + state.Method.Declaration);
+                    this.Notify(-1, DllExportLogginCodes.MethodFound, string.Format(Resources.Found_method_0_1_, (object)exportedClass.FullTypeName, (object)state.Method.Declaration));
                     state.MethodPos = state.Result.Count;
                     state.State = ParserState.MethodProperties;
                 }

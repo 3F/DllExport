@@ -150,4 +150,7 @@
   <data name="SdkPath_is_empty_continuing_with_0_" xml:space="preserve">
     <value>SdkPath is empty, continuing with '{0}'.</value>
   </data>
+  <data name="AssemblyRedirection_for_0_has_not_been_setup_" xml:space="preserve">
+    <value>{0} has not been setup.</value>
+  </data>
 </root>

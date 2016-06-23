@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -13,12 +13,14 @@ namespace RGiesecke.DllExport.Parsing.Actions
         public readonly Stack<string> ClassNames = new Stack<string>();
         public readonly ParserStateValues.MethodStateValues Method = new ParserStateValues.MethodStateValues();
         private readonly List<string> _Result = new List<string>();
+        private readonly List<ExternalAssemlyDeclaration> _ExternalAssemlyDeclarations = new List<ExternalAssemlyDeclaration>();
         private readonly CpuPlatform _Cpu;
         private readonly ReadOnlyCollection<string> _InputLines;
         public bool AddLine;
         public string ClassDeclaration;
         public int MethodPos;
         public ParserState State;
+        private readonly IList<ExternalAssemlyDeclaration> _ReadonlyExternalAssemlyDeclarations;
 
         public IList<string> InputLines
         {
@@ -47,10 +49,18 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
         }
 
+        public IList<ExternalAssemlyDeclaration> ExternalAssemlyDeclarations
+        {
+            get {
+                return this._ReadonlyExternalAssemlyDeclarations;
+            }
+        }
+
         public ParserStateValues(CpuPlatform cpu, IList<string> inputLines)
         {
             this._Cpu = cpu;
             this._InputLines = new ReadOnlyCollection<string>(inputLines);
+            this._ReadonlyExternalAssemlyDeclarations = (IList<ExternalAssemlyDeclaration>)this._ExternalAssemlyDeclarations.AsReadOnly();
         }
 
         public SourceCodeRange GetRange()
@@ -65,6 +75,13 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 }
             }
             return (SourceCodeRange)null;
+        }
+
+        public ExternalAssemlyDeclaration RegisterMsCorelibAlias(string assemblyName, string alias)
+        {
+            ExternalAssemlyDeclaration assemlyDeclaration = new ExternalAssemlyDeclaration(this.Result.Count, assemblyName, alias);
+            this._ExternalAssemlyDeclarations.Add(assemlyDeclaration);
+            return assemlyDeclaration;
         }
 
         public sealed class MethodStateValues

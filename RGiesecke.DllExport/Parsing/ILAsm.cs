@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -8,20 +8,15 @@ using System.Globalization;
 using System.IO;
 using System.Security.Permissions;
 using System.Text;
+using System.Text.RegularExpressions;
 using RGiesecke.DllExport.Properties;
 
 namespace RGiesecke.DllExport.Parsing
 {
     [PermissionSet(SecurityAction.LinkDemand, Name = "FullTrust")]
-    public sealed class IlAsm: IDllExportNotifier, IDisposable
+    public sealed class IlAsm: IlToolBase
     {
-        private readonly DllExportNotifier _Notifier = new DllExportNotifier();
-
-        public int Timeout
-        {
-            get;
-            set;
-        }
+        private static readonly Regex _NormalizeIlErrorLineRegex = new Regex("(?:\\n|\\s|\\t|\\r|\\-|\\:|\\,)+", RegexOptions.Compiled);
 
         public AssemblyExports Exports
         {
@@ -29,46 +24,9 @@ namespace RGiesecke.DllExport.Parsing
             set;
         }
 
-        public IInputValues InputValues
+        public IlAsm(IInputValues inputValues)
+        : base(inputValues)
         {
-            get;
-            set;
-        }
-
-        public string TempDirectory
-        {
-            get;
-            set;
-        }
-
-        public event EventHandler<DllExportNotificationEventArgs> Notification
-        {
-            add {
-                this._Notifier.Notification += value;
-            }
-            remove {
-                this._Notifier.Notification -= value;
-            }
-        }
-
-        public IlAsm()
-        {
-            this._Notifier.Context = (object)this;
-        }
-
-        public void Notify(int severity, string code, string message, params object[] values)
-        {
-            this._Notifier.Notify(severity, code, message, values);
-        }
-
-        public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
-        {
-            this._Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
-        }
-
-        public void Dispose()
-        {
-            this._Notifier.Dispose();
         }
 
         public int ReassembleFile(string outputFile, string ilSuffix, CpuPlatform cpu)
@@ -82,9 +40,8 @@ namespace RGiesecke.DllExport.Parsing
                 {
                     Directory.CreateDirectory(directoryName);
                 }
-                using(IlParser ilParser = new IlParser())
+                using(IlParser ilParser = new IlParser((IDllExportNotifier)this))
                 {
-                    ilParser.Notification += (EventHandler<DllExportNotificationEventArgs>)((s, e) => this._Notifier.Notify(e));
                     ilParser.Exports = this.Exports;
                     ilParser.InputValues = this.InputValues;
                     ilParser.TempDirectory = this.TempDirectory;
@@ -180,12 +137,19 @@ namespace RGiesecke.DllExport.Parsing
                 }
             }
             string fullPath = Path.GetFullPath(Path.GetDirectoryName(fileName));
-            int num = IlParser.RunIlTool(this.InputValues.FrameworkPath, "ILAsm.exe", (string)null, (string)null, "ILAsmPath", this.GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), DllExportLogginCodes.IlAsmLogging, DllExportLogginCodes.VerboseToolLogging, this._Notifier, this.Timeout);
-            if(num == 0)
+            int num1 = IlParser.RunIlTool(this.InputValues.FrameworkPath, "ILAsm.exe", (string)null, (string)null, "ILAsmPath", this.GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), DllExportLogginCodes.IlAsmLogging, DllExportLogginCodes.VerboseToolLogging, this.Notifier, this.Timeout, (Func<string, bool>)(line => {
+                int num2 = line.IndexOf(": ");
+                if(num2 > 0)
+                {
+                    line = line.Substring(num2 + 1);
+                }
+                return IlAsm._NormalizeIlErrorLineRegex.Replace(line, "").ToLowerInvariant().StartsWith("warningnonvirtualnonabstractinstancemethodininterfacesettosuch");
+            }));
+            if(num1 == 0)
             {
                 this.RunLibTool(cpu, fileName, fullPath);
             }
-            return num;
+            return num1;
         }
 
         private int RunLibTool(CpuPlatform cpu, string fileName, string directory)
@@ -219,7 +183,7 @@ namespace RGiesecke.DllExport.Parsing
             string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(this.InputValues.OutputFileName)) + ".lib";
             try
             {
-                return IlParser.RunIlTool(this.InputValues.LibToolPath, "Lib.exe", string.IsNullOrEmpty(this.InputValues.LibToolDllPath) || !Directory.Exists(this.InputValues.LibToolDllPath) ? (string)null : this.InputValues.LibToolDllPath, (string)null, "LibToolPath", string.Format("\"/def:{0}\" /machine:{1} \"/out:{2}\"", (object)defFileName, (object)cpu, (object)path), DllExportLogginCodes.LibToolLooging, DllExportLogginCodes.LibToolVerboseLooging, this._Notifier, this.Timeout);
+                return IlParser.RunIlTool(this.InputValues.LibToolPath, "Lib.exe", string.IsNullOrEmpty(this.InputValues.LibToolDllPath) || !Directory.Exists(this.InputValues.LibToolDllPath) ? (string)null : this.InputValues.LibToolDllPath, (string)null, "LibToolPath", string.Format("\"/def:{0}\" /machine:{1} \"/out:{2}\"", (object)defFileName, (object)cpu, (object)path), DllExportLogginCodes.LibToolLooging, DllExportLogginCodes.LibToolVerboseLooging, this.Notifier, this.Timeout, (Func<string, bool>)null);
             }
             catch(Exception ex)
             {

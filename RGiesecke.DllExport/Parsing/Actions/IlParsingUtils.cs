@@ -1,4 +1,4 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.3.29766, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
+﻿// [Decompiled] Assembly: RGiesecke.DllExport, Version=1.2.4.23262, Culture=neutral, PublicKeyToken=ad5f9f4a55b5020b
 // Author of original assembly (MIT-License): Robert Giesecke
 // Use Readme & LICENSE files for details.
 
@@ -11,14 +11,18 @@ namespace RGiesecke.DllExport.Parsing.Actions
         public static void ParseIlSnippet(string inputText, ParsingDirection direction, Func<IlParsingUtils.IlSnippetLocation, bool> predicate, Action<IlParsingUtils.IlSnippetFinalizaton> finalization = null)
         {
             bool withinString = false;
+            bool withinScope = false;
             bool atOuterBracket = false;
             int nestedBrackets = 0;
             int endIndex = inputText.Length - 1;
             bool wasInterupted = false;
+            int val2 = -1;
             int num1 = direction == ParsingDirection.Forward ? 1 : -1;
             int num2 = direction == ParsingDirection.Forward ? 0 : endIndex;
             Func<int, bool> func = direction == ParsingDirection.Forward ? (Func<int, bool>)(i => i <= endIndex) : (Func<int, bool>)(i => i > -1);
             int lastPosition = -1;
+            char ch = char.MinValue;
+            string lastIdentifier = (string)null;
             int index = num2;
             while(func(index))
             {
@@ -27,33 +31,61 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 if((int)currentChar == 39)
                 {
                     withinString = !withinString;
+                    if(!withinString && val2 > -1)
+                    {
+                        int val1 = index - num1;
+                        int startIndex = Math.Min(val1, val2);
+                        int num3 = Math.Max(val1, val2);
+                        lastIdentifier = val2 != val1 ? inputText.Substring(0, num3 + 1).Substring(startIndex) : "";
+                    }
+                    else
+                    {
+                        lastIdentifier = (string)null;
+                    }
+                    if(withinString && (int)ch == 91)
+                    {
+                        withinScope = true;
+                    }
                 }
-                else if(!withinString)
+                else
                 {
-                    if((int)currentChar == 41)
+                    if(withinString && (int)ch == 39)
                     {
-                        atOuterBracket = nestedBrackets == 0;
-                        ++nestedBrackets;
+                        val2 = index;
                     }
-                    else if((int)currentChar == 40)
+                    if(!withinString)
                     {
-                        --nestedBrackets;
-                        atOuterBracket = nestedBrackets == 0;
+                        val2 = -1;
+                        if(withinScope && (int)currentChar == 93)
+                        {
+                            withinScope = false;
+                        }
+                        if((int)currentChar == 41)
+                        {
+                            atOuterBracket = nestedBrackets == 0;
+                            ++nestedBrackets;
+                        }
+                        else if((int)currentChar == 40)
+                        {
+                            --nestedBrackets;
+                            atOuterBracket = nestedBrackets == 0;
+                        }
                     }
                 }
-                if(!predicate(new IlParsingUtils.IlSnippetLocation(inputText, index, currentChar, withinString, nestedBrackets, atOuterBracket)))
+                if(!predicate(new IlParsingUtils.IlSnippetLocation(inputText, index, currentChar, lastIdentifier, withinString, withinScope, nestedBrackets, atOuterBracket)))
                 {
                     wasInterupted = true;
                     break;
                 }
                 lastPosition = index;
+                ch = currentChar;
                 index += num1;
             }
             if(finalization == null)
             {
                 return;
             }
-            finalization(new IlParsingUtils.IlSnippetFinalizaton(inputText, lastPosition, wasInterupted, withinString, nestedBrackets, atOuterBracket));
+            finalization(new IlParsingUtils.IlSnippetFinalizaton(inputText, lastPosition, wasInterupted, lastIdentifier, withinString, withinScope, nestedBrackets, atOuterBracket));
         }
 
         public class IlSnippetLocationBase
@@ -64,10 +96,22 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 private set;
             }
 
+            public string LastIdentifier
+            {
+                get;
+                set;
+            }
+
             public bool WithinString
             {
                 get;
                 private set;
+            }
+
+            public bool WithinScope
+            {
+                get;
+                set;
             }
 
             public int NestedBrackets
@@ -82,14 +126,16 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 private set;
             }
 
-            protected IlSnippetLocationBase(string inputText, bool withinString, int nestedBrackets, bool atOuterBracket)
+            protected IlSnippetLocationBase(string inputText, string lastIdentifier, bool withinString, bool withinScope, int nestedBrackets, bool atOuterBracket)
             {
                 if(inputText == null)
                 {
                     throw new ArgumentNullException("inputText");
                 }
                 this.InputText = inputText;
+                this.LastIdentifier = lastIdentifier;
                 this.WithinString = withinString;
+                this.WithinScope = withinScope;
                 this.NestedBrackets = nestedBrackets;
                 this.AtOuterBracket = atOuterBracket;
             }
@@ -109,8 +155,8 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 private set;
             }
 
-            public IlSnippetFinalizaton(string inputText, int lastPosition, bool wasInterupted, bool withinString, int nestedBrackets, bool atOuterBracket)
-            : base(inputText, withinString, nestedBrackets, atOuterBracket)
+            public IlSnippetFinalizaton(string inputText, int lastPosition, bool wasInterupted, string lastIdentifier, bool withinString, bool withinScope, int nestedBrackets, bool atOuterBracket)
+            : base(inputText, lastIdentifier, withinString, withinScope, nestedBrackets, atOuterBracket)
             {
                 this.LastPosition = lastPosition;
                 this.WasInterupted = wasInterupted;
@@ -131,8 +177,8 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 private set;
             }
 
-            public IlSnippetLocation(string inputText, int index, char currentChar, bool withinString, int nestedBrackets, bool atOuterBracket)
-            : base(inputText, withinString, nestedBrackets, atOuterBracket)
+            public IlSnippetLocation(string inputText, int index, char currentChar, string lastIdentifier, bool withinString, bool withinScope, int nestedBrackets, bool atOuterBracket)
+            : base(inputText, lastIdentifier, withinString, withinScope, nestedBrackets, atOuterBracket)
             {
                 this.Index = index;
                 this.CurrentChar = currentChar;
