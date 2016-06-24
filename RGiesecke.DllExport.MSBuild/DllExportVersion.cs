@@ -4,8 +4,10 @@
 
 namespace RGiesecke.DllExport
 {
-    internal static class DllExportVersion
+    // TODO: it can be as here - vssbe.r-eg.net/doc/Examples/Version
+    // but currently I don't want to change this, because it will be automatically changed if plugin exists (use .version)
+    internal struct DllExportVersion
     {
-        internal const string Version = "1.2.7";
+        internal const string Version = "1.0.0";
     }
 }

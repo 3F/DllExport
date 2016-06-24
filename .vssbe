@@ -1,0 +1,221 @@
+﻿{
+  "Header": {
+    "_": [
+      " Current file requires a vsSolutionBuildEvent engine.",
+      " Free plugin for Visual Studio or MSBuild Tools:",
+      "  * http://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/",
+      "  * http://vssbe.r-eg.net",
+      " Feedback: entry.reg@gmail.com"
+    ],
+    "Compatibility": "0.9"
+  },
+  "Components": [
+    {
+      "ClassName": "InternalComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "UserVariableComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "OWPComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "NuGetComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "FunctionComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "FileComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "DTEComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "BuildComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "SevenZipComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "ConditionComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "MSBuildComponent",
+      "Enabled": true
+    },
+    {
+      "ClassName": "CommentComponent",
+      "Enabled": true
+    }
+  ],
+  "PreBuild": [
+    {
+      "Enabled": true,
+      "Name": "ActDir",
+      "Caption": "Prepare output directory",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[$(dbin = \"bin/$(Configuration)/\")]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"RGiesecke.DllExport.Metadata\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command__": [
+          "#[$(dbin = \"bin/$(Configuration)/\")]",
+          "",
+          "$(pDllExport    = \"RGiesecke.DllExport\")",
+          "$(pMeta         = \"RGiesecke.DllExport.Metadata\")",
+          "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
+          "$(odir          = \"$(dbin)raw/\")",
+          "",
+          "#[IO delete.directory(\"$(dbin)\", true)]",
+          "#[IO copy.directory(\"\", \"$(dbin)\", true)]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "Act",
+      "Caption": "Update version number 'as is' - TODO: ",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[var pVer = #[File get(\".version\")]]\r\n\r\n#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\r\n#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\r\n\r\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\r\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
+        "Command__": [
+          "#[var pVer = #[File get(\".version\")]]",
+          "",
+          "#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "",
+          "#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]",
+          "#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]"
+        ]
+      }
+    }
+  ],
+  "PostBuild": [
+    {
+      "Enabled": true,
+      "Name": "ActBinaries",
+      "Caption": "Binaries & tools ...",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.dll\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.dll\", \n               \"$(odir)/tools/\", true)]\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net/\", true)]\n",
+        "Command__": [
+          "#[IO copy.file(",
+          "            \"$(SolutionDir)tools/*.*\", ",
+          "            \"$(odir)/tools/\", ",
+          "            true, ",
+          "            {\"*.nuspec\"})]",
+          "",
+          "#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]",
+          "",
+          "#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.dll\", ",
+          "               \"$(odir)/tools/\", true)]",
+          "",
+          "#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.dll\", ",
+          "               \"$(odir)/tools/\", true)]",
+          "            ",
+          "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
+          "               \"$(odir)/lib/net/\", true)]",
+          ""
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "ActPack",
+      "Caption": "Packing with GetNuTool ...",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")]",
+        "Command__": [
+          "#[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")]"
+        ]
+      }
+    }
+  ],
+  "CancelBuild": [],
+  "WarningsBuild": [],
+  "ErrorsBuild": [],
+  "OWPBuild": [],
+  "Transmitter": [],
+  "CommandEvent": [],
+  "Logging": [],
+  "SlnOpened": [],
+  "SlnClosed": []
+}

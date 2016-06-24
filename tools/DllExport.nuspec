@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+  <metadata>
+    <id>DllExport</id>
+    <version>1.0.0</version>
+    <title>.NET DllExport</title>
+    <authors>github.com/3F/DllExport</authors>
+    <owners>reg</owners>
+    <licenseUrl>https://github.com/3F/DllExport/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/3F/DllExport</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>
+    
+        The open implementation of unmanaged exports for .NET ( DllExport )
+        Source code and all details here: https://github.com/3F/DllExport
+        
+        ~~~~~~~~
+        Alternative to get it:
+        ==========================================
+        msbuild gnt.core /p:ngpackages="DllExport/1.0.0"
+        ==========================================
+        * https://github.com/3F/GetNuTool         
+        
+    </description>
+    <tags>dllexport unmanaged-exports net-c-func</tags>
+    <releaseNotes></releaseNotes>
+    <copyright>
+        Copyright (c) 2009  Robert Giesecke
+        Copyright (c) 2016  Denis Kuzmin [entry.reg@gmail.com]    
+    </copyright>
+  </metadata>
+</package>

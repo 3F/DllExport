@@ -11,12 +11,27 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
 	ProjectSection(SolutionItems) = preProject
+		.version = .version
+		LICENSE = LICENSE
+		Readme.md = Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1}"
+	ProjectSection(SolutionItems) = preProject
+		tools\DllExport.nuspec = tools\DllExport.nuspec
 		tools\DllExportCmdLets.psm1 = tools\DllExportCmdLets.psm1
 		tools\init.ps1 = tools\init.ps1
 		tools\install.ps1 = tools\install.ps1
 		tools\RGiesecke.DllExport.targets = tools\RGiesecke.DllExport.targets
 		tools\uninstall.ps1 = tools\uninstall.ps1
 		tools\UnmanagedExports.nuspec = tools\UnmanagedExports.nuspec
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55898433-0EEF-4B38-B144-B2A40150E4F4}"
+	ProjectSection(SolutionItems) = preProject
+		build.bat = build.bat
+		gnt.core = gnt.core
+		packages.config = packages.config
 	EndProjectSection
 EndProject
 Global
@@ -40,5 +55,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
+		{55898433-0EEF-4B38-B144-B2A40150E4F4} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 	EndGlobalSection
 EndGlobal

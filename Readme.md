@@ -28,3 +28,10 @@ Good! Trying to open this...
 ## License
 
 It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE) - be a ~free~ and open
+
+## Build
+
+No requires additional steps for you, just build as you need.
+
+Use build.bat if you need final NuGet package as a `DllExport.<version>.nupkg` etc.
+* *You do not need to do anything inside IDE, if you already have installed plugin.*
