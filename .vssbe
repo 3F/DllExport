@@ -120,7 +120,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\r\n\r\n#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\r\n#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\r\n\r\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\r\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "",
@@ -157,7 +157,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.dll\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.dll\", \n               \"$(odir)/tools/\", true)]\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net/\", true)]\n",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.dll\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.dll\", \n               \"$(odir)/tools/\", true)]\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net/\", true)]\n\n#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]\n#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -175,7 +175,9 @@
           "            ",
           "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
           "               \"$(odir)/lib/net/\", true)]",
-          ""
+          "",
+          "#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]",
+          "#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]"
         ]
       }
     },
