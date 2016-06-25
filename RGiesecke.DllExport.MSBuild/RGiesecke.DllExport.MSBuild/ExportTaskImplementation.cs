@@ -299,39 +299,39 @@ namespace RGiesecke.DllExport.MSBuild
             this.GetNotifier().Notification += new EventHandler<DllExportNotificationEventArgs>(this.OnDllWrapperNotification);
         }
 
-        object IServiceProvider.GetService(Type serviceType)
+        public object GetService(Type serviceType)
         {
-            return this._ServiceProvider.GetService(serviceType);
+            return _ServiceProvider.GetService(serviceType);
         }
 
-        void IServiceContainer.AddService(Type serviceType, object serviceInstance)
+        public void AddService(Type serviceType, object serviceInstance)
         {
-            this._ServiceProvider.AddService(serviceType, serviceInstance);
+            _ServiceProvider.AddService(serviceType, serviceInstance);
         }
 
-        void IServiceContainer.AddService(Type serviceType, object serviceInstance, bool promote)
+        public void AddService(Type serviceType, object serviceInstance, bool promote)
         {
-            this._ServiceProvider.AddService(serviceType, serviceInstance, promote);
+            _ServiceProvider.AddService(serviceType, serviceInstance, promote);
         }
 
-        void IServiceContainer.AddService(Type serviceType, ServiceCreatorCallback callback)
+        public void AddService(Type serviceType, ServiceCreatorCallback callback)
         {
-            this._ServiceProvider.AddService(serviceType, callback);
+            _ServiceProvider.AddService(serviceType, callback);
         }
 
-        void IServiceContainer.AddService(Type serviceType, ServiceCreatorCallback callback, bool promote)
+        public void AddService(Type serviceType, ServiceCreatorCallback callback, bool promote)
         {
-            this._ServiceProvider.AddService(serviceType, callback, promote);
+            _ServiceProvider.AddService(serviceType, callback, promote);
         }
 
-        void IServiceContainer.RemoveService(Type serviceType)
+        public void RemoveService(Type serviceType)
         {
-            this._ServiceProvider.RemoveService(serviceType);
+            _ServiceProvider.RemoveService(serviceType);
         }
 
-        void IServiceContainer.RemoveService(Type serviceType, bool promote)
+        public void RemoveService(Type serviceType, bool promote)
         {
-            this._ServiceProvider.RemoveService(serviceType, promote);
+            _ServiceProvider.RemoveService(serviceType, promote);
         }
 
         public IDllExportNotifier GetNotifier()
@@ -520,10 +520,11 @@ namespace RGiesecke.DllExport.MSBuild
                     {
                         assembly = Assembly.Load("Microsoft.Build.Utilities.v4.0, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a");
                     }
-                    catch(FileNotFoundException ex)
+                    catch
                     {
-                        assembly = (Assembly)null;
+                        assembly = null;
                     }
+
                     if(assembly != null)
                     {
                         type = assembly.GetType("Microsoft.Build.Utilities.ToolLocationHelper");
@@ -553,9 +554,9 @@ namespace RGiesecke.DllExport.MSBuild
                 {
                     return getToolPathCore(n, v);
                 }
-                catch(ArgumentException ex)
+                catch
                 {
-                    return (string)null;
+                    return null;
                 }
             });
             return (Func<Version, string, string>)((version, toolName) => {

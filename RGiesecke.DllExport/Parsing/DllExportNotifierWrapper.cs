@@ -8,6 +8,16 @@ namespace RGiesecke.DllExport.Parsing
 {
     public abstract class DllExportNotifierWrapper: IDllExportNotifier, IDisposable
     {
+        public event EventHandler<DllExportNotificationEventArgs> Notification
+        {
+            add {
+                Notifier.Notification += value;
+            }
+            remove {
+                Notifier.Notification -= value;
+            }
+        }
+
         protected virtual IDllExportNotifier Notifier
         {
             get;
@@ -19,21 +29,6 @@ namespace RGiesecke.DllExport.Parsing
             get {
                 return false;
             }
-        }
-
-        event EventHandler<DllExportNotificationEventArgs> IDllExportNotifier.Notification
-        {
-            add {
-                this.Notifier.Notification += value;
-            }
-            remove {
-                this.Notifier.Notification -= value;
-            }
-        }
-
-        protected DllExportNotifierWrapper(IDllExportNotifier notifier)
-        {
-            this.Notifier = notifier;
         }
 
         public IDisposable CreateContextName(object context, string name)
@@ -56,18 +51,42 @@ namespace RGiesecke.DllExport.Parsing
             this.Notifier.Notify(severity, code, fileName, startPosition, endPosition, message, values);
         }
 
+        protected DllExportNotifierWrapper(IDllExportNotifier notifier)
+        {
+            Notifier = notifier;
+        }
+
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern. /CA1063
         public void Dispose()
         {
-            if(!this.OwnsNotifier)
-            {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed) {
                 return;
             }
-            IDisposable disposable = this.Notifier as IDisposable;
-            if(disposable == null)
-            {
+            disposed = true;
+
+            //...
+
+            if(!OwnsNotifier) {
+                return;
+            }
+
+            IDisposable disposable = Notifier as IDisposable;
+            if(disposable == null) {
                 return;
             }
             disposable.Dispose();
         }
+
+        #endregion
     }
 }

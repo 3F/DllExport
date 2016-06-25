@@ -126,16 +126,24 @@ namespace RGiesecke.DllExport.Parsing
                     State = ParserState.Normal
                 };
                 Stopwatch stopwatch1 = Stopwatch.StartNew();
-                using(FileStream fileStream = new FileStream(Path.Combine(this.TempDirectory, this.InputValues.FileName + ".il"), FileMode.Open))
-                {
-                    using(StreamReader streamReader = new StreamReader((Stream)fileStream, Encoding.Unicode))
-                    {
-                        while(!streamReader.EndOfStream)
-                        {
-                            stringList1.Add(streamReader.ReadLine());
+
+                Stream stream = null;
+                try {
+                    stream = new FileStream(Path.Combine(TempDirectory, InputValues.FileName + ".il"), FileMode.Open);
+                    using(StreamReader sreader = new StreamReader(stream, Encoding.Unicode)) {
+                        stream = null; // avoid CA2202
+
+                        while(!sreader.EndOfStream) {
+                            stringList1.Add(sreader.ReadLine());
                         }
                     }
                 }
+                finally {
+                    if(stream != null) {
+                        stream.Dispose();
+                    }
+                }
+
                 Action<IParserStateAction, string> action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
                     string name = action.GetType().Name;
                     using(this.GetNotifier().CreateContextName((object)action, name))

@@ -13,28 +13,46 @@ namespace RGiesecke.DllExport.Parsing
         public IServiceProvider ServiceProvider
         {
             get {
-                return this._ServiceProvider;
+                return _ServiceProvider;
             }
+        }
+
+        public object GetService(Type serviceType)
+        {
+            return _ServiceProvider.GetService(serviceType);
         }
 
         protected HasServiceProvider(IServiceProvider serviceProvider)
         {
-            this._ServiceProvider = serviceProvider;
+            _ServiceProvider = serviceProvider;
         }
 
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern. /CA1063
         public void Dispose()
         {
-            IDisposable disposable = this._ServiceProvider as IDisposable;
-            if(disposable == null)
-            {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed) {
+                return;
+            }
+            disposed = true;
+
+            //...
+            IDisposable disposable = _ServiceProvider as IDisposable;
+            if(disposable == null) {
                 return;
             }
             disposable.Dispose();
         }
 
-        object IServiceProvider.GetService(Type serviceType)
-        {
-            return this._ServiceProvider.GetService(serviceType);
-        }
+        #endregion
     }
 }

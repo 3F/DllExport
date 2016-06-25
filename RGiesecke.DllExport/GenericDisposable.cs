@@ -19,9 +19,28 @@ namespace RGiesecke.DllExport
             this._Action = action;
         }
 
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern. /CA1063
         public void Dispose()
         {
-            this._Action();
+            Dispose(true);
         }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed) {
+                return;
+            }
+            disposed = true;
+
+            //...
+            _Action();
+        }
+
+        #endregion
     }
 }

@@ -329,9 +329,9 @@ namespace RGiesecke.DllExport.MSBuild
             this._ExportTaskImplementation = new ExportTaskImplementation<DllExportTask>(this);
         }
 
-        object IServiceProvider.GetService(Type serviceType)
+        public object GetService(Type serviceType)
         {
-            return this._ServiceProvider.GetService(serviceType);
+            return _ServiceProvider.GetService(serviceType);
         }
 
         public IDllExportNotifier GetNotifier()
@@ -364,13 +364,5 @@ namespace RGiesecke.DllExport.MSBuild
         {
             return this._ExportTaskImplementation.Execute();
         }
-
-        //[SpecialName]
-        //TaskLoggingHelper IDllExportTask.Log
-        //{
-        //    get {
-        //        return this.Log;
-        //    }
-        //}
     }
 }

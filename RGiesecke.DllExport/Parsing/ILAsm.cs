@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Security.Permissions;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -59,16 +60,22 @@ namespace RGiesecke.DllExport.Parsing
                         })))
                             stringList[stringList.Count - 1] = input + Environment.NewLine;
                     }
-                    using(FileStream fileStream = new FileStream(Path.Combine(this.TempDirectory, this.InputValues.FileName + ilSuffix + ".il"), FileMode.Create))
-                    {
-                        using(StreamWriter streamWriter = new StreamWriter((Stream)fileStream, Encoding.Unicode))
+
+                    Stream stream = null;
+                    try {
+                        stream = new FileStream(Path.Combine(TempDirectory, InputValues.FileName + ilSuffix + ".il"), FileMode.Create);
+                        using(StreamWriter swriter = new StreamWriter(stream, Encoding.Unicode))
                         {
-                            foreach(string str in stringList)
-                            {
-                                streamWriter.WriteLine(str);
-                            }
+                            stream = null; // avoid CA2202
+                            swriter.WriteLine(String.Join(Environment.NewLine, stringList));
                         }
                     }
+                    finally {
+                        if(stream != null) {
+                            stream.Dispose();
+                        }
+                    }
+
                 }
                 return this.Run(outputFile, ilSuffix, cpu);
             }
@@ -187,7 +194,7 @@ namespace RGiesecke.DllExport.Parsing
             {
                 return IlParser.RunIlTool(this.InputValues.LibToolPath, "Lib.exe", string.IsNullOrEmpty(this.InputValues.LibToolDllPath) || !Directory.Exists(this.InputValues.LibToolDllPath) ? (string)null : this.InputValues.LibToolDllPath, (string)null, "LibToolPath", string.Format("\"/def:{0}\" /machine:{1} \"/out:{2}\"", (object)defFileName, (object)cpu, (object)path), DllExportLogginCodes.LibToolLooging, DllExportLogginCodes.LibToolVerboseLooging, this.Notifier, this.Timeout, (Func<string, bool>)null);
             }
-            catch(Exception ex)
+            catch
             {
                 if(File.Exists(path))
                 {
@@ -202,25 +209,36 @@ namespace RGiesecke.DllExport.Parsing
             string path = Path.Combine(directory, libraryName + "." + (object)cpu + ".def");
             try
             {
-                using(FileStream fileStream = new FileStream(path, FileMode.Create))
-                {
-                    using(StreamWriter streamWriter = new StreamWriter((Stream)fileStream, Encoding.UTF8))
+                Stream stream = null;
+                try {
+                    stream = new FileStream(path, FileMode.Create);
+                    using(StreamWriter swriter = new StreamWriter(stream, Encoding.UTF8))
                     {
-                        streamWriter.WriteLine("LIBRARY {0}.dll", (object)libraryName);
-                        streamWriter.WriteLine();
-                        streamWriter.WriteLine("EXPORTS");
-                        foreach(ExportedClass exportedClass in this.Exports.ClassesByName.Values)
+                        stream = null; // avoid CA2202
+
+                        var data = new List<string>()
                         {
-                            foreach(ExportedMethod method in exportedClass.Methods)
-                            {
-                                streamWriter.WriteLine(method.ExportName);
-                            }
-                        }
+                            $"LIBRARY {libraryName}.dll",
+                            "",
+                            "EXPORTS"
+                        };
+
+                        data.AddRange(Exports.ClassesByName.Values
+                                                            .SelectMany(c =>
+                                                                c.Methods.Select(m => m.ExportName)));
+
+                        swriter.WriteLine(String.Join(Environment.NewLine, data));
                     }
                 }
+                finally {
+                    if(stream != null) {
+                        stream.Dispose();
+                    }
+                }
+
                 return path;
             }
-            catch(Exception ex)
+            catch
             {
                 if(File.Exists(path))
                 {

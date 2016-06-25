@@ -83,7 +83,7 @@ namespace RGiesecke.DllExport
                 call(instance);
                 return instance;
             }
-            catch(Exception ex)
+            catch
             {
                 instance.Dispose();
                 throw;

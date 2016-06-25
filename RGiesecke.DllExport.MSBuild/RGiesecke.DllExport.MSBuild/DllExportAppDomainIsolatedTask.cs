@@ -353,17 +353,9 @@ namespace RGiesecke.DllExport.MSBuild
             return this._ExportTaskImplementation.Execute();
         }
 
-        object IServiceProvider.GetService(Type serviceType)
+        public object GetService(Type serviceType)
         {
-            return ((IServiceProvider)this._ExportTaskImplementation).GetService(serviceType);
+            return _ExportTaskImplementation.GetService(serviceType);
         }
-
-        //[SpecialName]
-        //public TaskLoggingHelper Log
-        //{
-        //    get {
-        //        return this.Log;
-        //    }
-        //}
     }
 }

@@ -40,23 +40,11 @@ namespace RGiesecke.DllExport
         public NotificationContext Context
         {
             get {
-                try
-                {
-                    return this._ContextScopes.Peek();
-                }
-                catch(Exception ex)
-                {
-                    throw ex;
-                }
+                return _ContextScopes.Peek();
             }
         }
 
         public event EventHandler<DllExportNotificationEventArgs> Notification;
-
-        public void Dispose()
-        {
-            this.Notification = (EventHandler<DllExportNotificationEventArgs>)null;
-        }
 
         public IDisposable CreateContextName(object context, string name)
         {
@@ -100,6 +88,30 @@ namespace RGiesecke.DllExport
             }
             this.Notify(e);
         }
+
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern. /CA1063
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed) {
+                return;
+            }
+            disposed = true;
+
+            //...
+            Notification = null;
+        }
+
+        #endregion
 
         private sealed class ContextScope: IDisposable
         {
