@@ -7,6 +7,10 @@ Copyright (c) 2009  Robert Giesecke
 Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
 ```
 
+[![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
+[![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
+
+
 The original tool `UnmanagedExports` has been distributed without any source code, the only:
 
 * [Official page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) - *posted Jul 9, 2009 [ updated Dec 19, 2012 ]*
@@ -29,14 +33,27 @@ Good! Trying to open this...
 
 It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE) - be a ~free~ and open
 
-## Build
+##
+
+### How to get
+
+Available variants:
+
+* NuGet PM: `Install-Package DllExport`
+* GetNuTool: `msbuild gnt.core /p:ngpackages="DllExport"`
+* NuGet Commandline: `nuget install DllExport`
+* [/releases](https://github.com/3F/DllExport/releases) ( [latest](https://github.com/3F/DllExport/releases/latest) )
+* [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
+
+### How to Build
 
 No requires additional steps for you, just build as you need.
 
 Use build.bat if you need final NuGet package as a `DllExport.<version>.nupkg` etc.
 * *You do not need to do anything inside IDE, if you already have installed plugin.*
 
-## How to debug
+
+### How to Debug
 
 For example, find the DllExport.MSBuild project in solution:
 
@@ -54,4 +71,5 @@ use additional `Diagnostic` key to msbuild if you need details from .targets
 "<path_to_SolutionFile_for_debugging>.sln" /verbosity:Diagnostic /t:Rebuild /p:Configuration=<Configuration>
 ```
 
-`Start Debugging`, Now you can debug this at runtime.
+Go to `Start Debugging`. Now you can debug at runtime.
+
