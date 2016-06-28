@@ -58,6 +58,7 @@
     <Compile Include="DllExportLogginCodes.cs" />
     <Compile Include="DllExportServiceProviderExtensions.cs" />
     <Compile Include="GenericDisposable.cs" />
+    <Compile Include="IProblemSolver.cs" />
     <Compile Include="NotificationContext.cs" />
     <Compile Include="AssemblyBinaryProperties.cs" />
     <Compile Include="AssemblyExports.cs" />
@@ -70,6 +71,9 @@
     <Compile Include="ExportedMethod.cs" />
     <Compile Include="InputValuesCore.cs" />
     <Compile Include="Null.cs" />
+    <Compile Include="Problems\AccessDenied.cs" />
+    <Compile Include="ProblemSolver.cs" />
+    <Compile Include="Problems\IProblem.cs" />
     <Compile Include="Set.cs" />
     <Compile Include="SourceCodePosition.cs" />
     <Compile Include="SourceCodeRange.cs" />

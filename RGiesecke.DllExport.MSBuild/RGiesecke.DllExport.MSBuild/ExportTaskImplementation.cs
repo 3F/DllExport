@@ -396,8 +396,9 @@ namespace RGiesecke.DllExport.MSBuild
                 }
                 catch(Exception ex)
                 {
-                    this._ActualTask.Log.LogErrorFromException(ex);
-                    this._ActualTask.Log.LogMessage(ex.StackTrace);
+                    _ActualTask.Log.LogErrorFromException(ex);
+                    _ActualTask.Log.LogMessage(ex.StackTrace);
+                    problemSolver(ex);
                 }
                 this._LoggedMessages.Clear();
             }
@@ -892,6 +893,14 @@ namespace RGiesecke.DllExport.MSBuild
                 flag = true;
             }
             return flag;
+        }
+
+        private void problemSolver(Exception ex)
+        {
+            var found = new ProblemSolver(ex).FMsg;
+            if(found != null) {
+                _ActualTask.Log.LogError(found);
+            }
         }
 
         private sealed class DllExportNotifierWithTask: DllExportNotifier
