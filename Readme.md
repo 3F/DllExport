@@ -11,6 +11,30 @@ Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
 
 
+```csharp
+[DllExport("Init", CallingConvention.Cdecl)]
+public static int entrypoint(IntPtr L)
+{
+    // ... should be called by lua script
+
+    Lua.lua_pushcclosure(L, onProc, 0);
+    Lua.lua_setglobal(L, "onKeyDown");
+
+    return 0;
+}
+```
+
+```csharp
+using System.Runtime.InteropServices; //v1.1+
+...
+[DllExport("Init", CallingConvention.Cdecl)]
+[DllExport(CallingConvention.StdCall)] //v1.1+
+[DllExport("MyFunc")]
+[DllExport]
+```
+
+----
+
 The original tool `UnmanagedExports` has been distributed without any source code, the only:
 
 * [Official page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) - *posted Jul 9, 2009 [ updated Dec 19, 2012 ]*

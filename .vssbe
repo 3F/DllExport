@@ -120,12 +120,13 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regexp(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "",
           "#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
           "#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "#[IO replace.Regexp(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]",
           "",
           "#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]",
           "#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]"
