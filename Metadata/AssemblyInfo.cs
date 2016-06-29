@@ -3,10 +3,10 @@ using System.Runtime.InteropServices;
 
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("RGiesecke.DllExport.Metadata")]
+[assembly: AssemblyProduct("DllExport.Metadata")]
 [assembly: AssemblyCopyright("github.com/3F/DllExport")]
 [assembly: AssemblyDescription("")]
-[assembly: AssemblyTitle("RGiesecke.DllExport.Metadata")]
+[assembly: AssemblyTitle("DllExport.Metadata")]
 [assembly: AssemblyTrademark("")]
 [assembly: ComVisible(false)]
 [assembly: Guid("264896DA-8822-4134-BFC6-D088870B1751")]

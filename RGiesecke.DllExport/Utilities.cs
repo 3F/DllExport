@@ -14,8 +14,8 @@ namespace RGiesecke.DllExport
 {
     public static class Utilities
     {
-        public static readonly string DllExportAttributeAssemblyName = "RGiesecke.DllExport.Metadata";
-        public static readonly string DllExportAttributeFullName = "RGiesecke.DllExport.DllExportAttribute";
+        public static readonly string DllExportAttributeAssemblyName    = "DllExport";
+        public static readonly string DllExportAttributeFullName        = "System.Runtime.InteropServices.DllExportAttribute";
 
         public static MethodInfo GetMethodInfo<TResult>(Expression<Func<TResult>> expression)
         {

@@ -34,8 +34,8 @@
     <PropertyGroup>
 
       <!-- Sorry for the weird naming of those 2, but I have to prevent the upgrade from the old template to remove those from your project files -->
-      <DllExportAttributeFullNameProp Condition="'$(DllExportAttributeFullNameProp)' == ''">RGiesecke.DllExport.DllExportAttribute</DllExportAttributeFullNameProp>
-      <DllExportAttributeAssemblyNameProp Condition="'$(DllExportAttributeAssemblyNameProp)' == ''">RGiesecke.DllExport.Metadata</DllExportAttributeAssemblyNameProp>
+      <DllExportAttributeFullNameProp Condition="'$(DllExportAttributeFullNameProp)' == ''">System.Runtime.InteropServices.DllExportAttribute</DllExportAttributeFullNameProp>
+      <DllExportAttributeAssemblyNameProp Condition="'$(DllExportAttributeAssemblyNameProp)' == ''">DllExport</DllExportAttributeAssemblyNameProp>
 
       <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(Platform)</DllExportPlatform>
       <DllExportPlatformTarget Condition="'$(DllExportPlatformTarget)' == ''">$(PlatformTarget)</DllExportPlatformTarget>
