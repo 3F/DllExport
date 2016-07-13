@@ -1,6 +1,9 @@
 DllExport
 ____________________
 
+[v1.2]
+
+    * CHANGED: dynamic definition of namespace for user scope. Issue #2
 
 [v1.1]
 

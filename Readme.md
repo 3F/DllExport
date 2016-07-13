@@ -23,35 +23,51 @@ public static int entrypoint(IntPtr L)
     return 0;
 }
 ```
+*Note: for more flexible work with Lua, use also - [LunaRoad](https://github.com/3F/LunaRoad)*
 
 ```csharp
-using System.Runtime.InteropServices; //v1.1+
-...
 [DllExport("Init", CallingConvention.Cdecl)]
 [DllExport(CallingConvention.StdCall)] //v1.1+
 [DllExport("MyFunc")]
 [DllExport]
 ```
 
+Where to look ? **v1.2+** provides dynamic definition of namespace, so you can use what you want ! for more details see **[here](https://github.com/3F/DllExport/issues/2)**
+
+```cpp
+    Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+
+    000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Ä{..../...
+    000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
+    000005D0  20 02 00 00 00 00 00 00 00 49 2E 77 61 6E 74 2E   ........I.want.   <<<-
+    000005E0  74 6F 2E 66 6C 79 00 00 00 00 00 00 00 00 00 00  to.fly..........  <<<-
+    000005F0  00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00  ................
+    00000600  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    ...
+    000007A0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    000007B0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    000007C0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    000007D0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+    000007E0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3C  ...............< 
+    
+      - - - -            
+      byte-seq via chars: 
+      + Identifier        = [32]bytes
+      + size of buffer    = [ 4]bytes (range: 0000 - FFF9; reserved: FFFA - FFFF)
+      + buffer of n size
+      - - - -
+      v1.2: 01F4 - allocated buffer size    
+```
+
 ----
 
-The original tool `UnmanagedExports` has been distributed without any source code, the only:
+
+[Initially](https://github.com/3F/DllExport/issues/3), the original tool `UnmanagedExports` was distributed by Robert Giesecke as a closed-source tool **under the [MIT License](https://opensource.org/licenses/mit-license.php)**:
 
 * [Official page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) - *posted Jul 9, 2009 [ updated Dec 19, 2012 ]*
 * [Official NuGet Packages](https://www.nuget.org/packages/UnmanagedExports) 
-    * the only known [contact with author](https://www.nuget.org/packages/UnmanagedExports/ContactOwners) - but it seems also is outdated, I have also tried this.
 
-However, not all so bad... the **original tool `UnmanagedExports`** was distributed **under the [MIT License](https://opensource.org/licenses/mit-license.php)**, so what we have finally ?
-
-It says:
-```
-... the Software without restriction, including without limitation the rights to use, 
-copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, 
-and to permit persons to whom the Software is furnished to do so ...
-```
-
-Good! Trying to open this... 
-
+Now, we will be more open ! all details [here](https://github.com/3F/DllExport/issues/3)
 
 ## License
 
