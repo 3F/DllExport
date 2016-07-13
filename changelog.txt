@@ -5,6 +5,7 @@ ____________________
 [v1.1]
 
     * CHANGED: DllExport now is part of System.Runtime.InteropServices as and DllImport.
+    * CHANGED: Mono.Cecil v0.9.6.1
     * NEW: 0x80070005 meaning... Issue #1
     * NEW: +DllExport(CallingConvention convention) signature
 

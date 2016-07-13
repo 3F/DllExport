@@ -1,35 +1,68 @@
 param($installPath, $toolsPath, $package, $project)
 
-$targetFileName = 'RGiesecke.DllExport.targets'
+$namespaceProp  = 'DllExportNamespace';
+$targetFileName = 'net.r_eg.DllExport.targets'
+$assemblyFName  = 'DllExport' # $package.AssemblyReferences[0].Name
 $targetFileName = [IO.Path]::Combine($toolsPath, $targetFileName)
-$targetUri = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
+$targetUri      = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
 
-$msBuildV4Name = 'Microsoft.Build, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a';
-$msBuildV4 = [System.Reflection.Assembly]::LoadWithPartialName($msBuildV4Name)
+$msBuildV4Name  = 'Microsoft.Build'; #, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a';
+$msBuildV4      = [System.Reflection.Assembly]::LoadWithPartialName($msBuildV4Name)          # obsolete
+$msvb           = [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') # obsolete
 
 if(!$msBuildV4) {
     throw New-Object System.IO.FileNotFoundException("Could not load $msBuildV4Name.");
 }
 
 $projectCollection = $msBuildV4.GetType('Microsoft.Build.Evaluation.ProjectCollection')
+$projects          =  $projectCollection::GlobalProjectCollection.GetLoadedProjects($project.FullName)
+
+
+# Define or check the DllExportNamespace property
+
+$vNamespace = '';
+
+$projects |  % {
+    $mbeProject = $_
+
+    $vNamespace = $mbeProject.GetPropertyValue($namespaceProp);
+    if([String]::IsNullOrEmpty($vNamespace))
+    {
+        $pFName = [System.IO.Path]::GetFileName($mbeProject.FullPath);
+        $userNS = [Microsoft.VisualBasic.Interaction]::InputBox(
+                                    "Select a DllExport namespace for project: `n* $pFName `n`nHow about 'System.Runtime.InteropServices' ? or:", 
+                                    "DllExport namespace", 
+                                    "$($mbeProject.GetPropertyValue('RootNamespace'))")
+
+        $mbeProject.SetProperty($namespaceProp, $userNS)
+        $project.Save()
+
+        $vNamespace = $userNS;
+    }
+}
+
+# modify assembly
+
+. "nsbin.ps1"
+defNS $([System.IO.Path]::Combine($installPath, 'lib\net', $assemblyFName + '.dll'))  $vNamespace
+
 
 # change the reference to DllExport.dll to not be copied locally
 
 $project.Object.References | ? { 
-    $_.Name -ieq "DllExport" 
+    $_.Name -ieq $assemblyFName 
 } | % {
     if($_ | Get-Member | ? {$_.Name -eq "CopyLocal"}){
         $_.CopyLocal = $false
     }
 }
 
-$projects =  $projectCollection::GlobalProjectCollection.GetLoadedProjects($project.FullName)
 $projects |  % {
     $currentProject = $_
 
-    # remove imports of RGiesecke.DllExport.targets from this project 
+    # remove imports of net.r_eg.DllExport.targets from this project 
     $currentProject.Xml.Imports | ? {
-        return ("RGiesecke.DllExport.targets" -ieq [IO.Path]::GetFileName($_.Project))
+        return ($targetFileName -ieq [IO.Path]::GetFileName($_.Project))
     }  | % {  
         $currentProject.Xml.RemoveChild($_);
     }

@@ -1,0 +1,87 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  
+  <!-- 
+      Predefined namespace and attribute name. Should be used with changed namespace:
+    
+      https://github.com/3F/DllExport/issues/2#issuecomment-231593744
+
+          Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
+
+          000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Д{..../...
+          000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
+          000005D0  20 02 00 00 00 00 00 00 00 44 33 46 30 30 46 46   ........D3F00FF   <<<<
+          000005E0  31 37 37 30 44 45 44 39 37 38 45 43 37 37 34 42  1770DED978EC774B   <<<<...
+            
+          - - - -            
+          byte-seq via chars: 
+          + Identifier        = [32]bytes
+          + size of buffer    = [ 4]bytes (range: 0000 - FFF9; reserved: FFFA - FFFF)
+          + buffer of n size
+          - - - -
+          v1.2: 01F4 - allocated buffer size
+    
+  -->
+  <PropertyGroup>
+    <DllExportNamespace Condition="'$(DllExportNamespace)' == ''">System.Runtime.InteropServices</DllExportNamespace>
+    <DllExportAttrNameOnly>DllExportAttribute</DllExportAttrNameOnly>
+    <DllExportAttrDllName>DllExport.dll</DllExportAttrDllName>
+    <DllExportAttrDllPath>$(MSBuildThisFileDirectory)..\lib\net\</DllExportAttrDllPath>
+    <DllExportAttrDll>$(DllExportAttrDllPath)$(DllExportAttrDllName)</DllExportAttrDll>
+  </PropertyGroup>
+
+  <UsingTask TaskName="RGiesecke.DllExport.MSBuild.DllExportAppDomainIsolatedTask" AssemblyFile="RGiesecke.DllExport.MSBuild.dll" />
+  <Target Name="DllExportMod" AfterTargets="PostBuildEvent;Build" DependsOnTargets="GetFrameworkPaths">
+    
+    <PropertyGroup>
+      <!-- Sorry for the weird naming of those 2, but I have to prevent the upgrade from the old template to remove those from your project files -->
+      <DllExportAttributeFullNameProp Condition="'$(DllExportAttributeFullNameProp)' == ''">$(DllExportNamespace).$(DllExportAttrNameOnly)</DllExportAttributeFullNameProp>
+      <DllExportAttributeAssemblyNameProp Condition="'$(DllExportAttributeAssemblyNameProp)' == ''">DllExport</DllExportAttributeAssemblyNameProp>
+
+      <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(Platform)</DllExportPlatform>
+      <DllExportPlatformTarget Condition="'$(DllExportPlatformTarget)' == ''">$(PlatformTarget)</DllExportPlatformTarget>
+      <DllExportCpuType Condition="'$(DllExportCpuType)' == ''">$(CpuType)</DllExportCpuType>
+      <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)' == ''">$(DebugSymbols)</DllExportEmitDebugSymbols>
+      <DllExportLeaveIntermediateFiles Condition="'$(DllExportLeaveIntermediateFiles)' == ''">false</DllExportLeaveIntermediateFiles>
+      <DllExportTimeout Condition="'$(DllExportTimeout)' == ''">$(DllExportTimeout)</DllExportTimeout>
+      <DllExportKeyContainer Condition="'$(DllExportKeyContainer)' == ''">$(KeyContainerName)$(AssemblyKeyContainerName)</DllExportKeyContainer>
+      <DllExportKeyFile Condition="'$(DllExportKeyFile)' == ''">$(KeyOriginatorFile)</DllExportKeyFile>
+      <DllExportProjectDirectory Condition="'$(DllExportProjectDirectory)' == ''">$(MSBuildProjectDirectory)</DllExportProjectDirectory>
+      <DllExportInputFileName Condition="'$(DllExportInputFileName)' == ''">$(TargetPath)</DllExportInputFileName>
+      <DllExportFrameworkPath Condition="'$(DllExportFrameworkPath)' == ''">$(TargetedFrameworkDir);$(TargetFrameworkDirectory)</DllExportFrameworkPath>
+      <DllExportLibToolPath Condition="'$(DllExportLibToolPath)' == ''">$(DevEnvDir)\..\..\VC\bin</DllExportLibToolPath>
+      <DllExportLibToolDllPath Condition="'$(DllExportLibToolDllPath)' == ''">$(DevEnvDir)</DllExportLibToolDllPath>
+      <DllExportTargetFrameworkVersion Condition="'$(DllExportTargetFrameworkVersion)' == ''">$(TargetFrameworkVersion)</DllExportTargetFrameworkVersion>
+      <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
+      <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
+    </PropertyGroup>
+
+    <DllExportAppDomainIsolatedTask 
+          Platform="$(DllExportPlatform)"
+          PlatformTarget="$(DllExportPlatformTarget)"
+          CpuType="$(DllExportCpuType)"
+          DllExportAttributeFullName="$(DllExportNamespace).$(DllExportAttrNameOnly)"
+          EmitDebugSymbols="$(DllExportEmitDebugSymbols)"
+          LeaveIntermediateFiles="$(DllExportLeaveIntermediateFiles)"
+          Timeout="$(DllExportTimeout)"
+          KeyContainer="$(DllExportKeyContainer)"
+          KeyFile="$(DllExportKeyFile)"
+          ProjectDirectory="$(DllExportProjectDirectory)"
+          InputFileName="$(DllExportInputFileName)"
+          FrameworkPath="$(DllExportFrameworkPath)"
+          LibToolPath="$(DllExportLibToolPath)"
+          LibToolDllPath="$(DllExportLibToolDllPath)"
+          TargetFrameworkVersion="$(DllExportTargetFrameworkVersion)"
+          SdkPath="$(DllExportSdkPath)"
+          SkipOnAnyCpu="$(DllExportSkipOnAnyCpu)"
+         />
+  
+  </Target>
+
+  <Target Name="DllExportLib" BeforeTargets="BeforeBuild;BeforeRebuild" >
+      <Exec Condition="!Exists('$(DllExportAttrDll).updated')"
+              WorkingDirectory="$(MSBuildThisFileDirectory)"
+              Command="nsbin.bat &quot;$(DllExportAttrDll)&quot; &quot;$(DllExportNamespace)&quot;" />
+  </Target>
+  
+</Project>

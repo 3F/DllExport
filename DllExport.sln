@@ -22,7 +22,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED
 		tools\DllExportCmdLets.psm1 = tools\DllExportCmdLets.psm1
 		tools\init.ps1 = tools\init.ps1
 		tools\install.ps1 = tools\install.ps1
-		tools\RGiesecke.DllExport.targets = tools\RGiesecke.DllExport.targets
+		tools\net.r_eg.DllExport.targets = tools\net.r_eg.DllExport.targets
+		tools\nsbin.bat = tools\nsbin.bat
+		tools\nsbin.ps1 = tools\nsbin.ps1
+		tools\powershell.bat = tools\powershell.bat
 		tools\uninstall.ps1 = tools\uninstall.ps1
 		tools\UnmanagedExports.nuspec = tools\UnmanagedExports.nuspec
 	EndProjectSection
