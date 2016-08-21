@@ -1,6 +1,12 @@
 DllExport
 ____________________
 
+[v1.3]
+
+    * FIXED: bug 'Incorrect library' when DllExport installed for 2+ projects.
+    * CHANGED: DllExport now uses `Cdecl` calling convention by default.
+    * CHANGED: Mono.Cecil v0.9.6.4
+
 [v1.2]
 
     * CHANGED: dynamic definition of namespace for user scope. Issue #2
