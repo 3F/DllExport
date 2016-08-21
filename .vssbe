@@ -158,7 +158,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.dll\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.dll\", \n               \"$(odir)/tools/\", true)]\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net/\", true)]\n\n#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]\n#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.dll\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.dll\", \n               \"$(odir)/tools/\", true)]\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]\n#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -175,7 +175,7 @@
           "               \"$(odir)/tools/\", true)]",
           "            ",
           "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
-          "               \"$(odir)/lib/net/\", true)]",
+          "               \"$(odir)/lib/net20/\", true)]",
           "",
           "#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]",
           "#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]"

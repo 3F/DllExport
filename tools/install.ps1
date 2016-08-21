@@ -75,7 +75,7 @@ if(![String]::IsNullOrEmpty($vNamespace)) # -And ![String]::IsNullOrEmpty($userN
 # binary modifications of assembly
 
 . "nsbin.ps1"
-defNS $([System.IO.Path]::Combine($installPath, 'lib\net', $assemblyFName + '.dll'))  $vNamespace
+defNS $([System.IO.Path]::Combine($installPath, 'lib\net20', $assemblyFName + '.dll'))  $vNamespace
 
 
 # change the reference to DllExport.dll to not be copied locally
