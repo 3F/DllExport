@@ -10,12 +10,17 @@ $projects = Get-DllExportMsBuildProjectsByFullName($project.FullName)
 return $projects |  % {
     $currentProject = $_
 
-    $currentProject.RemoveProperty($currentProject.GetProperty($namespaceProp));
-    $project.Save()
-
     $currentProject.Xml.Imports | ? {
         "net.r_eg.DllExport.targets" -ieq [System.IO.Path]::GetFileName($_.Project)
     }  | % {  
         $currentProject.Xml.RemoveChild($_)
+    }
+
+    # NS
+    $prop = $currentProject.GetProperty($namespaceProp);
+    if($prop -ne $Null -and $prop -ne ''){
+        Write-Host "Remove NS property: '$prop'"
+        $currentProject.RemoveProperty($prop);
+        $project.Save()
     }
 }

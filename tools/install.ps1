@@ -3,6 +3,8 @@ param($installPath, $toolsPath, $package, $project)
 $namespaceProp  = 'DllExportNamespace';
 $targetFileName = 'net.r_eg.DllExport.targets'
 $assemblyFName  = 'DllExport' # $package.AssemblyReferences[0].Name
+$publicKeyToken = '8337224C9AD9E356';
+$defaultNS      = 'System.Runtime.InteropServices';
 $targetFileName = [IO.Path]::Combine($toolsPath, $targetFileName)
 $targetUri      = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
 
@@ -21,6 +23,7 @@ $projects          =  $projectCollection::GlobalProjectCollection.GetLoadedProje
 # Define or check the DllExportNamespace property
 
 $vNamespace = '';
+$userNS     = '';
 
 $projects |  % {
     $mbeProject = $_
@@ -28,9 +31,9 @@ $projects |  % {
     $vNamespace = $mbeProject.GetPropertyValue($namespaceProp);
     if([String]::IsNullOrEmpty($vNamespace))
     {
-        $pFName = [System.IO.Path]::GetFileName($mbeProject.FullPath);
+        #$pFName = [System.IO.Path]::GetFileName($mbeProject.FullPath);
         $userNS = [Microsoft.VisualBasic.Interaction]::InputBox(
-                                    "Select a DllExport namespace for project: `n* $pFName `n`nHow about 'System.Runtime.InteropServices' ? or:", 
+                                    "Select a DllExport namespace. `nIt overrides prev. if exists. `n`nHow about 'System.Runtime.InteropServices' ? `nor:", 
                                     "DllExport namespace", 
                                     "$($mbeProject.GetPropertyValue('RootNamespace'))")
 
@@ -41,7 +44,35 @@ $projects |  % {
     }
 }
 
-# modify assembly
+if([String]::IsNullOrWhiteSpace($vNamespace)) {
+    $vNamespace = $defaultNS; # inc. the 'cancel' button by user
+}
+
+# override new NS for all projects that are contains this library in references
+# TODO: another way
+
+if(![String]::IsNullOrEmpty($vNamespace)) # -And ![String]::IsNullOrEmpty($userNS)
+{
+    foreach($dtePrj in $project.Collection)
+    {
+        # https://msdn.microsoft.com/en-us/library/vslangproj.reference.aspx
+        $dtePrj.Object.References | ? { 
+            $_.Name -ieq $assemblyFName -And $_.PublicKeyToken -ieq $publicKeyToken
+        } | % {  
+
+            $ePrjs = $projectCollection::GlobalProjectCollection.GetLoadedProjects($dtePrj.FullName);
+            foreach($ePrj in $ePrjs) {
+                if(!$ePrj.FullPath.EndsWith(".user", [System.StringComparison]::OrdinalIgnoreCase)) {
+                    $ePrj.SetProperty($namespaceProp, $vNamespace);
+                }
+            }
+            $dtePrj.Save($dtePrj.FullName); # save it with EnvDTE to avoid 'modified outside the environment'
+
+        }
+    }
+}
+
+# binary modifications of assembly
 
 . "nsbin.ps1"
 defNS $([System.IO.Path]::Combine($installPath, 'lib\net', $assemblyFName + '.dll'))  $vNamespace
@@ -50,7 +81,7 @@ defNS $([System.IO.Path]::Combine($installPath, 'lib\net', $assemblyFName + '.dl
 # change the reference to DllExport.dll to not be copied locally
 
 $project.Object.References | ? { 
-    $_.Name -ieq $assemblyFName 
+    $_.Name -ieq $assemblyFName -And $_.PublicKeyToken -ieq $publicKeyToken
 } | % {
     if($_ | Get-Member | ? {$_.Name -eq "CopyLocal"}){
         $_.CopyLocal = $false

@@ -9,6 +9,7 @@ Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
 
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
+[![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 
 
 ```csharp
@@ -23,7 +24,8 @@ public static int entrypoint(IntPtr L)
     return 0;
 }
 ```
-*Note: for more flexible work with Lua, use also - [LunaRoad](https://github.com/3F/LunaRoad)*
+* for work with unmanaged code (binding between .net and C/C++ etc.), see [Conari](https://github.com/3F/Conari)
+* for convenient work with Lua, see [LunaRoad](https://github.com/3F/LunaRoad)
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -80,7 +82,7 @@ It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/mast
 Available variants:
 
 * NuGet PM: `Install-Package DllExport`
-* GetNuTool: `msbuild gnt.core /p:ngpackages="DllExport"`
+* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [gnt](https://github.com/3F/GetNuTool/releases/download/v1.5/gnt.bat) /p:ngpackages="DllExport"
 * NuGet Commandline: `nuget install DllExport`
 * [/releases](https://github.com/3F/DllExport/releases) ( [latest](https://github.com/3F/DllExport/releases/latest) )
 * [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
@@ -90,7 +92,7 @@ Available variants:
 No requires additional steps for you, just build as you need.
 
 Use build.bat if you need final NuGet package as a `DllExport.<version>.nupkg` etc.
-* *You do not need to do anything inside IDE, if you already have installed plugin.*
+* *You do not need to do anything inside IDE if you have installed [this plugin](https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/).*
 
 
 ### How to Debug

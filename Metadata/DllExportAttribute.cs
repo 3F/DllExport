@@ -83,9 +83,14 @@ namespace
         }
 
         public DllExportAttribute(string function)
-            : this(function, CallingConvention.StdCall)
+            : this(function, CallingConvention.Cdecl)
         {
-
+            // __cdecl is the default calling convention for C and C++ programs
+            // and __stdCall mostly used with winapi. Thus, we also use Cdecl by default.
+            // 
+            // https://msdn.microsoft.com/en-us/library/zkwh89ks.aspx
+            // https://msdn.microsoft.com/en-us/library/56h2zst2.aspx
+            // https://github.com/3F/Conari also uses __cdecl by default
         }
 
         public DllExportAttribute(CallingConvention convention)

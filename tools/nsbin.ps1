@@ -24,12 +24,21 @@ Function defNS([string]$dll, [string]$namespace)
 {
     Write-Host "defNS: ($dll); ($namespace)"
 
-    if([String]::IsNullOrWhiteSpace($namespace)) {
-        $namespace = "System.Runtime.InteropServices";
+    if([String]::IsNullOrWhiteSpace($dll) -Or ![System.IO.File]::Exists($dll)) {
+        throw New-Object System.IO.FileNotFoundException("The DllExport assembly for modifications was not found.");
     }
 
-    if([String]::IsNullOrWhiteSpace($dll)) {
-        throw New-Object System.IO.FileNotFoundException("The DllExport assembly for modifications was not found.");
+    if([String]::IsNullOrWhiteSpace($namespace)) {
+        #$namespace = "System.Runtime.InteropServices";
+        throw New-Object System.ArgumentException("The namespace cannot be null or empty.");
+    }
+
+    $origin = _postfixToOrigin($dll);
+    if(![System.IO.File]::Exists($origin)) {
+        [System.IO.File]::Copy($dll, $origin);
+    }
+    else {
+        [System.IO.File]::Copy($origin, $dll, $TRUE);
     }
 
     $enc   = [System.Text.Encoding]::UTF8;
@@ -74,7 +83,10 @@ Function binmod([int]$lpos, [string]$dll, $enc, [string]$namespace)
         $bsize = New-Object byte[] 4;
         $stream.Read($bsize, 0, 4);
 
-        $buffer  = [System.Convert]::ToInt32($enc.GetString($bsize), 16);
+        $buffer = sysrange(
+            [System.Convert]::ToUInt16($enc.GetString($bsize), 16)
+        );
+
         $nsBytes = $enc.GetBytes($namespace);
         $fullseq = $ident.Length + $bsize.Length + $buffer;
 
@@ -87,7 +99,9 @@ Function binmod([int]$lpos, [string]$dll, $enc, [string]$namespace)
         $stream.Seek($lpos, [System.IO.SeekOrigin]::Begin);
         $stream.Write($nsb.ToArray(), 0, $nsb.Count);
 
-        [System.IO.File]::Create("$dll.updated").Dispose();
+        $fs = [System.IO.File]::Create($(_postfixToUpdated($dll)));
+        $fs.write($nsBytes, 0, $nsBytes.Length);
+        $fs.Dispose();
 
         Write-Host 'The DllExport Library has been modified !'
         Write-Host "namespace: $namespace"
@@ -99,4 +113,28 @@ Function binmod([int]$lpos, [string]$dll, $enc, [string]$namespace)
         }
     }
 
+}
+
+Function sysrange([uint16]$val)
+{
+    # reserved: FFFA - FFFF
+    
+    if($val -lt 0xFFFA) {
+        return $val;
+    }
+
+    $reserved = 0xFFFF - $val;
+    
+    # ...
+    throw New-Object System.NotImplementedException("The reserved combination is not yet implemented or not supported: " + $reserved);
+}
+
+Function _postfixToUpdated([string]$dll)
+{
+    return "$dll.updated";
+}
+
+Function _postfixToOrigin([string]$dll)
+{
+    return "$dll.origin";
 }
