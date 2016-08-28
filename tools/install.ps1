@@ -5,6 +5,8 @@ $targetFileName = 'net.r_eg.DllExport.targets'
 $assemblyFName  = 'DllExport' # $package.AssemblyReferences[0].Name
 $publicKeyToken = '8337224C9AD9E356';
 $defaultNS      = 'System.Runtime.InteropServices';
+$escInstallPath = $installPath -replace ' ', '` '
+$escToolsPath   = $toolsPath -replace ' ', '` '
 $targetFileName = [IO.Path]::Combine($toolsPath, $targetFileName)
 $targetUri      = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
 
@@ -74,9 +76,10 @@ if(![String]::IsNullOrEmpty($vNamespace)) # -And ![String]::IsNullOrEmpty($userN
 
 # binary modifications of assembly
 
-. "nsbin.ps1"
-defNS $([System.IO.Path]::Combine($installPath, 'lib\net20', $assemblyFName + '.dll'))  $vNamespace
-
+$asmpath    = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
+$vNamespace = $vNamespace -replace ' ', '` '
+powershell -Command "Import-Module (Join-Path $escToolsPath NSBin.dll); Set-DllExportNS -Dll $asmpath -Namespace $vNamespace"
+# defNS $([System.IO.Path]::Combine($installPath, 'lib\net20', $assemblyFName + '.dll'))  $vNamespace
 
 # change the reference to DllExport.dll to not be copied locally
 
