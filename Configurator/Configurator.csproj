@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{311706A5-5ED2-4006-B794-055009D8A256}</ProjectGuid>
+    <ProjectGuid>{9B7723F1-C89F-43E1-B27D-A46A96C82034}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>net.r_eg.DllExport.NSBin</RootNamespace>
-    <AssemblyName>NSBin</AssemblyName>
+    <RootNamespace>net.r_eg.DllExport.Configurator</RootNamespace>
+    <AssemblyName>net.r_eg.DllExport.Configurator</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -25,8 +25,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -39,30 +38,48 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Management.Automation, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.PowerShell.5.ReferenceAssemblies.1.0.0\lib\net4\System.Management.Automation.dll</HintPath>
       <Private>True</Private>
-      <SpecificVersion>False</SpecificVersion>
     </Reference>
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IDDNS.cs" />
-    <Compile Include="DDNS.cs" />
-    <Compile Include="Rmod.cs" />
-    <Compile Include="Log\ISender.cs" />
-    <Compile Include="Log\LSender.cs" />
-    <Compile Include="Log\Message.cs" />
-    <Compile Include="BinaryData.cs" />
-    <Compile Include="Ripper.cs" />
-    <Compile Include="MarkerData.cs" />
-    <Compile Include="Marker.cs" />
-    <Compile Include="SetDDNSCmdlet.cs" />
+    <Compile Include="Dynamic\IProject.cs" />
+    <Compile Include="Dynamic\Project.cs" />
+    <Compile Include="Exceptions\InvalidObjectException.cs" />
+    <Compile Include="Exceptions\CommonException.cs" />
+    <Compile Include="IExecutor.cs" />
+    <Compile Include="Executor.cs" />
+    <Compile Include="InstallationForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="InstallationForm.Designer.cs">
+      <DependentUpon>InstallationForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ScriptConfig.cs" />
+    <Compile Include="SetConfigurationCmdlet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UserConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
     <None Include="packages.config" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="InstallationForm.resx">
+      <DependentUpon>InstallationForm.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\NSBin\NSBin.csproj">
+      <Project>{311706a5-5ed2-4006-b794-055009d8a256}</Project>
+      <Name>NSBin</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

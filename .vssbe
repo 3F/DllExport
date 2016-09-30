@@ -91,13 +91,14 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(dbin = \"bin/$(Configuration)/\")]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[$(dbin = \"bin/$(Configuration)/\")]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[$(dbin = \"bin/$(Configuration)/\")]",
           "",
           "$(pDllExport    = \"RGiesecke.DllExport\")",
           "$(pMeta         = \"Metadata\")",
           "$(pNSBin        = \"NSBin\")",
+          "$(pConf         = \"Configurator\")",
           "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
           "$(odir          = \"$(dbin)raw/\")",
           "",
@@ -167,7 +168,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\", \n               \"$(odir)/tools/\", true)]\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file(\"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\", \n               \"$(odir)/tools/\", true)]\n\n#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]\n#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n            \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n            \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n            \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n            \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n            }, \n            \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"LICENSE\", \"Readme.md\" }, \"$(odir)/\", true)]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -177,20 +178,19 @@
           "",
           "#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]",
           "",
-          "#[IO copy.file(\"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\", ",
-          "               \"$(odir)/tools/\", true)]",
+          "#[IO copy.file({",
+          "            \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",",
+          "            \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",",
+          "            \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",",
+          "            \"$(pConf)/$(OutDir:$(pConf))/*.*\"",
+          "            }, ",
+          "            \"$(odir)/tools/\", true)]",
           "",
-          "#[IO copy.file(\"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\", ",
-          "               \"$(odir)/tools/\", true)]",
           "            ",
           "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
           "               \"$(odir)/lib/net20/\", true)]",
           "",
-          "#[IO copy.file(\"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\", ",
-          "               \"$(odir)/tools/\", true)]",
-          "",
-          "#[IO copy.file(\"LICENSE\", \"$(odir)/\", true)]",
-          "#[IO copy.file(\"Readme.md\", \"$(odir)/\", true)]"
+          "#[IO copy.file({ \"LICENSE\", \"Readme.md\" }, \"$(odir)/\", true)]"
         ]
       }
     },

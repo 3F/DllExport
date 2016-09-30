@@ -1,18 +1,19 @@
 param($installPath, $toolsPath, $package, $project)
 
-$namespaceProp  = 'DllExportNamespace';
 $targetFileName = 'net.r_eg.DllExport.targets'
 $assemblyFName  = 'DllExport' # $package.AssemblyReferences[0].Name
 $publicKeyToken = '8337224C9AD9E356';
-$defaultNS      = 'System.Runtime.InteropServices';
+$tempRoot       = (Join-Path $([System.IO.Path]::GetTempPath()) '50ACAD2A-5AB3-4E6A-BA66-07F55672E91F') -replace ' ', '` '
+$tempFolder     = $([System.Guid]::NewGuid());
 $escInstallPath = $installPath -replace ' ', '` '
 $escToolsPath   = $toolsPath -replace ' ', '` '
+$metaLib        = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
+$guiAsmFile     = 'net.r_eg.DllExport.Configurator.dll';
 $targetFileName = [IO.Path]::Combine($toolsPath, $targetFileName)
 $targetUri      = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
 
 $msBuildV4Name  = 'Microsoft.Build'; #, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a';
 $msBuildV4      = [System.Reflection.Assembly]::LoadWithPartialName($msBuildV4Name)          # obsolete
-$msvb           = [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') # obsolete
 
 if(!$msBuildV4) {
     throw New-Object System.IO.FileNotFoundException("Could not load $msBuildV4Name.");
@@ -21,65 +22,28 @@ if(!$msBuildV4) {
 $projectCollection = $msBuildV4.GetType('Microsoft.Build.Evaluation.ProjectCollection')
 $projects          =  $projectCollection::GlobalProjectCollection.GetLoadedProjects($project.FullName)
 
+# GUI Configurator
 
-# Define or check the DllExportNamespace property
+# powershell -Command "Import-Module (Join-Path $escToolsPath Configurator.dll); Set-Configuration -Dll $asmpath"
 
-$vNamespace = '';
-$userNS     = '';
+Remove-Item -Path $tempRoot -Force -Recurse -ErrorAction SilentlyContinue
 
-$projects |  % {
-    $mbeProject = $_
+$tdll = (Join-Path $tempRoot $tempFolder);
+if(!(Test-Path -path $tdll)) {
+    New-Item $tdll -Type Directory >$null
+}
+Copy-Item $toolsPath\*.dll -Destination $tdll >$null
 
-    $vNamespace = $mbeProject.GetPropertyValue($namespaceProp);
-    if([String]::IsNullOrEmpty($vNamespace))
-    {
-        #$pFName = [System.IO.Path]::GetFileName($mbeProject.FullPath);
-        $userNS = [Microsoft.VisualBasic.Interaction]::InputBox(
-                                    "Select a DllExport namespace. `nIt overrides prev. if exists. `n`nHow about 'System.Runtime.InteropServices' ? `nor:", 
-                                    "DllExport namespace", 
-                                    "$($mbeProject.GetPropertyValue('RootNamespace'))")
+$dllGUI = (Join-Path $tdll $guiAsmFile)
 
-        $mbeProject.SetProperty($namespaceProp, $userNS)
-        $project.Save()
-
-        $vNamespace = $userNS;
-    }
+if(!(Get-Module -Name $guiAsmFile)) {
+    Import-Module $dllGUI; 
 }
 
-if([String]::IsNullOrWhiteSpace($vNamespace)) {
-    $vNamespace = $defaultNS; # inc. the 'cancel' button by user
-}
+Set-Configuration -MetaLib $metaLib -InstallPath $installPath -ToolsPath $toolsPath -ProjectDTE $project -ProjectsMBE $projectCollection::GlobalProjectCollection;
 
-# override new NS for all projects that are contains this library in references
-# TODO: another way
-
-if(![String]::IsNullOrEmpty($vNamespace)) # -And ![String]::IsNullOrEmpty($userNS)
-{
-    foreach($dtePrj in $project.Collection)
-    {
-        # https://msdn.microsoft.com/en-us/library/vslangproj.reference.aspx
-        $dtePrj.Object.References | ? { 
-            $_.Name -ieq $assemblyFName -And $_.PublicKeyToken -ieq $publicKeyToken
-        } | % {  
-
-            $ePrjs = $projectCollection::GlobalProjectCollection.GetLoadedProjects($dtePrj.FullName);
-            foreach($ePrj in $ePrjs) {
-                if(!$ePrj.FullPath.EndsWith(".user", [System.StringComparison]::OrdinalIgnoreCase)) {
-                    $ePrj.SetProperty($namespaceProp, $vNamespace);
-                }
-            }
-            $dtePrj.Save($dtePrj.FullName); # save it with EnvDTE to avoid 'modified outside the environment'
-
-        }
-    }
-}
-
-# binary modifications of assembly
-
-$asmpath    = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
-$vNamespace = $vNamespace -replace ' ', '` '
-powershell -Command "Import-Module (Join-Path $escToolsPath NSBin.dll); Set-DllExportNS -Dll $asmpath -Namespace $vNamespace"
 # defNS $([System.IO.Path]::Combine($installPath, 'lib\net20', $assemblyFName + '.dll'))  $vNamespace
+
 
 # change the reference to DllExport.dll to not be copied locally
 

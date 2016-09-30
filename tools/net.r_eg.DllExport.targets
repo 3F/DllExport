@@ -78,10 +78,10 @@
   
   </Target>
 
-  <Target Name="DllExportLib" BeforeTargets="BeforeBuild;BeforeRebuild" >
-      <Exec Condition="!Exists('$(DllExportAttrDll).updated')"
+  <Target Name="DllExportLib" BeforeTargets="PrepareForBuild;BeforeBuild;BeforeRebuild" >
+      <Exec Condition="!Exists('$(DllExportAttrDll).ddNSi')"
               WorkingDirectory="$(MSBuildThisFileDirectory)"
-              Command="nsbin.bat &quot;$(DllExportAttrDll)&quot; &quot;$(DllExportNamespace)&quot;" />
+              Command="NSBin.bat &quot;$(DllExportAttrDll)&quot; &quot;$(DllExportNamespace)&quot;" />
   </Target>
   
 </Project>
