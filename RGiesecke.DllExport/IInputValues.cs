@@ -72,6 +72,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        int OrdinalsBase
+        {
+            get;
+            set;
+        }
+
         string MethodAttributes
         {
             get;

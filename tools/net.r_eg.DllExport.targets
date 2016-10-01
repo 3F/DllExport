@@ -54,6 +54,7 @@
       <DllExportTargetFrameworkVersion Condition="'$(DllExportTargetFrameworkVersion)' == ''">$(TargetFrameworkVersion)</DllExportTargetFrameworkVersion>
       <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
+      <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)' == ''">1</DllExportOrdinalsBase>
     </PropertyGroup>
 
     <DllExportAppDomainIsolatedTask 
@@ -74,6 +75,7 @@
           TargetFrameworkVersion="$(DllExportTargetFrameworkVersion)"
           SdkPath="$(DllExportSdkPath)"
           SkipOnAnyCpu="$(DllExportSkipOnAnyCpu)"
+          OrdinalsBase="$(DllExportOrdinalsBase)"
          />
   
   </Target>

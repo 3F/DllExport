@@ -285,6 +285,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public int OrdinalsBase
+        {
+            get {
+                return _ExportTaskImplementation.OrdinalsBase;
+            }
+
+            set {
+                _ExportTaskImplementation.OrdinalsBase = value;
+            }
+        }
+
         public string DllExportAttributeFullName
         {
             get {

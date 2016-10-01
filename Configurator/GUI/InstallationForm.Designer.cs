@@ -151,7 +151,6 @@
             // 
             this.groupCompiler.Controls.Add(this.numOrdinal);
             this.groupCompiler.Controls.Add(this.labelOrdinals);
-            this.groupCompiler.Enabled = false;
             this.groupCompiler.Location = new System.Drawing.Point(128, 72);
             this.groupCompiler.Name = "groupCompiler";
             this.groupCompiler.Size = new System.Drawing.Size(313, 84);

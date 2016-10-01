@@ -19,27 +19,27 @@ namespace RGiesecke.DllExport
 
         internal static readonly Dictionary<CallingConvention, string> ConventionTypeNames = new Dictionary<CallingConvention, string>()
         {
-        {
-            CallingConvention.Cdecl,
-            typeof (CallConvCdecl).FullName
-        },
-        {
-            CallingConvention.FastCall,
-            typeof (CallConvFastcall).FullName
-        },
-        {
-            CallingConvention.StdCall,
-            typeof (CallConvStdcall).FullName
-        },
-        {
-            CallingConvention.ThisCall,
-            typeof (CallConvThiscall).FullName
-        },
-        {
-            CallingConvention.Winapi,
-            typeof (CallConvStdcall).FullName
-        }
-    };
+            {
+                CallingConvention.Cdecl,
+                typeof (CallConvCdecl).FullName
+            },
+            {
+                CallingConvention.FastCall,
+                typeof (CallConvFastcall).FullName
+            },
+            {
+                CallingConvention.StdCall,
+                typeof (CallConvStdcall).FullName
+            },
+            {
+                CallingConvention.ThisCall,
+                typeof (CallConvThiscall).FullName
+            },
+            {
+                CallingConvention.Winapi,
+                typeof (CallConvStdcall).FullName
+            }
+        };
 
         private readonly ReadOnlyCollection<DuplicateExports> _ReadOnlyDuplicateExportMethods;
 
@@ -106,11 +106,13 @@ namespace RGiesecke.DllExport
 
         internal void Refresh()
         {
-            int num = 0;
-            this.MethodsByExportName.Clear();
-            this._DuplicateExportMethods.Clear();
-            Dictionary<string, DuplicateExports> dictionary = new Dictionary<string, DuplicateExports>();
-            foreach(ExportedClass exportedClass in this.ClassesByName.Values)
+            int num = InputValues.OrdinalsBase;
+
+            MethodsByExportName.Clear();
+            _DuplicateExportMethods.Clear();
+
+            var dictionary = new Dictionary<string, DuplicateExports>();
+            foreach(ExportedClass exportedClass in ClassesByName.Values)
             {
                 List<ExportedMethod> exportedMethodList = new List<ExportedMethod>(exportedClass.Methods.Count);
                 foreach(ExportedMethod method in exportedClass.Methods)

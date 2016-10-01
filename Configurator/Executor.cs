@@ -111,7 +111,8 @@ namespace net.r_eg.DllExport.Configurator
 
         protected void cfgCompiler()
         {
-            //TODO:
+            project.setProperty("DllExportOrdinalsBase", config.compiler.ordinalsBase.ToString());
+            project.saveViaDTE();
         }
     }
 }
