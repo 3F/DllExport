@@ -52,9 +52,24 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
 
         /// <summary>
         /// Get property value from current project.
+        /// https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.getpropertyvalue.aspx
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         string getPropertyValue(string name);
+
+        /// <summary>
+        /// Set property from current project.
+        /// https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.setproperty.aspx
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        dynamic/*ProjectProperty*/ setProperty(string name, string val);
+
+        /// <summary>
+        /// To save project via EnvDTE.Project.
+        /// </summary>
+        void saveViaDTE();
     }
 }

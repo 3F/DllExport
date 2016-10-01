@@ -49,14 +49,20 @@
   <ItemGroup>
     <Compile Include="Dynamic\IProject.cs" />
     <Compile Include="Dynamic\Project.cs" />
+    <Compile Include="Exceptions\IncorrectConfigException.cs" />
     <Compile Include="Exceptions\InvalidObjectException.cs" />
     <Compile Include="Exceptions\CommonException.cs" />
+    <Compile Include="GUI\ResText.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>ResText.resx</DependentUpon>
+    </Compile>
     <Compile Include="IExecutor.cs" />
     <Compile Include="Executor.cs" />
-    <Compile Include="InstallationForm.cs">
+    <Compile Include="GUI\InstallationForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="InstallationForm.Designer.cs">
+    <Compile Include="GUI\InstallationForm.Designer.cs">
       <DependentUpon>InstallationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ScriptConfig.cs" />
@@ -69,8 +75,12 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="InstallationForm.resx">
+    <EmbeddedResource Include="GUI\InstallationForm.resx">
       <DependentUpon>InstallationForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="GUI\ResText.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>ResText.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

@@ -22,13 +22,17 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Text;
 using net.r_eg.Conari.Log;
 using net.r_eg.DllExport.Configurator.Dynamic;
+using net.r_eg.DllExport.Configurator.GUI;
 using net.r_eg.DllExport.NSBin;
 
 namespace net.r_eg.DllExport.Configurator
 {
+    using Platform = UserConfig.PlatformTarget;
+
     internal class Executor: IExecutor
     {
         protected UserConfig config;
@@ -48,7 +52,7 @@ namespace net.r_eg.DllExport.Configurator
             {
                 config.defnamespaces.Insert(0, project.getPropertyValue("RootNamespace"));
 
-                var form = new InstallationForm(config);
+                var form = new InstallationForm(config, project);
                 form.ShowDialog();
 
                 project.defineNamespace(config.unamespace);
@@ -80,7 +84,29 @@ namespace net.r_eg.DllExport.Configurator
 
         protected void cfgPlatform()
         {
-            //TODO:
+            string platform;
+            switch(config.platform) {
+                case Platform.x64: {
+                    platform = "x64";
+                    break;
+                }
+                case Platform.x86: {
+                    platform = "x86";
+                    break;
+                }
+                case Platform.Default:
+                case Platform.AnyCPU: {
+                    platform = "AnyCPU";
+                    project.setProperty("DllExportSkipOnAnyCpu", "false");
+                    break;
+                }
+                default: {
+                    throw new NotSupportedException($"Platform '{config.platform}' not yet supported.");
+                }
+            }
+
+            project.setProperty("PlatformTarget", platform);
+            project.saveViaDTE();
         }
 
         protected void cfgCompiler()

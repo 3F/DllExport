@@ -65,7 +65,7 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
         protected dynamic MBEProjects
         {
             get {
-                return loadedMBEProjects(pdte.FullName);
+                return pmbe.LoadedProjects;
             }
         }
 
@@ -73,7 +73,7 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
         {
             get
             {
-                foreach(var prj in MBEProjects) {
+                foreach(var prj in loadedMBEProjects(pdte.FullName)) {
                     return prj;
                 }
                 throw new InvalidObjectException("Projects is invalid or empty");
@@ -96,7 +96,7 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
             checkName(ref name);
 
             MBEProject.SetProperty(NamespacePropertyName, name);
-            pdte.Save();
+            saveViaDTE();
         }
 
         /// <summary>
@@ -126,13 +126,34 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
         }
 
         /// <summary>
+        /// To save project via EnvDTE.Project.
+        /// </summary>
+        public void saveViaDTE()
+        {
+            pdte.Save();
+        }
+
+        /// <summary>
         /// Get property value from current project.
+        /// https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.getpropertyvalue.aspx
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
         public string getPropertyValue(string name)
         {
             return MBEProject.GetPropertyValue(name);
+        }
+
+        /// <summary>
+        /// Set property from current project.
+        /// https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.setproperty.aspx
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="val"></param>
+        /// <returns></returns>
+        public dynamic/*ProjectProperty*/ setProperty(string name, string val)
+        {
+            return MBEProject.SetProperty(name, val);
         }
 
         public Project(dynamic pdte, dynamic pmbe)

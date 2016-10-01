@@ -24,25 +24,31 @@
 
 using System;
 using System.Windows.Forms;
+using net.r_eg.DllExport.Configurator.Dynamic;
 using net.r_eg.DllExport.NSBin;
 
-namespace net.r_eg.DllExport.Configurator
+namespace net.r_eg.DllExport.Configurator.GUI
 {
     using Platform = UserConfig.PlatformTarget;
 
-    public partial class InstallationForm: Form
+    internal partial class InstallationForm: Form
     {
-        private UserConfig config;
+        const int FIRST_ORDINAL = 1;
 
-        public InstallationForm(UserConfig cfg)
+        private UserConfig config;
+        private IProject project;
+
+        public InstallationForm(UserConfig cfg, IProject prj)
         {
             if(cfg == null) {
                 throw new ArgumentNullException("UserConfig cannot be null.");
             }
-            config = cfg;
+            config  = cfg;
+            project = prj;
 
             InitializeComponent();
-            comboNS.MaxLength = config.nsBuffer;
+            comboNS.MaxLength   = config.nsBuffer;
+            numOrdinal.Value    = FIRST_ORDINAL;
 
             foreach(var ns in cfg.defnamespaces) {
                 comboNS.Items.Add(ns);
@@ -53,8 +59,20 @@ namespace net.r_eg.DllExport.Configurator
         private void saveConfig()
         {
             config.unamespace               = getValidNS(comboNS.Text);
-            config.platform                 = rbPlatformX86.Checked ? Platform.x86 : Platform.x64;
             config.compiler.ordinalsBase    = (int)numOrdinal.Value;
+
+            if(rbPlatformX86.Checked) {
+                config.platform = Platform.x86;
+            }
+            else if(rbPlatformX64.Checked) {
+                config.platform = Platform.x64;
+            }
+            else if(rbPlatformAnyCPU.Checked) {
+                config.platform = Platform.AnyCPU;
+            }
+            else {
+                config.platform = Platform.Default;
+            }
         }
 
         private void apply(bool byDefault = false)
@@ -132,6 +150,16 @@ namespace net.r_eg.DllExport.Configurator
             else {
                 panelNScombo.BackColor = System.Drawing.Color.FromArgb(92, 158, 207);
             }
+        }
+
+        private void numOrdinal_ValueChanged(object sender, EventArgs e)
+        {
+            labelOrdinals.Text = String.Format(ResText.Settings_Compiler_Ordinals_Label, numOrdinal.Value);
+        }
+
+        private void InstallationForm_Load(object sender, EventArgs e)
+        {
+            labelActiveCfg.Text += $"' {project.getPropertyValue("Configuration")} | {project.getPropertyValue("Platform")} '";
         }
     }
 }

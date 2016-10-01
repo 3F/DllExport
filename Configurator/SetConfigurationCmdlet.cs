@@ -95,7 +95,7 @@ namespace net.r_eg.DllExport.Configurator
                     exec.configure();
                 }
                 catch(Exception ex) {
-                    LSender.Send(this, ex.Message);
+                    LSender.Send(this, $"ERROR-GUI: {ex.Message}");
                 }
 
                 exec.Log.Received -= onMsg;

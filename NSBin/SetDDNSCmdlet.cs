@@ -22,8 +22,10 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Management.Automation;
 using System.Text;
+using net.r_eg.Conari.Log;
 
 namespace net.r_eg.DllExport.NSBin
 {
@@ -60,13 +62,18 @@ namespace net.r_eg.DllExport.NSBin
                 ddns.Log.Received -= onMsg;
                 ddns.Log.Received += onMsg;
 
-                ddns.setNamespace(Dll, Namespace);
+                try {
+                    ddns.setNamespace(Dll, Namespace);
+                }
+                catch(Exception ex) {
+                    LSender.Send(this, $"ERROR-NSBin: {ex.Message}");
+                }
 
                 ddns.Log.Received -= onMsg;
             }
         }
 
-        private void onMsg(object sender, net.r_eg.Conari.Log.Message e)
+        private void onMsg(object sender, Message e)
         {
             WriteObject(e.content); //TODO:
         }

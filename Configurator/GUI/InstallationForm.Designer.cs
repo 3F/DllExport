@@ -1,4 +1,4 @@
-﻿namespace net.r_eg.DllExport.Configurator
+﻿namespace net.r_eg.DllExport.Configurator.GUI
 {
     partial class InstallationForm
     {
@@ -34,12 +34,14 @@
             this.panelNScombo = new System.Windows.Forms.Panel();
             this.linkDDNS = new System.Windows.Forms.LinkLabel();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
+            this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
             this.numOrdinal = new System.Windows.Forms.NumericUpDown();
             this.labelOrdinals = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.labelActiveCfg = new System.Windows.Forms.Label();
             this.groupNS.SuspendLayout();
             this.panelNScombo.SuspendLayout();
             this.groupPlatform.SuspendLayout();
@@ -103,20 +105,32 @@
             // 
             // groupPlatform
             // 
+            this.groupPlatform.Controls.Add(this.rbPlatformAnyCPU);
             this.groupPlatform.Controls.Add(this.rbPlatformX64);
             this.groupPlatform.Controls.Add(this.rbPlatformX86);
-            this.groupPlatform.Enabled = false;
             this.groupPlatform.Location = new System.Drawing.Point(3, 72);
             this.groupPlatform.Name = "groupPlatform";
-            this.groupPlatform.Size = new System.Drawing.Size(95, 84);
+            this.groupPlatform.Size = new System.Drawing.Size(119, 84);
             this.groupPlatform.TabIndex = 3;
             this.groupPlatform.TabStop = false;
-            this.groupPlatform.Text = "Platform target";
+            this.groupPlatform.Text = "* Export for platform:";
+            // 
+            // rbPlatformAnyCPU
+            // 
+            this.rbPlatformAnyCPU.AutoSize = true;
+            this.rbPlatformAnyCPU.Checked = true;
+            this.rbPlatformAnyCPU.Location = new System.Drawing.Point(19, 61);
+            this.rbPlatformAnyCPU.Name = "rbPlatformAnyCPU";
+            this.rbPlatformAnyCPU.Size = new System.Drawing.Size(71, 17);
+            this.rbPlatformAnyCPU.TabIndex = 2;
+            this.rbPlatformAnyCPU.TabStop = true;
+            this.rbPlatformAnyCPU.Text = "x86 + x64";
+            this.rbPlatformAnyCPU.UseVisualStyleBackColor = true;
             // 
             // rbPlatformX64
             // 
             this.rbPlatformX64.AutoSize = true;
-            this.rbPlatformX64.Location = new System.Drawing.Point(22, 51);
+            this.rbPlatformX64.Location = new System.Drawing.Point(19, 40);
             this.rbPlatformX64.Name = "rbPlatformX64";
             this.rbPlatformX64.Size = new System.Drawing.Size(42, 17);
             this.rbPlatformX64.TabIndex = 1;
@@ -126,12 +140,10 @@
             // rbPlatformX86
             // 
             this.rbPlatformX86.AutoSize = true;
-            this.rbPlatformX86.Checked = true;
-            this.rbPlatformX86.Location = new System.Drawing.Point(22, 25);
+            this.rbPlatformX86.Location = new System.Drawing.Point(19, 19);
             this.rbPlatformX86.Name = "rbPlatformX86";
             this.rbPlatformX86.Size = new System.Drawing.Size(42, 17);
             this.rbPlatformX86.TabIndex = 0;
-            this.rbPlatformX86.TabStop = true;
             this.rbPlatformX86.Text = "x86";
             this.rbPlatformX86.UseVisualStyleBackColor = true;
             // 
@@ -140,9 +152,9 @@
             this.groupCompiler.Controls.Add(this.numOrdinal);
             this.groupCompiler.Controls.Add(this.labelOrdinals);
             this.groupCompiler.Enabled = false;
-            this.groupCompiler.Location = new System.Drawing.Point(104, 72);
+            this.groupCompiler.Location = new System.Drawing.Point(128, 72);
             this.groupCompiler.Name = "groupCompiler";
-            this.groupCompiler.Size = new System.Drawing.Size(337, 84);
+            this.groupCompiler.Size = new System.Drawing.Size(313, 84);
             this.groupCompiler.TabIndex = 4;
             this.groupCompiler.TabStop = false;
             this.groupCompiler.Text = "Compiler settings";
@@ -159,6 +171,7 @@
             this.numOrdinal.Name = "numOrdinal";
             this.numOrdinal.Size = new System.Drawing.Size(76, 20);
             this.numOrdinal.TabIndex = 2;
+            this.numOrdinal.ValueChanged += new System.EventHandler(this.numOrdinal_ValueChanged);
             this.numOrdinal.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numOrdinal_KeyDown);
             // 
             // labelOrdinals
@@ -166,15 +179,25 @@
             this.labelOrdinals.AutoSize = true;
             this.labelOrdinals.Location = new System.Drawing.Point(88, 25);
             this.labelOrdinals.Name = "labelOrdinals";
-            this.labelOrdinals.Size = new System.Drawing.Size(161, 13);
+            this.labelOrdinals.Size = new System.Drawing.Size(85, 13);
             this.labelOrdinals.TabIndex = 1;
-            this.labelOrdinals.Text = "Base for ordinals. `.export [{0}+] `";
+            this.labelOrdinals.Text = "Base for ordinals";
+            // 
+            // labelActiveCfg
+            // 
+            this.labelActiveCfg.AutoSize = true;
+            this.labelActiveCfg.Location = new System.Drawing.Point(1, 167);
+            this.labelActiveCfg.Name = "labelActiveCfg";
+            this.labelActiveCfg.Size = new System.Drawing.Size(111, 13);
+            this.labelActiveCfg.TabIndex = 5;
+            this.labelActiveCfg.Text = "*Active configuration: ";
             // 
             // InstallationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(445, 190);
+            this.Controls.Add(this.labelActiveCfg);
             this.Controls.Add(this.groupCompiler);
             this.Controls.Add(this.groupPlatform);
             this.Controls.Add(this.groupNS);
@@ -188,6 +211,7 @@
             this.Text = "DllExport settings";
             this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.InstallationForm_FormClosed);
+            this.Load += new System.EventHandler(this.InstallationForm_Load);
             this.groupNS.ResumeLayout(false);
             this.groupNS.PerformLayout();
             this.panelNScombo.ResumeLayout(false);
@@ -197,6 +221,7 @@
             this.groupCompiler.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numOrdinal)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -214,5 +239,7 @@
         private System.Windows.Forms.NumericUpDown numOrdinal;
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.Panel panelNScombo;
+        private System.Windows.Forms.Label labelActiveCfg;
+        private System.Windows.Forms.RadioButton rbPlatformAnyCPU;
     }
 }
