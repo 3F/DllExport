@@ -61,7 +61,7 @@ namespace net.r_eg.DllExport.Configurator.GUI {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Base for ordinals. `.export [{0}+] `.
+        ///   Looks up a localized string similar to The Base for ordinals. `.export [{0}+] `.
         /// </summary>
         internal static string Settings_Compiler_Ordinals_Label {
             get {

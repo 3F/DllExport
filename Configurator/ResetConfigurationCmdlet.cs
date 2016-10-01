@@ -22,19 +22,17 @@
  * THE SOFTWARE.
 */
 
-using net.r_eg.Conari.Log;
+using System.Management.Automation;
 
 namespace net.r_eg.DllExport.Configurator
 {
-    internal interface IExecutor
+    [Cmdlet(VerbsCommon.Reset, "Configuration")]
+    public class ResetConfigurationCmdlet: SetConfigurationCmdlet, IScriptConfig
     {
-        ISender Log { get; }
-
-        void configure();
-
-        /// <summary>
-        /// Rollback the changes.
-        /// </summary>
-        void reset();
+        protected override void ProcessRecord()
+        {
+            IExecutor exec = new Executor(this);
+            tryExecute(exec, exec.reset);
+        }
     }
 }

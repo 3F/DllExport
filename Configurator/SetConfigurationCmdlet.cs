@@ -86,13 +86,17 @@ namespace net.r_eg.DllExport.Configurator
         protected override void ProcessRecord()
         {
             IExecutor exec = new Executor(this);
+            tryExecute(exec, exec.configure);
+        }
 
+        internal void tryExecute(IExecutor exec, Action act)
+        {
             lock(synch) {
                 exec.Log.Received -= onMsg;
                 exec.Log.Received += onMsg;
 
                 try {
-                    exec.configure();
+                    act();
                 }
                 catch(Exception ex) {
                     LSender.Send(this, $"ERROR-GUI: {ex.Message}");

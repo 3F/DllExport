@@ -66,6 +66,7 @@
       <DependentUpon>InstallationForm.cs</DependentUpon>
     </Compile>
     <Compile Include="ScriptConfig.cs" />
+    <Compile Include="ResetConfigurationCmdlet.cs" />
     <Compile Include="SetConfigurationCmdlet.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="UserConfig.cs" />

@@ -68,6 +68,13 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
         dynamic/*ProjectProperty*/ setProperty(string name, string val);
 
         /// <summary>
+        /// Removes an property from the project.
+        /// </summary>
+        /// <param name="name">Property name.</param>
+        /// <returns></returns>
+        bool removeProperty(string name);
+
+        /// <summary>
         /// To save project via EnvDTE.Project.
         /// </summary>
         void saveViaDTE();

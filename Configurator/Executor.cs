@@ -63,6 +63,19 @@ namespace net.r_eg.DllExport.Configurator
             cfgCompiler();
         }
 
+        /// <summary>
+        /// Rollback the changes.
+        /// </summary>
+        public void reset()
+        {
+            //TODO: unified place for all used msbuild properties.
+            removeMsbuildProperties(
+                "DllExportNamespace",
+                "DllExportOrdinalsBase",
+                "DllExportSkipOnAnyCpu"
+            );
+        }
+
         public Executor(IScriptConfig cfg)
         {
             ddns    = new DDNS(Encoding.UTF8);
@@ -84,20 +97,27 @@ namespace net.r_eg.DllExport.Configurator
 
         protected void cfgPlatform()
         {
-            string platform;
-            switch(config.platform) {
+            string platform, platformS;
+
+            switch(config.platform)
+            {
                 case Platform.x64: {
-                    platform = "x64";
+                    platformS   =
+                    platform    = 
+                                "x64";
                     break;
                 }
                 case Platform.x86: {
-                    platform = "x86";
+                    platformS   =
+                    platform    = 
+                                "x86";
                     break;
                 }
                 case Platform.Default:
                 case Platform.AnyCPU: {
                     platform = "AnyCPU";
                     project.setProperty("DllExportSkipOnAnyCpu", "false");
+                    platformS = "x86 + x64";
                     break;
                 }
                 default: {
@@ -107,11 +127,23 @@ namespace net.r_eg.DllExport.Configurator
 
             project.setProperty("PlatformTarget", platform);
             project.saveViaDTE();
+
+            Log.send(this, $"The Export configured for platform: {platformS}");
         }
 
         protected void cfgCompiler()
         {
             project.setProperty("DllExportOrdinalsBase", config.compiler.ordinalsBase.ToString());
+            project.saveViaDTE();
+
+            Log.send(this, $"The Base for ordinals: {config.compiler.ordinalsBase}");
+        }
+
+        protected void removeMsbuildProperties(params string[] names)
+        {
+            foreach(string p in names) {
+                project.removeProperty(p);
+            }
             project.saveViaDTE();
         }
     }

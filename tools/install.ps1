@@ -1,48 +1,26 @@
 param($installPath, $toolsPath, $package, $project)
 
-$targetFileName = 'net.r_eg.DllExport.targets'
-$assemblyFName  = 'DllExport' # $package.AssemblyReferences[0].Name
-$publicKeyToken = '8337224C9AD9E356';
-$tempRoot       = (Join-Path $([System.IO.Path]::GetTempPath()) '50ACAD2A-5AB3-4E6A-BA66-07F55672E91F') -replace ' ', '` '
-$tempFolder     = $([System.Guid]::NewGuid());
-$escInstallPath = $installPath -replace ' ', '` '
-$escToolsPath   = $toolsPath -replace ' ', '` '
-$metaLib        = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
-$guiAsmFile     = 'net.r_eg.DllExport.Configurator.dll';
-$targetFileName = [IO.Path]::Combine($toolsPath, $targetFileName)
-$targetUri      = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
-
-$msBuildV4Name  = 'Microsoft.Build'; #, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a';
-$msBuildV4      = [System.Reflection.Assembly]::LoadWithPartialName($msBuildV4Name)          # obsolete
-
-if(!$msBuildV4) {
-    throw New-Object System.IO.FileNotFoundException("Could not load $msBuildV4Name.");
-}
-
-$projectCollection = $msBuildV4.GetType('Microsoft.Build.Evaluation.ProjectCollection')
-$projects          =  $projectCollection::GlobalProjectCollection.GetLoadedProjects($project.FullName)
+$targetFileName     = 'net.r_eg.DllExport.targets'
+$assemblyFName      = 'DllExport' # $package.AssemblyReferences[0].Name
+$publicKeyToken     = '8337224C9AD9E356';
+$escInstallPath     = $installPath -replace ' ', '` '
+$escToolsPath       = $toolsPath -replace ' ', '` '
+$metaLib            = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
+$targetFileName     = [IO.Path]::Combine($toolsPath, $targetFileName)
+$targetUri          = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
+$gpc                = Get-MBEGlobalProjectCollection
+$projects           = $gpc.GetLoadedProjects($project.FullName)
 
 # GUI Configurator
 
 # powershell -Command "Import-Module (Join-Path $escToolsPath Configurator.dll); Set-Configuration -Dll $asmpath"
 
-Remove-Item -Path $tempRoot -Force -Recurse -ErrorAction SilentlyContinue
-
-$tdll = (Join-Path $tempRoot $tempFolder);
-if(!(Test-Path -path $tdll)) {
-    New-Item $tdll -Type Directory >$null
-}
-Copy-Item $toolsPath\*.dll -Destination $tdll >$null
-
-$dllGUI = (Join-Path $tdll $guiAsmFile)
-
-if(!(Get-Module -Name $guiAsmFile)) {
-    Import-Module $dllGUI; 
+$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' $escToolsPath
+if($dllConf) {
+    Import-Module $dllConf; 
 }
 
-Set-Configuration -MetaLib $metaLib -InstallPath $installPath -ToolsPath $toolsPath -ProjectDTE $project -ProjectsMBE $projectCollection::GlobalProjectCollection;
-
-# defNS $([System.IO.Path]::Combine($installPath, 'lib\net20', $assemblyFName + '.dll'))  $vNamespace
+Set-Configuration -MetaLib $metaLib -InstallPath $escInstallPath -ToolsPath $escToolsPath -ProjectDTE $project -ProjectsMBE $gpc;
 
 
 # change the reference to DllExport.dll to not be copied locally
@@ -79,5 +57,4 @@ $projects |  % {
     
     # remove the old stuff in the DllExports folder from previous versions, (will check that only known files are in it)
     Remove-OldDllExportFolder $project
-    Assert-PlatformTargetOfProject $project.FullName
 }

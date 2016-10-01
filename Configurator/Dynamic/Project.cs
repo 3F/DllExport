@@ -23,6 +23,7 @@
 */
 
 using System;
+using net.r_eg.Conari.Log;
 using net.r_eg.DllExport.Configurator.Exceptions;
 
 namespace net.r_eg.DllExport.Configurator.Dynamic
@@ -153,7 +154,29 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
         /// <returns></returns>
         public dynamic/*ProjectProperty*/ setProperty(string name, string val)
         {
+#if DEBUG
+            LSender._.send(this, $"Set property for project: '{name}' = '{val}'");
+#endif
             return MBEProject.SetProperty(name, val);
+        }
+
+        /// <summary>
+        /// Removes an property from the project.
+        /// </summary>
+        /// <param name="name">Property name.</param>
+        /// <returns></returns>
+        public bool removeProperty(string name)
+        {
+#if DEBUG
+            LSender._.send(this, $"Remove property from project: '{name}'");
+#endif
+            if(String.IsNullOrWhiteSpace(name)) {
+                return false;
+            }
+
+            // https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.removeproperty.aspx
+            // https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.getproperty.aspx
+            return MBEProject.RemoveProperty(MBEProject.GetProperty(name));
         }
 
         public Project(dynamic pdte, dynamic pmbe)

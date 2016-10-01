@@ -154,7 +154,7 @@ namespace RGiesecke.DllExport
                     {
                         throw new DirectoryNotFoundException(string.Format(Resources.Directory_0_does_not_exist, (object)str));
                     }
-                    this.GetNotifier().Notify(1, DllExportLogginCodes.CreatingBinariesForEachPlatform, Resources.Platform_is_0_creating_binaries_for_each_CPU_platform_in_a_separate_subfolder, (object)this.InputValues.Cpu);
+
                     ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x86"), fileName), ".x86", CpuPlatform.X86);
                     ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x64"), fileName), ".x64", CpuPlatform.X64);
                 }

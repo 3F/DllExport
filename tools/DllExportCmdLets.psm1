@@ -35,7 +35,7 @@ function Remove-OldDllExportFolders {
     }
 }
 
-function Get-DllExportMsBuildProjectsByFullName([String] $fullName) {
+function Get-MBEGlobalProjectCollection {
     $msBuildV4Name = 'Microsoft.Build, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a';
     $msBuildV4 = [System.Reflection.Assembly]::LoadWithPartialName($msBuildV4Name)
 
@@ -45,7 +45,43 @@ function Get-DllExportMsBuildProjectsByFullName([String] $fullName) {
 
     $projectCollection = $msBuildV4.GetType('Microsoft.Build.Evaluation.ProjectCollection')
 
-    return $projectCollection::GlobalProjectCollection.GetLoadedProjects($fullName)
+    return $projectCollection::GlobalProjectCollection
+}
+
+function Get-DllExportMsBuildProjectsByFullName([String] $fullName) {
+    $gpc = Get-MBEGlobalProjectCollection
+
+    return $gpc.GetLoadedProjects($fullName)
+}
+
+function Get-TempPathToDllTools {
+    param($toolsPath)
+    
+    $tempRoot   = (Join-Path $([System.IO.Path]::GetTempPath()) '50ACAD2A-5AB3-4E6A-BA66-07F55672E91F') -replace ' ', '` '
+    $tempFolder = $([System.Guid]::NewGuid());
+    
+    Remove-Item -Path $tempRoot -Force -Recurse -ErrorAction SilentlyContinue
+
+    $tdll = (Join-Path $tempRoot $tempFolder);
+    if(!(Test-Path -path $tdll)) {
+        New-Item $tdll -Type Directory >$null
+    }
+    Copy-Item $toolsPath\*.dll -Destination $tdll >$null
+
+    return $tdll
+}
+
+function Get-TempPathToConfiguratorIfNotLoaded {
+    param($asmFile, $toolsPath)
+    
+    $tdll = Get-TempPathToDllTools $toolsPath
+    $mdll = (Join-Path $tdll $asmFile)
+    
+    if(!(Get-Module -Name $asmFile)) {
+        # Import-Module $mdll;
+        return $mdll
+    }
+    return $null
 }
 
 function Get-AllDllExportMsBuildProjects {
@@ -55,27 +91,6 @@ function Get-AllDllExportMsBuildProjects {
         return ($_.Xml.Imports | ? {
                "net.r_eg.DllExport.targets" -ieq [System.IO.Path]::GetFileName($_.Project);
         }).Length -gt 0;
-    }
-}
-
-function Assert-PlatformTargetOfProject([String] $fullName) {
-    $proj = Get-DllExportMsBuildProjectsByFullName $fullName
-
-    if(!$proj) {
-        return;
-    }
-
-    $platformTarget = $proj.GetPropertyValue('PlatformTarget');
-
-    if(!$platformTarget -or ($platformTarget -ine 'x86' -and $platformTarget -ine 'x64')) {
-        $projectName = [IO.Path]::GetFileNameWithoutExtension($fullName);
-        if(!$platformTarget) {
-            $platformTarget = "has no platform target";
-        } else {
-            $platformTarget = "has a platform target of '$platformTarget'";
-        }
-        Write-Warning "The project '$projectName' $platformTarget. Only x86 or x64 assemblies can export functions."
-        Write-Host ""
     }
 }
 
@@ -97,9 +112,10 @@ function Set-NoDllExportsForAnyCpu([String] $projectName, [System.Nullable[bool]
 }
 
 Export-ModuleMember Set-NoDllExportsForAnyCpu
-
+Export-ModuleMember Get-MBEGlobalProjectCollection
+Export-ModuleMember Get-TempPathToDllTools
+Export-ModuleMember Get-TempPathToConfiguratorIfNotLoaded
 Export-ModuleMember Remove-OldDllExportFolder
 Export-ModuleMember Remove-OldDllExportFolders
 Export-ModuleMember Get-DllExportMsBuildProjectsByFullName
 Export-ModuleMember Get-AllDllExportMsBuildProjects
-Export-ModuleMember Assert-PlatformTargetOfProject

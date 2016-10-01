@@ -178,9 +178,9 @@
             this.labelOrdinals.AutoSize = true;
             this.labelOrdinals.Location = new System.Drawing.Point(88, 25);
             this.labelOrdinals.Name = "labelOrdinals";
-            this.labelOrdinals.Size = new System.Drawing.Size(85, 13);
+            this.labelOrdinals.Size = new System.Drawing.Size(107, 13);
             this.labelOrdinals.TabIndex = 1;
-            this.labelOrdinals.Text = "Base for ordinals";
+            this.labelOrdinals.Text = "The Base for ordinals";
             // 
             // labelActiveCfg
             // 
