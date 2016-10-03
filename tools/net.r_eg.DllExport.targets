@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <!-- 
-      Predefined namespace and attribute name. Should be used with changed namespace:
+      The DllExportNamespace property is used for ddNS features:
     
       https://github.com/3F/DllExport/issues/2#issuecomment-231593744
 
@@ -24,10 +24,11 @@
   -->
   <PropertyGroup>
     <DllExportNamespace Condition="'$(DllExportNamespace)' == ''">System.Runtime.InteropServices</DllExportNamespace>
-    <DllExportAttrNameOnly>DllExportAttribute</DllExportAttrNameOnly>
-    <DllExportAttrDllName>DllExport.dll</DllExportAttrDllName>
-    <DllExportAttrDllPath>$(MSBuildThisFileDirectory)..\lib\net20\</DllExportAttrDllPath>
-    <DllExportAttrDll>$(DllExportAttrDllPath)$(DllExportAttrDllName)</DllExportAttrDll>
+    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">lib\net20\</DllExportLibPath>
+    <DllExportLibFullPath Condition="'$(DllExportLibFullPath)' == ''">$(MSBuildThisFileDirectory)..\$(DllExportLibPath)</DllExportLibFullPath>
+    <DllExportMetaLibAttr Condition="'$(DllExportMetaLibAttr)' == ''">DllExportAttribute</DllExportMetaLibAttr>
+    <DllExportMetaLibName Condition="'$(DllExportMetaLibName)' == ''">DllExport.dll</DllExportMetaLibName>
+    <DllExportMetaLibFullPath Condition="'$(DllExportMetaLibFullPath)' == ''">$(DllExportLibFullPath)$(DllExportMetaLibName)</DllExportMetaLibFullPath>
   </PropertyGroup>
 
   <UsingTask TaskName="RGiesecke.DllExport.MSBuild.DllExportAppDomainIsolatedTask" AssemblyFile="RGiesecke.DllExport.MSBuild.dll" />
@@ -35,7 +36,7 @@
     
     <PropertyGroup>
       <!-- Sorry for the weird naming of those 2, but I have to prevent the upgrade from the old template to remove those from your project files -->
-      <DllExportAttributeFullNameProp Condition="'$(DllExportAttributeFullNameProp)' == ''">$(DllExportNamespace).$(DllExportAttrNameOnly)</DllExportAttributeFullNameProp>
+      <DllExportAttributeFullNameProp Condition="'$(DllExportAttributeFullNameProp)' == ''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullNameProp>
       <DllExportAttributeAssemblyNameProp Condition="'$(DllExportAttributeAssemblyNameProp)' == ''">DllExport</DllExportAttributeAssemblyNameProp>
 
       <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(Platform)</DllExportPlatform>
@@ -61,7 +62,7 @@
           Platform="$(DllExportPlatform)"
           PlatformTarget="$(DllExportPlatformTarget)"
           CpuType="$(DllExportCpuType)"
-          DllExportAttributeFullName="$(DllExportNamespace).$(DllExportAttrNameOnly)"
+          DllExportAttributeFullName="$(DllExportNamespace).$(DllExportMetaLibAttr)"
           EmitDebugSymbols="$(DllExportEmitDebugSymbols)"
           LeaveIntermediateFiles="$(DllExportLeaveIntermediateFiles)"
           Timeout="$(DllExportTimeout)"
@@ -76,14 +77,15 @@
           SdkPath="$(DllExportSdkPath)"
           SkipOnAnyCpu="$(DllExportSkipOnAnyCpu)"
           OrdinalsBase="$(DllExportOrdinalsBase)"
+          MetaLib="$(DllExportMetaLibFullPath)"
          />
   
   </Target>
 
   <Target Name="DllExportLib" BeforeTargets="PrepareForBuild;BeforeBuild;BeforeRebuild" >
-      <Exec Condition="!Exists('$(DllExportAttrDll).ddNSi')"
+      <Exec Condition="!Exists('$(DllExportMetaLibFullPath).ddNSi')"
               WorkingDirectory="$(MSBuildThisFileDirectory)"
-              Command="NSBin.bat &quot;$(DllExportAttrDll)&quot; &quot;$(DllExportNamespace)&quot;" />
+              Command="NSBin.bat &quot;$(DllExportMetaLibFullPath)&quot; &quot;$(DllExportNamespace)&quot;" />
   </Target>
   
 </Project>

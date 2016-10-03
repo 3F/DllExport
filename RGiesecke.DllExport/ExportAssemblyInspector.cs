@@ -186,10 +186,10 @@ namespace RGiesecke.DllExport
         private void CheckForExportedMethods(Func<ExportedMethod> createExportMethod, ExtractExportHandler exportFilter, List<ExportedMethod> exportMethods, MethodDefinition mi)
         {
             IExportInfo exportInfo;
-            if(!exportFilter(mi, out exportInfo))
-            {
+            if(!exportFilter(mi, out exportInfo)) {
                 return;
             }
+
             ExportedMethod exportedMethod = createExportMethod();
             exportedMethod.IsStatic = mi.IsStatic;
             exportedMethod.IsGeneric = mi.HasGenericParameters;
@@ -209,28 +209,29 @@ namespace RGiesecke.DllExport
                 }
                 stringBuilder.Append(">");
             }
+
             exportedMethod.MemberName = stringBuilder.ToString();
-            exportedMethod.AssignFrom(exportInfo);
-            if(string.IsNullOrEmpty(exportedMethod.ExportName))
-            {
+            exportedMethod.AssignFrom(exportInfo, InputValues);
+
+            if(String.IsNullOrEmpty(exportedMethod.ExportName)) {
                 exportedMethod.ExportName = mi.Name;
             }
-            if(exportedMethod.CallingConvention == (CallingConvention)0)
-            {
-                exportedMethod.CallingConvention = CallingConvention.Winapi;
-            }
+
             exportMethods.Add(exportedMethod);
         }
 
         public bool TryExtractExport(ICustomAttributeProvider memberInfo, out IExportInfo exportInfo)
         {
-            exportInfo = (IExportInfo)null;
+            exportInfo = null;
+
             foreach(CustomAttribute customAttribute in memberInfo.CustomAttributes)
             {
-                if(customAttribute.Constructor.DeclaringType.FullName == this.DllExportAttributeFullName)
+                if(customAttribute.Constructor.DeclaringType.FullName == DllExportAttributeFullName)
                 {
-                    exportInfo = (IExportInfo)new ExportInfo();
-                    IExportInfo ei = exportInfo;
+                    exportInfo      = new ExportInfo();
+                    IExportInfo ei  = exportInfo;
+                    //((IExportInfoEx)exportInfo).CustomAttr = customAttribute;
+
                     int index = -1;
                     foreach(CustomAttributeArgument constructorArgument in customAttribute.ConstructorArguments)
                     {

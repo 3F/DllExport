@@ -289,6 +289,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public string MetaLib
+        {
+            get {
+                return _ExportTaskImplementation.MetaLib;
+            }
+
+            set {
+                _ExportTaskImplementation.MetaLib = value;
+            }
+        }
+
         public string DllExportAttributeFullName
         {
             get {

@@ -84,15 +84,27 @@ namespace
 #endif
 
 {
+    /// <summary>
+    /// Please note: this will be used via Cecil to get meta-information by IL-instructions and main definitions of used arguments in user-code.
+    /// https://github.com/3F/DllExport/issues/16
+    /// </summary>
     [Serializable]
-    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false)]
-    public class DllExportAttribute: Attribute
+    [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
+    public sealed class DllExportAttribute: Attribute
     {
+        /// <summary>
+        /// __cdecl is the default calling convention for C and C++ programs
+        /// and __stdCall mostly used with winapi. Thus, we also use Cdecl by default.
+        /// 
+        /// https://msdn.microsoft.com/en-us/library/zkwh89ks.aspx
+        /// https://msdn.microsoft.com/en-us/library/56h2zst2.aspx
+        /// https://github.com/3F/Conari also uses __cdecl by default
+        /// </summary>
         public CallingConvention CallingConvention
         {
             get;
             set;
-        }
+        } = CallingConvention.Cdecl;
 
         public string ExportName
         {
@@ -100,32 +112,14 @@ namespace
             set;
         }
 
-        public DllExportAttribute(string function, CallingConvention convention)
-        {
-            ExportName          = function;
-            CallingConvention   = convention;
-        }
+        /* Available signatures */
 
-        public DllExportAttribute(string function)
-            : this(function, CallingConvention.Cdecl)
-        {
-            // __cdecl is the default calling convention for C and C++ programs
-            // and __stdCall mostly used with winapi. Thus, we also use Cdecl by default.
-            // 
-            // https://msdn.microsoft.com/en-us/library/zkwh89ks.aspx
-            // https://msdn.microsoft.com/en-us/library/56h2zst2.aspx
-            // https://github.com/3F/Conari also uses __cdecl by default
-        }
+        public DllExportAttribute(string function, CallingConvention convention) { }
 
-        public DllExportAttribute(CallingConvention convention)
-            : this(null, convention)
-        {
+        public DllExportAttribute(string function) { }
 
-        }
+        public DllExportAttribute(CallingConvention convention) { }
 
-        public DllExportAttribute()
-        {
-
-        }
+        public DllExportAttribute() { }
     }
 }

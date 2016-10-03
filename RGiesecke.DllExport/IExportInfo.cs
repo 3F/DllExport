@@ -8,28 +8,14 @@ namespace RGiesecke.DllExport
 {
     public interface IExportInfo
     {
-        CallingConvention CallingConvention
-        {
-            get;
-            set;
-        }
+        CallingConvention CallingConvention { get; set; }
 
-        string ExportName
-        {
-            get;
-            set;
-        }
+        string ExportName { get; set; }
 
-        bool IsStatic
-        {
-            get;
-        }
+        bool IsStatic { get; }
 
-        bool IsGeneric
-        {
-            get;
-        }
+        bool IsGeneric { get; }
 
-        void AssignFrom(IExportInfo info);
+        void AssignFrom(IExportInfo info, IInputValues input);
     }
 }

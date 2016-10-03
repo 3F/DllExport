@@ -78,6 +78,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        string MetaLib
+        {
+            get;
+            set;
+        }
+
         string MethodAttributes
         {
             get;
