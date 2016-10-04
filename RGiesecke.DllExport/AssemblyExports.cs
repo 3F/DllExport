@@ -114,14 +114,14 @@ namespace RGiesecke.DllExport
             var dictionary = new Dictionary<string, DuplicateExports>();
             foreach(ExportedClass exportedClass in ClassesByName.Values)
             {
-                List<ExportedMethod> exportedMethodList = new List<ExportedMethod>(exportedClass.Methods.Count);
+                var exportedMethodList = new List<ExportedMethod>(exportedClass.Methods.Count);
                 foreach(ExportedMethod method in exportedClass.Methods)
                 {
                     DuplicateExports duplicateExports;
                     if(!dictionary.TryGetValue(method.ExportName, out duplicateExports))
                     {
                         method.VTableOffset = num++;
-                        this.MethodsByExportName.Add(method.MemberName, method);
+                        MethodsByExportName.Add(method.ExportName, method); // #10 :: MemberName -> ExportName + see DeleteExportAttributeParserAction
                         dictionary.Add(method.ExportName, new DuplicateExports(method));
                     }
                     else
@@ -130,10 +130,12 @@ namespace RGiesecke.DllExport
                         duplicateExports.Duplicates.Add(method);
                     }
                 }
+
                 ExportedClass exportClassCopy = exportedClass;
                 exportedMethodList.ForEach((Action<ExportedMethod>)(m => exportClassCopy.Methods.Remove(m)));
                 exportedClass.Refresh();
             }
+
             foreach(DuplicateExports duplicateExports in dictionary.Values)
             {
                 if(duplicateExports.Duplicates.Count > 0)

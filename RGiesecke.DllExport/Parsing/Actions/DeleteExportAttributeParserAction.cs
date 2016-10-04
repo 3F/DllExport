@@ -14,52 +14,75 @@ namespace RGiesecke.DllExport.Parsing.Actions
     {
         public override void Execute(ParserStateValues state, string trimmedLine)
         {
-            if(trimmedLine.StartsWith(".custom", StringComparison.Ordinal) || trimmedLine.StartsWith("// Code", StringComparison.Ordinal))
-            {
-                ExportedClass exportedClass;
-                if(this.Exports.ClassesByName.TryGetValue(state.ClassNames.Peek(), out exportedClass))
-                {
-                    ExportedMethod exportMethod = exportedClass.MethodsByName[state.Method.Name][0];
-                    string declaration = state.Method.Declaration;
-                    StringBuilder stringBuilder = new StringBuilder(250);
-                    stringBuilder.Append(".method ").Append(state.Method.Attributes.NullSafeTrim()).Append(" ");
-                    stringBuilder.Append(state.Method.Result.NullSafeTrim());
-                    stringBuilder.Append(" modopt(['mscorlib']'").Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append("') ");
-                    if(!string.IsNullOrEmpty(state.Method.ResultAttributes))
-                    {
-                        stringBuilder.Append(" ").Append(state.Method.ResultAttributes);
-                    }
-                    stringBuilder.Append(" '").Append(state.Method.Name).Append("'").Append(state.Method.After.NullSafeTrim());
-                    bool flag = this.ValidateExportNameAndLogError(exportMethod, state);
-                    if(flag)
-                    {
-                        state.Method.Declaration = stringBuilder.ToString();
-                    }
-                    if(state.MethodPos != 0)
-                    {
-                        state.Result.Insert(state.MethodPos, state.Method.Declaration);
-                    }
-                    if(flag)
-                    {
-                        this.Notifier.Notify(-2, DllExportLogginCodes.OldDeclaration, "\t" + Resources.OldDeclaration_0_, (object)declaration);
-                        this.Notifier.Notify(-2, DllExportLogginCodes.NewDeclaration, "\t" + Resources.NewDeclaration_0_, (object)state.Method.Declaration);
-                        state.Result.Add(string.Format((IFormatProvider)CultureInfo.InvariantCulture, "    .export [{0}] as '{1}'", new object[2]
-                        {
-                        (object) exportMethod.VTableOffset,
-                        (object) exportMethod.ExportName
-                        }));
-                        this.Notifier.Notify(-1, DllExportLogginCodes.AddingVtEntry, "\t" + Resources.AddingVtEntry_0_export_1_, (object)exportMethod.VTableOffset, (object)exportMethod.ExportName);
-                    }
-                }
-                else
-                {
-                    state.AddLine = false;
-                }
-                state.State = ParserState.Method;
-            }
-            else
+            if(!trimmedLine.StartsWith(".custom", StringComparison.InvariantCulture) // .custom instance void ['DllExport']'...'.'DllExportAttribute'::.ctor(string) = ( 01 00 06 50 72 69 6E 74 31 00 00 ) // ...Print1..
+                && !trimmedLine.StartsWith(".maxstack", StringComparison.InvariantCulture))
             {
                 state.AddLine = false;
+                return;
+            }
+            state.State = ParserState.Method;
+
+            ExportedClass exportedClass;
+            if(!Exports.ClassesByName.TryGetValue(state.ClassNames.Peek(), out exportedClass)) {
+                state.AddLine = false;
+                return;
+            }
+
+            ExportedMethod exportMethod = getExportedMethod(state, exportedClass);
+            string declaration          = state.Method.Declaration;
+            StringBuilder stringBuilder = new StringBuilder(250);
+
+            stringBuilder.Append(".method ").Append(state.Method.Attributes.NullSafeTrim()).Append(" ");
+            stringBuilder.Append(state.Method.Result.NullSafeTrim());
+            stringBuilder.Append(" modopt(['mscorlib']'").Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append("') ");
+
+            if(!String.IsNullOrEmpty(state.Method.ResultAttributes)) {
+                stringBuilder.Append(" ").Append(state.Method.ResultAttributes);
+            }
+
+            stringBuilder.Append(" '").Append(state.Method.Name).Append("'").Append(state.Method.After.NullSafeTrim());
+            bool flag = ValidateExportNameAndLogError(exportMethod, state);
+
+            if(flag) {
+                state.Method.Declaration = stringBuilder.ToString();
+            }
+
+            if(state.MethodPos != 0) {
+                state.Result.Insert(state.MethodPos, state.Method.Declaration);
+            }
+
+            if(flag)
+            {
+                Notifier.Notify(-2, DllExportLogginCodes.OldDeclaration, "\t" + Resources.OldDeclaration_0_, declaration);
+                Notifier.Notify(-2, DllExportLogginCodes.NewDeclaration, "\t" + Resources.NewDeclaration_0_, state.Method.Declaration);
+
+                state.Result.Add(
+                    String.Format(
+                        CultureInfo.InvariantCulture, 
+                        "    .export [{0}] as '{1}'",
+                        exportMethod.VTableOffset,
+                        exportMethod.ExportName
+                    )
+                );
+
+                Notifier.Notify(-1, DllExportLogginCodes.AddingVtEntry, "\t" + Resources.AddingVtEntry_0_export_1_, exportMethod.VTableOffset, exportMethod.ExportName);
+            }
+        }
+
+        private ExportedMethod getExportedMethod(ParserStateValues state, ExportedClass exportedClass)
+        {
+            var exportedMethods = exportedClass.MethodsByName[state.Method.Name];
+
+            // TODO: To get from zero index - it was in original code, as getting of first exported method.
+            //       However, to solve problem https://github.com/3F/DllExport/issues/10 I also added the `ExportName` instead of `MemberName` in AssemblyExports.cs
+            //       And I left it 'as is', but the good way to provide information about arguments, i.e.:
+            //       ~ 'Print'(int32 'a') cil managed   -> .export [0] as 'Print1'
+            //       ~ 'Print'(bool 'b') cil managed    -> .export [1] as 'Print2'
+            try {
+                return exportedMethods[0];
+            }
+            finally {
+                exportedMethods.RemoveAt(0); // moving in order by adding ^
             }
         }
     }
