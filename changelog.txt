@@ -1,5 +1,26 @@
-DllExport
-____________________
+DllExport - github.com/3F/DllExport
+- - - - - - - - - - - - - - - - - - 
+
+[v1.4]
+
+    * FIXED: Fixed bug - `An item with the same key has already been added`. Issue #10
+    * FIXED: Bug with Meta library: Incorrect default values. Issue #16
+             please note, the __cdecl is the default calling convention for our library 
+             as and for C and C++ programs.
+
+    * FIXED?: Probably fixed bug - `Script errors on package install` Issue #6
+    * FIXED?: Probably fixed bug - `non-English system language - syntax error` Issue #7
+    * NEW: GUI Configurator with updated ddNS features.
+    * NEW: Implemented feature 'Export for platform': [ x86 / x64 / x86 + x64 ] Issue #9
+    * NEW: Implemented feature 'Base for ordinals'. Issue #11
+           There is also alternative to configure this number - MSBuild property: DllExportOrdinalsBase
+         
+    * NEW: The one (1) now is used by default as Base for all ordinals. 
+           `Mimic ordinal counter (start from 1 instead of 0)` Issue #8
+         
+    * CHANGED: The ddNS features now as binary cmdlet `NSBin`. Use `nsbin.bat` if needed.
+    * CHANGED: `Set "Inherited = false" in AttributeUsage for DllExportAttribute`. Issue #15
+    * OTHER: other possible changes and fixes.
 
 [v1.3]
 
