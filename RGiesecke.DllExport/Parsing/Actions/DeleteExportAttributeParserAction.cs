@@ -71,19 +71,8 @@ namespace RGiesecke.DllExport.Parsing.Actions
 
         private ExportedMethod getExportedMethod(ParserStateValues state, ExportedClass exportedClass)
         {
-            var exportedMethods = exportedClass.MethodsByName[state.Method.Name];
-
-            // TODO: To get from zero index - it was in original code, as getting of first exported method.
-            //       However, to solve problem https://github.com/3F/DllExport/issues/10 I also added the `ExportName` instead of `MemberName` in AssemblyExports.cs
-            //       And I left it 'as is', but the good way to provide information about arguments, i.e.:
-            //       ~ 'Print'(int32 'a') cil managed   -> .export [0] as 'Print1'
-            //       ~ 'Print'(bool 'b') cil managed    -> .export [1] as 'Print2'
-            try {
-                return exportedMethods[0];
-            }
-            finally {
-                exportedMethods.RemoveAt(0); // moving in order by adding ^
-            }
+            //TODO: see details in nextExportedMethod()
+            return exportedClass.nextExportedMethod(state.Method.Name);
         }
     }
 }

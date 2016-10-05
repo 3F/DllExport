@@ -144,24 +144,22 @@ namespace RGiesecke.DllExport
 
         private void RunIlAsm(IlAsm ilAsm)
         {
-            using(this.GetNotifier().CreateContextName((object)this, "RunIlAsm"))
+            using(GetNotifier().CreateContextName(this, "RunIlAsm"))
             {
-                if(this.InputValues.Cpu == CpuPlatform.AnyCpu)
-                {
-                    string str = Path.GetDirectoryName(this.InputValues.OutputFileName) ?? "";
-                    string fileName = Path.GetFileName(this.InputValues.OutputFileName);
-                    if(!Directory.Exists(str))
-                    {
-                        throw new DirectoryNotFoundException(string.Format(Resources.Directory_0_does_not_exist, (object)str));
-                    }
+                if(InputValues.Cpu != CpuPlatform.AnyCpu) {
+                    reassembleFile(ilAsm, InputValues.OutputFileName, "", InputValues.Cpu);
+                    return;
+                }
 
-                    ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x86"), fileName), ".x86", CpuPlatform.X86);
-                    ilAsm.ReassembleFile(Path.Combine(Path.Combine(str, "x64"), fileName), ".x64", CpuPlatform.X64);
+                string dir      = Path.GetDirectoryName(InputValues.OutputFileName) ?? "";
+                string fileName = Path.GetFileName(InputValues.OutputFileName);
+
+                if(!Directory.Exists(dir)) {
+                    throw new DirectoryNotFoundException(String.Format(Resources.Directory_0_does_not_exist, dir));
                 }
-                else
-                {
-                    ilAsm.ReassembleFile(this.InputValues.OutputFileName, "", this.InputValues.Cpu);
-                }
+
+                reassembleFile(ilAsm, Path.Combine(Path.Combine(dir, "x86"), fileName), ".x86", CpuPlatform.X86);
+                reassembleFile(ilAsm, Path.Combine(Path.Combine(dir, "x64"), fileName), ".x64", CpuPlatform.X64);
             }
         }
 
@@ -189,6 +187,23 @@ namespace RGiesecke.DllExport
                     ilDasm2.TempDirectory = tempDirectory;
                     ilDasm2.Run();
                 }
+            }
+        }
+
+        private int reassembleFile(IlAsm ilAsm, string outputFile, string ilSuffix, CpuPlatform cpu)
+        {
+            try {
+                return ilAsm.ReassembleFile(outputFile, ilSuffix, cpu);
+            }
+            finally {
+                cleanup(ilAsm);
+            }
+        }
+
+        private void cleanup(IlAsm ilAsm)
+        {
+            foreach(var _class in ilAsm.Exports.ClassesByName.Values) {
+                _class.resetExportedMethods();
             }
         }
     }
