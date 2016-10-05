@@ -56,8 +56,8 @@ Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature),
       v1.2: 01F4 - allocated buffer size    
 ```
 
-[![](https://raw.githubusercontent.com/3F/DllExport/master/DllExport/Resources/img/DllExport.png)](#)
-[![](https://raw.githubusercontent.com/3F/DllExport/master/DllExport/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
+[![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
+[![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
 
 ----
 
