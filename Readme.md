@@ -29,12 +29,13 @@ public static int entrypoint(IntPtr L)
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
-[DllExport(CallingConvention.StdCall)] //v1.1+
+// __cdecl is the default calling convention for our library as and for C and C++ programs
+[DllExport(CallingConvention.StdCall)]
 [DllExport("MyFunc")]
 [DllExport]
 ```
 
-Where to look ? **v1.2+** provides dynamic definition of namespace, so you can use what you want ! for more details see **[here](https://github.com/3F/DllExport/issues/2)**
+Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature), thus you can use what you want ! details **[here](https://github.com/3F/DllExport/issues/2)**
 
 ```cpp
     Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
@@ -46,12 +47,6 @@ Where to look ? **v1.2+** provides dynamic definition of namespace, so you can u
     000005F0  00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00  ................
     00000600  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
     ...
-    000007A0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    000007B0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    000007C0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    000007D0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    000007E0  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 3C  ...............< 
-    
       - - - -            
       byte-seq via chars: 
       + Identifier        = [32]bytes
@@ -61,10 +56,13 @@ Where to look ? **v1.2+** provides dynamic definition of namespace, so you can u
       v1.2: 01F4 - allocated buffer size    
 ```
 
+[![](https://raw.githubusercontent.com/3F/DllExport/master/DllExport/Resources/img/DllExport.png)](#)
+[![](https://raw.githubusercontent.com/3F/DllExport/master/DllExport/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
+
 ----
 
 
-[Initially](https://github.com/3F/DllExport/issues/3), the original tool `UnmanagedExports` was distributed by Robert Giesecke as a closed-source tool **under the [MIT License](https://opensource.org/licenses/mit-license.php)**:
+[Initially](https://github.com/3F/DllExport/issues/3) the original tool `UnmanagedExports` was distributed by Robert Giesecke as an closed-source tool **under the [MIT License](https://opensource.org/licenses/mit-license.php)**:
 
 * [Official page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) - *posted Jul 9, 2009 [ updated Dec 19, 2012 ]*
 * [Official NuGet Packages](https://www.nuget.org/packages/UnmanagedExports) 
@@ -75,9 +73,39 @@ Now, we will be more open ! all details [here](https://github.com/3F/DllExport/i
 
 It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE) - be a ~free~ and open
 
-##
+## &
 
-### How to get
+### How it works
+
+Current features was been implemented through [ILDasm](https://github.com/dotnet/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/dotnet/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive.
+
+**What inside ? or how works the .export directive ?**
+
+Read about format PE32/PE32+ and start with grammar of asmparse [here](https://github.com/dotnet/coreclr/blob/master/src/ilasm/asmparse.y):
+
+```cpp
+...
+{ if(PASM->m_pCurMethod->m_dwExportOrdinal == 0xFFFFFFFF)
+  {
+    PASM->m_pCurMethod->m_dwExportOrdinal = $3;
+    PASM->m_pCurMethod->m_szExportAlias = $6;
+    if(PASM->m_pCurMethod->m_wVTEntry == 0) PASM->m_pCurMethod->m_wVTEntry = 1;
+    if(PASM->m_pCurMethod->m_wVTSlot  == 0) PASM->m_pCurMethod->m_wVTSlot = $3 + 0x8000;
+  }
+...
+}
+...
+EATEntry*   pEATE = new EATEntry;
+pEATE->dwOrdinal = pMD->m_dwExportOrdinal;
+pEATE->szAlias = pMD->m_szExportAlias ? pMD->m_szExportAlias : pMD->m_szName;
+pEATE->dwStubRVA = EmitExportStub(pGlobalLabel->m_GlobalOffset+dwDelta);
+m_EATList.PUSH(pEATE);
+...
+```
+
+or read my short explanations from here: [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
+
+### How to get DllExport
 
 Available variants:
 
