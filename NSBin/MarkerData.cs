@@ -43,5 +43,10 @@ namespace net.r_eg.DllExport.NSBin
         /// Valid buffer size for namespace.
         /// </summary>
         public int nsBuffer;
+
+        /// <summary>
+        /// Cecil logic.
+        /// </summary>
+        public bool viaCecil;
     }
 }

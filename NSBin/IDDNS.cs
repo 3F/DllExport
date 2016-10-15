@@ -43,6 +43,7 @@ namespace net.r_eg.DllExport.NSBin
         /// </summary>
         /// <param name="lib">Full path to prepared library.</param>
         /// <param name="name">New namespace.</param>
-        void setNamespace(string lib, string name);
+        /// <param name="useCecil">To use Cecil instead of direct modification.</param>
+        void setNamespace(string lib, string name, bool useCecil);
     }
 }

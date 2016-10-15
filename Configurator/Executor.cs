@@ -72,7 +72,8 @@ namespace net.r_eg.DllExport.Configurator
             removeMsbuildProperties(
                 "DllExportNamespace",
                 "DllExportOrdinalsBase",
-                "DllExportSkipOnAnyCpu"
+                "DllExportSkipOnAnyCpu",
+                "DllExportDDNSCecil"
             );
         }
 
@@ -91,8 +92,10 @@ namespace net.r_eg.DllExport.Configurator
                 config.MetaLibPublicKeyToken
             );
 
+            setProperty("DllExportDDNSCecil", config.useCecil.ToString());
+
             // binary modifications of metalib assembly
-            ddns.setNamespace(config.script.MetaLib, config.unamespace);
+            ddns.setNamespace(config.script.MetaLib, config.unamespace, config.useCecil);
         }
 
         protected void cfgPlatform()
@@ -125,16 +128,14 @@ namespace net.r_eg.DllExport.Configurator
                 }
             }
 
-            project.setProperty("PlatformTarget", platform);
-            project.saveViaDTE();
+            setProperty("PlatformTarget", platform);
 
             Log.send(this, $"The Export configured for platform: {platformS}");
         }
 
         protected void cfgCompiler()
         {
-            project.setProperty("DllExportOrdinalsBase", config.compiler.ordinalsBase.ToString());
-            project.saveViaDTE();
+            setProperty("DllExportOrdinalsBase", config.compiler.ordinalsBase.ToString());
 
             Log.send(this, $"The Base for ordinals: {config.compiler.ordinalsBase}");
         }
@@ -144,6 +145,16 @@ namespace net.r_eg.DllExport.Configurator
             foreach(string p in names) {
                 project.removeProperty(p);
             }
+            project.saveViaDTE();
+        }
+
+        private void setProperty(string name, string val)
+        {
+            if(String.IsNullOrWhiteSpace(name)) {
+                return;
+            }
+
+            project.setProperty(name, val);
             project.saveViaDTE();
         }
     }

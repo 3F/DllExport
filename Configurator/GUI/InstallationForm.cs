@@ -60,6 +60,7 @@ namespace net.r_eg.DllExport.Configurator.GUI
         {
             config.unamespace               = getValidNS(comboNS.Text);
             config.compiler.ordinalsBase    = (int)numOrdinal.Value;
+            config.useCecil                 = rbCecil.Checked;
 
             if(rbPlatformX86.Checked) {
                 config.platform = Platform.x86;

@@ -38,6 +38,8 @@ public static int entrypoint(IntPtr L)
 Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature), thus you can use what you want ! details **[here](https://github.com/3F/DllExport/issues/2)**
 
 ```cpp
+    Via Cecil or direct modification:
+
     Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
 
     000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Ä{..../...
@@ -45,15 +47,6 @@ Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature),
     000005D0  20 02 00 00 00 00 00 00 00 49 2E 77 61 6E 74 2E   ........I.want.   <<<-
     000005E0  74 6F 2E 66 6C 79 00 00 00 00 00 00 00 00 00 00  to.fly..........  <<<-
     000005F0  00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00  ................
-    00000600  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-    ...
-      - - - -            
-      byte-seq via chars: 
-      + Identifier        = [32]bytes
-      + size of buffer    = [ 4]bytes (range: 0000 - FFF9; reserved: FFFA - FFFF)
-      + buffer of n size
-      - - - -
-      v1.2: 01F4 - allocated buffer size    
 ```
 
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)

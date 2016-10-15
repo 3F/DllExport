@@ -30,7 +30,7 @@ namespace net.r_eg.DllExport.NSBin
 {
     public class Marker: BinaryData
     {
-        public const int FORMAT_V = 1;
+        public const int FORMAT_V = 2;
 
         public void write(MarkerData data)
         {

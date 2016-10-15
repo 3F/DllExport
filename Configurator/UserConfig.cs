@@ -42,6 +42,11 @@ namespace net.r_eg.DllExport.Configurator
         public int nsBuffer;
 
         /// <summary>
+        /// To use Cecil instead of direct modifications.
+        /// </summary>
+        public bool useCecil;
+
+        /// <summary>
         /// Predefined list of namespaces.
         /// </summary>
         public List<string> defnamespaces = new List<string>() {

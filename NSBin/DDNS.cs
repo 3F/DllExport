@@ -66,10 +66,11 @@ namespace net.r_eg.DllExport.NSBin
         /// </summary>
         /// <param name="lib">Full path to prepared library.</param>
         /// <param name="name">New namespace.</param>
-        public void setNamespace(string lib, string name)
+        /// <param name="useCecil">Use Cecil instead of direct modification.</param>
+        public void setNamespace(string lib, string name, bool useCecil)
         {
             using(var def = new Rmod(lib, encoding)) {
-                def.setNamespace(name);
+                def.setNamespace(name, useCecil);
             }
         }
 

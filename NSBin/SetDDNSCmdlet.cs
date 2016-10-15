@@ -54,6 +54,15 @@ namespace net.r_eg.DllExport.NSBin
             set;
         }
 
+        /// <summary>
+        /// To use Cecil instead of direct modification
+        /// </summary>
+        public bool UseCecil
+        {
+            get;
+            set;
+        } = true;
+
         protected override void ProcessRecord()
         {
             IDDNS ddns = new DDNS(Encoding.UTF8);
@@ -63,7 +72,7 @@ namespace net.r_eg.DllExport.NSBin
                 ddns.Log.Received += onMsg;
 
                 try {
-                    ddns.setNamespace(Dll, Namespace);
+                    ddns.setNamespace(Dll, Namespace, UseCecil);
                 }
                 catch(Exception ex) {
                     LSender.Send(this, $"ERROR-NSBin: {ex.Message}");

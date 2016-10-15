@@ -42,6 +42,8 @@
             this.labelOrdinals = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.labelActiveCfg = new System.Windows.Forms.Label();
+            this.rbCecil = new System.Windows.Forms.RadioButton();
+            this.rbDirect = new System.Windows.Forms.RadioButton();
             this.groupNS.SuspendLayout();
             this.panelNScombo.SuspendLayout();
             this.groupPlatform.SuspendLayout();
@@ -73,6 +75,8 @@
             // 
             // groupNS
             // 
+            this.groupNS.Controls.Add(this.rbCecil);
+            this.groupNS.Controls.Add(this.rbDirect);
             this.groupNS.Controls.Add(this.panelNScombo);
             this.groupNS.Controls.Add(this.linkDDNS);
             this.groupNS.Location = new System.Drawing.Point(3, 3);
@@ -191,6 +195,28 @@
             this.labelActiveCfg.TabIndex = 5;
             this.labelActiveCfg.Text = "*Active configuration: ";
             // 
+            // rbCecil
+            // 
+            this.rbCecil.AutoSize = true;
+            this.rbCecil.Checked = true;
+            this.rbCecil.Location = new System.Drawing.Point(382, 41);
+            this.rbCecil.Name = "rbCecil";
+            this.rbCecil.Size = new System.Drawing.Size(48, 17);
+            this.rbCecil.TabIndex = 4;
+            this.rbCecil.TabStop = true;
+            this.rbCecil.Text = "Cecil";
+            this.rbCecil.UseVisualStyleBackColor = true;
+            // 
+            // rbDirect
+            // 
+            this.rbDirect.AutoSize = true;
+            this.rbDirect.Location = new System.Drawing.Point(295, 41);
+            this.rbDirect.Name = "rbDirect";
+            this.rbDirect.Size = new System.Drawing.Size(85, 17);
+            this.rbDirect.TabIndex = 5;
+            this.rbDirect.Text = "Direct-Mod /";
+            this.rbDirect.UseVisualStyleBackColor = true;
+            // 
             // InstallationForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -240,5 +266,7 @@
         private System.Windows.Forms.Panel panelNScombo;
         private System.Windows.Forms.Label labelActiveCfg;
         private System.Windows.Forms.RadioButton rbPlatformAnyCPU;
+        private System.Windows.Forms.RadioButton rbCecil;
+        private System.Windows.Forms.RadioButton rbDirect;
     }
 }

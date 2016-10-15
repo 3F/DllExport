@@ -22,7 +22,7 @@
  * THE SOFTWARE.
 */
 
-// Modification of binary assemblies. Format and specification:
+// Via Cecil or direct modification:
 //     
 // https://github.com/3F/DllExport/issues/2#issuecomment-231593744
 // 
@@ -48,6 +48,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using Mono.Cecil;
 using net.r_eg.Conari.Log;
 
 namespace net.r_eg.DllExport.NSBin
@@ -76,9 +77,9 @@ namespace net.r_eg.DllExport.NSBin
                     && !Regex.IsMatch(name, @"(?:\.(\s*\.)+|\.\s*$)"); //  left. ...  .right.
         }
 
-        public void setNamespace(string name)
+        public void setNamespace(string name, bool viaCecil = true)
         {
-            Log.send(this, $"set new namespace: ({name}) - ({dll})");
+            Log.send(this, $"set new namespace(Cecil: {viaCecil}): ({name}) - ({dll})");
 
             if(String.IsNullOrWhiteSpace(dll) || !File.Exists(dll)) {
                 throw new FileNotFoundException($"The '{name}' assembly for modifications was not found.");
@@ -88,7 +89,13 @@ namespace net.r_eg.DllExport.NSBin
             //    throw new ArgumentException("The namespace cannot be null or empty.");
             //}
 
-            make(nsRule(name));
+            var ns = nsRule(name);
+
+            if(viaCecil) {
+                makeViaCecil(ns);
+                return;
+            }
+            make(ns);
         }
 
         /// <param name="dll">The DllExport assembly for modifications.</param>
@@ -99,10 +106,37 @@ namespace net.r_eg.DllExport.NSBin
             ripper      = new Ripper(dll, enc);
         }
 
+        protected void makeViaCecil(string ns)
+        {
+            AssemblyDefinition asmdef = AssemblyDefinition.ReadAssembly(
+                ripper.BaseStream,
+                new ReaderParameters(ReadingMode.Immediate)
+            );
+
+            foreach(TypeDefinition t in asmdef.MainModule.Types)
+            {
+                if(t.Namespace.StartsWith(IDNS, StringComparison.InvariantCulture)) {
+                    t.Namespace = ns;
+                    Log.send(this, $"cecil: NS property has been updated for {t.Name}.");
+                }
+            }
+
+            ripper.BaseStream.SetLength(0);
+            asmdef.Write(ripper.BaseStream);
+
+            using(var m = new Marker(_postfixToUpdated(dll)))
+            {
+                m.write(new MarkerData() {
+                    viaCecil = true,
+                    nsName = ns
+                });
+            }
+
+            msgSuccess(ns);
+        }
+
         protected void make(string ns)
         {
-            //prepareLib(dll);
-
             var ident = ripper.getBytesFrom(IDNS);
 
             byte[] data = ripper.readFirst64K();
@@ -149,9 +183,7 @@ namespace net.r_eg.DllExport.NSBin
                     m.write(new MarkerData() { nsPosition = lpos, nsBuffer = buffer, nsName = ns });
                 }
 
-                Log.send(this, "\nThe DllExport Library has been modified !\n");
-                Log.send(this, $"namespace: '{ns}' :: {dll}");
-                Log.send(this, "Details here: https://github.com/3F/DllExport/issues/2");
+                msgSuccess(ns);
             }
         }
 
@@ -181,17 +213,12 @@ namespace net.r_eg.DllExport.NSBin
             return DEFAULT_NS;
         }
 
-        //protected void prepareLib(string dll)
-        //{
-        //    string origin = _postfixToOrigin(dll);
-
-        //    if(!File.Exists(origin)) {
-        //        File.Copy(dll, origin);
-        //    }
-        //    else {
-        //        File.Copy(origin, dll, true);
-        //    }
-        //}
+        private void msgSuccess(string ns)
+        {
+            Log.send(this, "\nThe DllExport Library has been modified !\n");
+            Log.send(this, $"namespace: '{ns}' :: {dll}");
+            Log.send(this, "Details here: https://github.com/3F/DllExport/issues/2");
+        }
 
         private string _postfixToUpdated(string dll)
         {
