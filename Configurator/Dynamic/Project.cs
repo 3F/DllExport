@@ -174,9 +174,11 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
                 return false;
             }
 
-            // https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.removeproperty.aspx
             // https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.getproperty.aspx
-            return MBEProject.RemoveProperty(MBEProject.GetProperty(name));
+            var prop = MBEProject.GetProperty(name);
+
+            // https://msdn.microsoft.com/en-us/library/microsoft.build.evaluation.project.removeproperty.aspx
+            return (prop != null) ? MBEProject.RemoveProperty(prop) : false;
         }
 
         public Project(dynamic pdte, dynamic pmbe)

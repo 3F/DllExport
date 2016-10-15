@@ -132,7 +132,7 @@ namespace net.r_eg.DllExport.NSBin
                 );
 
                 byte[] nsBytes  = ripper.getBytesFrom(ns);
-                int fullseq     = ident + sizeof(UInt16) + buffer;
+                int fullseq     = ident + (sizeof(UInt16) * 2) + buffer;
 
                 Log.send(this, $"binmod: buffer({buffer}); fullseq({fullseq})");
 
