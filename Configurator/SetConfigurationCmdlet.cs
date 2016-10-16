@@ -100,6 +100,12 @@ namespace net.r_eg.DllExport.Configurator
                 }
                 catch(Exception ex) {
                     LSender.Send(this, $"ERROR-GUI: {ex.Message}");
+
+#if DEBUG
+                    LSender.Send(this, $"MetaLib: {MetaLib}");
+                    LSender.Send(this, $"InstallPath: {InstallPath}");
+                    LSender.Send(this, $"ToolsPath: {ToolsPath}");
+#endif
                 }
 
                 exec.Log.Received -= onMsg;

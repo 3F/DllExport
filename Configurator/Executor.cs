@@ -130,7 +130,7 @@ namespace net.r_eg.DllExport.Configurator
 
             setProperty("PlatformTarget", platform);
 
-            Log.send(this, $"The Export configured for platform: {platformS}");
+            Log.send(this, $"The Export has been configured for platform: {platformS}");
         }
 
         protected void cfgCompiler()

@@ -54,13 +54,21 @@ function Get-DllExportMsBuildProjectsByFullName([String] $fullName) {
     return $gpc.GetLoadedProjects($fullName)
 }
 
-function Get-TempPathToDllTools {
-    param($toolsPath)
+function Get-TempPathToDllTools([String] $toolsPath) {
     
     $tempRoot   = (Join-Path $([System.IO.Path]::GetTempPath()) '50ACAD2A-5AB3-4E6A-BA66-07F55672E91F') -replace ' ', '` '
     $tempFolder = $([System.Guid]::NewGuid());
-    
-    Remove-Item -Path $tempRoot -Force -Recurse -ErrorAction SilentlyContinue
+    $delprefix  = '__del__';
+
+    # rename for checking of lock / loaded assemblies
+    Get-ChildItem -Recurse -Path $tempRoot | ?{ $_.PSIsContainer } | %{ 
+        Rename-Item -ErrorAction SilentlyContinue -Path $_.FullName -NewName "$delprefix$($_.Name)" 
+    }
+
+    # now try to delete only this
+    Get-ChildItem -Recurse -Path $tempRoot | ?{ $_.PSIsContainer -and $_.Name.StartsWith($delprefix) } | %{ 
+        Remove-Item $_.FullName -Force -Recurse -ErrorAction SilentlyContinue
+    }
 
     $tdll = (Join-Path $tempRoot $tempFolder);
     if(!(Test-Path -path $tdll)) {
@@ -71,8 +79,7 @@ function Get-TempPathToDllTools {
     return $tdll
 }
 
-function Get-TempPathToConfiguratorIfNotLoaded {
-    param($asmFile, $toolsPath)
+function Get-TempPathToConfiguratorIfNotLoaded([String] $asmFile, [String] $toolsPath) {
     
     $tdll = Get-TempPathToDllTools $toolsPath
     $mdll = (Join-Path $tdll $asmFile)

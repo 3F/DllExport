@@ -57,6 +57,7 @@ namespace net.r_eg.DllExport.NSBin
         /// <summary>
         /// To use Cecil instead of direct modification
         /// </summary>
+        [Parameter(Mandatory = true)]
         public bool UseCecil
         {
             get;
@@ -76,6 +77,11 @@ namespace net.r_eg.DllExport.NSBin
                 }
                 catch(Exception ex) {
                     LSender.Send(this, $"ERROR-NSBin: {ex.Message}");
+
+#if DEBUG
+                    LSender.Send(this, $"Dll: {Dll}");
+                    LSender.Send(this, $"Namespace: {Namespace}");
+#endif
                 }
 
                 ddns.Log.Received -= onMsg;

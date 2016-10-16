@@ -2,20 +2,18 @@ param($installPath, $toolsPath, $package, $project)
 
 $assemblyFName      = 'DllExport'
 $targetFileName     = 'net.r_eg.DllExport.targets'
-$escInstallPath     = $installPath -replace ' ', '` '
-$escToolsPath       = $toolsPath -replace ' ', '` '
-$metaLib            = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
+$metaLib            = $([System.IO.Path]::Combine("$installPath", 'lib\net20', $assemblyFName + '.dll'));
 $gpc                = Get-MBEGlobalProjectCollection
 $projects           = $gpc.GetLoadedProjects($project.FullName)
 
 # Configurator
 
-$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' $escToolsPath
+$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' "$toolsPath"
 if($dllConf) {
     Import-Module $dllConf; 
 }
 
-Reset-Configuration -MetaLib $metaLib -InstallPath $escInstallPath -ToolsPath $escToolsPath -ProjectDTE $project -ProjectsMBE $gpc;
+Reset-Configuration -MetaLib "$metaLib" -InstallPath "$installPath" -ToolsPath "$toolsPath" -ProjectDTE $project -ProjectsMBE $gpc;
 
 #
 

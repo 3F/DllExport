@@ -3,9 +3,7 @@ param($installPath, $toolsPath, $package, $project)
 $targetFileName     = 'net.r_eg.DllExport.targets'
 $assemblyFName      = 'DllExport' # $package.AssemblyReferences[0].Name
 $publicKeyToken     = '8337224C9AD9E356';
-$escInstallPath     = $installPath -replace ' ', '` '
-$escToolsPath       = $toolsPath -replace ' ', '` '
-$metaLib            = $([System.IO.Path]::Combine($escInstallPath, 'lib\net20', $assemblyFName + '.dll'));
+$metaLib            = $([System.IO.Path]::Combine("$installPath", 'lib\net20', $assemblyFName + '.dll'));
 $targetFileName     = [IO.Path]::Combine($toolsPath, $targetFileName)
 $targetUri          = New-Object Uri -ArgumentList $targetFileName, [UriKind]::Absolute
 $gpc                = Get-MBEGlobalProjectCollection
@@ -15,12 +13,12 @@ $projects           = $gpc.GetLoadedProjects($project.FullName)
 
 # powershell -Command "Import-Module (Join-Path $escToolsPath Configurator.dll); Set-Configuration -Dll $asmpath"
 
-$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' $escToolsPath
+$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' "$toolsPath"
 if($dllConf) {
     Import-Module $dllConf; 
 }
 
-Set-Configuration -MetaLib $metaLib -InstallPath $escInstallPath -ToolsPath $escToolsPath -ProjectDTE $project -ProjectsMBE $gpc;
+Set-Configuration -MetaLib "$metaLib" -InstallPath "$installPath" -ToolsPath "$toolsPath" -ProjectDTE $project -ProjectsMBE $gpc;
 
 
 # change the reference to DllExport.dll to not be copied locally
