@@ -89,6 +89,7 @@ namespace net.r_eg.DllExport.NSBin
             //    throw new ArgumentException("The namespace cannot be null or empty.");
             //}
 
+            prepareLib(dll);
             var ns = nsRule(name);
 
             if(viaCecil) {
@@ -211,6 +212,19 @@ namespace net.r_eg.DllExport.NSBin
                 return name.Replace(" ", "");
             }
             return DEFAULT_NS;
+        }
+
+        protected void prepareLib(string dll)
+        {
+            string raw = $"{dll}.raw";
+
+            // TODO: we can use ddNSi data, but do not forget about different methods - Cecil & Direct-mod
+            if(!File.Exists(raw)) {
+                File.Copy(dll, raw); //raw library before modifying - after installation or restoring
+            }
+            else {
+                File.Copy(raw, dll, true); //when it possible: install for project A, then install for project B
+            }
         }
 
         private void msgSuccess(string ns)
