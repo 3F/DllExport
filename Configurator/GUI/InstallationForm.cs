@@ -60,6 +60,7 @@ namespace net.r_eg.DllExport.Configurator.GUI
         {
             config.unamespace               = getValidNS(comboNS.Text);
             config.compiler.ordinalsBase    = (int)numOrdinal.Value;
+            config.compiler.genExpLib       = chkGenExpLib.Checked;
             config.useCecil                 = rbCecil.Checked;
 
             if(rbPlatformX86.Checked) {
@@ -95,6 +96,11 @@ namespace net.r_eg.DllExport.Configurator.GUI
         private void prefilter()
         {
             comboNS.Text = comboNS.Text.Replace(" ", "");
+        }
+
+        private void openUrl(string url)
+        {
+            System.Diagnostics.Process.Start(url);
         }
 
         private void btnConfigure_Click(object sender, EventArgs e)
@@ -140,7 +146,7 @@ namespace net.r_eg.DllExport.Configurator.GUI
 
         private void linkDDNS_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/3F/DllExport/issues/2");
+            openUrl("https://github.com/3F/DllExport/issues/2");
         }
 
         private void comboNS_TextUpdate(object sender, EventArgs e)
@@ -161,6 +167,16 @@ namespace net.r_eg.DllExport.Configurator.GUI
         private void InstallationForm_Load(object sender, EventArgs e)
         {
             labelActiveCfg.Text += $"' {project.getPropertyValue("Configuration")} | {project.getPropertyValue("Platform")} '";
+        }
+
+        private void linkOrdinals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            openUrl("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");
+        }
+
+        private void linkExpLib_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            openUrl("https://github.com/3F/DllExport/issues/9#issuecomment-246189220");
         }
     }
 }

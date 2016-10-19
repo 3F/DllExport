@@ -289,6 +289,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public bool GenExpLib
+        {
+            get {
+                return _ExportTaskImplementation.GenExpLib;
+            }
+
+            set {
+                _ExportTaskImplementation.GenExpLib = value;
+            }
+        }
+
         public string MetaLib
         {
             get {

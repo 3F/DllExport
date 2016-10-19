@@ -31,6 +31,8 @@
             this.btnConfigure = new System.Windows.Forms.Button();
             this.comboNS = new System.Windows.Forms.ComboBox();
             this.groupNS = new System.Windows.Forms.GroupBox();
+            this.rbCecil = new System.Windows.Forms.RadioButton();
+            this.rbDirect = new System.Windows.Forms.RadioButton();
             this.panelNScombo = new System.Windows.Forms.Panel();
             this.linkDDNS = new System.Windows.Forms.LinkLabel();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
@@ -38,12 +40,13 @@
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
+            this.linkExpLib = new System.Windows.Forms.LinkLabel();
+            this.linkOrdinals = new System.Windows.Forms.LinkLabel();
+            this.chkGenExpLib = new System.Windows.Forms.CheckBox();
             this.numOrdinal = new System.Windows.Forms.NumericUpDown();
             this.labelOrdinals = new System.Windows.Forms.Label();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.labelActiveCfg = new System.Windows.Forms.Label();
-            this.rbCecil = new System.Windows.Forms.RadioButton();
-            this.rbDirect = new System.Windows.Forms.RadioButton();
             this.groupNS.SuspendLayout();
             this.panelNScombo.SuspendLayout();
             this.groupPlatform.SuspendLayout();
@@ -85,6 +88,28 @@
             this.groupNS.TabIndex = 2;
             this.groupNS.TabStop = false;
             this.groupNS.Text = "Namespace for DllExport";
+            // 
+            // rbCecil
+            // 
+            this.rbCecil.AutoSize = true;
+            this.rbCecil.Checked = true;
+            this.rbCecil.Location = new System.Drawing.Point(382, 41);
+            this.rbCecil.Name = "rbCecil";
+            this.rbCecil.Size = new System.Drawing.Size(48, 17);
+            this.rbCecil.TabIndex = 4;
+            this.rbCecil.TabStop = true;
+            this.rbCecil.Text = "Cecil";
+            this.rbCecil.UseVisualStyleBackColor = true;
+            // 
+            // rbDirect
+            // 
+            this.rbDirect.AutoSize = true;
+            this.rbDirect.Location = new System.Drawing.Point(295, 41);
+            this.rbDirect.Name = "rbDirect";
+            this.rbDirect.Size = new System.Drawing.Size(85, 17);
+            this.rbDirect.TabIndex = 5;
+            this.rbDirect.Text = "Direct-Mod /";
+            this.rbDirect.UseVisualStyleBackColor = true;
             // 
             // panelNScombo
             // 
@@ -153,6 +178,9 @@
             // 
             // groupCompiler
             // 
+            this.groupCompiler.Controls.Add(this.linkExpLib);
+            this.groupCompiler.Controls.Add(this.linkOrdinals);
+            this.groupCompiler.Controls.Add(this.chkGenExpLib);
             this.groupCompiler.Controls.Add(this.numOrdinal);
             this.groupCompiler.Controls.Add(this.labelOrdinals);
             this.groupCompiler.Location = new System.Drawing.Point(128, 72);
@@ -162,10 +190,42 @@
             this.groupCompiler.TabStop = false;
             this.groupCompiler.Text = "Compiler settings";
             // 
+            // linkExpLib
+            // 
+            this.linkExpLib.AutoSize = true;
+            this.linkExpLib.Location = new System.Drawing.Point(7, 61);
+            this.linkExpLib.Name = "linkExpLib";
+            this.linkExpLib.Size = new System.Drawing.Size(13, 13);
+            this.linkExpLib.TabIndex = 5;
+            this.linkExpLib.TabStop = true;
+            this.linkExpLib.Text = "?";
+            this.linkExpLib.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkExpLib_LinkClicked);
+            // 
+            // linkOrdinals
+            // 
+            this.linkOrdinals.AutoSize = true;
+            this.linkOrdinals.Location = new System.Drawing.Point(6, 26);
+            this.linkOrdinals.Name = "linkOrdinals";
+            this.linkOrdinals.Size = new System.Drawing.Size(13, 13);
+            this.linkOrdinals.TabIndex = 4;
+            this.linkOrdinals.TabStop = true;
+            this.linkOrdinals.Text = "?";
+            this.linkOrdinals.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkOrdinals_LinkClicked);
+            // 
+            // chkGenExpLib
+            // 
+            this.chkGenExpLib.AutoSize = true;
+            this.chkGenExpLib.Location = new System.Drawing.Point(26, 61);
+            this.chkGenExpLib.Name = "chkGenExpLib";
+            this.chkGenExpLib.Size = new System.Drawing.Size(233, 17);
+            this.chkGenExpLib.TabIndex = 3;
+            this.chkGenExpLib.Text = "Generate .exp + .lib via MS Library Manager";
+            this.chkGenExpLib.UseVisualStyleBackColor = true;
+            // 
             // numOrdinal
             // 
             this.numOrdinal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numOrdinal.Location = new System.Drawing.Point(6, 22);
+            this.numOrdinal.Location = new System.Drawing.Point(26, 24);
             this.numOrdinal.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -180,7 +240,7 @@
             // labelOrdinals
             // 
             this.labelOrdinals.AutoSize = true;
-            this.labelOrdinals.Location = new System.Drawing.Point(88, 25);
+            this.labelOrdinals.Location = new System.Drawing.Point(108, 26);
             this.labelOrdinals.Name = "labelOrdinals";
             this.labelOrdinals.Size = new System.Drawing.Size(107, 13);
             this.labelOrdinals.TabIndex = 1;
@@ -194,28 +254,6 @@
             this.labelActiveCfg.Size = new System.Drawing.Size(111, 13);
             this.labelActiveCfg.TabIndex = 5;
             this.labelActiveCfg.Text = "*Active configuration: ";
-            // 
-            // rbCecil
-            // 
-            this.rbCecil.AutoSize = true;
-            this.rbCecil.Checked = true;
-            this.rbCecil.Location = new System.Drawing.Point(382, 41);
-            this.rbCecil.Name = "rbCecil";
-            this.rbCecil.Size = new System.Drawing.Size(48, 17);
-            this.rbCecil.TabIndex = 4;
-            this.rbCecil.TabStop = true;
-            this.rbCecil.Text = "Cecil";
-            this.rbCecil.UseVisualStyleBackColor = true;
-            // 
-            // rbDirect
-            // 
-            this.rbDirect.AutoSize = true;
-            this.rbDirect.Location = new System.Drawing.Point(295, 41);
-            this.rbDirect.Name = "rbDirect";
-            this.rbDirect.Size = new System.Drawing.Size(85, 17);
-            this.rbDirect.TabIndex = 5;
-            this.rbDirect.Text = "Direct-Mod /";
-            this.rbDirect.UseVisualStyleBackColor = true;
             // 
             // InstallationForm
             // 
@@ -268,5 +306,8 @@
         private System.Windows.Forms.RadioButton rbPlatformAnyCPU;
         private System.Windows.Forms.RadioButton rbCecil;
         private System.Windows.Forms.RadioButton rbDirect;
+        private System.Windows.Forms.CheckBox chkGenExpLib;
+        private System.Windows.Forms.LinkLabel linkOrdinals;
+        private System.Windows.Forms.LinkLabel linkExpLib;
     }
 }

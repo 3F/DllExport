@@ -37,6 +37,7 @@
       <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
       <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)' == ''">1</DllExportOrdinalsBase>
+      <DllExportGenExpLib Condition="'$(DllExportGenExpLib)' == ''">false</DllExportGenExpLib>
     </PropertyGroup>
 
     <DllExportAppDomainIsolatedTask 
@@ -58,6 +59,7 @@
           SdkPath="$(DllExportSdkPath)"
           SkipOnAnyCpu="$(DllExportSkipOnAnyCpu)"
           OrdinalsBase="$(DllExportOrdinalsBase)"
+          GenExpLib="$(DllExportGenExpLib)"
           MetaLib="$(DllExportMetaLibFullPath)"
          />
   

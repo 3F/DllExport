@@ -162,25 +162,25 @@ namespace RGiesecke.DllExport.Parsing
 
         private int RunLibTool(CpuPlatform cpu, string fileName, string directory)
         {
-            if(string.IsNullOrEmpty(this.InputValues.LibToolPath))
-            {
+            if(!InputValues.GenExpLib || String.IsNullOrWhiteSpace(InputValues.LibToolPath)) {
                 return 0;
             }
-            string libraryFileNameRoot = IlAsm.GetLibraryFileNameRoot(fileName);
-            string defFile = this.CreateDefFile(cpu, directory, libraryFileNameRoot);
+
+            string libraryFileNameRoot  = IlAsm.GetLibraryFileNameRoot(fileName);
+            string defFile              = CreateDefFile(cpu, directory, libraryFileNameRoot);
+
             try
             {
-                return this.RunLibToolCore(cpu, directory, defFile);
+                return RunLibToolCore(cpu, directory, defFile);
             }
             catch(Exception ex)
             {
-                this.Notifier.Notify(1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, (object)"lib.exe", (object)ex.Message);
+                Notifier.Notify(1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, "lib.exe", ex.Message);
                 return -1;
             }
             finally
             {
-                if(File.Exists(defFile))
-                {
+                if(File.Exists(defFile)) {
                     File.Delete(defFile);
                 }
             }

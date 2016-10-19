@@ -78,6 +78,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        bool GenExpLib
+        {
+            get;
+            set;
+        }
+
         string MetaLib
         {
             get;

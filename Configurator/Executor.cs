@@ -73,7 +73,8 @@ namespace net.r_eg.DllExport.Configurator
                 "DllExportNamespace",
                 "DllExportOrdinalsBase",
                 "DllExportSkipOnAnyCpu",
-                "DllExportDDNSCecil"
+                "DllExportDDNSCecil",
+                "DllExportGenExpLib"
             );
         }
 
@@ -92,7 +93,7 @@ namespace net.r_eg.DllExport.Configurator
                 config.MetaLibPublicKeyToken
             );
 
-            setProperty("DllExportDDNSCecil", config.useCecil.ToString());
+            setProperty("DllExportDDNSCecil", config.useCecil);
 
             // binary modifications of metalib assembly
             ddns.setNamespace(config.script.MetaLib, config.unamespace, config.useCecil);
@@ -135,9 +136,11 @@ namespace net.r_eg.DllExport.Configurator
 
         protected void cfgCompiler()
         {
-            setProperty("DllExportOrdinalsBase", config.compiler.ordinalsBase.ToString());
-
+            setProperty("DllExportOrdinalsBase", config.compiler.ordinalsBase);
             Log.send(this, $"The Base for ordinals: {config.compiler.ordinalsBase}");
+
+            setProperty("DllExportGenExpLib", config.compiler.genExpLib);
+            Log.send(this, $"Generate .exp + .lib via MS Library Manager: {config.compiler.genExpLib}");
         }
 
         protected void removeMsbuildProperties(params string[] names)
@@ -156,6 +159,16 @@ namespace net.r_eg.DllExport.Configurator
 
             project.setProperty(name, val);
             project.saveViaDTE();
+        }
+
+        private void setProperty(string name, bool val)
+        {
+            setProperty(name, val.ToString().ToLower());
+        }
+
+        private void setProperty(string name, int val)
+        {
+            setProperty(name, val.ToString());
         }
     }
 }

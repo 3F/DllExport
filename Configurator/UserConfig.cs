@@ -94,6 +94,11 @@ namespace net.r_eg.DllExport.Configurator
             /// Base for ordinals.
             /// </summary>
             public int ordinalsBase;
+
+            /// <summary>
+            /// Generate .exp + .lib via MS Library Manager.
+            /// </summary>
+            public bool genExpLib;
         }
 
         public UserConfig(IScriptConfig cfg)
