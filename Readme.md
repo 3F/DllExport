@@ -70,22 +70,20 @@ It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/mast
 
 ### How it works
 
-Current features was been implemented through [ILDasm](https://github.com/dotnet/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/dotnet/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive.
+Current features was been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive.
 
 **What inside ? or how works the .export directive ?**
 
-Read about format PE32/PE32+ and start with grammar of asmparse [here](https://github.com/dotnet/coreclr/blob/master/src/ilasm/asmparse.y):
+Read about format PE32/PE32+ and start with grammar of asmparse and move to writer:
 
 ```cpp
 ...
-{ if(PASM->m_pCurMethod->m_dwExportOrdinal == 0xFFFFFFFF)
-  {
-    PASM->m_pCurMethod->m_dwExportOrdinal = $3;
-    PASM->m_pCurMethod->m_szExportAlias = $6;
-    if(PASM->m_pCurMethod->m_wVTEntry == 0) PASM->m_pCurMethod->m_wVTEntry = 1;
-    if(PASM->m_pCurMethod->m_wVTSlot  == 0) PASM->m_pCurMethod->m_wVTSlot = $3 + 0x8000;
-  }
-...
+if(PASM->m_pCurMethod->m_dwExportOrdinal == 0xFFFFFFFF)
+{
+  PASM->m_pCurMethod->m_dwExportOrdinal = $3;
+  PASM->m_pCurMethod->m_szExportAlias = $6;
+  if(PASM->m_pCurMethod->m_wVTEntry == 0) PASM->m_pCurMethod->m_wVTEntry = 1;
+  if(PASM->m_pCurMethod->m_wVTSlot  == 0) PASM->m_pCurMethod->m_wVTSlot = $3 + 0x8000;
 }
 ...
 EATEntry*   pEATE = new EATEntry;
@@ -94,6 +92,17 @@ pEATE->szAlias = pMD->m_szExportAlias ? pMD->m_szExportAlias : pMD->m_szName;
 pEATE->dwStubRVA = EmitExportStub(pGlobalLabel->m_GlobalOffset+dwDelta);
 m_EATList.PUSH(pEATE);
 ...
+// logic of definition of records into EXPORT_DIRECTORY (see details from PE format)
+HRESULT Assembler::CreateExportDirectory()  
+{
+...
+    IMAGE_EXPORT_DIRECTORY  exportDirIDD;
+    DWORD                   exportDirDataSize;
+    BYTE                   *exportDirData;
+    EATEntry               *pEATE;
+    unsigned                i, L, ordBase = 0xFFFFFFFF, Ldllname;
+    ...
+    ~ now we're ready to miracles ~
 ```
 
 or read my short explanations from here: [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...

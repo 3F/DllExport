@@ -91,7 +91,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(dbin = \"bin/$(Configuration)/\")]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[$(dbin = \"bin/$(Configuration)/\")]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n$(revDeltaBase = \"2016/10/12\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[$(dbin = \"bin/$(Configuration)/\")]",
           "",
@@ -102,6 +102,8 @@
           "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
           "$(odir          = \"$(dbin)raw/\")",
           "",
+          "$(revDeltaBase = \"2016/10/12\")",
+          "",
           "#[IO delete.directory(\"$(dbin)\", true)]",
           "#[IO copy.directory(\"\", \"$(dbin)\", true)]"
         ]
@@ -109,8 +111,8 @@
     },
     {
       "Enabled": true,
-      "Name": "Act",
-      "Caption": "Update version number 'as is' - TODO: ",
+      "Name": "ActUpdVersions",
+      "Caption": "Update version number",
       "SupportMSBuild": true,
       "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": false,
@@ -130,16 +132,96 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regexp(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "",
-          "#[IO replace.Regexp(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
-          "#[IO replace.Regexp(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
-          "#[IO replace.Regexp(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]",
+          "#[\" TODO: how about tpl ?  \"]",
           "",
-          "#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]",
-          "#[IO replace.Regexp(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]"
+          "#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]",
+          "",
+          "#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]",
+          "#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "ActConfVersion",
+      "Caption": "Update ConfVersion",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[var tpl = // This code was generated by a vsSolutionBuildEvent. \n// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.\nnamespace net.r_eg.DllExport.Configurator\n{\n    using System;\n\n    internal struct ConfVersion\n    {\n        public static readonly Version number = new Version(S_NUM_REV);\n\n        public const string S_NUM = \"%S_NUM%\";\n        public const string S_REV = \"%S_REV%\";\n\n        public const string S_NUM_REV   = S_NUM + \".\" + S_REV;\n        public const string BRANCH_SHA1 = \"%B_SHA1%\";\n\n        internal const string S_INFO = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";\n    }\n}]\n\n#[\" \n    Calculate revision\n\"]\n#[var tStart    = $([System.DateTime]::Parse(\"$(revDeltaBase)\").ToBinary())]\n#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]\n#[var revBuild  = $([System.TimeSpan]::FromTicks($([MSBuild]::Subtract($(tNow), $(tStart)))).TotalMinutes.ToString(\"0\"))]\n#[var revBuild  = $([MSBuild]::Modulo(#[var revBuild], 999999))]\n\n#[\" \n    Remove placeholders\n\"]\n#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\"))]\n\n#[\" \n    Checking of the git folder +tool & define sha1, branch name, etc.\n\"]\n#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )\n{\n    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]\n    \n    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\"))]\n}\nelse {\n    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"-\"))]\n}]\n\n#[\" \n    Save result\n\"]\n#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]",
+        "Command__": [
+          "#[var tpl = // This code was generated by a vsSolutionBuildEvent. ",
+          "// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.",
+          "namespace net.r_eg.DllExport.Configurator",
+          "{",
+          "    using System;",
+          "",
+          "    internal struct ConfVersion",
+          "    {",
+          "        public static readonly Version number = new Version(S_NUM_REV);",
+          "",
+          "        public const string S_NUM = \"%S_NUM%\";",
+          "        public const string S_REV = \"%S_REV%\";",
+          "",
+          "        public const string S_NUM_REV   = S_NUM + \".\" + S_REV;",
+          "        public const string BRANCH_SHA1 = \"%B_SHA1%\";",
+          "",
+          "        internal const string S_INFO = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";",
+          "    }",
+          "}]",
+          "",
+          "#[\" ",
+          "    Calculate revision",
+          "\"]",
+          "#[var tStart    = $([System.DateTime]::Parse(\"$(revDeltaBase)\").ToBinary())]",
+          "#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]",
+          "#[var revBuild  = $([System.TimeSpan]::FromTicks($([MSBuild]::Subtract($(tNow), $(tStart)))).TotalMinutes.ToString(\"0\"))]",
+          "#[var revBuild  = $([MSBuild]::Modulo(#[var revBuild], 999999))]",
+          "",
+          "#[\" ",
+          "    Remove placeholders",
+          "\"]",
+          "#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\"))]",
+          "",
+          "#[\" ",
+          "    Checking of the git folder +tool & define sha1, branch name, etc.",
+          "\"]",
+          "#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )",
+          "{",
+          "    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]",
+          "    ",
+          "    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\"))]",
+          "}",
+          "else {",
+          "    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"-\"))]",
+          "}]",
+          "",
+          "#[\" ",
+          "    Save result",
+          "\"]",
+          "#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]"
         ]
       }
     }
@@ -231,6 +313,37 @@
   "Transmitter": [],
   "CommandEvent": [],
   "Logging": [],
-  "SlnOpened": [],
+  "SlnOpened": [
+    {
+      "Enabled": true,
+      "Name": "ActDefConst",
+      "Caption": "define dynamic constants",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "BeforeAndAfter",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "$(defConstList = \"CONFVER_EXISTS\")\n$(+DefConstDynamic = $(defConstList):Configurator)",
+        "Command__": [
+          "$(defConstList = \"CONFVER_EXISTS\")",
+          "$(+DefConstDynamic = $(defConstList):Configurator)"
+        ]
+      }
+    }
+  ],
   "SlnClosed": []
 }
