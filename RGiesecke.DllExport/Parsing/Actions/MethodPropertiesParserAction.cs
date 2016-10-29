@@ -20,10 +20,10 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
             else
             {
-                if(!trimmedLine.StartsWith("// Code", StringComparison.Ordinal))
-                {
+                if(!trimmedLine.StartsWith(".maxstack", StringComparison.InvariantCulture)) {
                     return;
                 }
+
                 state.State = ParserState.Method;
                 if(state.MethodPos == 0)
                 {

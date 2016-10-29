@@ -257,7 +257,24 @@ namespace RGiesecke.DllExport.Parsing
         [Localizable(false)]
         private string GetCommandLineArguments(CpuPlatform cpu, string fileName, string ressourceParam, string ilSuffix, string keyFile)
         {
-            return string.Format((IFormatProvider)CultureInfo.InvariantCulture, "/nologo \"/out:{0}\" \"{1}.il\" /DLL{2} {3} {4} {5}", (object)fileName, (object)(Path.Combine(this.TempDirectory, Path.GetFileNameWithoutExtension(this.InputValues.InputFileName)) + ilSuffix), (object)ressourceParam, this.InputValues.EmitDebugSymbols ? (object)"/debug" : (object)"/optimize", cpu == CpuPlatform.X86 ? (object)"" : (object)(" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")), string.IsNullOrEmpty(keyFile) ? (!string.IsNullOrEmpty(this.InputValues.KeyContainer) ? (object)("\"/Key=@" + this.InputValues.KeyContainer + "\"") : (object)(string)null) : (object)("\"/Key=" + keyFile + (object)'"'));
+            if(String.IsNullOrEmpty(keyFile)) {
+                keyFile = String.IsNullOrEmpty(InputValues.KeyContainer) ? null : "\"/Key=@" + InputValues.KeyContainer + "\"";
+            }
+            else {
+                keyFile = "\"/Key=" + keyFile + '"';
+            }
+
+            return String.Format(
+                CultureInfo.InvariantCulture, 
+                "/nologo \"/out:{0}\" \"{1}.il\" {2} {3} {4} {5} {6}", 
+                fileName, 
+                Path.Combine(TempDirectory, Path.GetFileNameWithoutExtension(InputValues.InputFileName)) + ilSuffix,
+                "/" + Path.GetExtension(fileName).Trim(new char[] { '.', '"' }).ToUpperInvariant(),
+                ressourceParam, 
+                InputValues.EmitDebugSymbols ? "/debug" : "/optimize", 
+                cpu == CpuPlatform.X86 ? "" : (" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")),
+                keyFile
+             );
         }
     }
 }
