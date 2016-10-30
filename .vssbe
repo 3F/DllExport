@@ -250,7 +250,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n            \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n            \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n            \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n            \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n            }, \n            \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"LICENSE\", \"Readme.md\" }, \"$(odir)/\", true)]",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"LICENSE\", \"Readme.md\", \"3rd-party.txt\" }, \"$(odir)/\", true)]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -261,18 +261,59 @@
           "#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]",
           "",
           "#[IO copy.file({",
-          "            \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",",
-          "            \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",",
-          "            \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",",
-          "            \"$(pConf)/$(OutDir:$(pConf))/*.*\"",
-          "            }, ",
-          "            \"$(odir)/tools/\", true)]",
+          "                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",",
+          "                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",",
+          "                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",",
+          "                \"$(pConf)/$(OutDir:$(pConf))/*.*\"",
+          "               }, ",
+          "               \"$(odir)/tools/\", true)]",
           "",
           "            ",
           "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
           "               \"$(odir)/lib/net20/\", true)]",
           "",
-          "#[IO copy.file({ \"LICENSE\", \"Readme.md\" }, \"$(odir)/\", true)]"
+          "#[IO copy.file({ \"LICENSE\", \"Readme.md\", \"3rd-party.txt\" }, \"$(odir)/\", true)]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "ActILAsm",
+      "Caption": "Provide ILAsm & ILDasm",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[( #[File exists.directory(\"packages/ILAsm/bin\")] )\n{ \n    #[File scall(\"packages_restore.cmd\", \"\", 400)]\n}\nelse{\n    #[File call(\"packages_restore.cmd\", \"\", 2000)]\n}]\n\n#[IO copy.file({\n                \"packages/ILAsm/bin/Win.x86/*.dll\",\n                \"packages/ILAsm/bin/Win.x86/*.exe\"\n               }, \n               \"$(odir)/tools/coreclr/\", true)]",
+        "Command__": [
+          "#[( #[File exists.directory(\"packages/ILAsm/bin\")] )",
+          "{ ",
+          "    #[File scall(\"packages_restore.cmd\", \"\", 400)]",
+          "}",
+          "else{",
+          "    #[File call(\"packages_restore.cmd\", \"\", 2000)]",
+          "}]",
+          "",
+          "#[IO copy.file({",
+          "                \"packages/ILAsm/bin/Win.x86/*.dll\",",
+          "                \"packages/ILAsm/bin/Win.x86/*.exe\"",
+          "               }, ",
+          "               \"$(odir)/tools/coreclr/\", true)]"
         ]
       }
     },

@@ -18,8 +18,8 @@ public static int entrypoint(IntPtr L)
 {
     // ... should be called by lua script
 
-    Lua.lua_pushcclosure(L, onProc, 0);
-    Lua.lua_setglobal(L, "onKeyDown");
+    lua_pushcclosure(L, onProc, 0);
+    lua_setglobal(L, "onKeyDown");
 
     return 0;
 }
@@ -35,7 +35,10 @@ public static int entrypoint(IntPtr L)
 [DllExport]
 ```
 
-Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature), thus you can use what you want ! details **[here](https://github.com/3F/DllExport/issues/2)**
+Support of Modules: Library (**.dll**) and Executable (**.exe**) [[?](https://github.com/3F/DllExport/issues/18)]
+
+
+Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature), thus you can use what you want - details **[here](https://github.com/3F/DllExport/issues/2)**
 
 ```cpp
     Via Cecil or direct modification:
@@ -46,7 +49,6 @@ Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature),
     000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
     000005D0  20 02 00 00 00 00 00 00 00 49 2E 77 61 6E 74 2E   ........I.want.   <<<-
     000005E0  74 6F 2E 66 6C 79 00 00 00 00 00 00 00 00 00 00  to.fly..........  <<<-
-    000005F0  00 00 00 00 00 00 03 00 00 00 00 00 00 00 00 00  ................
 ```
 
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
@@ -145,3 +147,30 @@ use additional `Diagnostic` key to msbuild if you need details from .targets
 
 Go to `Start Debugging`. Now you can debug at runtime.
 
+### coreclr - ILAsm / ILDasm
+
+To build minimal version (means that it does not include all components as for original coreclr repo):
+
+* Restore git submodule or use repo: https://github.com/3F/coreclr
+
+```bash
+git submodule update --init --recursive
+```
+
+*Make sure that you have installed [CMake](https://cmake.org/download/), then build simply:*
+
+```bash
+build_s all x86 x64 Release
+build_s x86 Release
+```
+
+or use
+```bash
+build_coreclr_x86.cmd
+build_coreclr_x86_x64.cmd
+```
+
+*You can also use our binaries of coreclr if needed:*
+
+* [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
+* Look also [here](https://github.com/3F/coreclr/issues/1)

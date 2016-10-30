@@ -1,0 +1,3 @@
+[submodule "coreclr"]
+	path = coreclr
+	url = https://github.com/3F/coreclr.git
