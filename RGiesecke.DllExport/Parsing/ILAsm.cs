@@ -144,20 +144,38 @@ namespace RGiesecke.DllExport.Parsing
                     throw new FileNotFoundException(string.Format(Resources.Provided_key_file_0_cannot_be_found, (object)str));
                 }
             }
-            string fullPath = Path.GetFullPath(Path.GetDirectoryName(fileName));
-            int num1 = IlParser.RunIlTool(this.InputValues.FrameworkPath, "ILAsm.exe", (string)null, (string)null, "ILAsmPath", this.GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), DllExportLogginCodes.IlAsmLogging, DllExportLogginCodes.VerboseToolLogging, this.Notifier, this.Timeout, (Func<string, bool>)(line => {
-                int num2 = line.IndexOf(": ");
-                if(num2 > 0)
+
+            int ret = IlParser.RunIlTool
+            (
+                String.IsNullOrWhiteSpace(InputValues.OurILAsmPath) ? InputValues.FrameworkPath : InputValues.OurILAsmPath,
+                "ilasm.exe", 
+                null, 
+                null, 
+                "ILAsmPath", 
+                GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), 
+                DllExportLogginCodes.IlAsmLogging, 
+                DllExportLogginCodes.VerboseToolLogging, 
+                Notifier, 
+                Timeout, 
+                line =>
                 {
-                    line = line.Substring(num2 + 1);
+                    int col = line.IndexOf(": ");
+                    if(col > 0) {
+                        line = line.Substring(col + 1);
+                    }
+
+                    return IlAsm
+                            ._NormalizeIlErrorLineRegex
+                            .Replace(line, "")
+                            .ToLowerInvariant()
+                            .StartsWith("warningnonvirtualnonabstractinstancemethodininterfacesettosuch");
                 }
-                return IlAsm._NormalizeIlErrorLineRegex.Replace(line, "").ToLowerInvariant().StartsWith("warningnonvirtualnonabstractinstancemethodininterfacesettosuch");
-            }));
-            if(num1 == 0)
-            {
-                this.RunLibTool(cpu, fileName, fullPath);
+            );
+
+            if(ret == 0) {
+                RunLibTool(cpu, fileName, Path.GetFullPath(Path.GetDirectoryName(fileName)));
             }
-            return num1;
+            return ret;
         }
 
         private int RunLibTool(CpuPlatform cpu, string fileName, string directory)

@@ -65,6 +65,7 @@ namespace net.r_eg.DllExport.Configurator.GUI
             config.unamespace               = getValidNS(comboNS.Text);
             config.compiler.ordinalsBase    = (int)numOrdinal.Value;
             config.compiler.genExpLib       = chkGenExpLib.Checked;
+            config.compiler.ourILAsm        = chkOurILAsm.Checked;
             config.useCecil                 = rbCecil.Checked;
 
             if(rbPlatformX86.Checked) {
@@ -165,7 +166,7 @@ namespace net.r_eg.DllExport.Configurator.GUI
 
         private void numOrdinal_ValueChanged(object sender, EventArgs e)
         {
-            labelOrdinals.Text = String.Format(ResText.Settings_Compiler_Ordinals_Label, numOrdinal.Value);
+            //labelOrdinals.Text = String.Format(ResText.Settings_Compiler_Ordinals_Label, numOrdinal.Value);
         }
 
         private void InstallationForm_Load(object sender, EventArgs e)
@@ -181,6 +182,11 @@ namespace net.r_eg.DllExport.Configurator.GUI
         private void linkExpLib_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             openUrl("https://github.com/3F/DllExport/issues/9#issuecomment-246189220");
+        }
+
+        private void linkOurILAsm_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            openUrl("https://github.com/3F/DllExport/issues/17");
         }
     }
 }

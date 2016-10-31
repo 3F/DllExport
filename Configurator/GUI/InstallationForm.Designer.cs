@@ -40,6 +40,8 @@
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
+            this.linkOurILAsm = new System.Windows.Forms.LinkLabel();
+            this.chkOurILAsm = new System.Windows.Forms.CheckBox();
             this.linkExpLib = new System.Windows.Forms.LinkLabel();
             this.linkOrdinals = new System.Windows.Forms.LinkLabel();
             this.chkGenExpLib = new System.Windows.Forms.CheckBox();
@@ -178,6 +180,8 @@
             // 
             // groupCompiler
             // 
+            this.groupCompiler.Controls.Add(this.linkOurILAsm);
+            this.groupCompiler.Controls.Add(this.chkOurILAsm);
             this.groupCompiler.Controls.Add(this.linkExpLib);
             this.groupCompiler.Controls.Add(this.linkOrdinals);
             this.groupCompiler.Controls.Add(this.chkGenExpLib);
@@ -190,10 +194,33 @@
             this.groupCompiler.TabStop = false;
             this.groupCompiler.Text = "Compiler settings";
             // 
+            // linkOurILAsm
+            // 
+            this.linkOurILAsm.AutoSize = true;
+            this.linkOurILAsm.Location = new System.Drawing.Point(280, 62);
+            this.linkOurILAsm.Name = "linkOurILAsm";
+            this.linkOurILAsm.Size = new System.Drawing.Size(13, 13);
+            this.linkOurILAsm.TabIndex = 7;
+            this.linkOurILAsm.TabStop = true;
+            this.linkOurILAsm.Text = "?";
+            this.linkOurILAsm.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkOurILAsm_LinkClicked);
+            // 
+            // chkOurILAsm
+            // 
+            this.chkOurILAsm.AutoSize = true;
+            this.chkOurILAsm.Checked = true;
+            this.chkOurILAsm.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.chkOurILAsm.Location = new System.Drawing.Point(8, 61);
+            this.chkOurILAsm.Name = "chkOurILAsm";
+            this.chkOurILAsm.Size = new System.Drawing.Size(279, 17);
+            this.chkOurILAsm.TabIndex = 6;
+            this.chkOurILAsm.Text = "Use our IL Assembler. Try to fix 0x13 / 0x11 opcodes.";
+            this.chkOurILAsm.UseVisualStyleBackColor = true;
+            // 
             // linkExpLib
             // 
             this.linkExpLib.AutoSize = true;
-            this.linkExpLib.Location = new System.Drawing.Point(7, 61);
+            this.linkExpLib.Location = new System.Drawing.Point(237, 40);
             this.linkExpLib.Name = "linkExpLib";
             this.linkExpLib.Size = new System.Drawing.Size(13, 13);
             this.linkExpLib.TabIndex = 5;
@@ -204,7 +231,7 @@
             // linkOrdinals
             // 
             this.linkOrdinals.AutoSize = true;
-            this.linkOrdinals.Location = new System.Drawing.Point(6, 26);
+            this.linkOrdinals.Location = new System.Drawing.Point(205, 18);
             this.linkOrdinals.Name = "linkOrdinals";
             this.linkOrdinals.Size = new System.Drawing.Size(13, 13);
             this.linkOrdinals.TabIndex = 4;
@@ -215,24 +242,24 @@
             // chkGenExpLib
             // 
             this.chkGenExpLib.AutoSize = true;
-            this.chkGenExpLib.Location = new System.Drawing.Point(26, 61);
+            this.chkGenExpLib.Location = new System.Drawing.Point(8, 41);
             this.chkGenExpLib.Name = "chkGenExpLib";
-            this.chkGenExpLib.Size = new System.Drawing.Size(233, 17);
+            this.chkGenExpLib.Size = new System.Drawing.Size(236, 17);
             this.chkGenExpLib.TabIndex = 3;
-            this.chkGenExpLib.Text = "Generate .exp + .lib via MS Library Manager";
+            this.chkGenExpLib.Text = "Generate .exp + .lib via MS Library Manager.";
             this.chkGenExpLib.UseVisualStyleBackColor = true;
             // 
             // numOrdinal
             // 
             this.numOrdinal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numOrdinal.Location = new System.Drawing.Point(26, 24);
+            this.numOrdinal.Location = new System.Drawing.Point(8, 16);
             this.numOrdinal.Maximum = new decimal(new int[] {
             10000000,
             0,
             0,
             0});
             this.numOrdinal.Name = "numOrdinal";
-            this.numOrdinal.Size = new System.Drawing.Size(76, 20);
+            this.numOrdinal.Size = new System.Drawing.Size(84, 20);
             this.numOrdinal.TabIndex = 2;
             this.numOrdinal.ValueChanged += new System.EventHandler(this.numOrdinal_ValueChanged);
             this.numOrdinal.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numOrdinal_KeyDown);
@@ -240,11 +267,11 @@
             // labelOrdinals
             // 
             this.labelOrdinals.AutoSize = true;
-            this.labelOrdinals.Location = new System.Drawing.Point(108, 26);
+            this.labelOrdinals.Location = new System.Drawing.Point(98, 19);
             this.labelOrdinals.Name = "labelOrdinals";
-            this.labelOrdinals.Size = new System.Drawing.Size(107, 13);
+            this.labelOrdinals.Size = new System.Drawing.Size(110, 13);
             this.labelOrdinals.TabIndex = 1;
-            this.labelOrdinals.Text = "The Base for ordinals";
+            this.labelOrdinals.Text = "The Base for ordinals.";
             // 
             // labelActiveCfg
             // 
@@ -309,5 +336,7 @@
         private System.Windows.Forms.CheckBox chkGenExpLib;
         private System.Windows.Forms.LinkLabel linkOrdinals;
         private System.Windows.Forms.LinkLabel linkExpLib;
+        private System.Windows.Forms.LinkLabel linkOurILAsm;
+        private System.Windows.Forms.CheckBox chkOurILAsm;
     }
 }

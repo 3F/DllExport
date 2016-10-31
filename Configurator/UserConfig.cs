@@ -99,6 +99,11 @@ namespace net.r_eg.DllExport.Configurator
             /// Generate .exp + .lib via MS Library Manager.
             /// </summary>
             public bool genExpLib;
+
+            /// <summary>
+            /// To use our ILAsm / ILDasm if true.
+            /// </summary>
+            public bool ourILAsm;
         }
 
         public UserConfig(IScriptConfig cfg)

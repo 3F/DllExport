@@ -19,7 +19,26 @@ namespace RGiesecke.DllExport.Parsing
 
         public int Run()
         {
-            return IlParser.RunIlTool(this.InputValues.SdkPath, "ildasm.exe", (string)null, (string)null, "ILDasmPath", string.Format((IFormatProvider)CultureInfo.InvariantCulture, "/quoteallnames /unicode /nobar{2}\"/out:{0}.il\" \"{1}\"", (object)Path.Combine(this.TempDirectory, this.InputValues.FileName), (object)this.InputValues.InputFileName, this.InputValues.EmitDebugSymbols ? (object)" /linenum " : (object)" "), DllExportLogginCodes.IlDasmLogging, DllExportLogginCodes.VerboseToolLogging, this.Notifier, this.Timeout, (Func<string, bool>)null);
+            return IlParser.RunIlTool
+            (
+                String.IsNullOrWhiteSpace(InputValues.OurILAsmPath) ? InputValues.SdkPath : InputValues.OurILAsmPath,
+                "ildasm.exe", 
+                null, 
+                null, 
+                "ILDasmPath", 
+                String.Format(
+                    CultureInfo.InvariantCulture, 
+                    "/quoteallnames /unicode /nobar{2}\"/out:{0}.il\" \"{1}\"", 
+                    Path.Combine(TempDirectory, InputValues.FileName), 
+                    InputValues.InputFileName, 
+                    InputValues.EmitDebugSymbols ? " /linenum " : " "
+                ), 
+                DllExportLogginCodes.IlDasmLogging, 
+                DllExportLogginCodes.VerboseToolLogging, 
+                Notifier,
+                Timeout, 
+                null
+             );
         }
     }
 }

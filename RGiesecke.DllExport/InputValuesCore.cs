@@ -87,6 +87,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        public string OurILAsmPath
+        {
+            get;
+            set;
+        }
+
         public string MetaLib
         {
             get;

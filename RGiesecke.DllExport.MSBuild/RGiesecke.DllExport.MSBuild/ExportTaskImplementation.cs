@@ -221,6 +221,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public string OurILAsmPath
+        {
+            get {
+                return _Values.OurILAsmPath;
+            }
+
+            set {
+                _Values.OurILAsmPath = value;
+            }
+        }
+
         public string MetaLib
         {
             get {
@@ -704,15 +715,37 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        // FIXME: two different places (see ILAsm.RunCore) for the same thing ! be careful
         private bool ValidateFrameworkPath()
         {
+            if(!String.IsNullOrWhiteSpace(OurILAsmPath)) {
+                // https://github.com/3F/coreclr/issues/2
+                return CopyIfNotExists("cvtres.exe", OurILAsmPath, FrameworkPath, GetFrameworkToolPath);
+            }
+
             string foundPath;
-            if(!this.ValidateToolPath("ilasm.exe", this.FrameworkPath, this.GetFrameworkToolPath, out foundPath))
-            {
+            if(!ValidateToolPath("ilasm.exe", FrameworkPath, GetFrameworkToolPath, out foundPath)) {
                 return false;
             }
-            this.FrameworkPath = foundPath;
+
+            FrameworkPath = foundPath;
             return true;
+        }
+
+        private bool CopyIfNotExists(string file, string dir, string paths, Func<Version, string, string> toolp)
+        {
+            string dest = Path.Combine(dir, file);
+            if(File.Exists(dest)) {
+                return true;
+            }
+
+            string found;
+            if(ValidateToolPath(file, paths, toolp, out found)) {
+                File.Copy(Path.Combine(found, file), dest);
+                return true;
+            }
+
+            return false;
         }
 
         private bool ValidateToolPath(string toolFileName, string currentValue, Func<Version, string, string> getToolPath, out string foundPath)
@@ -766,14 +799,19 @@ namespace RGiesecke.DllExport.MSBuild
             return new Version(frameworkVersion.TrimStart('v', 'V'));
         }
 
+        // FIXME: two different places (see IlDasm.Run) for the same thing ! be careful
         private bool ValidateSdkPath()
         {
+            if(!String.IsNullOrWhiteSpace(OurILAsmPath)) {
+                return true;
+            }
+
             string foundPath;
-            if(!this.ValidateToolPath("ildasm.exe", this.SdkPath, this.GetSdkToolPath, out foundPath))
-            {
+            if(!ValidateToolPath("ildasm.exe", SdkPath, GetSdkToolPath, out foundPath)) {
                 return false;
             }
-            this.SdkPath = foundPath;
+
+            SdkPath = foundPath;
             return true;
         }
 

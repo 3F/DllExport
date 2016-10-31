@@ -74,7 +74,8 @@ namespace net.r_eg.DllExport.Configurator
                 "DllExportOrdinalsBase",
                 "DllExportSkipOnAnyCpu",
                 "DllExportDDNSCecil",
-                "DllExportGenExpLib"
+                "DllExportGenExpLib",
+                "DllExportOurILAsm"
             );
         }
 
@@ -141,6 +142,9 @@ namespace net.r_eg.DllExport.Configurator
 
             setProperty("DllExportGenExpLib", config.compiler.genExpLib);
             Log.send(this, $"Generate .exp + .lib via MS Library Manager: {config.compiler.genExpLib}");
+
+            setProperty("DllExportOurILAsm", config.compiler.ourILAsm);
+            Log.send(this, $"Use our IL Assembler: {config.compiler.ourILAsm}");
         }
 
         protected void removeMsbuildProperties(params string[] names)

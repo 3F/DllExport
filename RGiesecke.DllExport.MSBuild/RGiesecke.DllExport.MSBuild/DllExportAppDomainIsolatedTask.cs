@@ -300,6 +300,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public string OurILAsmPath
+        {
+            get {
+                return _ExportTaskImplementation.OurILAsmPath;
+            }
+
+            set {
+                _ExportTaskImplementation.OurILAsmPath = value;
+            }
+        }
+
         public string MetaLib
         {
             get {

@@ -1,11 +1,11 @@
 ﻿{
   "Header": {
     "_": [
-      " Current file requires a vsSolutionBuildEvent engine.",
+      " This requires vsSolutionBuildEvent engine.",
       " Free plugin for Visual Studio or MSBuild Tools:",
-      "  * http://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/",
-      "  * http://vssbe.r-eg.net",
-      " Feedback: entry.reg@gmail.com"
+      "  * https://github.com/3F/vsSolutionBuildEvent",
+      "  * https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/",
+      " Feedback: github.com/3F  or entry.reg@gmail.com"
     ],
     "Compatibility": "0.9"
   },
