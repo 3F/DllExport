@@ -718,13 +718,13 @@ namespace RGiesecke.DllExport.MSBuild
         // FIXME: two different places (see ILAsm.RunCore) for the same thing ! be careful
         private bool ValidateFrameworkPath()
         {
-            if(!String.IsNullOrWhiteSpace(OurILAsmPath)) {
-                // https://github.com/3F/coreclr/issues/2
-                return CopyIfNotExists("cvtres.exe", OurILAsmPath, FrameworkPath, GetFrameworkToolPath);
-            }
-
             string foundPath;
-            if(!ValidateToolPath("ilasm.exe", FrameworkPath, GetFrameworkToolPath, out foundPath)) {
+            if(!String.IsNullOrWhiteSpace(OurILAsmPath)) {
+                // null value is also valid because we can try with env.PATH later for our new ILAsm - https://github.com/3F/coreclr/issues/2
+                ValidateToolPath("cvtres.exe", FrameworkPath, GetFrameworkToolPath, out foundPath);
+                //return CopyIfNotExists("cvtres.exe", OurILAsmPath, FrameworkPath, GetFrameworkToolPath);
+            }
+            else if(!ValidateToolPath("ilasm.exe", FrameworkPath, GetFrameworkToolPath, out foundPath)) {
                 return false;
             }
 
