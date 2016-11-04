@@ -149,9 +149,13 @@ Go to `Start Debugging`. Now you can debug at runtime.
 
 ### coreclr - ILAsm / ILDasm
 
-To build minimal version (means that it does not include all components as for original coreclr repo):
+We use **our custom versions of coreclr**, special for DllExport project - https://github.com/3F/coreclr
 
-* Restore git submodule or use repo: https://github.com/3F/coreclr
+This helps to avoid some problems ([like this](https://github.com/3F/DllExport/issues/17)) and more...
+
+*To build minimal version (means that it does not include all components as for original coreclr repo):*
+
+* Restore git submodule or use repo: https://github.com/3F/coreclr.git
 
 ```bash
 git submodule update --init --recursive
@@ -170,7 +174,7 @@ build_coreclr_x86.cmd
 build_coreclr_x86_x64.cmd
 ```
 
-*You can also use our binaries of coreclr if needed:*
+*You can also use our binaries of coreclr separately if needed:*
 
 * [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
 * Look also [here](https://github.com/3F/coreclr/issues/1)

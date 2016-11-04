@@ -1,7 +1,29 @@
 DllExport - github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - 
 
-[v1.4]
+[v1.5] 2016.11.04
+
+    * FIXED: Fixed problem with white-space chars in path: `Cannot find path '<any full path with spaces>' because it does not exist ...`
+    * FIXED: Fixed typo with fullseq (ddNS) - incorrect `0x30 0x30` ~0x007A7-0x007A8  /details in #14
+    * FIXED: Possible problem with NullReferenceException when removing package.
+    * FIXED: Fixed problem with old NS data when we try to install package for project A, then for project B
+    * NEW: Implemented 'Generate .exp + .lib via MS Library Manager' #9
+           GUI Configurator + MSBuild property: `DllExportGenExpLib`
+           
+    * NEW: Added support of unmanaged-export for Executable Modules (.exe) #18
+    * NEW: Cecil variant for ddNS features /#14, #2
+    * NEW: Added our custom IL Assembler as option to fix incorrect 0x13 / 0x11 opcodes. #17
+           GUI Configurator + MSBuild property: `DllExportOurILAsm`
+           It should help for users of Fody projects, etc.
+           https://github.com/Fody/Fody/issues/271
+           
+           IlAsm 4.5.1 https://github.com/3F/coreclr
+           based on 4.5.22220.0 / coreclr 1.0.4
+           changelog of our coreclr for this release: https://github.com/3F/coreclr/blob/master/changelog.txt
+           
+    * CHANGED: Updated scripts of installing/removing package for more correct loading of our assemblies.
+
+[v1.4] 2016.10.05
 
     * FIXED: Fixed bug - `An item with the same key has already been added`. Issue #10
     * FIXED: Bug with Meta library: Incorrect default values. Issue #16
@@ -22,24 +44,24 @@ DllExport - github.com/3F/DllExport
     * CHANGED: `Set "Inherited = false" in AttributeUsage for DllExportAttribute`. Issue #15
     * OTHER: other possible changes and fixes.
 
-[v1.3]
+[v1.3] 2016.08.21
 
     * FIXED: bug 'Incorrect library' when DllExport installed for 2+ projects.
     * CHANGED: DllExport now uses `Cdecl` calling convention by default.
     * CHANGED: Mono.Cecil v0.9.6.4
 
-[v1.2]
+[v1.2] 2016.07.13
 
     * CHANGED: dynamic definition of namespace for user scope. Issue #2
 
-[v1.1]
+[v1.1] 2016.06.29
 
     * CHANGED: DllExport now is part of System.Runtime.InteropServices as and DllImport.
     * CHANGED: Mono.Cecil v0.9.6.1
     * NEW: 0x80070005 meaning... Issue #1
     * NEW: +DllExport(CallingConvention convention) signature
 
-[v1.0]
+[v1.0] 2016.06.25
 
     * Initial the open release, based on v1.2.7.38850
 
