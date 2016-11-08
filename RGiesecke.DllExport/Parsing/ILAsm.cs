@@ -282,6 +282,16 @@ namespace RGiesecke.DllExport.Parsing
                 keyFile = "\"/Key=" + keyFile + '"';
             }
 
+            string cvtres;
+            if(!String.IsNullOrWhiteSpace(InputValues.OurILAsmPath)) {
+                // https://github.com/3F/coreclr/issues/2
+                // Only our new ILAsm 4.5.1+ may detect cvtres.exe automatically if the path is not presented at all. However, we can also provide CVR key
+                cvtres = String.IsNullOrWhiteSpace(InputValues.FrameworkPath) ? "" : $"/CVRES=\"{InputValues.FrameworkPath}/\"";
+            }
+            else {
+                cvtres = String.Empty; // original coreclr \ ILAsm does not support /CVRES
+            }
+
             return String.Format(
                 CultureInfo.InvariantCulture, 
                 "/nologo \"/out:{0}\" \"{1}.il\" {2} {3} {4} {5} {6} {7}", 
@@ -292,9 +302,7 @@ namespace RGiesecke.DllExport.Parsing
                 InputValues.EmitDebugSymbols ? "/debug" : "/optimize", 
                 cpu == CpuPlatform.X86 ? "" : (" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")),
                 keyFile,
-                // https://github.com/3F/coreclr/issues/2
-                // our new ILAsm may detect cvtres.exe automatically if the path is not presented at all
-                String.IsNullOrWhiteSpace(InputValues.FrameworkPath) ? "" : $"/CVRES=\"{InputValues.FrameworkPath}/\""
+                cvtres
              );
         }
     }

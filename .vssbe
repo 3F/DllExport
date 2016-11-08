@@ -250,7 +250,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"LICENSE\", \"Readme.md\", \"3rd-party.txt\" }, \"$(odir)/\", true)]",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"LICENSE\", \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -272,7 +272,7 @@
           "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
           "               \"$(odir)/lib/net20/\", true)]",
           "",
-          "#[IO copy.file({ \"LICENSE\", \"Readme.md\", \"3rd-party.txt\" }, \"$(odir)/\", true)]"
+          "#[IO copy.file({ \"LICENSE\", \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]"
         ]
       }
     },
