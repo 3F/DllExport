@@ -1,6 +1,11 @@
 DllExport - github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - 
 
+[v1.5.1] 2016.11.12
+
+    * FIXED: Error : Invalid Option: /CVRES= Issue #20
+    * NOTE: Our coreclr version was compiled with MSVC 14.0. Related Issue #21
+
 [v1.5] 2016.11.04
 
     * FIXED: Fixed problem with white-space chars in path: `Cannot find path '<any full path with spaces>' because it does not exist ...`
