@@ -13,11 +13,12 @@ $projects           = $gpc.GetLoadedProjects($project.FullName)
 
 # powershell -Command "Import-Module (Join-Path $escToolsPath Configurator.dll); Set-Configuration -Dll $asmpath"
 
-$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' "$toolsPath"
-if($dllConf) {
-    Import-Module $dllConf; 
-}
+# $dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' "$toolsPath"
+# if($dllConf) {
+#     Import-Module $dllConf; 
+# }
 
+Import-Module (Load-Configurator "$toolsPath")
 Set-Configuration -MetaLib "$metaLib" -InstallPath "$installPath" -ToolsPath "$toolsPath" -ProjectDTE $project -ProjectsMBE $gpc;
 
 

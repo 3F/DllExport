@@ -16,7 +16,7 @@ Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
 [DllExport("Init", CallingConvention.Cdecl)]
 public static int entrypoint(IntPtr L)
 {
-    // ... should be called by lua script
+    // ... it will be called from Lua script
 
     lua_pushcclosure(L, onProc, 0);
     lua_setglobal(L, "onKeyDown");
@@ -24,8 +24,9 @@ public static int entrypoint(IntPtr L)
     return 0;
 }
 ```
-* for work with unmanaged code (binding between .net and C/C++ etc.), see [Conari](https://github.com/3F/Conari)
-* for convenient work with Lua, see [LunaRoad](https://github.com/3F/LunaRoad)
+
+* **For work with Unmanaged code/libraries (binding between .NET and C/C++ etc.), see [Conari](https://github.com/3F/Conari)**
+* If you need convenient work with Lua (5.1, 5.2, 5.3, ...), see [LunaRoad](https://github.com/3F/LunaRoad)
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -72,11 +73,11 @@ It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/mast
 
 ### How it works
 
-Current features was been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive.
+Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive.
 
 **What inside ? or how works the .export directive ?**
 
-Read about format PE32/PE32+ and start with grammar of asmparse and move to writer:
+Read about format PE32/PE32+ and start with grammar from asmparse and move to writer:
 
 ```cpp
 ...
@@ -178,3 +179,8 @@ build_coreclr_x86_x64.cmd
 
 * [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
 * Look also [here](https://github.com/3F/coreclr/issues/1)
+
+**Support ?**
+
+[just a note again...](https://plus.google.com/101239554716569212042/posts/6yP64gDyum1)
+*I mentioned earlier that DllExport is not priority for me (current impl.) "- I will do something from current tasks, but guys, please support it with me" and... why so many support from me o_o*

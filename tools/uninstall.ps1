@@ -8,11 +8,12 @@ $projects           = $gpc.GetLoadedProjects($project.FullName)
 
 # Configurator
 
-$dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' "$toolsPath"
-if($dllConf) {
-    Import-Module $dllConf; 
-}
+# $dllConf = Get-TempPathToConfiguratorIfNotLoaded 'net.r_eg.DllExport.Configurator.dll' "$toolsPath"
+# if($dllConf) {
+#     Import-Module $dllConf; 
+# }
 
+Import-Module (Load-Configurator "$toolsPath")
 Reset-Configuration -MetaLib "$metaLib" -InstallPath "$installPath" -ToolsPath "$toolsPath" -ProjectDTE $project -ProjectsMBE $gpc;
 
 #

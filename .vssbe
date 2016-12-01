@@ -317,9 +317,9 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[( #[File exists.directory(\"packages/ILAsm/bin\")] )\n{ \n    #[File scall(\"packages_restore.cmd\", \"\", 400)]\n}\nelse{\n    #[File call(\"packages_restore.cmd\", \"\", 2000)]\n}]\n\n#[IO copy.file({\n                \"packages/ILAsm/bin/Win.x86/*.dll\",\n                \"packages/ILAsm/bin/Win.x86/*.exe\",\n                \"packages/ILAsm/*.txt\",\n                \"packages/ILAsm/*.md\"\n               }, \n               \"$(odir)/tools/coreclr/\", true)]",
+        "Command": "#[( #[IO exists.directory(\"packages/ILAsm/bin\")] )\n{ \n    #[File scall(\"packages_restore.cmd\", \"\", 400)]\n}\nelse{\n    #[File call(\"packages_restore.cmd\", \"\", 2000)]\n}]\n\n#[IO copy.file({\n                \"packages/ILAsm/bin/Win.x86/*.dll\",\n                \"packages/ILAsm/bin/Win.x86/*.exe\",\n                \"packages/ILAsm/*.txt\",\n                \"packages/ILAsm/*.md\"\n               }, \n               \"$(odir)/tools/coreclr/\", true)]",
         "Command__": [
-          "#[( #[File exists.directory(\"packages/ILAsm/bin\")] )",
+          "#[( #[IO exists.directory(\"packages/ILAsm/bin\")] )",
           "{ ",
           "    #[File scall(\"packages_restore.cmd\", \"\", 400)]",
           "}",

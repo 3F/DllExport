@@ -91,6 +91,18 @@ function Get-TempPathToConfiguratorIfNotLoaded([String] $asmFile, [String] $tool
     return $null
 }
 
+# solution from here: https://github.com/3F/vsSolutionBuildEvent/blob/master/vsSolutionBuildEvent/Actions/ActionCSharp.cs
+# we can use it from 'init.ps1' for loading only once, or from 'install.ps1' / 'uninstall.ps1' to use always latest assemblies
+function Load-Configurator([String] $toolsPath) {
+
+    Get-Module -All | ?{ $_.Name -like '*net.r_eg.DllExport.Configurator*' } | % { Remove-Module $_ }
+
+    $nsbin  = [System.Reflection.Assembly]::Load([System.IO.File]::ReadAllBytes("$toolsPath\NSBin.dll"));
+    $conf   = [System.Reflection.Assembly]::Load([System.IO.File]::ReadAllBytes("$toolsPath\net.r_eg.DllExport.Configurator.dll"));
+
+    return $conf;
+}
+
 function Get-AllDllExportMsBuildProjects {
     (Get-Project -all | % {
         Get-DllExportMsBuildProjectsByFullName $_.FullName
@@ -122,6 +134,7 @@ Export-ModuleMember Set-NoDllExportsForAnyCpu
 Export-ModuleMember Get-MBEGlobalProjectCollection
 Export-ModuleMember Get-TempPathToDllTools
 Export-ModuleMember Get-TempPathToConfiguratorIfNotLoaded
+Export-ModuleMember Load-Configurator
 Export-ModuleMember Remove-OldDllExportFolder
 Export-ModuleMember Remove-OldDllExportFolders
 Export-ModuleMember Get-DllExportMsBuildProjectsByFullName
