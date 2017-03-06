@@ -3,8 +3,8 @@
 *Unmanaged Exports ( .NET DllExport )*
 
 ```
-Copyright (c) 2009  Robert Giesecke
-Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
+Copyright (c) 2009-2015  Robert Giesecke
+Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 ```
 
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
@@ -39,7 +39,7 @@ public static int entrypoint(IntPtr L)
 Support of Modules: Library (**.dll**) and Executable (**.exe**) [[?](https://github.com/3F/DllExport/issues/18)]
 
 
-Where to look ? v1.2+ provides Dynamic definitions of namespaces (ddNS feature), thus you can use what you want - details **[here](https://github.com/3F/DllExport/issues/2)**
+Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature), thus you can use what you want - details **[here](https://github.com/3F/DllExport/issues/2)**
 
 ```cpp
     Via Cecil or direct modification:
@@ -77,7 +77,7 @@ Current features has been implemented through [ILDasm](https://github.com/3F/cor
 
 **What inside ? or how works the .export directive ?**
 
-Read about format PE32/PE32+ and start with grammar from asmparse and move to writer:
+Read about format PE32/PE32+, start with grammar from asmparse and move to writer:
 
 ```cpp
 ...
@@ -179,6 +179,8 @@ build_coreclr_x86_x64.cmd
 
 * [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
 * Look also [here](https://github.com/3F/coreclr/issues/1)
+
+-------------
 
 **Support ?**
 
