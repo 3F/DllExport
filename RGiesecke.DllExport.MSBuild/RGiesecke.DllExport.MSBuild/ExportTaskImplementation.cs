@@ -16,10 +16,12 @@ using RGiesecke.DllExport.MSBuild.Properties;
 
 namespace RGiesecke.DllExport.MSBuild
 {
+    using TCallbackTool = Func<Version, string, string>;
+
     public class ExportTaskImplementation<TTask>: IInputValues, IServiceContainer, IServiceProvider where TTask : IDllExportTask, ITask
     {
         private static readonly Version _VersionUsingToolLocationHelper = new Version(4, 5);
-        private static readonly IDictionary<string, Func<Version, string, string>> _GetFrameworkToolPathByMethodName = (IDictionary<string, Func<Version, string, string>>)new Dictionary<string, Func<Version, string, string>>();
+        private static readonly IDictionary<string, TCallbackTool> _GetFrameworkToolPathByMethodName = (IDictionary<string, TCallbackTool>)new Dictionary<string, TCallbackTool>();
         private static readonly MethodInfo WrapGetToolPathCallMethodInfo = Utilities.GetMethodInfo<Func<string, int, string>>((Expression<Func<Func<string, int, string>>>)(() => ExportTaskImplementation<TTask>.WrapGetToolPathCall<int>(default(MethodInfo)))).GetGenericMethodDefinition();
         private static readonly Regex MsbuildTaskLibRegex = new Regex("(?<=^|\\\\)Microsoft\\.Build\\.Utilities\\.v(\\d+(?:\\.(\\d+))?)(?:\\.dll)?$", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.CultureInvariant);
         private readonly IServiceContainer _ServiceProvider = (IServiceContainer)new ServiceContainer();
@@ -316,14 +318,14 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
-        private Func<Version, string, string> GetFrameworkToolPath
+        private TCallbackTool GetFrameworkToolPath
         {
             get {
                 return this.GetGetToolPath("GetPathToDotNetFrameworkFile");
             }
         }
 
-        private Func<Version, string, string> GetSdkToolPath
+        private TCallbackTool GetSdkToolPath
         {
             get {
                 return this.GetGetToolPath("GetPathToDotNetFrameworkSdkFile");
@@ -530,11 +532,11 @@ namespace RGiesecke.DllExport.MSBuild
             this._ActualTask.Log.LogError(Resources.Both_key_values_KeyContainer_0_and_KeyFile_0_are_present_only_one_can_be_specified, (object)this._Values.KeyContainer, (object)this._Values.KeyFile);
         }
 
-        private Func<Version, string, string> GetGetToolPath(string methodName)
+        private TCallbackTool GetGetToolPath(string methodName)
         {
             lock(ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName)
             {
-                Func<Version, string, string> local_0;
+                TCallbackTool local_0;
                 if(!ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName.TryGetValue(methodName, out local_0))
                 {
                     ExportTaskImplementation<TTask>._GetFrameworkToolPathByMethodName.Add(methodName, local_0 = this.GetGetToolPathInternal(methodName));
@@ -552,7 +554,7 @@ namespace RGiesecke.DllExport.MSBuild
             });
         }
 
-        private Func<Version, string, string> GetGetToolPathInternal(string methodName)
+        private TCallbackTool GetGetToolPathInternal(string methodName)
         {
             Type type = this.GetToolLocationHelperTypeFromRegsitry();
             if(type == null)
@@ -576,25 +578,34 @@ namespace RGiesecke.DllExport.MSBuild
                     }
                 }
             }
-            if(type == null)
-            {
-                return (Func<Version, string, string>)null;
+
+            if(type == null) {
+                return null;
             }
+
             Type targetDotNetFrameworkVersionType = type.Assembly.GetType("Microsoft.Build.Utilities.TargetDotNetFrameworkVersion");
-            MethodInfo method = type.GetMethod(methodName, BindingFlags.Static | BindingFlags.Public, (Binder)null, new Type[2]
-            {
-            typeof (string),
-            targetDotNetFrameworkVersionType
-            }, (ParameterModifier[])null);
-            if(method == null)
-            {
-                return (Func<Version, string, string>)null;
+            MethodInfo method = type.GetMethod(
+                methodName, 
+                BindingFlags.Static | BindingFlags.Public, 
+                null, 
+                new Type[2]
+                {
+                    typeof(string),
+                    targetDotNetFrameworkVersionType
+                }, 
+                null
+            );
+
+            if(method == null) {
+                return null;
             }
-            Func<string, int, string> getToolPathCore = (Func<string, int, string>)ExportTaskImplementation<TTask>.WrapGetToolPathCallMethodInfo.MakeGenericMethod(targetDotNetFrameworkVersionType).Invoke((object)null, new object[1]
+
+            var getToolPathCore = (Func<string, int, string>)WrapGetToolPathCallMethodInfo
+                                                            .MakeGenericMethod(targetDotNetFrameworkVersionType)
+                                                            .Invoke(null, new object[] { method });
+
+            Func<string, int, string> getToolPath = ((n, v) => 
             {
-            (object) method
-            });
-            Func<string, int, string> getToolPath = (Func<string, int, string>)((n, v) => {
                 try
                 {
                     return getToolPathCore(n, v);
@@ -604,28 +615,46 @@ namespace RGiesecke.DllExport.MSBuild
                     return null;
                 }
             });
-            return (Func<Version, string, string>)((version, toolName) => {
-                int num = (int)Enum.Parse(targetDotNetFrameworkVersionType, "Version" + (object)version.Major + (object)version.Minor);
-                string path;
-                for(path = getToolPath(toolName, num); path == null; path = getToolPath(toolName, num))
+
+            Func<string, int> getNum = delegate(string version) {
+                return (int)Enum.Parse(targetDotNetFrameworkVersionType, version);
+            };
+
+            return ((version, toolName) => 
+            {
+                int num;
+
+                // TargetDotNetFrameworkVersion Enumeration: https://msdn.microsoft.com/en-us/library/ms126273.aspx
+                try {
+                    num = getNum($"Version{version.Major}{version.Minor}");
+                }
+                catch(ArgumentException) {
+                    num = getNum("VersionLatest"); // try with latest released version
+                }
+
+                string path = getToolPath(toolName, num);
+
+                for(; path == null; path = getToolPath(toolName, num))
                 {
                     ++num;
-                    if(!Enum.IsDefined(targetDotNetFrameworkVersionType, (object)num))
+                    if(!Enum.IsDefined(targetDotNetFrameworkVersionType, num))
                     {
-                        return (string)null;
+                        return null;
                     }
                 }
+
                 for(; path != null && !File.Exists(path); path = getToolPath(toolName, num))
                 {
                     --num;
-                    if(!Enum.IsDefined(targetDotNetFrameworkVersionType, (object)num))
+                    if(!Enum.IsDefined(targetDotNetFrameworkVersionType, num))
                     {
-                        return (string)null;
+                        return null;
                     }
                 }
+
                 if(path != null && !File.Exists(path))
                 {
-                    return (string)null;
+                    return null;
                 }
                 return path;
             });
@@ -732,7 +761,7 @@ namespace RGiesecke.DllExport.MSBuild
             return true;
         }
 
-        private bool CopyIfNotExists(string file, string dir, string paths, Func<Version, string, string> toolp)
+        private bool CopyIfNotExists(string file, string dir, string paths, TCallbackTool toolp)
         {
             string dest = Path.Combine(dir, file);
             if(File.Exists(dest)) {
@@ -748,28 +777,36 @@ namespace RGiesecke.DllExport.MSBuild
             return false;
         }
 
-        private bool ValidateToolPath(string toolFileName, string currentValue, Func<Version, string, string> getToolPath, out string foundPath)
+        private bool ValidateToolPath(string toolFileName, string currentValue, TCallbackTool getToolPath, out string foundPath)
         {
-            if(ExportTaskImplementation<TTask>.PropertyHasValue(this.TargetFrameworkVersion))
+            // via user values, e.g.: $(TargetFrameworkSDKToolsDirectory);...
+            if(PropertyHasValue(currentValue) && TrySearchToolPath(currentValue, toolFileName, out foundPath))
+            {
+                return true;
+            }
+
+            // via ToolLocationHelper
+            if(PropertyHasValue(TargetFrameworkVersion))
             {
                 string toolDirectory = currentValue;
-                if(this.TryToGetToolDirForFxVersion(toolFileName, getToolPath, ref toolDirectory))
+                if(TryToGetToolDirForFxVersion(toolFileName, getToolPath, ref toolDirectory))
                 {
                     foundPath = toolDirectory;
                     return true;
                 }
             }
-            if(ExportTaskImplementation<TTask>.PropertyHasValue(currentValue) && ExportTaskImplementation<TTask>.TrySearchToolPath(currentValue, toolFileName, out foundPath))
-            {
-                return true;
-            }
-            foundPath = (string)null;
+
+            foundPath = null;
             return false;
         }
 
-        private bool TryToGetToolDirForFxVersion(string toolFileName, Func<Version, string, string> getToolPath, ref string toolDirectory)
+        private bool TryToGetToolDirForFxVersion(string toolFileName, TCallbackTool getToolPath, ref string toolDirectory)
         {
-            Version frameworkVersion = this.GetFrameworkVersion();
+            Version frameworkVersion = GetFrameworkVersion();
+            if(frameworkVersion.Major < 1) {
+                return false;
+            }
+
             if(getToolPath != null)
             {
                 string path = getToolPath(frameworkVersion, toolFileName);

@@ -208,8 +208,6 @@
             // chkOurILAsm
             // 
             this.chkOurILAsm.AutoSize = true;
-            this.chkOurILAsm.Checked = true;
-            this.chkOurILAsm.CheckState = System.Windows.Forms.CheckState.Checked;
             this.chkOurILAsm.Location = new System.Drawing.Point(8, 61);
             this.chkOurILAsm.Name = "chkOurILAsm";
             this.chkOurILAsm.Size = new System.Drawing.Size(279, 17);

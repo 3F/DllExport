@@ -46,8 +46,12 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.Build.Utilities" />
-    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Framework">
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Build.Utilities.v4.0">
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Mono.Cecil, Version=0.9.6.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Cecil.0.9.6.4\lib\net40\Mono.Cecil.dll</HintPath>
       <Private>True</Private>
