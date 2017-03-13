@@ -1,6 +1,14 @@
 DllExport - github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - 
 
+[v1.5.2] 2017.03.13
+    
+    * FIXED: Failing to compile in VS2017. Issue #29
+             `Error The "DllExportAppDomainIsolatedTask" task failed unexpectedly. System.ArgumentException: Requested value 'Version46' was not found.`
+             
+    * FIXED: Possible error `Could not load file or assembly Microsoft.Build.Utilities or one of its dependencies.`
+    * CHANGED: Updated script for loading of the Configurator to avoid problem with old assemblies. Issue #22
+    
 [v1.5.1] 2016.11.12
 
     * FIXED: Error : Invalid Option: /CVRES= Issue #20

@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>DllExport</id>
-    <version>1.5.1</version>
+    <version>1.5.2</version>
     <title>.NET DllExport</title>
     <authors>github.com/3F/DllExport</authors>
     <owners>reg</owners>
@@ -15,17 +15,17 @@
         Source code and all details here: https://github.com/3F/DllExport
         
         ~~~~~~~~
-        Alternative to get it:
+        Get it via GetNuTool:
         ==========================================
-        msbuild gnt.core /p:ngpackages="DllExport/1.5.1"
+        gnt /p:ngpackages="DllExport/1.5.2"
         ==========================================
         * https://github.com/3F/GetNuTool         
         
     </description>
     <summary>Unmanaged Exports ( .NET DllExport )</summary>
-    <tags>dllexport unmanaged-exports net-c-func</tags>
+    <tags>DllExport unmanaged-exports net-c-func ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke tools pe32 pe32-plus dotnet-DllExport unmanaged-export</tags>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2009  Robert Giesecke / Copyright (c) 2016  Denis Kuzmin [entry.reg@gmail.com] </copyright>
+    <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2017  Denis Kuzmin [entry.reg@gmail.com] </copyright>
     <references>
       <reference file="DllExport.dll" />
     </references>

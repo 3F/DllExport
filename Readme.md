@@ -1,4 +1,4 @@
-# DllExport
+# [DllExport](https://github.com/3F/DllExport)
 
 *Unmanaged Exports ( .NET DllExport )*
 
@@ -108,7 +108,7 @@ HRESULT Assembler::CreateExportDirectory()
     ~ now we're ready to miracles ~
 ```
 
-or read my short explanations from here: [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
+or read my short explanations from here: [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [DllExport.dll](https://github.com/3F/DllExport/issues/28#issuecomment-281957212); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
 
 ### How to get DllExport
 

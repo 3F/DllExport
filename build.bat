@@ -12,8 +12,13 @@ set msbuild=tools\msbuild
 
 :found
 
-call packages_restore.cmd -msbuild %msbuild%
+call packages_restore.cmd -msbuild %msbuild% || goto err
 
 %msbuild% "DllExport.sln" /v:normal /l:"packages\vsSBE.CI.MSBuild\bin\CI.MSBuild.dll" /m:4 /t:Build /p:Configuration=Release
 
+:err
+
+echo. Build failed. 1>&2
+
 :exit
+exit /B 0
