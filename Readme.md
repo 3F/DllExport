@@ -67,7 +67,7 @@ Now, we will be more open ! all details [here](https://github.com/3F/DllExport/i
 
 ## License
 
-It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE) - be a ~free~ and open
+It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE)
 
 ## &
 
@@ -115,18 +115,22 @@ or read my short explanations from here: [DllMain & the export-table](https://gi
 Available variants:
 
 * NuGet PM: `Install-Package DllExport`
-* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [gnt](https://github.com/3F/GetNuTool/releases/download/v1.5/gnt.bat) /p:ngpackages="DllExport"
+* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [gnt](https://github.com/3F/GetNuTool/releases/download/v1.6/gnt.bat) /p:ngpackages="DllExport"
 * NuGet Commandline: `nuget install DllExport`
 * [/releases](https://github.com/3F/DllExport/releases) ( [latest](https://github.com/3F/DllExport/releases/latest) )
 * [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
 
 ### How to Build
 
-No requires additional steps for you, just build as you need.
+Use build.bat if you need final binaries, or NuGet package as `DllExport.<version>.nupkg` and other.
 
-Use build.bat if you need final NuGet package as a `DllExport.<version>.nupkg` etc.
-* *You do not need to do anything inside IDE if you have installed [this plugin](https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/).*
+```bash
+> build
+```
 
+Part of this build scripts works via vssbe ([?](https://github.com/3F/DllExport/issues/31#issuecomment-294231378)) and for build via console (including CI etc.) uses [CIM](https://www.nuget.org/packages/vsSBE.CI.MSBuild/) version of this. So you do not need anything else, just type `build`.
+
+For Visual Studio, use this [vsix version for IDE](https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/)
 
 ### How to Debug
 

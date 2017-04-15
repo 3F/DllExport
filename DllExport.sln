@@ -1,8 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
-MinimumVisualStudioVersion = 10.0.40219.1
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
+MinimumVisualStudioVersion = 10.0.30319.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metadata", "Metadata\Metadata.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
@@ -30,7 +30,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED
 		tools\nsbin.bat = tools\nsbin.bat
 		tools\nsbin.ps1 = tools\nsbin.ps1
 		tools\gnt.bat = tools\gnt.bat
-		tools\msbuild.bat = tools\msbuild.bat
+		tools\hMSBuild.bat = tools\hMSBuild.bat
 		tools\powershell.bat = tools\powershell.bat
 		tools\uninstall.ps1 = tools\uninstall.ps1
 		tools\UnmanagedExports.nuspec = tools\UnmanagedExports.nuspec
@@ -43,6 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55898433
 		build_coreclr_x86_x64.cmd = build_coreclr_x86_x64.cmd
 		packages_restore.cmd = packages_restore.cmd
 		tools\gnt.bat = tools\gnt.bat
+		tools\hMSBuild.bat = tools\hMSBuild.bat
 		.vssbe = .vssbe
 	EndProjectSection
 EndProject

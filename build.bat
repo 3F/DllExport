@@ -1,24 +1,16 @@
 @echo off
 
-if NOT [%1] == [] (
-    set msbuild=%1
-    goto found
-)
-
-:: set bat=%~nx0
-:: echo Note: To change MSBuild Tools, use: `%bat:~0,-4% "full_path_to_msbuild.exe"`
-
-set msbuild=tools\msbuild
+set cimdll=packages\vsSBE.CI.MSBuild\bin\CI.MSBuild.dll
+set _msbuild=tools\hMSBuild
 
 :found
 
-call packages_restore.cmd -msbuild %msbuild% || goto err
+call packages_restore.cmd || goto err
 
-%msbuild% "DllExport.sln" /v:normal /l:"packages\vsSBE.CI.MSBuild\bin\CI.MSBuild.dll" /m:4 /t:Build /p:Configuration=Release
+%_msbuild% "DllExport.sln" /v:normal /l:"%cimdll%" /m:4 /t:Build /p:Configuration=Release || goto err
+exit /B 0
 
 :err
 
 echo. Build failed. 1>&2
-
-:exit
-exit /B 0
+exit /B 1

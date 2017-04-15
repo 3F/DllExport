@@ -24,6 +24,7 @@ goto exit
 :err
 
 echo. failed. 1>&2
+exit /B 1
 
 :exit
 exit /B 0
