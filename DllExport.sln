@@ -1,8 +1,8 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26228.4
-MinimumVisualStudioVersion = 10.0.30319.1
+VisualStudioVersion = 15.0.26430.6
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metadata", "Metadata\Metadata.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
@@ -11,40 +11,39 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
 	ProjectSection(SolutionItems) = preProject
-		.version = .version
-		LICENSE = LICENSE
-		changelog.txt = changelog.txt
-		Readme.md = Readme.md
-		3rd-party.txt = 3rd-party.txt
-		packages.config = packages.config
 		.gitmodules = .gitmodules
+		.version = .version
+		3rd-party.txt = 3rd-party.txt
+		changelog.txt = changelog.txt
+		LICENSE = LICENSE
+		packages.config = packages.config
+		Readme.md = Readme.md
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1}"
 	ProjectSection(SolutionItems) = preProject
 		tools\DllExport.nuspec = tools\DllExport.nuspec
 		tools\DllExportCmdLets.psm1 = tools\DllExportCmdLets.psm1
+		tools\gnt.bat = tools\gnt.bat
+		tools\hMSBuild.bat = tools\hMSBuild.bat
 		tools\init.ps1 = tools\init.ps1
 		tools\install.ps1 = tools\install.ps1
 		tools\net.r_eg.DllExport.targets = tools\net.r_eg.DllExport.targets
 		tools\nsbin.bat = tools\nsbin.bat
 		tools\nsbin.ps1 = tools\nsbin.ps1
-		tools\gnt.bat = tools\gnt.bat
-		tools\hMSBuild.bat = tools\hMSBuild.bat
 		tools\powershell.bat = tools\powershell.bat
 		tools\uninstall.ps1 = tools\uninstall.ps1
-		tools\UnmanagedExports.nuspec = tools\UnmanagedExports.nuspec
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55898433-0EEF-4B38-B144-B2A40150E4F4}"
 	ProjectSection(SolutionItems) = preProject
+		.vssbe = .vssbe
 		build.bat = build.bat
 		build_coreclr_x86.cmd = build_coreclr_x86.cmd
 		build_coreclr_x86_x64.cmd = build_coreclr_x86_x64.cmd
-		packages_restore.cmd = packages_restore.cmd
 		tools\gnt.bat = tools\gnt.bat
 		tools\hMSBuild.bat = tools\hMSBuild.bat
-		.vssbe = .vssbe
+		packages_restore.cmd = packages_restore.cmd
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBin", "NSBin\NSBin.csproj", "{311706A5-5ED2-4006-B794-055009D8A256}"
@@ -56,31 +55,44 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		PublicRelease|Any CPU = PublicRelease|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{AC6947C6-0637-429A-A5F1-54447A494E6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{AC6947C6-0637-429A-A5F1-54447A494E6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{AC6947C6-0637-429A-A5F1-54447A494E6D}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{AC6947C6-0637-429A-A5F1-54447A494E6D}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{AC6947C6-0637-429A-A5F1-54447A494E6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AC6947C6-0637-429A-A5F1-54447A494E6D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D620BC4A-50CD-48DF-8C6E-B79555260EA0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D620BC4A-50CD-48DF-8C6E-B79555260EA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D620BC4A-50CD-48DF-8C6E-B79555260EA0}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{D620BC4A-50CD-48DF-8C6E-B79555260EA0}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{D620BC4A-50CD-48DF-8C6E-B79555260EA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D620BC4A-50CD-48DF-8C6E-B79555260EA0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{311706A5-5ED2-4006-B794-055009D8A256}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{311706A5-5ED2-4006-B794-055009D8A256}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{311706A5-5ED2-4006-B794-055009D8A256}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{311706A5-5ED2-4006-B794-055009D8A256}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{311706A5-5ED2-4006-B794-055009D8A256}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{311706A5-5ED2-4006-B794-055009D8A256}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9B7723F1-C89F-43E1-B27D-A46A96C82034}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9B7723F1-C89F-43E1-B27D-A46A96C82034}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B7723F1-C89F-43E1-B27D-A46A96C82034}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{9B7723F1-C89F-43E1-B27D-A46A96C82034}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{9B7723F1-C89F-43E1-B27D-A46A96C82034}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9B7723F1-C89F-43E1-B27D-A46A96C82034}.Release|Any CPU.Build.0 = Release|Any CPU
 		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

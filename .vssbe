@@ -91,9 +91,16 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(dbin = \"bin/$(Configuration)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
-          "#[$(dbin = \"bin/$(Configuration)/\")]",
+          "#[($(Configuration) == \"PublicRelease\") {",
+          "    #[$(cfgname = 'Release')]",
+          "}",
+          "else{",
+          "    #[$(cfgname = $(Configuration))]",
+          "}]",
+          "",
+          "#[$(dbin = \"bin/$(cfgname)/\")]",
           "",
           "$(revDeltaBase  = \"2016/10/12\")",
           "$(revDeltaMin   = $([System.Math]::Pow(10, 3)))",
@@ -134,7 +141,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n}]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "",
@@ -145,7 +152,11 @@
           "#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]",
           "",
           "#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]",
-          "#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]"
+          "#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
+          "",
+          "#[( $(Configuration) != \"PublicRelease\" ) {",
+          "    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "}]"
         ]
       }
     },
@@ -158,7 +169,9 @@
       "IgnoreIfBuildFailed": false,
       "BuildType": "Common",
       "Confirmation": false,
-      "ToConfiguration": [],
+      "ToConfiguration": [
+        "PublicRelease|Any CPU"
+      ],
       "ExecutionOrder": {
         "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
         "$values": []
