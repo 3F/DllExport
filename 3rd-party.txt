@@ -3,14 +3,15 @@ DllExport  [ github.com/3F/DllExport ]
 
 # Third-party software components
 
-## The DllExport includes:
+## DllExport project includes:
 
     * CoreCLR / ILAsm / ILDasm [ github.com/3F/coreclr ]
     * Mono.Cecil [ github.com/jbevain/cecil ]
     * SDK reference assemblies for PowerShell version 5 [ github.com/PowerShell/ ]
     
-## Maintenance of this project also includes:
+## Maintaining of this project also includes:
 
     * vsSolutionBuildEvent /+ CI.MSBuild [ github.com/3F/vsSolutionBuildEvent ]
     * GetNuTool [ github.com/3F/GetNuTool ]
+    * hMSBuild [ github.com/3F/hMSBuild ]
 
