@@ -16,7 +16,7 @@
     <DllExportOurILAsmPath Condition="'$(DllExportOurILAsmPath)' == ''">$(DllExportRootPkg)$(DllExportToolsPath)coreclr\</DllExportOurILAsmPath>
   </PropertyGroup>
 
-  <Target Name="DllExportMod" AfterTargets="PostBuildEvent;Build" DependsOnTargets="GetFrameworkPaths">
+  <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
       <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(PlatformTarget)</DllExportPlatform>
       <DllExportCpuType Condition="'$(DllExportCpuType)' == ''">$(CpuType)</DllExportCpuType>
