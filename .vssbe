@@ -141,7 +141,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n}]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n}]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "",
@@ -155,7 +155,7 @@
           "#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]",
           "",
           "#[( $(Configuration) != \"PublicRelease\" ) {",
-          "    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
+          "    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]",
           "}]"
         ]
       }

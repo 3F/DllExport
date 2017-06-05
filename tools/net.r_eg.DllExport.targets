@@ -18,8 +18,7 @@
 
   <Target Name="DllExportMod" AfterTargets="PostBuildEvent;Build" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
-      <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(Platform)</DllExportPlatform>
-      <DllExportPlatformTarget Condition="'$(DllExportPlatformTarget)' == ''">$(PlatformTarget)</DllExportPlatformTarget>
+      <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(PlatformTarget)</DllExportPlatform>
       <DllExportCpuType Condition="'$(DllExportCpuType)' == ''">$(CpuType)</DllExportCpuType>
       <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)' == ''">$(DebugSymbols)</DllExportEmitDebugSymbols>
       <DllExportLeaveIntermediateFiles Condition="'$(DllExportLeaveIntermediateFiles)' == ''">false</DllExportLeaveIntermediateFiles>
@@ -41,7 +40,6 @@
 
     <DllExportAppDomainIsolatedTask 
           Platform="$(DllExportPlatform)"
-          PlatformTarget="$(DllExportPlatformTarget)"
           CpuType="$(DllExportCpuType)"
           DllExportAttributeFullName="$(DllExportNamespace).$(DllExportMetaLibAttr)"
           EmitDebugSymbols="$(DllExportEmitDebugSymbols)"

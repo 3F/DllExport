@@ -50,8 +50,13 @@ namespace net.r_eg.DllExport.Configurator.GUI
             comboNS.MaxLength   = config.nsBuffer;
             numOrdinal.Value    = FIRST_ORDINAL;
 
-#if CONFVER_EXISTS
+#if PUBLIC_RELEASE
             Text += " - v" + ConfVersion.S_INFO;
+#else
+            Text += " - v" + ConfVersion.S_NUM;
+#endif
+#if DEBUG
+            Text += " [ Debug ]";
 #endif
 
             foreach(var ns in cfg.defnamespaces) {

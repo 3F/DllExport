@@ -273,12 +273,6 @@ namespace RGiesecke.DllExport.MSBuild
             set;
         }
 
-        public string PlatformTarget
-        {
-            get;
-            set;
-        }
-
         public string CpuType
         {
             get;
@@ -506,17 +500,17 @@ namespace RGiesecke.DllExport.MSBuild
 
         private bool ValidateInputValues()
         {
-            this.ValidateLibToolPath();
-            bool flag = this.ValidateFrameworkPath() & this.ValidateSdkPath();
-            if(!string.IsNullOrEmpty(this.CpuType) && (string.IsNullOrEmpty(this.Platform) || string.Equals(this.Platform, "anycpu", StringComparison.OrdinalIgnoreCase)))
+            ValidateLibToolPath();
+            bool flag = ValidateFrameworkPath() & ValidateSdkPath();
+
+            // TODO: redundant cfg
+            if(!string.IsNullOrEmpty(CpuType) && 
+                (string.IsNullOrEmpty(Platform) || string.Equals(Platform, "anycpu", StringComparison.OrdinalIgnoreCase)))
             {
-                this.Platform = this.CpuType;
+                Platform = CpuType;
             }
-            if(!string.IsNullOrEmpty(this.PlatformTarget) && (string.IsNullOrEmpty(this.Platform) || string.Equals(this.Platform, "anycpu", StringComparison.OrdinalIgnoreCase)))
-            {
-                this.Platform = this.PlatformTarget;
-            }
-            return flag & this.ValidateFileName();
+
+            return flag & ValidateFileName();
         }
 
         private void ValidateKeyFiles(bool isSigned)

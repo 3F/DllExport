@@ -84,17 +84,6 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
-        public string PlatformTarget
-        {
-            get {
-                return this._ExportTaskImplementation.PlatformTarget;
-            }
-
-            set {
-                this._ExportTaskImplementation.PlatformTarget = value;
-            }
-        }
-
         public string CpuType
         {
             get {

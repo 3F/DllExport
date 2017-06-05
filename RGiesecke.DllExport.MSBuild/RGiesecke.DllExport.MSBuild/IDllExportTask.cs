@@ -31,11 +31,5 @@ namespace RGiesecke.DllExport.MSBuild
             get;
             set;
         }
-
-        string PlatformTarget
-        {
-            get;
-            set;
-        }
     }
 }
