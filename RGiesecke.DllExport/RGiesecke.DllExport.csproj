@@ -97,7 +97,6 @@
     <Compile Include="Parsing\Actions\ParserStateActionAttribute.cs" />
     <Compile Include="Parsing\Actions\ParserStateValues.cs" />
     <Compile Include="Properties\Resources.Designer.cs" />
-    <Compile Include="Properties\Settings.Designer.cs" />
     <Compile Include="DllExportVersion.cs" />
     <Compile Include="IDllExportNotifier.cs" />
     <Compile Include="CpuPlatform.cs" />
@@ -113,7 +112,9 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Parsing\Regexes.resx" />
-    <EmbeddedResource Include="Properties\Resources.resx" />
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />

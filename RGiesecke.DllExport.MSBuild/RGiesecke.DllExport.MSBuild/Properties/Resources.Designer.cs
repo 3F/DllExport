@@ -148,6 +148,14 @@ public class Resources
         }
     }
 
+    public static string Cannot_find_0_
+    {
+        get
+        {
+            return RGiesecke.DllExport.MSBuild.Properties.Resources.ResourceManager.GetString("Cannot_find_0_", RGiesecke.DllExport.MSBuild.Properties.Resources.resourceCulture);
+        }
+    }
+
     internal Resources()
     {
     }

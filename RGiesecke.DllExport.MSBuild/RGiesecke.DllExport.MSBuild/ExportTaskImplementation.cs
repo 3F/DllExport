@@ -112,6 +112,28 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public string VsDevCmd
+        {
+            get {
+                return _Values.VsDevCmd;
+            }
+
+            set {
+                _Values.VsDevCmd = value;
+            }
+        }
+
+        public string VcVarsAll
+        {
+            get {
+                return _Values.VcVarsAll;
+            }
+
+            set {
+                _Values.VcVarsAll = value;
+            }
+        }
+
         public string LibToolPath
         {
             get {
@@ -500,6 +522,9 @@ namespace RGiesecke.DllExport.MSBuild
 
         private bool ValidateInputValues()
         {
+            VsDevCmd    = ValidateCmdScript(VsDevCmd);
+            VcVarsAll   = ValidateCmdScript(VcVarsAll);
+
             ValidateLibToolPath();
             bool flag = ValidateFrameworkPath() & ValidateSdkPath();
 
@@ -848,11 +873,26 @@ namespace RGiesecke.DllExport.MSBuild
 
         private static bool PropertyHasValue(string propertyValue)
         {
-            if(!string.IsNullOrEmpty(propertyValue))
-            {
-                return !propertyValue.Contains("*Undefined*");
+            if(String.IsNullOrWhiteSpace(propertyValue)) {
+                return false;
             }
-            return false;
+            //return !propertyValue.Contains("*Undefined*"); // *Undefined*\path1;C:\path2 ...
+            //TODO: for something like this - Path.GetFullPath("*Undefined*\\..\\path") it will return absolute path to current folder + level up instead of exception.
+            return !propertyValue.Trim().Equals("*Undefined*", StringComparison.InvariantCulture);
+        }
+
+        private string ValidateCmdScript(string data)
+        {
+            if(!PropertyHasValue(data)) {
+                return null;
+            }
+
+            string ret;
+            if(TrySearchToolPath(data, String.Empty, out ret)) {
+                return ret;
+            }
+            _ActualTask.Log.LogMessage(MessageImportance.Normal, Resources.Cannot_find_0_, data);
+            return null;
         }
 
         private bool ValidateLibToolPath()

@@ -180,19 +180,62 @@ namespace RGiesecke.DllExport.Parsing
 
         private int RunLibTool(CpuPlatform cpu, string fileName, string directory)
         {
-            if(!InputValues.GenExpLib || String.IsNullOrWhiteSpace(InputValues.LibToolPath)) {
+            if(!InputValues.GenExpLib) {
                 return 0;
             }
 
-            string libraryFileNameRoot  = IlAsm.GetLibraryFileNameRoot(fileName);
-            string defFile              = CreateDefFile(cpu, directory, libraryFileNameRoot);
+            string libFileRoot  = IlAsm.GetLibraryFileNameRoot(fileName);
+            string defFile      = CreateDefFile(cpu, directory, libFileRoot);
+            string path         = Path.Combine(directory, Path.GetFileNameWithoutExtension(InputValues.OutputFileName)) + ".lib";
+            string cfg          = $"\"/def:{defFile}\" /machine:{cpu} \"/out:{path}\"";
 
             try
             {
-                return RunLibToolCore(cpu, directory, defFile);
+                if(!String.IsNullOrWhiteSpace(InputValues.VsDevCmd))
+                {
+                    int code = RunLibToolCore(
+                        "cmd", 
+                        $"/C \"\"{InputValues.VsDevCmd}\" -no_logo -arch={(cpu == CpuPlatform.X64 ? "amd64" : "x86")} && lib.exe {cfg}\""
+                    );
+
+                    if(code != -1) {
+                        return code;
+                    }
+                }
+
+                if(!String.IsNullOrWhiteSpace(InputValues.LibToolPath))
+                {
+                    string reqPath = (String.IsNullOrEmpty(InputValues.LibToolDllPath) || !Directory.Exists(InputValues.LibToolDllPath)) ? null : InputValues.LibToolDllPath;
+                    int code = RunLibToolCore("Lib.exe", cfg, InputValues.LibToolPath, reqPath);
+                    if(code != -1) {
+                        return code;
+                    }
+                }
+
+                if(!String.IsNullOrWhiteSpace(InputValues.VcVarsAll))
+                {
+                    int code = RunLibToolCore(
+                        "cmd",
+                        $"/C \"\"{InputValues.VcVarsAll}\" {(cpu == CpuPlatform.X64 ? "x64" : "x86")} && lib.exe {cfg}\""
+                    );
+
+                    if(code != -1) {
+                        return code;
+                    }
+                }
+
+                int ret = RunLibToolCore("lib.exe", cfg, String.Empty, InputValues.LibToolDllPath);
+                if(ret != -1) {
+                    return ret;
+                }
+
+                throw new Exception();
             }
             catch(Exception ex)
             {
+                if(File.Exists(path)) {
+                    File.Delete(path);
+                }
                 Notifier.Notify(1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, "lib.exe", ex.Message);
                 return -1;
             }
@@ -205,20 +248,28 @@ namespace RGiesecke.DllExport.Parsing
         }
 
         [Localizable(false)]
-        private int RunLibToolCore(CpuPlatform cpu, string directory, string defFileName)
+        private int RunLibToolCore(string tool, string args, string path = "", string reqPath = null)
         {
-            string path = Path.Combine(directory, Path.GetFileNameWithoutExtension(this.InputValues.OutputFileName)) + ".lib";
             try
             {
-                return IlParser.RunIlTool(this.InputValues.LibToolPath, "Lib.exe", string.IsNullOrEmpty(this.InputValues.LibToolDllPath) || !Directory.Exists(this.InputValues.LibToolDllPath) ? (string)null : this.InputValues.LibToolDllPath, (string)null, "LibToolPath", string.Format("\"/def:{0}\" /machine:{1} \"/out:{2}\"", (object)defFileName, (object)cpu, (object)path), DllExportLogginCodes.LibToolLooging, DllExportLogginCodes.LibToolVerboseLooging, this.Notifier, this.Timeout, (Func<string, bool>)null);
+                return IlParser.RunIlTool
+                (
+                    path,
+                    tool,
+                    reqPath, 
+                    null, 
+                    "LibToolPath", 
+                    args, 
+                    DllExportLogginCodes.LibToolLooging, 
+                    DllExportLogginCodes.LibToolVerboseLooging, 
+                    Notifier, 
+                    Timeout, 
+                    null
+                );
             }
-            catch
-            {
-                if(File.Exists(path))
-                {
-                    File.Delete(path);
-                }
-                throw;
+            catch(Exception ex) {
+                Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, $" {tool} {args} ", ex.Message);
+                return -1;
             }
         }
 

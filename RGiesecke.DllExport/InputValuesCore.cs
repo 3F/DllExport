@@ -105,6 +105,18 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        public string VsDevCmd
+        {
+            get;
+            set;
+        }
+
+        public string VcVarsAll
+        {
+            get;
+            set;
+        }
+
         public string LibToolPath
         {
             get;

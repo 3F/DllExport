@@ -294,10 +294,7 @@ namespace RGiesecke.DllExport.Parsing
                     path = Path.Combine(Path.Combine(Path.GetFullPath(installPath), "Bin"), toolFileName);
                 }
             }
-            else if(!string.IsNullOrEmpty((Settings.Default[settingsName] as string).NullSafeTrim()))
-            {
-                path = Settings.Default.ILDasmPath;
-            }
+
             if(string.IsNullOrEmpty(path) || !File.Exists(path))
             {
                 path = toolFileName;

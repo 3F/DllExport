@@ -184,6 +184,28 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public string VsDevCmd
+        {
+            get {
+                return _ExportTaskImplementation.VsDevCmd;
+            }
+
+            set {
+                _ExportTaskImplementation.VsDevCmd = value;
+            }
+        }
+
+        public string VcVarsAll
+        {
+            get {
+                return _ExportTaskImplementation.VcVarsAll;
+            }
+
+            set {
+                _ExportTaskImplementation.VcVarsAll = value;
+            }
+        }
+
         public string LibToolPath
         {
             get {

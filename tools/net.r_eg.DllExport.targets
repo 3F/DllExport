@@ -3,6 +3,10 @@
 
   <PropertyGroup>
     <DllExportRootPkg Condition="'$(DllExportRootPkg)' == ''">$(MSBuildThisFileDirectory)..\</DllExportRootPkg>
+    <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(VsInstallRoot)\</DllExportVSRoot>
+    <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(DevEnvDir)\..\..\</DllExportVSRoot>
+    <DllExportVSBin Condition="'$(DllExportVSBin)' == ''">$(DllExportVSRoot)Common7\IDE\</DllExportVSBin>
+
     <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">lib\net20\</DllExportLibPath>
     <DllExportToolsPath Condition="'$(DllExportToolsPath)' == ''">tools\</DllExportToolsPath>
     
@@ -28,14 +32,16 @@
       <DllExportProjectDirectory Condition="'$(DllExportProjectDirectory)' == ''">$(MSBuildProjectDirectory)</DllExportProjectDirectory>
       <DllExportInputFileName Condition="'$(DllExportInputFileName)' == ''">$(TargetPath)</DllExportInputFileName>
       <DllExportFrameworkPath Condition="'$(DllExportFrameworkPath)' == ''">$(TargetedFrameworkDir);$(TargetFrameworkDirectory)</DllExportFrameworkPath>
-      <DllExportLibToolPath Condition="'$(DllExportLibToolPath)' == ''">$(DevEnvDir)\..\..\VC\bin</DllExportLibToolPath>
-      <DllExportLibToolDllPath Condition="'$(DllExportLibToolDllPath)' == ''">$(DevEnvDir)</DllExportLibToolDllPath>
+      <DllExportLibToolPath Condition="'$(DllExportLibToolPath)' == ''">$(DllExportVSRoot)VC\bin</DllExportLibToolPath>
+      <DllExportLibToolDllPath Condition="'$(DllExportLibToolDllPath)' == ''">$(DllExportVSBin)</DllExportLibToolDllPath>
       <DllExportTargetFrameworkVersion Condition="'$(DllExportTargetFrameworkVersion)' == ''">$(TargetFrameworkVersion)</DllExportTargetFrameworkVersion>
       <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
       <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)' == ''">1</DllExportOrdinalsBase>
       <DllExportGenExpLib Condition="'$(DllExportGenExpLib)' == ''">false</DllExportGenExpLib>
       <DllExportOurILAsmPath Condition="'$(DllExportOurILAsm)' != 'true'"></DllExportOurILAsmPath>
+      <DllExportVsDevCmd Condition="'$(DllExportVsDevCmd)' == ''">$(DllExportVSRoot)Common7\Tools\VsDevCmd.bat</DllExportVsDevCmd>
+      <DllExportVcVarsAll Condition="'$(DllExportVcVarsAll)' == ''">$(DllExportVSRoot)VC\vcvarsall.bat;$(DllExportVSRoot)VC\Auxiliary\Build\vcvarsall.bat</DllExportVcVarsAll>
     </PropertyGroup>
 
     <DllExportAppDomainIsolatedTask 
@@ -50,6 +56,8 @@
           ProjectDirectory="$(DllExportProjectDirectory)"
           InputFileName="$(DllExportInputFileName)"
           FrameworkPath="$(DllExportFrameworkPath)"
+          VsDevCmd="$(DllExportVsDevCmd)"
+          VcVarsAll="$(DllExportVcVarsAll)"
           LibToolPath="$(DllExportLibToolPath)"
           LibToolDllPath="$(DllExportLibToolDllPath)"
           TargetFrameworkVersion="$(DllExportTargetFrameworkVersion)"
