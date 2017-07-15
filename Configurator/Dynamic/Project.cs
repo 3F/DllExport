@@ -59,7 +59,7 @@ namespace net.r_eg.DllExport.Configurator.Dynamic
         {
             get {
                 string vNamespace = MBEProject.GetPropertyValue(NamespacePropertyName);
-                return String.IsNullOrEmpty(vNamespace);
+                return !String.IsNullOrEmpty(vNamespace);
             }
         }
 

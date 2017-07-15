@@ -48,7 +48,7 @@ namespace net.r_eg.DllExport.Configurator
 
         public void configure()
         {
-            if(project.IsDefinedNamespace)
+            if(!project.IsDefinedNamespace)
             {
                 config.defnamespaces.Insert(0, project.getPropertyValue("RootNamespace"));
 

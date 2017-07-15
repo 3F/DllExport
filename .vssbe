@@ -91,7 +91,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion - 65534 max allowed ! that is 65536 (0-65535) is not a correct range, (2^16 - 2) \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -104,12 +104,14 @@
           "",
           "$(revDeltaBase  = \"2016/10/12\")",
           "$(revDeltaMin   = $([System.Math]::Pow(10, 3)))",
-          "$(revDeltaMax   = $([System.Math]::Pow(10, 5)))",
+          "$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))",
+          "$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion - 65534 max allowed ! that is 65536 (0-65535) is not a correct range, (2^16 - 2) \"]",
           "",
           "$(pDllExport    = \"RGiesecke.DllExport\")",
           "$(pMeta         = \"Metadata\")",
           "$(pNSBin        = \"NSBin\")",
           "$(pConf         = \"Configurator\")",
+          "$(pWizard       = \"Wizard\")",
           "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
           "$(odir          = \"$(dbin)raw/\")",
           "",
@@ -141,7 +143,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n}]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n}]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "",
@@ -156,6 +158,7 @@
           "",
           "#[( $(Configuration) != \"PublicRelease\" ) {",
           "    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]",
+          "    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]",
           "}]"
         ]
       }
@@ -185,7 +188,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var tpl = // This code was generated by a vsSolutionBuildEvent. \n// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.\nnamespace net.r_eg.DllExport.Configurator\n{\n    using System;\n\n    internal struct ConfVersion\n    {\n        public static readonly Version number = new Version(S_NUM_REV);\n\n        public const string S_NUM = \"%S_NUM%\";\n        public const string S_REV = \"%S_REV%\";\n\n        public const string S_NUM_REV   = S_NUM + \".\" + S_REV;\n        public const string BRANCH_SHA1 = \"%B_SHA1%\";\n\n        internal const string S_INFO = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";\n    }\n}]\n\n#[\" \n    Calculate revision\n\"]\n#[var tBase     = $([System.DateTime]::Parse('$(revDeltaBase)').ToBinary())]\n#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]\n#[var revBuild  = #[$(\n                    [System.TimeSpan]::FromTicks('$(\n                        [MSBuild]::Subtract($(tNow), $(tBase))\n                    )')\n                    .TotalMinutes.ToString('0'))]]\n                     \n#[var revBuild  = #[$(\n                    [MSBuild]::Add(\n                        $(revDeltaMin), \n                        $([MSBuild]::Modulo(\n                            $(revBuild), \n                            $([MSBuild]::Subtract(\n                                $(revDeltaMax), $(revDeltaMin)\n                             ))\n                         ))\n                     )\n                   )]\n]\n\n#[\" \n    Remove placeholders\n\"]\n#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\"))]\n\n#[\" \n    Checking of the git folder +tool & define sha1, branch name, etc.\n\"]\n#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )\n{\n    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]\n    \n    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\"))]\n}\nelse {\n    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"-\"))]\n}]\n\n#[\" \n    Save result\n\"]\n#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]",
+        "Command": "#[var tpl = // This code was generated by a vsSolutionBuildEvent. \n// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.\nnamespace net.r_eg.DllExport.Configurator\n{\n    using System;\n\n    internal struct ConfVersion\n    {\n        public static readonly Version number = new Version(S_NUM_REV);\n\n        public const string S_NUM = \"%S_NUM%\";\n        public const string S_REV = \"%S_REV%\";\n\n        public const string S_NUM_REV = S_NUM + \".\" + S_REV;\n\n        public const string BRANCH_SHA1 = \"%B_SHA1%\";\n        public const string BRANCH_NAME = \"%B_NAME%\";\n        public const string BRANCH_REVC = \"%B_REVC%\";\n\n        internal const string S_INFO        = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";\n        internal const string S_INFO_FULL   = S_INFO + \" /'\" + BRANCH_NAME + \"':\" + BRANCH_REVC;\n    }\n}]\n\n\n#[\" \n    Calculate revision\n\"]\n#[var tBase     = $([System.DateTime]::Parse('$(revDeltaBase)').ToBinary())]\n#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]\n#[var revBuild  = #[$(\n                    [System.TimeSpan]::FromTicks('$(\n                        [MSBuild]::Subtract($(tNow), $(tBase))\n                    )')\n                    .TotalMinutes.ToString('0'))]]\n                     \n#[var revBuild  = #[$(\n                    [MSBuild]::Add(\n                        $(revDeltaMin), \n                        $([MSBuild]::Modulo(\n                            $(revBuild), \n                            $([MSBuild]::Subtract(\n                                $(revDeltaMax), $(revDeltaMin)\n                             ))\n                         ))\n                     )\n                   )]\n]\n\n#[\" \n    Remove placeholders\n\"]\n#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\"))]\n\n#[\" \n    Checking of the git folder +tool & define sha1, branch name, etc.\n\"]\n#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )\n{\n    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]\n    #[var bName = #[IO sout(\"git\", \"rev-parse --abbrev-ref HEAD\")]]\n    #[var bRevc = #[IO sout(\"git\", \"rev-list HEAD --count\")]]\n    \n    #[($(bName) == \"HEAD\") {\n        #[var bName = $(APPVEYOR_REPO_BRANCH)]\n    }]\n}\nelse {\n    #[$(bSha1 = '-')] #[$(bName = '-')] #[$(bRevc = '-')]\n}]\n\n#[var tpl = #[$(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\")\n                   .Replace(\"%B_NAME%\", \"#[var bName]\")\n                   .Replace(\"%B_REVC%\", \"#[var bRevc]\") )]]\n\n#[\" \n    Save result\n\"]\n#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]",
         "Command__": [
           "#[var tpl = // This code was generated by a vsSolutionBuildEvent. ",
           "// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.",
@@ -200,12 +203,17 @@
           "        public const string S_NUM = \"%S_NUM%\";",
           "        public const string S_REV = \"%S_REV%\";",
           "",
-          "        public const string S_NUM_REV   = S_NUM + \".\" + S_REV;",
-          "        public const string BRANCH_SHA1 = \"%B_SHA1%\";",
+          "        public const string S_NUM_REV = S_NUM + \".\" + S_REV;",
           "",
-          "        internal const string S_INFO = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";",
+          "        public const string BRANCH_SHA1 = \"%B_SHA1%\";",
+          "        public const string BRANCH_NAME = \"%B_NAME%\";",
+          "        public const string BRANCH_REVC = \"%B_REVC%\";",
+          "",
+          "        internal const string S_INFO        = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";",
+          "        internal const string S_INFO_FULL   = S_INFO + \" /'\" + BRANCH_NAME + \"':\" + BRANCH_REVC;",
           "    }",
           "}]",
+          "",
           "",
           "#[\" ",
           "    Calculate revision",
@@ -242,17 +250,59 @@
           "#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )",
           "{",
           "    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]",
+          "    #[var bName = #[IO sout(\"git\", \"rev-parse --abbrev-ref HEAD\")]]",
+          "    #[var bRevc = #[IO sout(\"git\", \"rev-list HEAD --count\")]]",
           "    ",
-          "    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\"))]",
+          "    #[($(bName) == \"HEAD\") {",
+          "        #[var bName = $(APPVEYOR_REPO_BRANCH)]",
+          "    }]",
           "}",
           "else {",
-          "    #[var tpl = $(tpl.Replace(\"%B_SHA1%\", \"-\"))]",
+          "    #[$(bSha1 = '-')] #[$(bName = '-')] #[$(bRevc = '-')]",
           "}]",
+          "",
+          "#[var tpl = #[$(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\")",
+          "                   .Replace(\"%B_NAME%\", \"#[var bName]\")",
+          "                   .Replace(\"%B_REVC%\", \"#[var bRevc]\") )]]",
           "",
           "#[\" ",
           "    Save result",
           "\"]",
           "#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "ActWizardVersion",
+      "Caption": "Update WizardVersion",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [
+        "PublicRelease|Any CPU"
+      ],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[\" \n    WizardVersion & ConfVersion are the same for current time\n\"]\n#[File write(\"$(pWizard)/WizardVersion.cs\"):#[$(tpl.Replace(\"ConfVersion\", \"WizardVersion\").Replace(\"net.r_eg.DllExport.Configurator\", \"net.r_eg.DllExport.Wizard\"))]]",
+        "Command__": [
+          "#[\" ",
+          "    WizardVersion & ConfVersion are the same for current time",
+          "\"]",
+          "#[File write(\"$(pWizard)/WizardVersion.cs\"):#[$(tpl.Replace(\"ConfVersion\", \"WizardVersion\").Replace(\"net.r_eg.DllExport.Configurator\", \"net.r_eg.DllExport.Wizard\"))]]"
         ]
       }
     }
@@ -281,7 +331,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]\n#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pWizard)/$(OutDir:$(pWizard))/*.*\",\n                \"$(pConf)/$(OutDir:$(pConf))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n            \n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/lib/net20/\", true)]\n\n#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]\n#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]\n\n#[IO writeLine(\"$(odir)/build_info.txt\"):\n    S_NUM:              #[$(pVer)]\n    \n    S_REV:              #[$(revBuild)]\n    \n    S_NUM_REV:          #[$(pVer)].#[$(revBuild)]\n    \n    bSha1:              #[$(bSha1)]\n    \n    bName:              #[$(bName)]\n    \n    bRevc:              #[$(bRevc)]\n    \n    Metadata .NET:      #[$(TargetFrameworkVersion:$(pMeta))]\n    \n    Wizard .NET:        #[$(TargetFrameworkVersion:$(pWizard))]\n    \n    Configurator .NET:  #[$(TargetFrameworkVersion:$(pConf))]\n    \n    Configuration:      #[$(Configuration)]\n    \n    Platform:           #[$(Platform)]\n    \n    cfgname:            #[$(cfgname)]\n    \n    revDeltaBase:       #[$(revDeltaBase)]\n    \n    revDeltaMin:        #[$(revDeltaMin)]\n    \n    revDeltaMax:        #[$(revDeltaMax)]\n    \n    \n                    :: generated by a vsSolutionBuildEvent v#[$(vsSolutionBuildEvent)]]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -295,6 +345,7 @@
           "                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",",
           "                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",",
           "                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",",
+          "                \"$(pWizard)/$(OutDir:$(pWizard))/*.*\",",
           "                \"$(pConf)/$(OutDir:$(pConf))/*.*\"",
           "               }, ",
           "               \"$(odir)/tools/\", true)]",
@@ -304,7 +355,41 @@
           "               \"$(odir)/lib/net20/\", true)]",
           "",
           "#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]",
-          "#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]"
+          "#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]",
+          "",
+          "#[IO writeLine(\"$(odir)/build_info.txt\"):",
+          "    S_NUM:              #[$(pVer)]",
+          "    ",
+          "    S_REV:              #[$(revBuild)]",
+          "    ",
+          "    S_NUM_REV:          #[$(pVer)].#[$(revBuild)]",
+          "    ",
+          "    bSha1:              #[$(bSha1)]",
+          "    ",
+          "    bName:              #[$(bName)]",
+          "    ",
+          "    bRevc:              #[$(bRevc)]",
+          "    ",
+          "    Metadata .NET:      #[$(TargetFrameworkVersion:$(pMeta))]",
+          "    ",
+          "    Wizard .NET:        #[$(TargetFrameworkVersion:$(pWizard))]",
+          "    ",
+          "    Configurator .NET:  #[$(TargetFrameworkVersion:$(pConf))]",
+          "    ",
+          "    Configuration:      #[$(Configuration)]",
+          "    ",
+          "    Platform:           #[$(Platform)]",
+          "    ",
+          "    cfgname:            #[$(cfgname)]",
+          "    ",
+          "    revDeltaBase:       #[$(revDeltaBase)]",
+          "    ",
+          "    revDeltaMin:        #[$(revDeltaMin)]",
+          "    ",
+          "    revDeltaMax:        #[$(revDeltaMax)]",
+          "    ",
+          "    ",
+          "                    :: generated by a vsSolutionBuildEvent v#[$(vsSolutionBuildEvent)]]"
         ]
       }
     },
