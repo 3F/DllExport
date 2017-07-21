@@ -19,7 +19,10 @@
         ==========================================
         gnt /p:ngpackages="DllExport/1.5.2"
         ==========================================
-        * https://github.com/3F/GetNuTool         
+        * https://github.com/3F/GetNuTool   
+        
+        Build info:  
+{build_info}
         
     </description>
     <summary>Unmanaged Exports ( .NET DllExport )</summary>

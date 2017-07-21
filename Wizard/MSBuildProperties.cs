@@ -57,6 +57,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_OUR_ILASM = "DllExportOurILAsm";
 
         /// <summary>
+        /// Platform Target for binaries.
+        /// </summary>
+        public const string PRJ_PLATFORM = "PlatformTarget";
+
+        /// <summary>
         /// Used namespace for project.
         /// </summary>
         public const string PRJ_NAMESPACE = "RootNamespace";

@@ -22,38 +22,53 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.DllExport.Wizard
+using System;
+
+namespace net.r_eg.DllExport.Wizard.Extensions
 {
-    public interface IWizardConfig
+    public static class StringExtension
     {
         /// <summary>
-        /// Path to directory with .sln files to be processed.
+        /// To get boolean value from string.
         /// </summary>
-        string SlnDir { get; }
+        /// <param name="value">Any compatible value.</param>
+        /// <returns></returns>
+        public static bool ToBoolean(this string value)
+        {
+            if(String.IsNullOrWhiteSpace(value)) {
+                return false;
+            }
+
+            switch(value.Trim())
+            {
+                case "1":
+                case "True":
+                case "TRUE":
+                case "true": {
+                    return true;
+                }
+                case "0":
+                case "False":
+                case "FALSE":
+                case "false": {
+                    return false;
+                }
+            }
+            throw new ArgumentException($"Incorrect boolean value - '{value}'");
+        }
 
         /// <summary>
-        /// Optional predefined .sln file to process via the restore operations etc.
+        /// To get integer value from string.
         /// </summary>
-        string SlnFile { get; }
+        /// <param name="value">Any compatible value.</param>
+        /// <returns></returns>
+        public static int ToInteger(this string value)
+        {
+            if(String.IsNullOrWhiteSpace(value)) {
+                return 0;
+            }
 
-        /// <summary>
-        /// Root path of the DllExport package.
-        /// </summary>
-        string PkgPath { get; }
-
-        /// <summary>
-        /// Relative path from PkgPath to DllExport meta library.
-        /// </summary>
-        string MetaLib { get; }
-
-        /// <summary>
-        /// Path to .target file of the DllExport.
-        /// </summary>
-        string DxpTarget { get; }
-
-        /// <summary>
-        /// The evaluated type of operation.
-        /// </summary>
-        ActionType Type { get; }
+            return Int32.Parse(value);
+        }
     }
 }

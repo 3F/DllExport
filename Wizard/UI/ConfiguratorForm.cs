@@ -23,23 +23,20 @@
 */
 
 using System;
-using System.Collections.Generic;
+using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using net.r_eg.DllExport.Wizard.UI.Controls;
+using net.r_eg.DllExport.NSBin;
 
 namespace net.r_eg.DllExport.Wizard.UI
 {
     internal sealed partial class ConfiguratorForm: Form
     {
-        private List<UProject> items = new List<UProject>();
+        public const int MAX_VIEW_ITEMS = 2;
+
         private IExecutor exec;
         private FileDialog fdialog;
-
-        private struct UProject
-        {
-            public ProjectItemControl control;
-            public IProject project;
-        }
+        private object sync = new object();
 
         public ConfiguratorForm(IExecutor exec)
         {
@@ -47,22 +44,43 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             InitializeComponent();
 
+            Text = ".NET DllExport";
+
+#if PUBLIC_RELEASE
+            Text += " - v" + WizardVersion.S_INFO;
+#else
+            Text += " - v" + WizardVersion.S_NUM;
+#endif
+#if DEBUG
+            Text += " [ Debug ]";
+#endif
+            Text += " github.com/3F/DllExport";
+
+            projectItems.Browse  =
+            projectItems.OpenUrl = OpenUrl;
+
+            projectItems.NamespaceValidate = (string str) => {
+                return DDNS.IsValidNS(str);
+            };
+
             RenderSlnFiles();
+            comboBoxSln.SelectedIndex = 0;
         }
 
-        private void AddRc(IProject project)
+        private void OpenUrl(string url)
         {
-            var control = new ProjectItemControl();
-            control.Top = control.Height * items.Count;
-
-            panelMain.Controls.Add(control);
-            items.Add(new UProject() { control = control, project = project });
+            if(!String.IsNullOrWhiteSpace(url)) {
+                System.Diagnostics.Process.Start(url);
+            }
         }
 
-        private void ResetRc()
+        private void RenderSlnFiles()
         {
-            items.Clear();
-            panelMain.Controls.Clear();
+            comboBoxSln.Items.Clear();
+            foreach(var sln in exec.SlnFiles) {
+                comboBoxSln.Items.Add(sln);
+            }
+            comboBoxSln.Items.Add(">> Select .sln ... <<");
         }
 
         private string OpenFile()
@@ -77,15 +95,6 @@ namespace net.r_eg.DllExport.Wizard.UI
             return fdialog.FileName;
         }
 
-        private void RenderSlnFiles()
-        {
-            comboBoxSln.Items.Clear();
-            foreach(var sln in exec.SlnFiles) {
-                comboBoxSln.Items.Add(sln);
-            }
-            comboBoxSln.Items.Add(">> Select .sln ... <<");
-        }
-
         private void RenderProjects(ComboBox box)
         {
             if(box.Items.Count < 1) {
@@ -97,9 +106,23 @@ namespace net.r_eg.DllExport.Wizard.UI
                 return;
             }
 
-            System.Threading.Tasks.Task.Factory.StartNew(() => {
+            Task.Factory.StartNew(() =>
+            {
                 string file = OpenFile();
-                BeginInvoke((MethodInvoker)delegate {
+                BeginInvoke((MethodInvoker)delegate
+                {
+                    lock(sync)
+                    {
+                        comboBoxSln.SelectedIndexChanged -= comboBoxSln_SelectedIndexChanged;
+                        if(box.Items.Contains(file)) {
+                            box.SelectedIndex = box.Items.IndexOf(file);
+                        }
+                        else {
+                            box.Items.Insert(0, file);
+                            box.SelectedIndex = 0;
+                        }
+                        comboBoxSln.SelectedIndexChanged += comboBoxSln_SelectedIndexChanged;
+                    }
                     RenderProjects(file);
                 });
             });
@@ -110,11 +133,23 @@ namespace net.r_eg.DllExport.Wizard.UI
             if(String.IsNullOrWhiteSpace(sln)) {
                 return;
             }
+            projectItems.Reset();
 
-            ResetRc();
-            foreach(var project in exec.UniqueProjectsBy(sln)) {
-                AddRc(project);
+            var projects = exec.UniqueProjectsBy(sln);
+            if(projects != null)
+            {
+                foreach(var project in projects) {
+                    projectItems.Add(project);
+                }
             }
+
+            ClientSize = new Size(
+                ClientSize.Width, 
+                panelTop.Height + Math.Max(
+                                    projectItems.HeightOfItem, 
+                                    Math.Min(projectItems.HeightOfItem * projectItems.Count, projectItems.HeightOfItem * MAX_VIEW_ITEMS)
+                                  )
+            );
         }
 
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)
@@ -122,6 +157,19 @@ namespace net.r_eg.DllExport.Wizard.UI
             if(sender is ComboBox) {
                 RenderProjects((ComboBox)sender);
             }
+        }
+
+        private void btnApply_Click(object sender, EventArgs e)
+        {
+            foreach(var prj in projectItems.Data) {
+                prj.Configure(ActionType.Configure);
+            }
+            Close();
+        }
+
+        private void btnBug_Click(object sender, EventArgs e)
+        {
+            OpenUrl("https://github.com/3F/DllExport/issues");
         }
     }
 }

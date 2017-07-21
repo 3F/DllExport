@@ -25,6 +25,8 @@
 using System;
 using System.Collections.Generic;
 using net.r_eg.DllExport.NSBin;
+using net.r_eg.DllExport.Wizard.Extensions;
+using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -35,6 +37,15 @@ namespace net.r_eg.DllExport.Wizard
         /// https://github.com/3F/DllExport/issues/2#issue-164662993
         /// </summary>
         public const string NS_DEFAULT_VALUE = "System.Runtime.InteropServices";
+
+        /// <summary>
+        /// Flag of installation.
+        /// </summary>
+        public bool Install
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// A selected namespace for ddNS feature.
@@ -117,6 +128,20 @@ namespace net.r_eg.DllExport.Wizard
             set;
         }
 
+        /// <summary>
+        /// Adds to top new namespace into Namespaces property.
+        /// </summary>
+        /// <param name="ns"></param>
+        /// <returns>true if added.</returns>
+        public bool AddTopNamespace(string ns)
+        {
+            if(!Namespaces.Contains(ns)) {
+                Namespaces.Insert(0, ns);
+                return true;
+            }
+            return false;
+        }
+
         public UserConfig(IWizardConfig cfg)
         {
             Wizard = cfg ?? throw new ArgumentNullException(nameof(cfg));
@@ -126,6 +151,47 @@ namespace net.r_eg.DllExport.Wizard
                 "RGiesecke.DllExport",
                 "net.r_eg.DllExport"
             };
+        }
+
+        public UserConfig(IWizardConfig cfg, IXProject project)
+            : this(cfg)
+        {
+            Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, project);
+            Platform    = GetPlatform(project.GetProperty(MSBuildProperties.PRJ_PLATFORM).evaluatedValue);
+            UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, project).ToBoolean();
+
+            Compiler = new CompilerCfg() {
+                genExpLib       = GetValue(MSBuildProperties.DXP_GEN_EXP_LIB, project).ToBoolean(),
+                ordinalsBase    = GetValue(MSBuildProperties.DXP_ORDINALS_BASE, project).ToInteger(),
+                ourILAsm        = GetValue(MSBuildProperties.DXP_OUR_ILASM, project).ToBoolean()
+            };
+        }
+
+        protected Platform GetPlatform(string value)
+        {
+            if(String.IsNullOrWhiteSpace(value)) {
+                return Platform.Default;
+            }
+
+            switch(value.Trim().ToLowerInvariant()) {
+                case "x86": {
+                    return Platform.x86;
+                }
+                case "x64": {
+                    return Platform.x64;
+                }
+                case "anycpu": {
+                    return Platform.AnyCPU;
+                }
+            }
+
+            LSender.Send(this, $"Incorrect platform target: '{value}'. Use '{nameof(Platform.Default)}'", Message.Level.Warn);
+            return Platform.Default;
+        }
+
+        private string GetValue(string property, IXProject project)
+        {
+            return project?.GetProperty(property).evaluatedValue;
         }
     }
 }

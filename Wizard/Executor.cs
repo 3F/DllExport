@@ -28,6 +28,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using net.r_eg.DllExport.NSBin;
+using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
@@ -74,7 +75,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public IEnumerable<IProject> ProjectsBy(string sln)
         {
-            return GetEnv(sln)?.Projects.Select(p => new Project(p, GetDefaultUserConfig()));
+            return GetEnv(sln)?.Projects?.Select(p => new Project(p, GetUserConfig(p)));
         }
 
         /// <summary>
@@ -84,7 +85,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public IEnumerable<IProject> UniqueProjectsBy(string sln)
         {
-            return GetEnv(sln)?.UniqueByGuidProjects.Select(p => new Project(p, GetDefaultUserConfig()));
+            return GetEnv(sln)?.UniqueByGuidProjects?.Select(p => new Project(p, GetUserConfig(p)));
         }
 
         /// <summary>
@@ -100,13 +101,30 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public void Configure()
         {
-            if(Config.Type == ActionType.Configure) {
-                var frm = new UI.ConfiguratorForm(this);
-                frm.ShowDialog();
+            if(Config.Type == ActionType.Configure)
+            {
+                using(var frm = new UI.ConfiguratorForm(this)) {
+                    frm.ShowDialog();
+                }
+                return;
             }
 
-            if(Config.Type == ActionType.Restore) {
-                //TODO:
+            if(Config.Type == ActionType.Restore)
+            {
+                var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? SlnFiles.FirstOrDefault() : Config.SlnFile;
+                if(sln == null)
+                {
+                    throw new ArgumentException(
+                        String.Format(
+                            "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
+                            nameof(IWizardConfig.SlnFile),
+                            nameof(IWizardConfig.SlnDir)
+                        )
+                    );
+                }
+                Log.send(this, $"To restore '{sln}'", Message.Level.Info);
+
+                UniqueProjectsBy(sln)?.ForEach(p => p.Configure(ActionType.Restore));
             }
         }
 
@@ -116,9 +134,9 @@ namespace net.r_eg.DllExport.Wizard
             Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
         }
 
-        protected virtual IUserConfig GetDefaultUserConfig()
+        protected virtual IUserConfig GetUserConfig(IXProject project)
         {
-            return new UserConfig(Config) {
+            return new UserConfig(Config, project) {
                 NSBuffer    = DDNS.NSBuffer,
                 DDNS        = DDNS,
                 Log         = Log,
@@ -132,12 +150,12 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             if(!solutions.ContainsKey(file)) {
-                solutions[file] = new Sln(file, SlnItems.EnvWithProjects);
+                solutions[file] = new Sln(file, SlnItems.EnvWithMinimalProjects);
             }
             return solutions[file].Result.Env;
         }
 
-        private void Free()
+        protected void Free()
         {
             if(solutions == null) {
                 return;
@@ -159,7 +177,7 @@ namespace net.r_eg.DllExport.Wizard
             Dispose(true);
         }
 
-        private void Dispose(bool disposing)
+        protected virtual void Dispose(bool disposing)
         {
             if(disposed) {
                 return;

@@ -77,7 +77,7 @@ namespace net.r_eg.DllExport.NSBin
                     && !Regex.IsMatch(name, @"(?:\.(\s*\.)+|\.\s*$)"); //  left. ...  .right.
         }
 
-        public void setNamespace(string name, bool viaCecil = true)
+        public void setNamespace(string name, bool viaCecil, bool preparing)
         {
             Log.send(this, $"set new namespace(Cecil: {viaCecil}): ({name}) - ({dll})");
 
@@ -89,7 +89,9 @@ namespace net.r_eg.DllExport.NSBin
             //    throw new ArgumentException("The namespace cannot be null or empty.");
             //}
 
-            prepareLib(dll);
+            if(preparing) {
+                prepareLib(dll);
+            }
             var ns = nsRule(name);
 
             if(viaCecil) {

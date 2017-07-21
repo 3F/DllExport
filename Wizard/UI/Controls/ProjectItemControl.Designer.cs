@@ -50,7 +50,6 @@
             this.gbProject = new System.Windows.Forms.GroupBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.textBoxProjectGuid = new System.Windows.Forms.TextBox();
-            this.labelProjectPath = new System.Windows.Forms.Label();
             this.chkInstalled = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelStatus = new System.Windows.Forms.Panel();
@@ -65,7 +64,7 @@
             // linkOurILAsm
             // 
             this.linkOurILAsm.AutoSize = true;
-            this.linkOurILAsm.Location = new System.Drawing.Point(284, 62);
+            this.linkOurILAsm.Location = new System.Drawing.Point(292, 61);
             this.linkOurILAsm.Name = "linkOurILAsm";
             this.linkOurILAsm.Size = new System.Drawing.Size(13, 13);
             this.linkOurILAsm.TabIndex = 7;
@@ -86,7 +85,7 @@
             // linkExpLib
             // 
             this.linkExpLib.AutoSize = true;
-            this.linkExpLib.Location = new System.Drawing.Point(242, 40);
+            this.linkExpLib.Location = new System.Drawing.Point(248, 40);
             this.linkExpLib.Name = "linkExpLib";
             this.linkExpLib.Size = new System.Drawing.Size(13, 13);
             this.linkExpLib.TabIndex = 5;
@@ -97,7 +96,7 @@
             // linkOrdinals
             // 
             this.linkOrdinals.AutoSize = true;
-            this.linkOrdinals.Location = new System.Drawing.Point(207, 18);
+            this.linkOrdinals.Location = new System.Drawing.Point(214, 16);
             this.linkOrdinals.Name = "linkOrdinals";
             this.linkOrdinals.Size = new System.Drawing.Size(13, 13);
             this.linkOrdinals.TabIndex = 4;
@@ -270,7 +269,6 @@
             // 
             this.gbProject.Controls.Add(this.btnBrowse);
             this.gbProject.Controls.Add(this.textBoxProjectGuid);
-            this.gbProject.Controls.Add(this.labelProjectPath);
             this.gbProject.Controls.Add(this.chkInstalled);
             this.gbProject.Location = new System.Drawing.Point(6, 0);
             this.gbProject.Name = "gbProject";
@@ -298,16 +296,7 @@
             this.textBoxProjectGuid.ReadOnly = true;
             this.textBoxProjectGuid.Size = new System.Drawing.Size(268, 13);
             this.textBoxProjectGuid.TabIndex = 2;
-            this.textBoxProjectGuid.Text = "{2150E333-8FDC-42A3-9474-1A3956D46DE8}";
-            // 
-            // labelProjectPath
-            // 
-            this.labelProjectPath.AutoSize = true;
-            this.labelProjectPath.Location = new System.Drawing.Point(56, 0);
-            this.labelProjectPath.Name = "labelProjectPath";
-            this.labelProjectPath.Size = new System.Drawing.Size(29, 13);
-            this.labelProjectPath.TabIndex = 1;
-            this.labelProjectPath.Text = "Path";
+            this.textBoxProjectGuid.Text = "{00000000-0000-0000-0000-000000000000}";
             // 
             // chkInstalled
             // 
@@ -385,7 +374,6 @@
         private System.Windows.Forms.GroupBox groupNS;
         private System.Windows.Forms.GroupBox gbProject;
         private System.Windows.Forms.Button btnBrowse;
-        private System.Windows.Forms.Label labelProjectPath;
         private System.Windows.Forms.CheckBox chkInstalled;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.TextBox textBoxProjectGuid;

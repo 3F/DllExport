@@ -2,15 +2,30 @@
 <!-- https://github.com/3F/DllExport -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
-  <Target Name="DllExportWizardMod">
+  <Target Name="Build">
     
     <PropertyGroup>
-      <DllExportWizardSlnDir Condition="'$(DllExportWizardSlnDir)' == ''">.\</DllExportWizardSlnDir>
-      <DllExportWizardPkgPath Condition="'$(DllExportWizardPkgPath)' == ''">packages/DllExport</DllExportWizardPkgPath>
-      <DllExportWizardAction Condition="'$(DllExportWizardAction)' == ''">Install</DllExportWizardAction> <!-- Default, Configure, Install, Restore, Remove -->
+      <wSlnDir Condition="'$(wSlnDir)' == ''">.\</wSlnDir>
+      <wPkgPath Condition="'$(wPkgPath)' == ''">packages\DllExport</wPkgPath>
+      <wMetaLib Condition="'$(wMetaLib)' == ''">lib\net20\DllExport.dll</wMetaLib>
+      <wDxpTarget Condition="'$(wDxpTarget)' == ''">tools\net.r_eg.DllExport.targets</wDxpTarget>
+      <wAction Condition="'$(wAction)' == ''">Configure</wAction>
     </PropertyGroup>
-    <DllExportCfgTask SlnDir="$(DllExportWizardSlnDir)" PkgPath="$(DllExportWizardPkgPath)" Action="$(DllExportWizardAction)" />
-  
+    
+    <PropertyGroup Label="Optional">
+      <!-- SlnFile: Optional predefined .sln file to process via the restore operations etc. -->
+      <wSlnFile Condition="'$(wSlnFile)' == ''"></wSlnFile> <!-- will be used the first found .sln file if it's empty -->
+    </PropertyGroup>
+    
+    <DllExportCfgTask 
+        SlnDir="$(wSlnDir)" 
+        SlnFile="$(wSlnFile)" 
+        PkgPath="$(wPkgPath)" 
+        MetaLib="$(wMetaLib)" 
+        DxpTarget="$(wDxpTarget)" 
+        Action="$(wAction)" 
+    />
+    
   </Target>
   <UsingTask TaskName="net.r_eg.DllExport.Wizard.DllExportCfgTask" AssemblyFile="net.r_eg.DllExport.Wizard.dll" />
   

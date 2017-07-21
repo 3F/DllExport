@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System.Collections.Generic;
 using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.DllExport.Wizard
@@ -34,7 +35,7 @@ namespace net.r_eg.DllExport.Wizard
         IXProject XProject { get; }
 
         /// <summary>
-        /// Checks existence of installed DllExport for current project.
+        /// Installation checking.
         /// </summary>
         bool Installed { get; }
 
@@ -56,7 +57,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <summary>
         /// Returns fullpath to meta library for current project.
         /// </summary>
-        string MetaLibPath { get; }
+        string MetaLib { get; }
 
         /// <summary>
         /// Active configuration of user data.
@@ -66,7 +67,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <summary>
         /// List of used MSBuild properties.
         /// </summary>
-        string[] ConfigProperties { get; }
+        IDictionary<string, string> ConfigProperties { get; }
 
         /// <summary>
         /// To configure project via specific action.
@@ -74,10 +75,5 @@ namespace net.r_eg.DllExport.Wizard
         /// <param name="type"></param>
         /// <returns></returns>
         bool Configure(ActionType type);
-
-        /// <summary>
-        /// Saves the project to the file system, if modified.
-        /// </summary>
-        void Save();
     }
 }

@@ -39,8 +39,8 @@
   <ItemGroup>
     <Reference Include="Microsoft.Build.Framework" />
     <Reference Include="Microsoft.Build.Utilities.v4.0" />
-    <Reference Include="MvsSln, Version=1.0.0.23853, Culture=neutral, PublicKeyToken=87f0bd8fb7f0a2c4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvsSln.1.0.0\lib\net40\MvsSln.dll</HintPath>
+    <Reference Include="MvsSln, Version=1.0.1.43422, Culture=neutral, PublicKeyToken=87f0bd8fb7f0a2c4, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvsSln.1.0.1\lib\net40\MvsSln.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -52,6 +52,8 @@
   <ItemGroup>
     <Compile Include="ActionType.cs" />
     <Compile Include="Executor.cs" />
+    <Compile Include="Extensions\CollectionExtension.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="CompilerCfg.cs" />
     <Compile Include="MSBuildProperties.cs" />
@@ -59,6 +61,12 @@
     <Compile Include="IProject.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="IUserConfig.cs" />
+    <Compile Include="UI\Controls\ProjectItemsControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ProjectItemsControl.Designer.cs">
+      <DependentUpon>ProjectItemsControl.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserConfig.cs" />
     <Compile Include="UI\ConfiguratorForm.cs">
       <SubType>Form</SubType>
@@ -94,9 +102,13 @@
   <ItemGroup>
     <EmbeddedResource Include="UI\ConfiguratorForm.resx">
       <DependentUpon>ConfiguratorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Controls\ProjectItemControl.resx">
       <DependentUpon>ProjectItemControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\ProjectItemsControl.resx">
+      <DependentUpon>ProjectItemsControl.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

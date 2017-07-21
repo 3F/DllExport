@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
+ * Copyright (c) 2016-2017  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -22,29 +22,28 @@
  * THE SOFTWARE.
 */
 
-using net.r_eg.Conari.Log;
+using System;
+using System.Collections.Generic;
 
-namespace net.r_eg.DllExport.NSBin
+namespace net.r_eg.DllExport.Wizard.Extensions
 {
-    public interface IDDNS
+    public static class CollectionExtension
     {
         /// <summary>
-        /// Available buffer for namespace.
+        /// Foreach in Linq manner.
         /// </summary>
-        int NSBuffer { get; }
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="act">The action that should be executed for each item.</param>
+        public static void ForEach<T>(this IEnumerable<T> items, Action<T> act)
+        {
+            if(items == null) {
+                return;
+            }
 
-        /// <summary>
-        /// Access to logger.
-        /// </summary>
-        ISender Log { get; }
-
-        /// <summary>
-        /// Define namespace.
-        /// </summary>
-        /// <param name="lib">Full path to prepared library.</param>
-        /// <param name="name">New namespace.</param>
-        /// <param name="useCecil">To use Cecil instead of direct modification.</param>
-        /// <param name="preparing">Preparing library is obsolete variant for previous distribution with nuget.</param>
-        void setNamespace(string lib, string name, bool useCecil, bool preparing = true);
+            foreach(var item in items) {
+                act(item);
+            }
+        }
     }
 }

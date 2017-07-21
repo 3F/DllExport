@@ -23,6 +23,8 @@
 */
 
 using System;
+using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
@@ -37,8 +39,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         public string ProjectPath
         {
-            get => labelProjectPath.Text;
-            set => labelProjectPath.Text = value;
+            get => gbProject.Text;
+            set {
+                gbProject.Text = value;
+                toolTip.SetToolTip(gbProject, gbProject.Text);
+            }
         }
 
         public string ProjectGuid
@@ -47,7 +52,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             set => textBoxProjectGuid.Text = value;
         }
 
-        public Action Browse
+        /// <summary>
+        /// Function of the browse button.
+        /// </summary>
+        [Browsable(false)]
+        public Action<string> Browse
         {
             get;
             set;
@@ -62,6 +71,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// <summary>
         /// Function to validate namespace after update, or null if not used.
         /// </summary>
+        [Browsable(false)]
         public Func<string, bool> NamespaceValidate
         {
             get;
@@ -71,7 +81,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         public bool UseCecil
         {
             get => rbCecil.Checked;
-            set => rbCecil.Checked = value;
+            set {
+                if(value) {
+                    rbCecil.Checked = true;
+                }
+                else {
+                    rbDirect.Checked = true;
+                }
+            }
         }
 
         public Platform Platform
@@ -96,11 +113,15 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
         }
 
+        /// <summary>
+        /// Function to open url.
+        /// </summary>
+        [Browsable(false)]
         public Action<string> OpenUrl
         {
             get;
             set;
-        } = (string url) => { };
+        }
 
         public ProjectItemControl()
         {
@@ -137,15 +158,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                     rbPlatformX64.Checked = true;
                     return;
                 }
-                case Platform.AnyCPU: {
+                case Platform.AnyCPU:
+                case Platform.Default: {
                     rbPlatformAnyCPU.Checked = true;
                     return;
                 }
             }
-
-            rbPlatformX86.Checked       = false;
-            rbPlatformX64.Checked       = false;
-            rbPlatformAnyCPU.Checked    = false;
         }
 
         private void InstalledStatus(bool status)
@@ -160,7 +178,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            Browse?.Invoke();
+            Browse?.Invoke(Path.GetDirectoryName(ProjectPath));
         }
 
         private void numOrdinal_KeyDown(object sender, KeyEventArgs e)
@@ -187,22 +205,22 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void linkDDNS_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenUrl("https://github.com/3F/DllExport/issues/2");
+            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/2");
         }
 
         private void linkOrdinals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenUrl("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");
+            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");
         }
 
         private void linkExpLib_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenUrl("https://github.com/3F/DllExport/issues/9#issuecomment-246189220");
+            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/9#issuecomment-246189220");
         }
 
         private void linkOurILAsm_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            OpenUrl("https://github.com/3F/DllExport/issues/17");
+            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/17");
         }
 
         private void comboNS_TextUpdate(object sender, EventArgs e)

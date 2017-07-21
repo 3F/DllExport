@@ -67,10 +67,11 @@ namespace net.r_eg.DllExport.NSBin
         /// <param name="lib">Full path to prepared library.</param>
         /// <param name="name">New namespace.</param>
         /// <param name="useCecil">Use Cecil instead of direct modification.</param>
-        public void setNamespace(string lib, string name, bool useCecil)
+        /// <param name="preparing">Preparing library is obsolete variant for previous distribution with nuget.</param>
+        public void setNamespace(string lib, string name, bool useCecil, bool preparing = true)
         {
             using(var def = new Rmod(lib, encoding)) {
-                def.setNamespace(name, useCecil);
+                def.setNamespace(name, useCecil, preparing);
             }
         }
 

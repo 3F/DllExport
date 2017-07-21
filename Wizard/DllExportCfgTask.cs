@@ -44,10 +44,39 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <summary>
+        /// Optional predefined .sln file to process via the restore operations etc.
+        /// </summary>
+        public string SlnFile
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Root path of the DllExport package.
         /// </summary>
         [Required]
         public string PkgPath
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Relative path from PkgPath to DllExport meta library.
+        /// </summary>
+        [Required]
+        public string MetaLib
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Path to .target file of the DllExport.
+        /// </summary>
+        [Required]
+        public string DxpTarget
         {
             get;
             set;
@@ -111,12 +140,15 @@ namespace net.r_eg.DllExport.Wizard
                 }
                 catch(Exception ex)
                 {
-                    LSender.Send(this, $"ERROR-GUI: {ex.Message}");
-                    LSender.Send(this, $"SlnDir: {SlnDir}");
-                    LSender.Send(this, $"PkgPath: {PkgPath}");
-                    LSender.Send(this, $"Action: {Type}");
+                    LSender.Send(this, $"ERROR-Wizard: {ex.Message}", Message.Level.Fatal);
+                    LSender.Send(this, $"SlnDir: '{SlnDir}'", Message.Level.Warn);
+                    LSender.Send(this, $"SlnFile: '{SlnFile}'", Message.Level.Warn);
+                    LSender.Send(this, $"PkgPath: '{PkgPath}'", Message.Level.Warn);
+                    LSender.Send(this, $"MetaLib: '{MetaLib}'", Message.Level.Warn);
+                    LSender.Send(this, $"DxpTarget: '{DxpTarget}'", Message.Level.Warn);
+                    LSender.Send(this, $"Action: '{Type}'", Message.Level.Warn);
 #if DEBUG
-                    LSender.Send(this, $"Stack trace: {ex.StackTrace}");
+                    LSender.Send(this, $"Stack trace: {ex.StackTrace}", Message.Level.Error);
 #endif
                 }
                 finally {
@@ -129,7 +161,10 @@ namespace net.r_eg.DllExport.Wizard
 
         protected virtual void ConWrite(string message, Message.Level level)
         {
-            if(level == Message.Level.Error || level == Message.Level.Fatal) {
+            if(level == Message.Level.Fatal) {
+                Console.ForegroundColor = ConsoleColor.Blue;
+            }
+            else if(level == Message.Level.Error) {
                 Console.ForegroundColor = ConsoleColor.Red;
             }
             else if(level == Message.Level.Warn) {

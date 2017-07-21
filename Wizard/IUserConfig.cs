@@ -31,6 +31,11 @@ namespace net.r_eg.DllExport.Wizard
     public interface IUserConfig
     {
         /// <summary>
+        /// Flag of installation.
+        /// </summary>
+        bool Install { get; set; }
+
+        /// <summary>
         /// A selected namespace for ddNS feature.
         /// </summary>
         string Namespace { get; set; }
@@ -74,5 +79,12 @@ namespace net.r_eg.DllExport.Wizard
         /// Settings for ILasm etc.
         /// </summary>
         CompilerCfg Compiler { get; set; }
+
+        /// <summary>
+        /// Adds to top new namespace into Namespaces property.
+        /// </summary>
+        /// <param name="ns"></param>
+        /// <returns>true if added.</returns>
+        bool AddTopNamespace(string ns);
     }
 }
