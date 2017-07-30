@@ -73,7 +73,9 @@ echo ------
 echo.
 echo Arguments:
 echo ----------
-echo  -restore              - To restore configured DllExport.
+echo  -action {type}        - Specified action for Wizard. Where {type}:
+echo                           * Configure - To configure DllExport for specific projects.
+echo                           * Restore   - To restore configured DllExport.
 echo.
 echo  -sln-dir {path}       - Path to directory with .sln files to be processed.
 echo  -sln-file {path}      - Optional predefined .sln file to process via the restore operations etc.
@@ -99,8 +101,8 @@ echo.
 echo -------- 
 echo Samples:
 echo -------- 
-echo  DllExport -restore
-echo  DllExport -restore -sln-file "Conari.sln"
+echo  DllExport -action Configure
+echo  DllExport -action Restore -sln-file "Conari.sln"
 echo.
 echo  DllExport -build-info
 echo  DllExport -restore -sln-dir -sln-dir ..\ -debug
@@ -126,9 +128,10 @@ if [!_is!]==[1] goto usage
 set /a idx=1 & set cmdMax=15
 :loopargs
 
-    if "!args:~0,9!"=="-restore " (
+    if "!args:~0,8!"=="-action " (
         call :popars %1 & shift
-        set "wAction=Restore"
+        set "wAction=%2"
+        call :popars %2 & shift
     )
 
     if "!args:~0,9!"=="-sln-dir " (

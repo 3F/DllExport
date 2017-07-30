@@ -9,7 +9,7 @@
       <wPkgPath Condition="'$(wPkgPath)' == ''">packages\DllExport</wPkgPath>
       <wMetaLib Condition="'$(wMetaLib)' == ''">lib\net20\DllExport.dll</wMetaLib>
       <wDxpTarget Condition="'$(wDxpTarget)' == ''">tools\net.r_eg.DllExport.targets</wDxpTarget>
-      <wAction Condition="'$(wAction)' == ''">Configure</wAction>
+      <wAction Condition="'$(wAction)' == ''">Restore</wAction>
     </PropertyGroup>
     
     <PropertyGroup Label="Optional">
