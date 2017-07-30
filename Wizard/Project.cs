@@ -167,11 +167,11 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <param name="xproject"></param>
-        /// <param name="cfg"></param>
-        public Project(IXProject xproject, IUserConfig cfg)
+        /// <param name="init"></param>
+        public Project(IXProject xproject, IConfigInitializer init)
         {
             XProject    = xproject ?? throw new ArgumentNullException(nameof(xproject));
-            Config      = cfg ?? throw new ArgumentNullException(nameof(cfg));
+            Config      = GetUserConfig(xproject, init);
 
             Config.AddTopNamespace(ProjectNamespace);
 
@@ -184,6 +184,22 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_OUR_ILASM,
                 MSBuildProperties.PRJ_PLATFORM
             );
+        }
+
+        protected IUserConfig GetUserConfig(IXProject project, IConfigInitializer cfg)
+        {
+            if(Installed) {
+                return new UserConfig(cfg, project);
+            }
+
+            return new UserConfig(cfg)
+            {
+                UseCecil    = true,
+                Platform    = Platform.x86x64,
+                Compiler = new CompilerCfg() {
+                    ordinalsBase = 1
+                },
+            };
         }
 
         /// <summary>
@@ -336,7 +352,7 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        protected virtual string GetProperty(string name)
+        protected string GetProperty(string name)
         {
             return XProject?.GetProperty(name).evaluatedValue;
         }

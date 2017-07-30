@@ -15,9 +15,11 @@
     <PropertyGroup Label="Optional">
       <!-- SlnFile: Optional predefined .sln file to process via the restore operations etc. -->
       <wSlnFile Condition="'$(wSlnFile)' == ''"></wSlnFile> <!-- will be used the first found .sln file if it's empty -->
+      <wRootPath Condition="'$(wRootPath)' == ''"></wRootPath> <!-- Optional root path of user paths. Affects on wSlnFile, wSlnDir, wPkgPath -->
     </PropertyGroup>
     
     <DllExportCfgTask 
+        RootPath="$(wRootPath)" 
         SlnDir="$(wSlnDir)" 
         SlnFile="$(wSlnFile)" 
         PkgPath="$(wPkgPath)" 

@@ -25,6 +25,7 @@
 using System;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -34,23 +35,36 @@ namespace net.r_eg.DllExport.Wizard
         private object synch = new object();
 
         /// <summary>
+        /// Optional root path of user paths. 
+        /// Affects on wSlnFile, wSlnDir, wPkgPath.
+        /// </summary>
+        public string RootPath
+        {
+            get => _rootPath;
+            set => _rootPath = value.DirectoryPathFormat();
+        }
+        private string _rootPath;
+
+        /// <summary>
         /// Path to directory with .sln files to be processed.
         /// </summary>
         [Required]
         public string SlnDir
         {
-            get;
-            set;
+            get => _slnDir;
+            set => _slnDir = value.DirectoryPathFormat(RootPath);
         }
+        private string _slnDir;
 
         /// <summary>
         /// Optional predefined .sln file to process via the restore operations etc.
         /// </summary>
         public string SlnFile
         {
-            get;
-            set;
+            get => _slnFile;
+            set => _slnFile = value.FilePathFormat(RootPath);
         }
+        private string _slnFile;
 
         /// <summary>
         /// Root path of the DllExport package.
@@ -58,9 +72,10 @@ namespace net.r_eg.DllExport.Wizard
         [Required]
         public string PkgPath
         {
-            get;
-            set;
+            get => _pkgPath;
+            set => _pkgPath = value.DirectoryPathFormat(RootPath);
         }
+        private string _pkgPath;
 
         /// <summary>
         /// Relative path from PkgPath to DllExport meta library.
@@ -68,9 +83,10 @@ namespace net.r_eg.DllExport.Wizard
         [Required]
         public string MetaLib
         {
-            get;
-            set;
+            get => _metaLib;
+            set => _metaLib = value.FilePathFormat();
         }
+        private string _metaLib;
 
         /// <summary>
         /// Path to .target file of the DllExport.
@@ -78,9 +94,10 @@ namespace net.r_eg.DllExport.Wizard
         [Required]
         public string DxpTarget
         {
-            get;
-            set;
+            get => _dxpTarget;
+            set => _dxpTarget = value.FilePathFormat();
         }
+        private string _dxpTarget;
 
         /// <summary>
         /// Raw type of operation via ActionType.
@@ -146,6 +163,7 @@ namespace net.r_eg.DllExport.Wizard
                     LSender.Send(this, $"PkgPath: '{PkgPath}'", Message.Level.Warn);
                     LSender.Send(this, $"MetaLib: '{MetaLib}'", Message.Level.Warn);
                     LSender.Send(this, $"DxpTarget: '{DxpTarget}'", Message.Level.Warn);
+                    LSender.Send(this, $"RootPath: '{RootPath}'", Message.Level.Warn);
                     LSender.Send(this, $"Action: '{Type}'", Message.Level.Warn);
 #if DEBUG
                     LSender.Send(this, $"Stack trace: {ex.StackTrace}", Message.Level.Error);

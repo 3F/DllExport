@@ -24,7 +24,7 @@
 
 using System;
 using System.Drawing;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
 
@@ -36,6 +36,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private IExecutor exec;
         private FileDialog fdialog;
+        private int prevSlnItemIndex = 0;
         private object sync = new object();
 
         public ConfiguratorForm(IExecutor exec)
@@ -86,12 +87,20 @@ namespace net.r_eg.DllExport.Wizard.UI
         private string OpenFile()
         {
             if(fdialog == null) {
-                fdialog = new OpenFileDialog();
+                fdialog = new OpenFileDialog() { Filter = "Solution File (*.sln)|*.sln" };
             }
 
-            if(fdialog.ShowDialog(this) != DialogResult.OK) {
+            var dlgres  = DialogResult.None;
+            var thread  = new Thread(() => dlgres = fdialog.ShowDialog());
+
+            thread.SetApartmentState(ApartmentState.STA);
+            thread.Start();
+            thread.Join();
+
+            if(dlgres != DialogResult.OK) {
                 return null;
-            }
+            };
+
             return fdialog.FileName;
         }
 
@@ -106,26 +115,26 @@ namespace net.r_eg.DllExport.Wizard.UI
                 return;
             }
 
-            Task.Factory.StartNew(() =>
+            string file = OpenFile();
+            if(file == null 
+                || !file.TrimEnd().EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
             {
-                string file = OpenFile();
-                BeginInvoke((MethodInvoker)delegate
-                {
-                    lock(sync)
-                    {
-                        comboBoxSln.SelectedIndexChanged -= comboBoxSln_SelectedIndexChanged;
-                        if(box.Items.Contains(file)) {
-                            box.SelectedIndex = box.Items.IndexOf(file);
-                        }
-                        else {
-                            box.Items.Insert(0, file);
-                            box.SelectedIndex = 0;
-                        }
-                        comboBoxSln.SelectedIndexChanged += comboBoxSln_SelectedIndexChanged;
-                    }
-                    RenderProjects(file);
-                });
+                DoSilentAction(() => box.SelectedIndex = prevSlnItemIndex);
+                return;
+            }
+
+            DoSilentAction(() =>
+            {
+                if(box.Items.Contains(file)) {
+                    box.SelectedIndex = box.Items.IndexOf(file);
+                }
+                else {
+                    box.Items.Insert(0, file);
+                    box.SelectedIndex = 0;
+                }
             });
+
+            RenderProjects(file);
         }
 
         private void RenderProjects(string sln)
@@ -142,14 +151,30 @@ namespace net.r_eg.DllExport.Wizard.UI
                     projectItems.Add(project);
                 }
             }
+        }
 
-            ClientSize = new Size(
-                ClientSize.Width, 
-                panelTop.Height + Math.Max(
-                                    projectItems.HeightOfItem, 
-                                    Math.Min(projectItems.HeightOfItem * projectItems.Count, projectItems.HeightOfItem * MAX_VIEW_ITEMS)
-                                  )
+        private void DoSilentAction(Action act, ComboBox box, EventHandler handler)
+        {
+            lock(sync) {
+                box.SelectedIndexChanged -= handler;
+                act();
+                box.SelectedIndexChanged += handler;
+            }
+        }
+
+        private void DoSilentAction(Action act)
+        {
+            DoSilentAction(act, comboBoxSln, comboBoxSln_SelectedIndexChanged);
+        }
+
+        private void ResizeHeight()
+        {
+            int actual = Math.Max(
+                projectItems.MaxItemHeight,
+                Math.Min(projectItems.MaxItemsHeight, projectItems.GetMaxItemsHeight(MAX_VIEW_ITEMS))
             );
+
+            ClientSize = new Size(ClientSize.Width, panelTop.Height + actual);
         }
 
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)
@@ -157,6 +182,9 @@ namespace net.r_eg.DllExport.Wizard.UI
             if(sender is ComboBox) {
                 RenderProjects((ComboBox)sender);
             }
+            prevSlnItemIndex = comboBoxSln.SelectedIndex;
+
+            ResizeHeight();
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -170,6 +198,11 @@ namespace net.r_eg.DllExport.Wizard.UI
         private void btnBug_Click(object sender, EventArgs e)
         {
             OpenUrl("https://github.com/3F/DllExport/issues");
+        }
+
+        private void projectItems_RenderedItemsSizeChanged(object sender, EventArgs e)
+        {
+            ResizeHeight();
         }
     }
 }

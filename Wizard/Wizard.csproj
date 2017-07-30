@@ -54,6 +54,7 @@
     <Compile Include="Executor.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
+    <Compile Include="IConfigInitializer.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="CompilerCfg.cs" />
     <Compile Include="MSBuildProperties.cs" />
@@ -67,6 +68,7 @@
     <Compile Include="UI\Controls\ProjectItemsControl.Designer.cs">
       <DependentUpon>ProjectItemsControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\App.cs" />
     <Compile Include="UserConfig.cs" />
     <Compile Include="UI\ConfiguratorForm.cs">
       <SubType>Form</SubType>
@@ -87,6 +89,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="key.snk" />
+    <None Include="installer.bat" />
     <None Include="net.r_eg.DllExport.Wizard.targets">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

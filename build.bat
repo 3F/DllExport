@@ -10,8 +10,6 @@ if "%reltype%"=="" (
 
 :found
 
-git submodule update --init --recursive GetNuTool || goto err
-
 call packages_restore.cmd || goto err
 
 call %_msbuild% -notamd64 "DllExport.sln" /v:normal /l:"%cimdll%" /m:4 /t:Build /p:Configuration="%reltype%" || goto err

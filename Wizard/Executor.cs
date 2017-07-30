@@ -35,7 +35,7 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public class Executor: IExecutor, IDisposable
+    public class Executor: IExecutor, IConfigInitializer, IDisposable
     {
         protected Dictionary<string, Sln> solutions = new Dictionary<string, Sln>();
 
@@ -75,7 +75,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public IEnumerable<IProject> ProjectsBy(string sln)
         {
-            return GetEnv(sln)?.Projects?.Select(p => new Project(p, GetUserConfig(p)));
+            return GetEnv(sln)?.Projects?.Select(p => new Project(p, this));
         }
 
         /// <summary>
@@ -85,7 +85,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public IEnumerable<IProject> UniqueProjectsBy(string sln)
         {
-            return GetEnv(sln)?.UniqueByGuidProjects?.Select(p => new Project(p, GetUserConfig(p)));
+            return GetEnv(sln)?.UniqueByGuidProjects?.Select(p => new Project(p, this));
         }
 
         /// <summary>
@@ -103,15 +103,14 @@ namespace net.r_eg.DllExport.Wizard
         {
             if(Config.Type == ActionType.Configure)
             {
-                using(var frm = new UI.ConfiguratorForm(this)) {
-                    frm.ShowDialog();
-                }
+                UI.App.RunSTA(new UI.ConfiguratorForm(this));
                 return;
             }
 
             if(Config.Type == ActionType.Restore)
             {
-                var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? SlnFiles.FirstOrDefault() : Config.SlnFile;
+                var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? 
+                                    SlnFiles?.FirstOrDefault() : Config.SlnFile;
                 if(sln == null)
                 {
                     throw new ArgumentException(
@@ -132,15 +131,6 @@ namespace net.r_eg.DllExport.Wizard
         public Executor(IWizardConfig cfg)
         {
             Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
-        }
-
-        protected virtual IUserConfig GetUserConfig(IXProject project)
-        {
-            return new UserConfig(Config, project) {
-                NSBuffer    = DDNS.NSBuffer,
-                DDNS        = DDNS,
-                Log         = Log,
-            };
         }
 
         protected IEnvironment GetEnv(string file)

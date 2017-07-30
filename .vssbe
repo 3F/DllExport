@@ -91,7 +91,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion - 65534 max allowed ! that is 65536 (0-65535) is not a correct range, (2^16 - 2) \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion - 65534 max allowed ! that is 65536 (0-65535) is not a correct range, (2^16 - 2) \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pGetNuTool    = \"GetNuTool\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -112,11 +112,49 @@
           "$(pNSBin        = \"NSBin\")",
           "$(pConf         = \"Configurator\")",
           "$(pWizard       = \"Wizard\")",
+          "$(pGetNuTool    = \"GetNuTool\")",
           "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
           "$(odir          = \"$(dbin)raw/\")",
           "",
           "#[IO delete.directory(\"$(dbin)\", true)]",
           "#[IO copy.directory(\"\", \"$(dbin)\", true)]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "ActSubmodules",
+      "Caption": "git submodules",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]\n\n#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )\n{ \n    #[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]\n}\nelse{\n    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]\n}]",
+        "Command__": [
+          "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]",
+          "",
+          "#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )",
+          "{ ",
+          "    #[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]",
+          "}",
+          "else{",
+          "    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]",
+          "}]"
         ]
       }
     },
@@ -143,9 +181,10 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n}]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n#[$(dxpPrintVersion = \"v$(pVer)\")]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"<version>.+?</version>\", \"<version>$(pVer)</version>\")]\n#[IO replace.Regex(\"tools/DllExport.nuspec\", \"\\\"DllExport/[0-9.]+\\\"\", \"\\\"DllExport/$(pVer)\\\"\")]\n\n#[( $(Configuration) != \"PublicRelease\" ) {\n    #[IO replace.Regex(\"$(pConf)/ConfVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n}]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
+          "#[$(dxpPrintVersion = \"v$(pVer)\")]",
           "",
           "#[\" TODO: how about tpl ?  \"]",
           "",
@@ -188,7 +227,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var tpl = // This code was generated by a vsSolutionBuildEvent. \n// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.\nnamespace net.r_eg.DllExport.Configurator\n{\n    using System;\n\n    internal struct ConfVersion\n    {\n        public static readonly Version number = new Version(S_NUM_REV);\n\n        public const string S_NUM = \"%S_NUM%\";\n        public const string S_REV = \"%S_REV%\";\n\n        public const string S_NUM_REV = S_NUM + \".\" + S_REV;\n\n        public const string BRANCH_SHA1 = \"%B_SHA1%\";\n        public const string BRANCH_NAME = \"%B_NAME%\";\n        public const string BRANCH_REVC = \"%B_REVC%\";\n\n        internal const string S_INFO        = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";\n        internal const string S_INFO_FULL   = S_INFO + \" /'\" + BRANCH_NAME + \"':\" + BRANCH_REVC;\n    }\n}]\n\n\n#[\" \n    Calculate revision\n\"]\n#[var tBase     = $([System.DateTime]::Parse('$(revDeltaBase)').ToBinary())]\n#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]\n#[var revBuild  = #[$(\n                    [System.TimeSpan]::FromTicks('$(\n                        [MSBuild]::Subtract($(tNow), $(tBase))\n                    )')\n                    .TotalMinutes.ToString('0'))]]\n                     \n#[var revBuild  = #[$(\n                    [MSBuild]::Add(\n                        $(revDeltaMin), \n                        $([MSBuild]::Modulo(\n                            $(revBuild), \n                            $([MSBuild]::Subtract(\n                                $(revDeltaMax), $(revDeltaMin)\n                             ))\n                         ))\n                     )\n                   )]\n]\n\n#[\" \n    Remove placeholders\n\"]\n#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\"))]\n\n#[\" \n    Checking of the git folder +tool & define sha1, branch name, etc.\n\"]\n#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )\n{\n    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]\n    #[var bName = #[IO sout(\"git\", \"rev-parse --abbrev-ref HEAD\")]]\n    #[var bRevc = #[IO sout(\"git\", \"rev-list HEAD --count\")]]\n    \n    #[($(bName) == \"HEAD\") {\n        #[var bName = $(APPVEYOR_REPO_BRANCH)]\n    }]\n}\nelse {\n    #[$(bSha1 = '-')] #[$(bName = '-')] #[$(bRevc = '-')]\n}]\n\n#[var tpl = #[$(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\")\n                   .Replace(\"%B_NAME%\", \"#[var bName]\")\n                   .Replace(\"%B_REVC%\", \"#[var bRevc]\") )]]\n\n#[\" \n    Save result\n\"]\n#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]",
+        "Command": "#[var tpl = // This code was generated by a vsSolutionBuildEvent. \n// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.\nnamespace net.r_eg.DllExport.Configurator\n{\n    using System;\n\n    internal struct ConfVersion\n    {\n        public static readonly Version number = new Version(S_NUM_REV);\n\n        public const string S_NUM = \"%S_NUM%\";\n        public const string S_REV = \"%S_REV%\";\n\n        public const string S_NUM_REV = S_NUM + \".\" + S_REV;\n\n        public const string BRANCH_SHA1 = \"%B_SHA1%\";\n        public const string BRANCH_NAME = \"%B_NAME%\";\n        public const string BRANCH_REVC = \"%B_REVC%\";\n\n        internal const string S_INFO        = S_NUM_REV + \" [ \" + BRANCH_SHA1 + \" ]\";\n        internal const string S_INFO_FULL   = S_INFO + \" /'\" + BRANCH_NAME + \"':\" + BRANCH_REVC;\n    }\n}]\n\n\n#[\" \n    Calculate revision\n\"]\n#[var tBase     = $([System.DateTime]::Parse('$(revDeltaBase)').ToBinary())]\n#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]\n#[var revBuild  = #[$(\n                    [System.TimeSpan]::FromTicks('$(\n                        [MSBuild]::Subtract($(tNow), $(tBase))\n                    )')\n                    .TotalMinutes.ToString('0'))]]\n                     \n#[var revBuild  = #[$(\n                    [MSBuild]::Add(\n                        $(revDeltaMin), \n                        $([MSBuild]::Modulo(\n                            $(revBuild), \n                            $([MSBuild]::Subtract(\n                                $(revDeltaMax), $(revDeltaMin)\n                             ))\n                         ))\n                     )\n                   )]\n]\n\n#[$(dxpPrintVersion = \"v$(pVer).$(revBuild)\")]\n\n#[\" \n    Remove placeholders\n\"]\n#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\"))]\n\n#[\" \n    Checking of the git folder +tool & define sha1, branch name, etc.\n\"]\n#[( #[IO exists.directory(\".git\")] && #[IO exists.file(\"git.exe\", true)] )\n{\n    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]\n    #[var bName = #[IO sout(\"git\", \"rev-parse --abbrev-ref HEAD\")]]\n    #[var bRevc = #[IO sout(\"git\", \"rev-list HEAD --count\")]]\n    \n    #[($(bName) == \"HEAD\") {\n        #[var bName = $(APPVEYOR_REPO_BRANCH)]\n    }]\n    \n    #[$(dxpPrintVersion = \"$(dxpPrintVersion) [ $(bSha1) ]\")]\n}\nelse {\n    #[$(bSha1 = '-')] #[$(bName = '-')] #[$(bRevc = '-')]\n}]\n\n#[var tpl = #[$(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\")\n                   .Replace(\"%B_NAME%\", \"#[var bName]\")\n                   .Replace(\"%B_REVC%\", \"#[var bRevc]\") )]]\n\n#[\" \n    Save result\n\"]\n#[File write(\"$(pConf)/ConfVersion.cs\"):#[var tpl]]",
         "Command__": [
           "#[var tpl = // This code was generated by a vsSolutionBuildEvent. ",
           "// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.",
@@ -239,6 +278,8 @@
           "                   )]",
           "]",
           "",
+          "#[$(dxpPrintVersion = \"v$(pVer).$(revBuild)\")]",
+          "",
           "#[\" ",
           "    Remove placeholders",
           "\"]",
@@ -256,6 +297,8 @@
           "    #[($(bName) == \"HEAD\") {",
           "        #[var bName = $(APPVEYOR_REPO_BRANCH)]",
           "    }]",
+          "    ",
+          "    #[$(dxpPrintVersion = \"$(dxpPrintVersion) [ $(bSha1) ]\")]",
           "}",
           "else {",
           "    #[$(bSha1 = '-')] #[$(bName = '-')] #[$(bRevc = '-')]",
@@ -441,6 +484,72 @@
     },
     {
       "Enabled": true,
+      "Name": "WizardInst",
+      "Caption": "Preparing installer for Wizard project ...",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": false,
+        "TimeLimit": 400
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build\", 400)]]\n\n#[var frontend = $(pWizard)\\\\installer.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]",
+        "Command__": [
+          "#[IO writeLine(STDOUT): Build GetNuTool ...]",
+          "#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build\", 400)]]",
+          "",
+          "#[var frontend = $(pWizard)\\\\installer.bat]",
+          "#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]",
+          "#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]",
+          "",
+          "#[try",
+          "{",
+          "    #[IO writeLine(STDOUT):",
+          "        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]",
+          "     ]",
+          "}",
+          "catch(err, msg)",
+          "{",
+          "    #[IO write(STDOUT):",
+          "        Trying with another method... ]",
+          "    ",
+          "    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]",
+          "    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]",
+          "    ",
+          "    #[IO writeLine(STDOUT): ok]",
+          "",
+          "}]",
+          "",
+          "",
+          "#[\" ",
+          "    finalization",
+          "\"]",
+          "#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]",
+          "",
+          "",
+          "#[\" ",
+          "    update version",
+          "\"]",
+          "#[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]",
+          "",
+          "#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
       "Name": "ActPack",
       "Caption": "Packing with GetNuTool ...",
       "SupportMSBuild": true,
@@ -462,11 +571,27 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO replace(\"$(odir)/DllExport.nuspec\", \"{build_info}\", \"$(buildInfo)\")]\r\n\r\n#[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")]",
+        "Command": "#[IO replace(\"$(odir)/DllExport.nuspec\", \"{build_info}\", \"$(buildInfo)\")]\n\n#[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")]\n\n#[($(revBuild) == \"\" || $(revBuild) ~= \"*\") {\n    #[$(zipname = \"DllExport_v$(pVer).zip\")]\n}\nelse {\n    #[$(zipname = \"DllExport_v$(pVer).$(revBuild)_$(bSha1).zip\")]\n}]\n\n#[7z pack.files({ \n        \"$(odir)\\\\lib\\\\net20\\\\*.*\",\n        \"$(odir)\\\\tools\\\\*.*\",\n        \"$(odir)\\\\tools\\\\coreclr\\\\*.*\",\n        \"$(odir)\\\\*.*\"\n    }, \n    \"$(dbin)\\\\$(zipname)\", \n    { \"$(odir)\\\\*.nuspec\" })]",
         "Command__": [
           "#[IO replace(\"$(odir)/DllExport.nuspec\", \"{build_info}\", \"$(buildInfo)\")]",
           "",
-          "#[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")]"
+          "#[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")]",
+          "",
+          "#[($(revBuild) == \"\" || $(revBuild) ~= \"*\") {",
+          "    #[$(zipname = \"DllExport_v$(pVer).zip\")]",
+          "}",
+          "else {",
+          "    #[$(zipname = \"DllExport_v$(pVer).$(revBuild)_$(bSha1).zip\")]",
+          "}]",
+          "",
+          "#[7z pack.files({ ",
+          "        \"$(odir)\\\\lib\\\\net20\\\\*.*\",",
+          "        \"$(odir)\\\\tools\\\\*.*\",",
+          "        \"$(odir)\\\\tools\\\\coreclr\\\\*.*\",",
+          "        \"$(odir)\\\\*.*\"",
+          "    }, ",
+          "    \"$(dbin)\\\\$(zipname)\", ",
+          "    { \"$(odir)\\\\*.nuspec\" })]"
         ]
       }
     }

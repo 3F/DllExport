@@ -22,14 +22,26 @@
  * THE SOFTWARE.
 */
 
+using net.r_eg.DllExport.NSBin;
+using net.r_eg.MvsSln.Log;
+
 namespace net.r_eg.DllExport.Wizard
 {
-    public enum Platform
+    public interface IConfigInitializer
     {
-        Default,
-        x86,
-        x64,
-        AnyCPU,
-        x86x64 = AnyCPU,
+        /// <summary>
+        /// Access to wizard configuration.
+        /// </summary>
+        IWizardConfig Config { get; }
+
+        /// <summary>
+        /// ddNS feature core.
+        /// </summary>
+        IDDNS DDNS { get; }
+
+        /// <summary>
+        /// Access to logger.
+        /// </summary>
+        ISender Log { get; }
     }
 }

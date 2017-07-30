@@ -31,6 +31,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     internal sealed partial class ProjectItemControl: UserControl
     {
+        private readonly int EX_HEIGHT;
+        private IProject project;
+
         public bool Installed
         {
             get => chkInstalled.Checked;
@@ -123,9 +126,19 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             set;
         }
 
-        public ProjectItemControl()
+        public int Order
         {
+            get;
+            set;
+        }
+
+        public ProjectItemControl(IProject project)
+        {
+            this.project = project;
+
             InitializeComponent();
+            EX_HEIGHT = Height;
+
             InstalledStatus(false);
         }
 
@@ -170,15 +183,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             if(status) {
                 panelStatus.BackColor = System.Drawing.Color.FromArgb(111, 145, 6);
+                Height = EX_HEIGHT;
             }
             else {
                 panelStatus.BackColor = System.Drawing.Color.FromArgb(168, 47, 17);
+                Height = gbProject.Location.X + gbProject.Height;
             }
         }
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            Browse?.Invoke(Path.GetDirectoryName(ProjectPath));
+            var path = project?.XProject?.ProjectPath;
+            if(!String.IsNullOrWhiteSpace(path)) {
+                Browse?.Invoke(path);
+            }
         }
 
         private void numOrdinal_KeyDown(object sender, KeyEventArgs e)

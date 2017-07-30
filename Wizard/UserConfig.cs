@@ -156,6 +156,10 @@ namespace net.r_eg.DllExport.Wizard
         public UserConfig(IWizardConfig cfg, IXProject project)
             : this(cfg)
         {
+            if(project == null) {
+                return;
+            }
+
             Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, project);
             Platform    = GetPlatform(project.GetProperty(MSBuildProperties.PRJ_PLATFORM).evaluatedValue);
             UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, project).ToBoolean();
@@ -165,6 +169,22 @@ namespace net.r_eg.DllExport.Wizard
                 ordinalsBase    = GetValue(MSBuildProperties.DXP_ORDINALS_BASE, project).ToInteger(),
                 ourILAsm        = GetValue(MSBuildProperties.DXP_OUR_ILASM, project).ToBoolean()
             };
+        }
+
+        public UserConfig(IConfigInitializer cfg)
+            : this(cfg, null)
+        {
+
+        }
+
+        public UserConfig(IConfigInitializer cfg, IXProject project)
+            : this(cfg?.Config, project)
+        {
+            if(cfg?.DDNS != null) {
+                NSBuffer    = cfg.DDNS.NSBuffer;
+                DDNS        = cfg.DDNS;
+            }
+            Log = cfg.Log;
         }
 
         protected Platform GetPlatform(string value)

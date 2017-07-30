@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.IO;
 
 namespace net.r_eg.DllExport.Wizard.Extensions
 {
@@ -69,6 +70,57 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             }
 
             return Int32.Parse(value);
+        }
+
+        /// <summary>
+        /// To open value from double quotes.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public static string OpenDoubleQuotes(this string value)
+        {
+            if(String.IsNullOrWhiteSpace(value)) {
+                return value;
+            }
+
+            // leave trailing and leading whitespaces inside double quotes
+            return value.Trim().Trim(new[] { '"' });
+        }
+
+        /// <summary>
+        /// Formatting of the path to directory.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string DirectoryPathFormat(this string path, string root = null)
+        {
+            return CombineRootPath(
+                MvsSln.Extensions.StringExtension.DirectoryPathFormat(OpenDoubleQuotes(path)),
+                root
+            );
+        }
+
+        /// <summary>
+        /// Formatting file path.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        public static string FilePathFormat(this string path, string root = null)
+        {
+            return CombineRootPath(OpenDoubleQuotes(path)?.Trim(), root);
+        }
+
+        public static string CombineRootPath(string path, string root)
+        {
+            if(String.IsNullOrWhiteSpace(path) || Path.IsPathRooted(path)) {
+                return path;
+            }
+
+            if(String.IsNullOrWhiteSpace(root)) {
+                return path;
+            }
+
+            return Path.Combine(root, path);
         }
     }
 }

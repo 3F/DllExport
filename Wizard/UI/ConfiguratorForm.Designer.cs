@@ -96,6 +96,7 @@
             this.projectItems.OpenUrl = null;
             this.projectItems.Size = new System.Drawing.Size(469, 420);
             this.projectItems.TabIndex = 1;
+            this.projectItems.RenderedItemsSizeChanged += new System.EventHandler(this.projectItems_RenderedItemsSizeChanged);
             // 
             // ConfiguratorForm
             // 

@@ -34,6 +34,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
     {
         private List<UProject> items = new List<UProject>();
 
+        /// <summary>
+        /// When the size of rendered items has been changed.
+        /// </summary>
+        public event EventHandler RenderedItemsSizeChanged = delegate(object sender, EventArgs e) { };
+
         private struct UProject
         {
             public ProjectItemControl control;
@@ -56,9 +61,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             get => items.Count;
         }
 
-        public int HeightOfItem
+        public int MaxItemHeight
         {
-            get => (Count < 1) ? 0 : items[0].control.Height;
+            get => GetMaxItemsHeight(1);
+        }
+
+        public int MaxItemsHeight
+        {
+            get => GetMaxItemsHeight(Count);
         }
 
         /// <summary>
@@ -97,9 +107,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// <param name="project"></param>
         public void Add(IProject project)
         {
-            var control = new ProjectItemControl();
+            var control = new ProjectItemControl(project) {
+                Order = items.Count
+            };
             control.Top = control.Height * items.Count;
 
+            control.SizeChanged += ControlSizeChanged;
             ConfigureControl(control, project);
 
             panelMain.Controls.Add(control);
@@ -116,6 +129,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             items.Clear();
             panelMain.Controls.Clear();
+        }
+
+        public int GetMaxItemsHeight(int count)
+        {
+            return (Count < 1 || items.Count < 1) ? 
+                        0 : items.OrderByDescending(i => i.control.Height)
+                                    .Take(count)
+                                    .Sum(i => i.control.Height);
         }
 
         public ProjectItemsControl()
@@ -140,6 +161,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             control.Namespaces.Items.AddRange(project.Config.Namespaces.ToArray());
             control.Namespaces.SelectedIndex = 0;
 
+            control.Namespaces.MaxLength = project.Config.NSBuffer;
+
             if(!String.IsNullOrWhiteSpace(project.Config.Namespace)) {
                 control.Namespaces.Text = project.Config.Namespace;
             }
@@ -154,6 +177,21 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             project.Config.Namespace    = control.Namespaces.Text;
 
             return project;
+        }
+
+        private void ControlSizeChanged(object sender, EventArgs e)
+        {
+            if(sender is ProjectItemControl)
+            {
+                var control = (ProjectItemControl)sender;
+
+                int xprev = control.Top + control.Height;
+                foreach(var item in items.Skip(control.Order + 1)) {
+                    item.control.Top = xprev;
+                    xprev += item.control.Height;
+                }
+            }
+            RenderedItemsSizeChanged(this, EventArgs.Empty);
         }
     }
 }
