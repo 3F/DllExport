@@ -2,7 +2,11 @@
 <!-- https://github.com/3F/DllExport -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
-  <Target Name="Build">
+  <PropertyGroup>
+    <DllExportWizardImported>true</DllExportWizardImported>
+  </PropertyGroup>
+  
+  <Target Name="DllExportWizard">
     
     <PropertyGroup>
       <wSlnDir Condition="'$(wSlnDir)' == ''">.\</wSlnDir>
@@ -31,4 +35,5 @@
   </Target>
   <UsingTask TaskName="net.r_eg.DllExport.Wizard.DllExportCfgTask" AssemblyFile="net.r_eg.DllExport.Wizard.dll" />
   
+  <Target Name="Build" DependsOnTargets="DllExportWizard" />
 </Project>

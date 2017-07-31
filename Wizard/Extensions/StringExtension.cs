@@ -24,6 +24,8 @@
 
 using System;
 using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace net.r_eg.DllExport.Wizard.Extensions
 {
@@ -73,6 +75,32 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         }
 
         /// <summary>
+        /// Open url through default application.
+        /// </summary>
+        /// <param name="url"></param>
+        public static void OpenUrl(this string url)
+        {
+            if(!String.IsNullOrWhiteSpace(url)) {
+                System.Diagnostics.Process.Start(url);
+            }
+        }
+
+        /// <summary>
+        /// Calculate SHA-1 hash from file.
+        /// </summary>
+        /// <param name="file">Path to file.</param>
+        /// <returns>SHA-1 Hash code.</returns>
+        public static string SHA1HashFromFile(this string file)
+        {
+            using(var fs = File.OpenRead(file))
+            {
+                using(SHA1 sha1 = SHA1.Create()) {
+                    return BytesToHexView(sha1.ComputeHash(fs));
+                }
+            }
+        }
+
+        /// <summary>
         /// To open value from double quotes.
         /// </summary>
         /// <param name="value"></param>
@@ -110,6 +138,12 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             return CombineRootPath(OpenDoubleQuotes(path)?.Trim(), root);
         }
 
+        /// <summary>
+        /// To combine relative path with root.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="root"></param>
+        /// <returns></returns>
         public static string CombineRootPath(string path, string root)
         {
             if(String.IsNullOrWhiteSpace(path) || Path.IsPathRooted(path)) {
@@ -121,6 +155,20 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             }
 
             return Path.Combine(root, path);
+        }
+
+        /// <summary>
+        /// To format bytes data to hex view.
+        /// </summary>
+        /// <param name="data">Bytes data.</param>
+        /// <returns>Hex view of bytes.</returns>
+        private static string BytesToHexView(byte[] data)
+        {
+            var ret = new StringBuilder();
+            foreach(byte b in data) {
+                ret.Append(b.ToString("X2"));
+            }
+            return ret.ToString();
         }
     }
 }

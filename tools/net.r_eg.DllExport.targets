@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="net.r_eg.DllExport.Wizard.targets" Condition="Exists('net.r_eg.DllExport.Wizard.targets')" />
 
   <PropertyGroup>
     <DllExportRootPkg Condition="'$(DllExportRootPkg)' == ''">$(MSBuildThisFileDirectory)..\</DllExportRootPkg>
@@ -72,10 +73,11 @@
   </Target>
   <UsingTask TaskName="RGiesecke.DllExport.MSBuild.DllExportAppDomainIsolatedTask" AssemblyFile="RGiesecke.DllExport.MSBuild.dll" />
 
-  <Target Name="DllExportLib" BeforeTargets="PrepareForBuild;BeforeBuild;BeforeRebuild" >
-      <Exec Condition="!Exists('$(DllExportMetaLibFullPath).ddNSi')"
-              WorkingDirectory="$(DllExportRootPkg)$(DllExportToolsPath)"
-              Command="NSBin.bat &quot;$(DllExportMetaLibFullPath)&quot; &quot;$(DllExportNamespace)&quot; &quot;$(DllExportDDNSCecil)&quot;" />
+  <Target Name="DllExportLib" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <wAction>Restore</wAction>
+    </PropertyGroup>
+    <CallTarget Targets="DllExportWizard" />
   </Target>
   
 </Project>

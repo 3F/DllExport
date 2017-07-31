@@ -111,19 +111,26 @@ namespace net.r_eg.DllExport.Wizard
             {
                 var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? 
                                     SlnFiles?.FirstOrDefault() : Config.SlnFile;
-                if(sln == null)
+                if(sln != null)
                 {
-                    throw new ArgumentException(
-                        String.Format(
-                            "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
-                            nameof(IWizardConfig.SlnFile),
-                            nameof(IWizardConfig.SlnDir)
-                        )
-                    );
+                    Log.send(this, $"To restore '{sln}'", Message.Level.Info);
+                    UniqueProjectsBy(sln)?.ForEach(p => p.Configure(ActionType.Restore));
                 }
-                Log.send(this, $"To restore '{sln}'", Message.Level.Info);
 
-                UniqueProjectsBy(sln)?.ForEach(p => p.Configure(ActionType.Restore));
+                throw new ArgumentException(
+                    String.Format(
+                        "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
+                        nameof(IWizardConfig.SlnFile),
+                        nameof(IWizardConfig.SlnDir)
+                    )
+                );
+            }
+
+            if(Config.Type == ActionType.Info)
+            {
+                (new CfgBatWrapper(Config, Log)).TryPrepare();
+                UI.App.RunSTA(new UI.InfoForm(this));
+                return;
             }
         }
 

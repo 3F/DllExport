@@ -22,30 +22,34 @@
  * THE SOFTWARE.
 */
 
-namespace net.r_eg.DllExport.Wizard
+using System.Windows.Forms;
+using net.r_eg.DllExport.Wizard.Extensions;
+
+namespace net.r_eg.DllExport.Wizard.UI
 {
-    public enum ActionType: uint
+    internal partial class InfoForm: Form
     {
-        Default,
+        private IExecutor exec;
 
-        /// <summary>
-        /// Process of configuration of available projects.
-        /// Install and Remove operation will be defined by user at runtime.
-        /// </summary>
-        Configure,
+        public InfoForm(IExecutor exec)
+        {
+            this.exec = exec;
+            InitializeComponent();
+        }
 
-        //TODO: via predefined list etc.
-        //Install,
-        //Remove,
+        private void linkWhy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            "https://github.com/3F/DllExport/issues/38".OpenUrl();
+        }
 
-        /// <summary>
-        /// To restore already configured environment.
-        /// </summary>
-        Restore,
+        private void linkLocalDxp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            exec.Config.SlnDir.OpenUrl();
+        }
 
-        /// <summary>
-        /// Information about obsolete nuget clients etc.
-        /// </summary>
-        Info,
+        private void linkRemoteDxp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            "https://github.com/3F/DllExport".OpenUrl(); // TODO:
+        }
     }
 }

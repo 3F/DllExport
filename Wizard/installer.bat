@@ -13,6 +13,9 @@ setlocal enableDelayedExpansion
 :: - - -
 :: Settings by default
 
+set "dxpVersion=$-pkg-version-$"
+set "wAction="
+
 set "dxpName=DllExport"
 set "tWizard=tools\\net.r_eg.DllExport.Wizard.targets"
 set "dxpPackages=packages"
@@ -26,14 +29,12 @@ set "wSlnDir="
 set "wPkgPath="
 set "wMetaLib="
 set "wDxpTarget="
-set "wAction="
 set "wSlnFile="
 
 :: -
 
 set /a dxpDebug=0
 set /a buildInfo=0
-set "dxpVersion="
 set "gMsbPath="
 
 set ERROR_SUCCESS=0
@@ -123,7 +124,10 @@ exit /B 0
 :commands
 
 call :isEmptyOrWhitespace args _is
-if [!_is!]==[1] goto usage
+if [!_is!]==[1] (
+    if defined wAction goto action
+    goto usage
+)
 
 set /a idx=1 & set cmdMax=15
 :loopargs
@@ -173,7 +177,6 @@ set /a idx=1 & set cmdMax=15
 
     if "!args:~0,10!"=="-packages " (
         call :popars %1 & shift
-        :: set ngpath=%2
         set dxpPackages=%2
         call :popars %2 & shift
     )

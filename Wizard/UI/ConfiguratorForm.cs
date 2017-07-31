@@ -27,6 +27,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
+using net.r_eg.DllExport.Wizard.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.UI
 {
@@ -70,9 +71,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void OpenUrl(string url)
         {
-            if(!String.IsNullOrWhiteSpace(url)) {
-                System.Diagnostics.Process.Start(url);
-            }
+            url.OpenUrl();
         }
 
         private void RenderSlnFiles()

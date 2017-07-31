@@ -113,6 +113,7 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DllExport";
+            this.TopMost = true;
             this.panelTop.ResumeLayout(false);
             this.ResumeLayout(false);
 
