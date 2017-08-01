@@ -76,6 +76,7 @@ echo Arguments:
 echo ----------
 echo  -action {type}        - Specified action for Wizard. Where {type}:
 echo                           * Configure - To configure DllExport for specific projects.
+echo                           * Update    - To update pkg reference for already configured projects.
 echo                           * Restore   - To restore configured DllExport.
 echo.
 echo  -sln-dir {path}       - Path to directory with .sln files to be processed.

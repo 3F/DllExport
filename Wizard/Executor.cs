@@ -101,20 +101,23 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public void Configure()
         {
+            Log.send(this, $"Selected Action: {Config.Type}", Message.Level.Info);
+
             if(Config.Type == ActionType.Configure)
             {
                 UI.App.RunSTA(new UI.ConfiguratorForm(this));
                 return;
             }
 
-            if(Config.Type == ActionType.Restore)
+            if(Config.Type == ActionType.Restore || Config.Type == ActionType.Update)
             {
                 var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? 
                                     SlnFiles?.FirstOrDefault() : Config.SlnFile;
                 if(sln != null)
                 {
-                    Log.send(this, $"To restore '{sln}'", Message.Level.Info);
-                    UniqueProjectsBy(sln)?.ForEach(p => p.Configure(ActionType.Restore));
+                    Log.send(this, $"Selected sln '{sln}'", Message.Level.Info);
+                    UniqueProjectsBy(sln)?.ForEach(p => p.Configure(Config.Type));
+                    return;
                 }
 
                 throw new ArgumentException(

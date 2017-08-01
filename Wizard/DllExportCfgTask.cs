@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Globalization;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -32,6 +33,7 @@ namespace net.r_eg.DllExport.Wizard
 {
     public class DllExportCfgTask: Task, ITask, IWizardConfig
     {
+        protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
         private object synch = new object();
 
         /// <summary>
@@ -195,7 +197,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private void OnMsg(object sender, Message e)
         {
-            ConWrite(e.content, e.type);
+            ConWrite($"[{e.stamp.ToString(PTN_TIME)}] {e.content}", e.type);
         }
     }
 }

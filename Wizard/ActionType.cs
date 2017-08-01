@@ -34,6 +34,11 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         Configure,
 
+        /// <summary>
+        /// To update package reference for already configured projects.
+        /// </summary>
+        Update,
+
         //TODO: via predefined list etc.
         //Install,
         //Remove,

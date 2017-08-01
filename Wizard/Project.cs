@@ -142,7 +142,7 @@ namespace net.r_eg.DllExport.Wizard
                 return true;
             }
 
-            if(type == ActionType.Configure)
+            if(type == ActionType.Configure || type == ActionType.Update)
             {
                 Reset();
                 XProject.Reevaluate();
