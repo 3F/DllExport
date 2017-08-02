@@ -34,6 +34,8 @@ namespace net.r_eg.DllExport.Wizard
     public class DllExportCfgTask: Task, ITask, IWizardConfig
     {
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
+
+        private UI.MsgForm uimsg;
         private object synch = new object();
 
         /// <summary>
@@ -131,6 +133,19 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <summary>
+        /// To show messages via GUI dlg for selected level (any positive number) and above.
+        /// Levels: 0 - 5 (see Message.Level)
+        /// '4' = means 4 (Error) + 5 (Fatal) levels.
+        /// Any negative number disables this.
+        /// It affects only for messages to GUI.
+        /// </summary>
+        public int MsgGuiLevel
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Executes the msbuild task.
         /// </summary>
         /// <returns>true if the task successfully executed.</returns>
@@ -138,6 +153,16 @@ namespace net.r_eg.DllExport.Wizard
         {
             if(String.IsNullOrWhiteSpace(SlnDir)) {
                 throw new ArgumentNullException(nameof(SlnDir));
+            }
+
+            if(MsgGuiLevel >= 0)
+            {
+                System.Threading.Tasks.Task.Factory.StartNew(() =>
+                {
+                    uimsg = new UI.MsgForm();
+                    UI.App.RunSTA(uimsg);
+                    uimsg = null;
+                });
             }
 
             using(IExecutor exec = new Executor(this)) {
@@ -191,13 +216,36 @@ namespace net.r_eg.DllExport.Wizard
                 Console.ForegroundColor = ConsoleColor.Yellow;
             }
 
-            Console.WriteLine(message);
+            if(IsLevelOrAbove(level, Message.Level.Error)) {
+                Console.Error.WriteLine(message);
+            }
+            else {
+                Console.WriteLine(message);
+            }
             Console.ResetColor();
+        }
+
+        private bool IsGuiMsg(Message.Level level)
+        {
+            if(MsgGuiLevel < 0) {
+                return false;
+            }
+            return ((int)level) >= MsgGuiLevel;
+        }
+
+        private bool IsLevelOrAbove(Message.Level lvl1, Message.Level lvl2)
+        {
+            return ((int)lvl1) >= ((int)lvl2);
         }
 
         private void OnMsg(object sender, Message e)
         {
-            ConWrite($"[{e.stamp.ToString(PTN_TIME)}] {e.content}", e.type);
+            var msg = $"[{e.stamp.ToString(PTN_TIME)}] [{e.type}] {e.content}";
+
+            if(uimsg != null && IsGuiMsg(e.type)) {
+                uimsg.AddMsg(msg);
+            }
+            ConWrite(msg, e.type);
         }
     }
 }

@@ -30,8 +30,19 @@
         MetaLib="$(wMetaLib)" 
         DxpTarget="$(wDxpTarget)" 
         Action="$(wAction)" 
+        MsgGuiLevel="-1" 
     />
-    
+    <!-- MsgGuiLevel: 
+          Will show messages via GUI dlg for selected level (any positive number) and above.
+          Levels: 0 - 5 (see Message.Level)
+          '4' = means 4 (Error) + 5 (Fatal) levels.
+          Any negative number disables this.
+          It affects only for messages to GUI.
+    -->
+
+    <PropertyGroup>
+      <DllExportWizardExecuted>true</DllExportWizardExecuted>
+    </PropertyGroup>
   </Target>
   <UsingTask TaskName="net.r_eg.DllExport.Wizard.DllExportCfgTask" AssemblyFile="net.r_eg.DllExport.Wizard.dll" />
   

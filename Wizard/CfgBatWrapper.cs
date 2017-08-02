@@ -68,7 +68,7 @@ namespace net.r_eg.DllExport.Wizard
                 }
 
                 if(dest.SHA1HashFromFile() != dxp.SHA1HashFromFile()) {
-                    dest = $"{dest}_{Project.METALIB_PK_TOKEN}{Path.GetExtension(dest)}";
+                    dest = dest.AddFileNamePostfix($"_{Project.METALIB_PK_TOKEN}");
                 }
                 File.Copy(dxp, dest, true);
                 return dest;
@@ -76,8 +76,8 @@ namespace net.r_eg.DllExport.Wizard
             finally
             {
                 File.WriteAllText(
-                    dest,
-                    File.ReadAllText(dest).Replace("set \"wAction=\"", "set \"wAction=Configure\"")
+                    dest.AddFileNamePostfix("_Configure"),
+                    "DllExport -action Configure"
                 );
             }
         }

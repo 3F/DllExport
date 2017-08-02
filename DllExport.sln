@@ -39,6 +39,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55898433
 		tools\gnt.bat = tools\gnt.bat
 		tools\hMSBuild.bat = tools\hMSBuild.bat
 		packages_restore.cmd = packages_restore.cmd
+		submodules.bat = submodules.bat
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBin", "NSBin\NSBin.csproj", "{311706A5-5ED2-4006-B794-055009D8A256}"

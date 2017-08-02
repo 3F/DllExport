@@ -7,18 +7,39 @@
     * We don't have any guaranteed information about uninstall operation for our package because of removed	uninstall.ps1
       https://github.com/3F/DllExport/issues/38
   -->
-  
-  <Import Project="..\..\tools\net.r_eg.DllExport.Wizard.targets" Condition="'$(DllExportWizardImported)' != 'true' And Exists('..\..\tools\net.r_eg.DllExport.Wizard.targets')" />
 
+  <PropertyGroup>
+    <NuPkgRootPath>$(MSBuildThisFileDirectory)..\..\</NuPkgRootPath>
+    <WizardDxpTarget>$(NuPkgRootPath)tools\net.r_eg.DllExport.Wizard.targets</WizardDxpTarget>
+  </PropertyGroup>
+  
   <PropertyGroup>
     <wAction>Info</wAction>
     <wSlnFile Condition="'$(wSlnFile)' == ''">$(SolutionPath)</wSlnFile>
     <wRootPath Condition="'$(wRootPath)' == ''">$(SolutionDir)</wRootPath>
-    <wPkgPath Condition="'$(wPkgPath)' == ''">$(MSBuildThisFileDirectory)..\..\</wPkgPath>
+    <wPkgPath Condition="'$(wPkgPath)' == ''">$(NuPkgRootPath)</wPkgPath>
   </PropertyGroup>
   
-  <Target Name="DllExportLib" BeforeTargets="PrepareForBuild">
-    <CallTarget Targets="DllExportWizard" />
+  <PropertyGroup Label="WarnInfo">
+    <DxpInfoCount>1</DxpInfoCount>
+    <FileDxpInfoCount>$(wPkgPath)\.dxp.info.count</FileDxpInfoCount>
+    <FileDxpWarnFlag>$(wPkgPath)\.dxp.warn.flag</FileDxpWarnFlag>
+  </PropertyGroup>
+  
+  <Target Name="DllExportPkg" BeforeTargets="PrepareForBuild">
+    
+    <ReadLinesFromFile File="$(FileDxpInfoCount)" Condition="Exists('$(FileDxpInfoCount)')">
+      <Output TaskParameter="Lines" PropertyName="DxpInfoCount"/>
+    </ReadLinesFromFile>
+
+    <WriteLinesToFile File="$(FileDxpWarnFlag)" Lines="" Condition="$(DxpInfoCount) &gt; 1" />
+    <WriteLinesToFile File="$(FileDxpInfoCount)" Lines="$([MSBuild]::Add($(DxpInfoCount), 1))" Overwrite="true" />
+    
+    <CallTarget Targets="DllExportWizard" Condition="'$(DllExportWizardExecuted)' != 'true' And !Exists('$(FileDxpWarnFlag)')" />
+    <Error Text="Please remove 'DllExport' nuget package to continue. Use custom installer via DllExport.bat - Details: https://github.com/3F/DllExport/issues/38" />
   </Target>
   
+  <!-- $(FileDxpInfoCount) is not correct for this section because it will be evaluated before `BeforeTargets` chain -->
+  <Import Project="$(WizardDxpTarget)" Condition="'$(DllExportWizardImported)' != 'true' And Exists('$(WizardDxpTarget)') And !Exists('$(FileDxpWarnFlag)')" />
+
 </Project>

@@ -507,7 +507,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build\", 400)]]\n\n#[var frontend = $(pWizard)\\\\installer.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVer)\")]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]",
+        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build\", 400)]]\n\n#[var frontend = $(pWizard)\\\\installer.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVer)\")]\n\n#[\" \n    .compressor\n\"]\n#[IO writeLine(STDOUT): Generate minified version of Wizard installer ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(SolutionDir)$(pWizard)/.compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /nologo /v:m /m:4 \", 400)]]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ)_full.bat\", true)]\n#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]\n#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]\n",
         "Command__": [
           "#[IO writeLine(STDOUT): Build GetNuTool ...]",
           "#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build\", 400)]]",
@@ -547,7 +547,18 @@
           "#[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]",
           "#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVer)\")]",
           "",
-          "#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]"
+          "#[\" ",
+          "    .compressor",
+          "\"]",
+          "#[IO writeLine(STDOUT): Generate minified version of Wizard installer ...]",
+          "#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(SolutionDir)$(pWizard)/.compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /nologo /v:m /m:4 \", 400)]]",
+          "",
+          "#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ)_full.bat\", true)]",
+          "#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]",
+          "#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]",
+          "",
+          "#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]",
+          ""
         ]
       }
     },

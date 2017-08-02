@@ -76,6 +76,12 @@
     <Compile Include="UI\InfoForm.Designer.cs">
       <DependentUpon>InfoForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="UI\MsgForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UI\MsgForm.Designer.cs">
+      <DependentUpon>MsgForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="UserConfig.cs" />
     <Compile Include="UI\ConfiguratorForm.cs">
       <SubType>Form</SubType>
@@ -95,6 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".compressor" />
     <None Include="key.snk" />
     <None Include="installer.bat" />
     <None Include="net.r_eg.DllExport.Wizard.targets">
@@ -122,6 +129,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\InfoForm.resx">
       <DependentUpon>InfoForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\MsgForm.resx">
+      <DependentUpon>MsgForm.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

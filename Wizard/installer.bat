@@ -3,7 +3,7 @@
 :: Copyright (c) 2016-2017  Denis Kuzmin [ entry.reg@gmail.com ] :: github.com/3F
 :: Distributed under the DllExport project:
 :: https://github.com/3F/DllExport
-:: -
+:: ---
 :: Based on hMSBuild logic and includes GetNuTool core.
 :: https://github.com/3F/hMSBuild
 :: https://github.com/3F/GetNuTool
@@ -16,20 +16,14 @@ setlocal enableDelayedExpansion
 set "dxpVersion=$-pkg-version-$"
 set "wAction="
 
+:: -
+
 set "dxpName=DllExport"
-set "tWizard=tools\\net.r_eg.DllExport.Wizard.targets"
+set "tWizard=tools/net.r_eg.DllExport.Wizard.targets"
 set "dxpPackages=packages"
 set "ngserver=https://www.nuget.org/api/v2/package/"
 set "buildInfoFile=build_info.txt"
 set "wRootPath=%cd%"
-
-:: -
-
-set "wSlnDir="
-set "wPkgPath="
-set "wMetaLib="
-set "wDxpTarget="
-set "wSlnFile="
 
 :: -
 

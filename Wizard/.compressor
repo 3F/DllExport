@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 
+    Copyright (c) 2016-2017  Denis Kuzmin [ entry.reg@gmail.com ]
+    
+    Distributed under the DllExport license
+    https://github.com/3F/DllExport
+    
+    Based on compressor from hMSBuild project (Minified version): 
+    https://github.com/3F/hMSBuild     
+-->
+
+<!--
+    [Minified version]
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+    <!-- Main settings -->
+    <PropertyGroup>
+        <core Condition="'$(core)' == ''">DllExport.bat</core>
+        <output Condition="'$(output)' == ''">DllExport_minified.bat</output>
+    </PropertyGroup>
+
+    <!-- Entry point -->
+    <Target Name="handler" BeforeTargets="Build">
+        <Compress core="$(core)" output="$(output)" />
+    </Target>
+    
+    <!-- Tasks settings -->
+    <PropertyGroup>
+        <TaskCoreDllPath Condition="Exists('$(MSBuildToolsPath)\Microsoft.Build.Tasks.v$(MSBuildToolsVersion).dll')">$(MSBuildToolsPath)\Microsoft.Build.Tasks.v$(MSBuildToolsVersion).dll</TaskCoreDllPath>
+        <TaskCoreDllPath Condition="'$(TaskCoreDllPath)' == '' and Exists('$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll')">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</TaskCoreDllPath>
+    </PropertyGroup>
+    
+    <!-- Prepares list for downloader below -->
+    <UsingTask
+        TaskName="Compress"
+        TaskFactory="CodeTaskFactory"
+        AssemblyFile="$(TaskCoreDllPath)">
+
+        <ParameterGroup>
+            <core ParameterType="System.String" Required="true" />
+            <output ParameterType="System.String" Required="true" />
+        </ParameterGroup>
+
+        <Task>
+            <Using Namespace="System" />
+            <Using Namespace="System.Collections.Generic" />
+            <Using Namespace="System.IO" />
+            <Using Namespace="System.Text.RegularExpressions" />
+            <Code Type="Fragment" Language="cs"><![CDATA[
+
+                Func<char[], int, Func<int, bool>, string[]> gencomb = (char[] _dict, int _size, Func<int, bool> _rule0) =>
+                {
+                    var combination = new char[_size];
+                    var set         = new List<string>((int)Math.Pow(_dict.Length, _size));
+
+                    int pos = 0;
+                    Action generator = null;
+                    generator = () =>
+                    {
+                        for(int i = 0, lim = _size - 1; i < _dict.Length; ++i)
+                        {
+                            if(pos == 0 && !_rule0(i)) {
+                                continue;
+                            }
+
+                            if(pos < lim) {
+                                combination[pos] = _dict[i];
+                                ++pos;
+                                generator();
+                                --pos;
+                            }
+                            else {
+                                combination[pos] = _dict[i];
+                                set.Add(new String(combination.ToArray()));
+                            }
+                        }
+                    };
+
+                    generator();
+                    return set.ToArray();
+                };
+
+                var cdict = new[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
+                                    'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
+                                    'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
+                                    '4', '5', '6', '7', '8', '9', '_' };
+
+                var vdict = gencomb(cdict, 2, (int i) => { return char.IsLetter(cdict[i]) || cdict[i] == '_'; });
+
+                // to skip processing for:
+                var exvar = new[] { "wSlnDir", "wPkgPath", "wMetaLib", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver" };
+
+                const string VNAME  = "[a-z_][a-z_0-9]+";
+                const string VERS   = "[Minified version]";
+                const string APP    = "DllExport";
+                using(StreamReader reader = new StreamReader(core, System.Text.Encoding.UTF8, true))
+                {
+                    var content = reader.ReadToEnd();
+
+                    /* Shorten variables & labels */
+
+                    var variables = new Dictionary<string, string>();
+                    uint uniqVars = 0;
+                    content = Regex.Replace
+                    (
+                        content,
+                        @"(?'def' 
+                            set\s+?
+                             (?:\/\S\s+?)?
+                             (?:""\s*?)?
+                          )
+                          (?'name'"+ VNAME + @")
+                          (?'lim'\s?\S?=)", // aq+=1,.. TODO: aq=aq+1 ; aq=1+aq ...
+                        (Match m) =>
+                        {
+                            var def     = m.Groups["def"].Value;
+                            var vname   = m.Groups["name"].Value;
+                            var lim     = m.Groups["lim"].Value;
+
+                            if(exvar.Contains(vname)) {
+                                return m.Groups[0].Value;
+                            }
+
+                            if(variables.ContainsKey(vname)) {
+                                return def + variables[vname] + lim;
+                            }
+
+                            if(uniqVars + 1 > vdict.Length) {
+                                throw new OverflowException("vdict does not contain data for new vars");
+                            }
+                            variables[vname] = vdict[uniqVars++];
+                            return def + variables[vname] + lim;
+                        },
+                        RegexOptions.IgnorePatternWhitespace | RegexOptions.IgnoreCase
+                    );
+
+                    // call :proc p1 p2 ...
+                    content = Regex.Replace
+                    (
+                        content,
+                        @"(?'def'call\s+:"+ VNAME + @"\s)(?'args'.+?)(?'eol'[\s&$])", 
+                        (Match m) =>
+                        {
+                            var def     = m.Groups["def"].Value;
+                            var cargs   = m.Groups["args"].Value;
+                            var eol     = m.Groups["eol"].Value;
+
+                            return def + Regex.Replace
+                            (
+                                cargs,
+                                @"(?'split'^|\s)(?'name'" + VNAME + ")",
+                                (Match _m) =>
+                                {
+                                    var split = _m.Groups["split"].Value;
+                                    var vname = _m.Groups["name"].Value;
+
+                                    if(variables.ContainsKey(vname)) {
+                                        return split + variables[vname];
+                                    }
+
+                                    if(uniqVars + 1 > vdict.Length) {
+                                        throw new OverflowException("vdict does not contain data for new vars");
+                                    }
+                                    variables[vname] = vdict[uniqVars++];
+                                    return split + variables[vname];
+                                },
+                                RegexOptions.IgnoreCase | RegexOptions.Multiline
+                            ) + eol;
+                        },
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline
+                    );
+
+                    // %name... & !name...
+                    content = Regex.Replace
+                    (
+                        content,
+                        @"(?'def'(?:[%!]|\sdefined\s+))(?'name'"+ VNAME + ")", 
+                        (Match m) =>
+                        {
+                            var def     = m.Groups["def"].Value;
+                            var vname   = m.Groups["name"].Value;
+
+                            if(!variables.ContainsKey(vname)) {
+                                return def + vname;
+                            }
+                            return def + variables[vname];
+                        },
+                        RegexOptions.IgnoreCase
+                    );
+                    
+                    // labels
+                    content = Regex.Replace
+                    (
+                        content,
+                        @"(?'def'call\s*:|^\s*:|goto\s*:?)(?'label'" + VNAME + @")(?'eol'\s|$)", 
+                        (Match m) =>
+                        {
+                            var def     = m.Groups["def"].Value;
+                            var label   = m.Groups["label"].Value;
+                            var eol     = m.Groups["eol"].Value;
+
+                            if(variables.ContainsKey(label)) {
+                                return def + variables[label] + eol;
+                            }
+
+                            if(uniqVars + 1 > vdict.Length) {
+                                throw new OverflowException("vdict does not contain data for new labels");
+                            }
+                            variables[label] = vdict[uniqVars++];
+                            return def + variables[label] + eol;
+                        },
+                        RegexOptions.IgnoreCase | RegexOptions.Multiline
+                    );
+
+                    /* A common rules */
+
+                    content = Regex.Replace(content, @"(\r\n){2,}", "$1");
+                    content = Regex.Replace(content, @"(\r\n)\s*", "$1");
+                    //content = Regex.Replace(content, @"(?:rem|::)\s.*[\r\n]*", "");
+
+                    content = Regex.Replace(content, @"(^\s*?(?:rem|::)\s)(?'data'.*)([\r\n]*)", (Match m) =>
+                    {
+                        var data = m.Groups["data"].Value.TrimStart();
+                        if(!data.StartsWith("Copyright") 
+                            && !data.StartsWith("GetNuTool") 
+                            && !data.StartsWith("DllExport") 
+                            && !data.StartsWith("http")
+                            && !data.StartsWith("Based ")
+                            && !data.StartsWith("---"))
+                        {
+                            return String.Empty;
+                        }
+
+                        if(data.Contains("/issues")) {
+                            return String.Empty;
+                        }
+
+                        return m.Groups[0].Value;
+                    }, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    
+                    //content = content.Replace(" " + APP + " - ", String.Format(" {0} {1} - ", APP, VERS));
+
+                    using(TextWriter writer = new StreamWriter(output, false, new UTF8Encoding(false))) {
+                        writer.Write(content);
+                    }
+                    Console.WriteLine("{0} version of `{1}` has been created -> `{2}`", VERS, core, output);
+                }
+
+            ]]></Code>
+        </Task>
+    </UsingTask>
+
+    <!-- remap targets -->
+
+    <Target Name="Build" DependsOnTargets="handler" />
+
+</Project>

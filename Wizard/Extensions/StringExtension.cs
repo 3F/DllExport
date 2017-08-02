@@ -101,6 +101,26 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         }
 
         /// <summary>
+        /// To add postfix to filename.
+        /// </summary>
+        /// <param name="fname">Filename or path to file with extension or without.</param>
+        /// <param name="postfix"></param>
+        /// <returns></returns>
+        public static string AddFileNamePostfix(this string fname, string postfix)
+        {
+            if(String.IsNullOrWhiteSpace(fname) || String.IsNullOrWhiteSpace(postfix)) {
+                return fname;
+            }
+
+            int idx = fname.LastIndexOf('.');
+            if(idx == -1) {
+                return fname + postfix;
+            }
+
+            return fname.Insert(idx, postfix);
+        }
+
+        /// <summary>
         /// To open value from double quotes.
         /// </summary>
         /// <param name="value"></param>
