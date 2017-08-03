@@ -32,7 +32,7 @@ namespace net.r_eg.DllExport.Wizard
     //TODO:
     internal sealed class CfgBatWrapper
     {
-        private const string DXP_INSTALLER = "DllExport.bat";
+        internal const string DXP_INSTALLER = "DllExport.bat";
 
         private IWizardConfig config;
         private ISender log;

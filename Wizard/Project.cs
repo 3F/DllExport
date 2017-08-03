@@ -45,6 +45,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_TARGET = "net.r_eg.DllExport.targets";
 
         /// <summary>
+        /// The name of target to restore package.
+        /// </summary>
+        protected const string DXP_TARGET_PKG_R = "DllExportRestorePkg";
+
+        /// <summary>
         /// Access to found project.
         /// </summary>
         public IXProject XProject
@@ -311,6 +316,30 @@ namespace net.r_eg.DllExport.Wizard
             var lib = MetaLib;
             Log.send(this, $"Add meta library: '{lib}'", Message.Level.Info);
             XProject.AddReference(lib, false);
+
+            AddRestoreDxp(
+                DXP_TARGET_PKG_R, 
+                $"'$(DllExportModImported)' != 'true' Or !Exists('{dxpTarget}')",
+                CfgBatWrapper.DXP_INSTALLER
+            );
+        }
+
+        protected void AddRestoreDxp(string name, string condition, string installer)
+        {
+            Log.send(this, $"Add '{name}' target", Message.Level.Info);
+
+            var target = XProject.Project.Xml.AddTarget(name);
+            target.BeforeTargets = "PrepareForBuild";
+
+            var ifInstaller = $"Exists('$(SolutionDir){installer}')";
+
+            var taskMsg = target.AddTask("Warning");
+            taskMsg.Condition = $"!{ifInstaller}";
+            taskMsg.SetParameter("Text", "We can't find 'DllExport.bat' in '$(SolutionDir)' - https://github.com/3F/DllExport");
+
+            var taskExec = target.AddTask("Exec");
+            taskExec.Condition = $"({condition}) And {ifInstaller}";
+            taskExec.SetParameter("Command", $"cd \"$(SolutionDir)\" & {installer} -action Restore");
         }
 
         protected void RemoveDllExportLib()
@@ -318,16 +347,19 @@ namespace net.r_eg.DllExport.Wizard
             foreach(var refer in XProject.GetReferences().ToArray())
             {
                 if(CmpPublicKeyTokens(METALIB_PK_TOKEN, refer.Assembly.PublicKeyToken)) {
-                    Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'", Message.Level.Debug);
+                    Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
                     XProject.RemoveItem(refer); // immediately modifies collection from XProject.GetReferences
                 }
             }
 
-            Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'", Message.Level.Debug);
+            Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(DXP_TARGET, null))) { }
 
-            Log.send(this, $"Try to remove old Import elements via pk:'{METALIB_PK_TOKEN}'", Message.Level.Debug);
+            Log.send(this, $"Trying to remove old Import elements via pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(null, METALIB_PK_TOKEN))) { }
+
+            Log.send(this, $"Trying to remove old restore-target: '{DXP_TARGET_PKG_R}'", Message.Level.Info);
+            while(RemoveXmlTarget(DXP_TARGET_PKG_R)) { }
 
             if(String.IsNullOrWhiteSpace(Config.Wizard.DxpTarget)) {
                 return;
@@ -336,9 +368,23 @@ namespace net.r_eg.DllExport.Wizard
             var dxpTarget = Path.GetFileName(Config.Wizard.DxpTarget);
             if(DXP_TARGET.Equals(dxpTarget, StringComparison.InvariantCultureIgnoreCase))
             {
-                Log.send(this, $"Find and remove '{dxpTarget}' as an old .target file of the DllExport.", Message.Level.Debug);
+                Log.send(this, $"Find and remove '{dxpTarget}' as an old .target file of the DllExport.", Message.Level.Info);
                 while(XProject.RemoveImport(XProject.GetImport(dxpTarget, null))) { }
             }
+        }
+
+        protected bool RemoveXmlTarget(string name)
+        {
+            if(String.IsNullOrWhiteSpace(name)) {
+                return false;
+            }
+
+            var target = XProject.Project.Xml.Targets.Where(t => t.Name == name).FirstOrDefault();
+            if(target != null) {
+                XProject.Project.Xml.RemoveChild(target);
+                return true;
+            }
+            return false;
         }
 
         protected void RemoveProperties(params string[] names)

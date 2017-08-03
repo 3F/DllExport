@@ -2,24 +2,11 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
-    <NuPkgRootPath>$(MSBuildThisFileDirectory)..\</NuPkgRootPath>
-    <WizardDxpTarget>$(NuPkgRootPath)tools\net.r_eg.DllExport.Wizard.targets</WizardDxpTarget>
-  </PropertyGroup>
-
-  <PropertyGroup Label="Wizardcfg">
-    <wAction>Restore</wAction>
-    <wSlnFile Condition="'$(wSlnFile)' == ''">$(SolutionPath)</wSlnFile>
-    <wRootPath Condition="'$(wRootPath)' == ''">$(SolutionDir)</wRootPath>
-    <wPkgPath Condition="'$(wPkgPath)' == ''">$(NuPkgRootPath)</wPkgPath>
+    <DllExportModImported>true</DllExportModImported>
   </PropertyGroup>
   
-  <Import Project="$(WizardDxpTarget)" Condition="'$(DllExportWizardImported)' != 'true' And Exists('$(WizardDxpTarget)')" />
-  <Target Name="DllExportLib" BeforeTargets="PrepareForBuild">
-    <CallTarget Targets="DllExportWizard" Condition="'$(DllExportWizardExecuted)' != 'true'" />
-  </Target>
-
   <PropertyGroup>
-    <DllExportRootPkg Condition="'$(DllExportRootPkg)' == ''">$(NuPkgRootPath)</DllExportRootPkg>
+    <DllExportRootPkg Condition="'$(DllExportRootPkg)' == ''">$(MSBuildThisFileDirectory)..\</DllExportRootPkg>
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(VsInstallRoot)\</DllExportVSRoot>
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(DevEnvDir)\..\..\</DllExportVSRoot>
     <DllExportVSBin Condition="'$(DllExportVSBin)' == ''">$(DllExportVSRoot)Common7\IDE\</DllExportVSBin>
@@ -85,7 +72,10 @@
           OurILAsmPath="$(DllExportOurILAsmPath)"
           MetaLib="$(DllExportMetaLibFullPath)"
          />
-  
+    
+    <PropertyGroup>
+      <DllExportModExecuted>true</DllExportModExecuted>
+    </PropertyGroup>
   </Target>
   <UsingTask TaskName="RGiesecke.DllExport.MSBuild.DllExportAppDomainIsolatedTask" AssemblyFile="RGiesecke.DllExport.MSBuild.dll" />
   
