@@ -21,12 +21,12 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' or '$(Configuration)|$(Platform)' == 'PublicRelease|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>$(DefConstDynamic)</DefineConstants>
+    <DefineConstants Condition=" '$(Configuration)' == 'PublicRelease' ">$(DefineConstants);PUBLIC_RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
@@ -68,6 +68,11 @@
     <Compile Include="IProject.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="IUserConfig.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="UI\Controls\ProjectItemsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -122,6 +127,10 @@
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="UI\ConfiguratorForm.resx">
       <DependentUpon>ConfiguratorForm.cs</DependentUpon>
       <SubType>Designer</SubType>

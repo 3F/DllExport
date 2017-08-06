@@ -139,36 +139,22 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public bool Configure(ActionType type)
         {
-            if(type == ActionType.Restore)
-            {
-                if(Installed) {
-                    CfgDDNS();
+            switch(type) {
+                case ActionType.Restore: {
+                    ActionRestore();
+                    break;
                 }
-                return true;
+                case ActionType.Update: {
+                    ActionUpdate();
+                    break;
+                }
+                case ActionType.Configure: {
+                    ActionConfigure();
+                    break;
+                }
             }
 
-            if(type == ActionType.Configure || type == ActionType.Update)
-            {
-                Reset();
-                XProject.Reevaluate();
-
-                if(Config.Install)
-                {
-                    CfgNamespace();
-                    CfgPlatform();
-                    CfgCompiler();
-
-                    AddDllExportLib();
-
-                    XProject.SetProperties(ConfigProperties);
-                    XProject.Reevaluate();
-                }
-
-                Save();
-                return true;
-            }
-
-            return false;
+            return true;
         }
 
         /// <param name="xproject"></param>
@@ -189,6 +175,49 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_OUR_ILASM,
                 MSBuildProperties.PRJ_PLATFORM
             );
+        }
+
+        protected void ActionRestore()
+        {
+            if(Installed) {
+                CfgDDNS();
+            }
+        }
+
+        protected void ActionUpdate()
+        {
+            Reset(false);
+            XProject.Reevaluate();
+
+            if(Installed)
+            {
+                CfgDDNS();
+
+                AddDllExportLib();
+                XProject.Reevaluate();
+            }
+
+            Save();
+        }
+
+        protected void ActionConfigure()
+        {
+            Reset(true);
+            XProject.Reevaluate();
+
+            if(Config.Install)
+            {
+                CfgNamespace();
+                CfgPlatform();
+                CfgCompiler();
+
+                AddDllExportLib();
+
+                XProject.SetProperties(ConfigProperties);
+                XProject.Reevaluate();
+            }
+
+            Save();
         }
 
         protected IUserConfig GetUserConfig(IXProject project, IConfigInitializer cfg)
@@ -282,10 +311,12 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
         }
 
-        protected void Reset()
+        protected void Reset(bool properties)
         {
-            RemoveProperties(ConfigProperties.Keys.ToArray());
-            ConfigProperties.Clear();
+            if(properties) {
+                RemoveProperties(ConfigProperties.Keys.ToArray());
+                ConfigProperties.Clear();
+            }
 
             RemoveDllExportLib();
         }

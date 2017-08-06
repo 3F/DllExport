@@ -29,6 +29,7 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.btnInfo = new System.Windows.Forms.Button();
             this.btnBug = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
@@ -40,6 +41,7 @@
             // panelTop
             // 
             this.panelTop.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelTop.Controls.Add(this.btnInfo);
             this.panelTop.Controls.Add(this.btnBug);
             this.panelTop.Controls.Add(this.btnApply);
             this.panelTop.Controls.Add(this.comboBoxSln);
@@ -48,6 +50,20 @@
             this.panelTop.Name = "panelTop";
             this.panelTop.Size = new System.Drawing.Size(469, 30);
             this.panelTop.TabIndex = 0;
+            // 
+            // btnInfo
+            // 
+            this.btnInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnInfo.Location = new System.Drawing.Point(425, 1);
+            this.btnInfo.Margin = new System.Windows.Forms.Padding(0);
+            this.btnInfo.Name = "btnInfo";
+            this.btnInfo.Size = new System.Drawing.Size(18, 23);
+            this.btnInfo.TabIndex = 3;
+            this.btnInfo.Text = "!";
+            this.toolTipMain.SetToolTip(this.btnInfo, "Information");
+            this.btnInfo.UseVisualStyleBackColor = true;
+            this.btnInfo.Click += new System.EventHandler(this.btnInfo_Click);
             // 
             // btnBug
             // 
@@ -66,9 +82,9 @@
             // btnApply
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApply.Location = new System.Drawing.Point(387, 1);
+            this.btnApply.Location = new System.Drawing.Point(373, 1);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(54, 23);
+            this.btnApply.Size = new System.Drawing.Size(50, 23);
             this.btnApply.TabIndex = 1;
             this.btnApply.Text = "Apply";
             this.btnApply.UseVisualStyleBackColor = true;
@@ -79,10 +95,11 @@
             this.comboBoxSln.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSln.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxSln.DropDownWidth = 450;
             this.comboBoxSln.FormattingEnabled = true;
             this.comboBoxSln.Location = new System.Drawing.Point(3, 3);
             this.comboBoxSln.Name = "comboBoxSln";
-            this.comboBoxSln.Size = new System.Drawing.Size(378, 21);
+            this.comboBoxSln.Size = new System.Drawing.Size(367, 21);
             this.comboBoxSln.TabIndex = 0;
             this.comboBoxSln.SelectedIndexChanged += new System.EventHandler(this.comboBoxSln_SelectedIndexChanged);
             // 
@@ -127,5 +144,6 @@
         private Controls.ProjectItemsControl projectItems;
         private System.Windows.Forms.Button btnBug;
         private System.Windows.Forms.ToolTip toolTipMain;
+        private System.Windows.Forms.Button btnInfo;
     }
 }

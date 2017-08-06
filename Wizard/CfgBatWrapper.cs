@@ -77,7 +77,7 @@ namespace net.r_eg.DllExport.Wizard
             {
                 File.WriteAllText(
                     dest.AddFileNamePostfix("_Configure"),
-                    "DllExport -action Configure"
+                    "DllExport -action Configure %*"
                 );
             }
         }

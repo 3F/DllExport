@@ -12,6 +12,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
 	ProjectSection(SolutionItems) = preProject
 		.gitmodules = .gitmodules
+		.release.version = .release.version
 		.version = .version
 		3rd-party.txt = 3rd-party.txt
 		changelog.txt = changelog.txt
@@ -95,8 +96,8 @@ Global
 		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D10CF407-4483-4657-9FEA-BDB467391F3A}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
-		{D10CF407-4483-4657-9FEA-BDB467391F3A}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{D10CF407-4483-4657-9FEA-BDB467391F3A}.PublicRelease|Any CPU.ActiveCfg = PublicRelease|Any CPU
+		{D10CF407-4483-4657-9FEA-BDB467391F3A}.PublicRelease|Any CPU.Build.0 = PublicRelease|Any CPU
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

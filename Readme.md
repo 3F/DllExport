@@ -55,6 +55,10 @@ Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature),
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
 
+New Wizard and our lightweight manager [[?](https://github.com/3F/DllExport/issues/38)]:
+
+[![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=okPThdWDZMM)
+
 ----
 
 
@@ -73,7 +77,7 @@ It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/mast
 
 ### How it works
 
-Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive.
+Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive ([it's specific directive for ILAsm compiler only](https://github.com/3F/DllExport/issues/45#issuecomment-317802099)).
 
 **What inside ? or how works the .export directive ?**
 
@@ -108,16 +112,44 @@ HRESULT Assembler::CreateExportDirectory()
     ~ now we're ready to miracles ~
 ```
 
-or read my short explanations from here: [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [DllExport.dll](https://github.com/3F/DllExport/issues/28#issuecomment-281957212); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
+Read also my explanations from here: [about mscoree](https://github.com/3F/DllExport/issues/45#issuecomment-317802099); [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [DllExport.dll](https://github.com/3F/DllExport/issues/28#issuecomment-281957212); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
 
 ### How to get DllExport
 
-Available variants:
+Attention please: **v1.6+** does not support standard NuGet clients anymore [[?](https://github.com/3F/DllExport/issues/38)] But you can still easily get our package and flexibly configure what you need ([Sample](https://www.youtube.com/watch?v=okPThdWDZMM)):
 
-* NuGet PM: `Install-Package DllExport`
-* [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [gnt](https://github.com/3F/GetNuTool/releases/download/v1.6/gnt.bat) /p:ngpackages="DllExport"
-* NuGet Commandline: `nuget install DllExport`
-* [/releases](https://github.com/3F/DllExport/releases) ( [latest](https://github.com/3F/DllExport/releases/latest) )
+Firstly, get our [DllExport.bat](#) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
+
+* To install/uninstall or to reconfigure your project:
+
+```
+DllExport -action Configure
+```
+
+* To upgrade already used version:
+
+```
+DllExport -action Update
+```
+
+* To manually restore package (It should be automatically restored by any Build operation of your configured projects or when you open Visual Studio. But if you need, use this):
+```
+DllExport -action Restore
+```
+
+* All available features:
+
+```
+DllExport -h
+```
+
+Other variants:
+
+* `gnt /p:ngpackages="DllExport"` [[?](https://github.com/3F/GetNuTool)]
+    * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [gnt](https://github.com/3F/GetNuTool/releases/download/v1.6/gnt.bat) /p:ngpackages="DllExport"
+* (deprecated) NuGet PM: `Install-Package DllExport`
+* (deprecated) NuGet Commandline: `nuget install DllExport`
+* [/releases](https://github.com/3F/DllExport/releases) [ [latest](https://github.com/3F/DllExport/releases/latest) ]
 * [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
 
 ### How to Build
@@ -184,9 +216,13 @@ build_coreclr_x86_x64.cmd
 * [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
 * Look also [here](https://github.com/3F/coreclr/issues/1)
 
--------------
 
-**Support ?**
+### Donation
 
-[just a note again...](https://plus.google.com/101239554716569212042/posts/6yP64gDyum1)
-*I mentioned earlier that DllExport is not priority for me (current impl.) "- I will do something from current tasks, but guys, please support it with me" and... why so many support from me o_o*
+Please note again, the initial [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit its page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
+
+But this repository does not related with Robert and generally maintained by [github.com/3F](https://github.com/3F) developer (Follow: [[G+](https://plus.google.com/+DenisKuzmin3F)]; [[GitHub](https://github.com/3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
+
+
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=entry%2ereg%40gmail%2ecom&lc=US&item_name=3F%2dOpenSource%20%5b%20github%2ecom%2f3F&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted) ( github.com/3F )
+

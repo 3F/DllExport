@@ -51,5 +51,10 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             "https://github.com/3F/DllExport".OpenUrl(); // TODO:
         }
+
+        private void picVideo_Click(object sender, System.EventArgs e)
+        {
+            "https://www.youtube.com/watch?v=okPThdWDZMM".OpenUrl();
+        }
     }
 }

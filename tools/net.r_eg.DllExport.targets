@@ -11,7 +11,7 @@
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(DevEnvDir)\..\..\</DllExportVSRoot>
     <DllExportVSBin Condition="'$(DllExportVSBin)' == ''">$(DllExportVSRoot)Common7\IDE\</DllExportVSBin>
 
-    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">lib\net20\</DllExportLibPath>
+    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\$(ProjectGuid)\</DllExportLibPath>
     <DllExportToolsPath Condition="'$(DllExportToolsPath)' == ''">tools\</DllExportToolsPath>
     
     <DllExportNamespace Condition="'$(DllExportNamespace)' == ''">System.Runtime.InteropServices</DllExportNamespace>

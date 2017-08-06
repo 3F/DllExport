@@ -24,6 +24,9 @@
 
 using System;
 using System.Drawing;
+using System.IO;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
@@ -51,7 +54,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 #if PUBLIC_RELEASE
             Text += " - v" + WizardVersion.S_INFO;
 #else
-            Text += " - v" + WizardVersion.S_NUM;
+            Text += $" - Based on v{WizardVersion.S_NUM} {WizardVersion.S_REL} [{WizardVersion.BRANCH_SHA1}]";
 #endif
 #if DEBUG
             Text += " [ Debug ]";
@@ -202,6 +205,40 @@ namespace net.r_eg.DllExport.Wizard.UI
         private void projectItems_RenderedItemsSizeChanged(object sender, EventArgs e)
         {
             ResizeHeight();
+        }
+
+        private void btnInfo_Click(object sender, EventArgs e)
+        {
+            var sb = new StringBuilder();
+
+#if !PUBLIC_RELEASE
+            sb.Append($"The base: ");
+#endif
+            sb.Append($"{WizardVersion.S_NUM_REV} {WizardVersion.S_REL} [{WizardVersion.BRANCH_SHA1}]");
+#if DEBUG
+            sb.Append("[ Debug ] ");
+#else
+            sb.Append("[ Release ] ");
+#endif
+            sb.AppendLine();
+            sb.AppendLine();
+
+            sb.Append("https://github.com/3F/DllExport");
+            sb.AppendLine();
+
+            var info = Path.Combine(exec.Config.PkgPath, "build_info.txt");
+            if(!File.Exists(info)) {
+                sb.Append("Detailed information about build was not found. :(");
+            }
+            else {
+                File.ReadAllLines(info).ForEach(s => 
+                {
+                    sb.Append(Regex.Replace(s, @":(\s\s*)(?!generated)", (Match m) => $": {m.Groups[1].Value.Replace(' ', '_')} "));
+                    sb.AppendLine();
+                });
+            }
+
+            MessageBox.Show(sb.ToString(), ".NET DllExport");
         }
     }
 }

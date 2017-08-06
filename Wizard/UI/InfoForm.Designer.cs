@@ -34,13 +34,15 @@
             this.labelDllExportBatch = new System.Windows.Forms.Label();
             this.panelInfo = new System.Windows.Forms.Panel();
             this.textBoxInfo = new System.Windows.Forms.TextBox();
+            this.picVideo = new System.Windows.Forms.PictureBox();
             this.panelInfo.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picVideo)).BeginInit();
             this.SuspendLayout();
             // 
             // linkWhy
             // 
             this.linkWhy.AutoSize = true;
-            this.linkWhy.Location = new System.Drawing.Point(12, 140);
+            this.linkWhy.Location = new System.Drawing.Point(12, 156);
             this.linkWhy.Name = "linkWhy";
             this.linkWhy.Size = new System.Drawing.Size(62, 13);
             this.linkWhy.TabIndex = 1;
@@ -51,7 +53,7 @@
             // linkLocalDxp
             // 
             this.linkLocalDxp.AutoSize = true;
-            this.linkLocalDxp.Location = new System.Drawing.Point(41, 184);
+            this.linkLocalDxp.Location = new System.Drawing.Point(41, 200);
             this.linkLocalDxp.Name = "linkLocalDxp";
             this.linkLocalDxp.Size = new System.Drawing.Size(157, 13);
             this.linkLocalDxp.TabIndex = 2;
@@ -62,7 +64,7 @@
             // linkRemoteDxp
             // 
             this.linkRemoteDxp.AutoSize = true;
-            this.linkRemoteDxp.Location = new System.Drawing.Point(41, 208);
+            this.linkRemoteDxp.Location = new System.Drawing.Point(41, 224);
             this.linkRemoteDxp.Name = "linkRemoteDxp";
             this.linkRemoteDxp.Size = new System.Drawing.Size(164, 13);
             this.linkRemoteDxp.TabIndex = 3;
@@ -73,11 +75,11 @@
             // labelDllExportBatch
             // 
             this.labelDllExportBatch.AutoSize = true;
-            this.labelDllExportBatch.Location = new System.Drawing.Point(12, 162);
+            this.labelDllExportBatch.Location = new System.Drawing.Point(12, 178);
             this.labelDllExportBatch.Name = "labelDllExportBatch";
             this.labelDllExportBatch.Size = new System.Drawing.Size(175, 13);
             this.labelDllExportBatch.TabIndex = 4;
-            this.labelDllExportBatch.Text = "DllExport.bat ( batch script ~20 Kb )";
+            this.labelDllExportBatch.Text = "DllExport.bat ( batch script ~18 Kb )";
             // 
             // panelInfo
             // 
@@ -102,11 +104,26 @@
             this.textBoxInfo.TabIndex = 1;
             this.textBoxInfo.Text = resources.GetString("textBoxInfo.Text");
             // 
+            // picVideo
+            // 
+            this.picVideo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.picVideo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.picVideo.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.picVideo.Image = ((System.Drawing.Image)(resources.GetObject("picVideo.Image")));
+            this.picVideo.Location = new System.Drawing.Point(223, 138);
+            this.picVideo.Name = "picVideo";
+            this.picVideo.Size = new System.Drawing.Size(228, 129);
+            this.picVideo.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picVideo.TabIndex = 6;
+            this.picVideo.TabStop = false;
+            this.picVideo.Click += new System.EventHandler(this.picVideo_Click);
+            // 
             // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(453, 234);
+            this.ClientSize = new System.Drawing.Size(453, 268);
+            this.Controls.Add(this.picVideo);
             this.Controls.Add(this.panelInfo);
             this.Controls.Add(this.labelDllExportBatch);
             this.Controls.Add(this.linkRemoteDxp);
@@ -122,6 +139,7 @@
             this.TopMost = true;
             this.panelInfo.ResumeLayout(false);
             this.panelInfo.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picVideo)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -134,5 +152,6 @@
         private System.Windows.Forms.Label labelDllExportBatch;
         private System.Windows.Forms.Panel panelInfo;
         private System.Windows.Forms.TextBox textBoxInfo;
+        private System.Windows.Forms.PictureBox picVideo;
     }
 }
