@@ -198,7 +198,8 @@ namespace RGiesecke.DllExport.Parsing
                         $"/C \"\"{InputValues.VsDevCmd}\" -no_logo -arch={(cpu == CpuPlatform.X64 ? "amd64" : "x86")} && lib.exe {cfg}\""
                     );
 
-                    if(code != -1) {
+                    Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"lib tool via VsDevCmd: {code}");
+                    if(code == 0) {
                         return code;
                     }
                 }
@@ -207,7 +208,9 @@ namespace RGiesecke.DllExport.Parsing
                 {
                     string reqPath = (String.IsNullOrEmpty(InputValues.LibToolDllPath) || !Directory.Exists(InputValues.LibToolDllPath)) ? null : InputValues.LibToolDllPath;
                     int code = RunLibToolCore("Lib.exe", cfg, InputValues.LibToolPath, reqPath);
-                    if(code != -1) {
+
+                    Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"lib tool via LibToolPath: {code}");
+                    if(code == 0) {
                         return code;
                     }
                 }
@@ -219,12 +222,14 @@ namespace RGiesecke.DllExport.Parsing
                         $"/C \"\"{InputValues.VcVarsAll}\" {(cpu == CpuPlatform.X64 ? "x64" : "x86")} && lib.exe {cfg}\""
                     );
 
-                    if(code != -1) {
+                    Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"lib tool via VcVarsAll: {code}");
+                    if(code == 0) {
                         return code;
                     }
                 }
 
                 int ret = RunLibToolCore("lib.exe", cfg, String.Empty, InputValues.LibToolDllPath);
+                Notifier.Notify(0, DllExportLogginCodes.LibToolLooging, $"lib tool via LibToolDllPath: {ret}");
                 if(ret != -1) {
                     return ret;
                 }

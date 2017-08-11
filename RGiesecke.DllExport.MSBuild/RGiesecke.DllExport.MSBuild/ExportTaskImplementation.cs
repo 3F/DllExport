@@ -906,7 +906,7 @@ namespace RGiesecke.DllExport.MSBuild
                 }
                 else
                 {
-                    this._ActualTask.Log.LogMessage(MessageImportance.Normal, Resources.Cannot_find_lib_exe_in_0_, (object)this.LibToolPath);
+                    this._ActualTask.Log.LogMessage(MessageImportance.Low, Resources.Cannot_find_lib_exe_in_0_, (object)this.LibToolPath);
                     this.LibToolPath = (string)null;
                     return false;
                 }
