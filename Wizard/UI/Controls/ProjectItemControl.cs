@@ -48,10 +48,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
         }
 
-        public string ProjectGuid
+        public string Identifier
         {
-            get => textBoxProjectGuid.Text;
-            set => textBoxProjectGuid.Text = value;
+            get => textBoxIdent.Text;
+            set => textBoxIdent.Text = value;
         }
 
         /// <summary>

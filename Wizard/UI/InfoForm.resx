@@ -122,11 +122,9 @@
  .NET DllExport v1.6+ does not support standard NuGet clients anymore.
  https://github.com/3F/DllExport/issues/38
 
- You should use our [ DllExport.bat ] instead. 
+ Please use our lightweight manager via [ DllExport.bat ].
 
- We already placed it into root solution directory, so you can simply use it as you need.
-
-  * [[[ Please remove this package before processing. ]]]</value>
+ Find it in root solution directory of this project, or receive latest version from other place.</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="picVideo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

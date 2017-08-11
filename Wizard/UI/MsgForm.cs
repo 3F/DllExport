@@ -43,6 +43,8 @@ namespace net.r_eg.DllExport.Wizard.UI
         public MsgForm()
         {
             InitializeComponent();
+
+            Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
         }
 
         private void menuSelectAll_Click(object sender, EventArgs e)

@@ -70,6 +70,8 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             RenderSlnFiles();
             comboBoxSln.SelectedIndex = 0;
+
+            Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
         }
 
         private void OpenUrl(string url)

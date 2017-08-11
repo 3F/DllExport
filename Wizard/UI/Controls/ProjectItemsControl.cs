@@ -110,7 +110,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             var control = new ProjectItemControl(project) {
                 Order = items.Count
             };
-            control.Top = control.Height * items.Count;
+            control.Top = MaxItemsHeight;
 
             control.SizeChanged += ControlSizeChanged;
             ConfigureControl(control, project);
@@ -148,7 +148,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             control.Installed       = project.Installed;
             control.ProjectPath     = project.ProjectPath;
-            control.ProjectGuid     = project.ProjectGuid;
+            control.Identifier      = project.DxpIdent;
             control.UseCecil        = project.Config.UseCecil;
             control.Platform        = project.Config.Platform;
             control.Compiler        = project.Config.Compiler;

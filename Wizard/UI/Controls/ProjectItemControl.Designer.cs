@@ -49,7 +49,7 @@
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.gbProject = new System.Windows.Forms.GroupBox();
             this.btnBrowse = new System.Windows.Forms.Button();
-            this.textBoxProjectGuid = new System.Windows.Forms.TextBox();
+            this.textBoxIdent = new System.Windows.Forms.TextBox();
             this.chkInstalled = new System.Windows.Forms.CheckBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panelStatus = new System.Windows.Forms.Panel();
@@ -238,7 +238,6 @@
             this.comboNS.Name = "comboNS";
             this.comboNS.Size = new System.Drawing.Size(419, 21);
             this.comboNS.TabIndex = 1;
-            this.toolTip.SetToolTip(this.comboNS, "It will override prev. if exists");
             this.comboNS.TextUpdate += new System.EventHandler(this.comboNS_TextUpdate);
             // 
             // linkDDNS
@@ -268,7 +267,7 @@
             // gbProject
             // 
             this.gbProject.Controls.Add(this.btnBrowse);
-            this.gbProject.Controls.Add(this.textBoxProjectGuid);
+            this.gbProject.Controls.Add(this.textBoxIdent);
             this.gbProject.Controls.Add(this.chkInstalled);
             this.gbProject.Location = new System.Drawing.Point(6, 0);
             this.gbProject.Name = "gbProject";
@@ -290,13 +289,13 @@
             // 
             // textBoxProjectGuid
             // 
-            this.textBoxProjectGuid.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBoxProjectGuid.Location = new System.Drawing.Point(126, 20);
-            this.textBoxProjectGuid.Name = "textBoxProjectGuid";
-            this.textBoxProjectGuid.ReadOnly = true;
-            this.textBoxProjectGuid.Size = new System.Drawing.Size(268, 13);
-            this.textBoxProjectGuid.TabIndex = 2;
-            this.textBoxProjectGuid.Text = "{00000000-0000-0000-0000-000000000000}";
+            this.textBoxIdent.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBoxIdent.Location = new System.Drawing.Point(126, 20);
+            this.textBoxIdent.Name = "textBoxProjectGuid";
+            this.textBoxIdent.ReadOnly = true;
+            this.textBoxIdent.Size = new System.Drawing.Size(268, 13);
+            this.textBoxIdent.TabIndex = 2;
+            this.textBoxIdent.Text = "{00000000-0000-0000-0000-000000000000}";
             // 
             // chkInstalled
             // 
@@ -377,7 +376,7 @@
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.CheckBox chkInstalled;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.TextBox textBoxProjectGuid;
+        private System.Windows.Forms.TextBox textBoxIdent;
         private System.Windows.Forms.Panel panelStatus;
     }
 }

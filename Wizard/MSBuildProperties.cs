@@ -26,6 +26,8 @@ namespace net.r_eg.DllExport.Wizard
 {
     public struct MSBuildProperties
     {
+        public const string DXP_ID = "DllExportIdent";
+
         /// <summary>
         /// https://github.com/3F/DllExport/issues/2
         /// </summary>

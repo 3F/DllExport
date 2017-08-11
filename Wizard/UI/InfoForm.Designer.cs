@@ -35,8 +35,11 @@
             this.panelInfo = new System.Windows.Forms.Panel();
             this.textBoxInfo = new System.Windows.Forms.TextBox();
             this.picVideo = new System.Windows.Forms.PictureBox();
+            this.panelWarn = new System.Windows.Forms.Panel();
+            this.labelWarn = new System.Windows.Forms.Label();
             this.panelInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picVideo)).BeginInit();
+            this.panelWarn.SuspendLayout();
             this.SuspendLayout();
             // 
             // linkWhy
@@ -85,10 +88,10 @@
             // 
             this.panelInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(195)))), ((int)(((byte)(101)))));
             this.panelInfo.Controls.Add(this.textBoxInfo);
-            this.panelInfo.Location = new System.Drawing.Point(2, 2);
+            this.panelInfo.Location = new System.Drawing.Point(2, 24);
             this.panelInfo.Name = "panelInfo";
             this.panelInfo.Padding = new System.Windows.Forms.Padding(1);
-            this.panelInfo.Size = new System.Drawing.Size(449, 135);
+            this.panelInfo.Size = new System.Drawing.Size(449, 113);
             this.panelInfo.TabIndex = 5;
             // 
             // textBoxInfo
@@ -100,7 +103,7 @@
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
             this.textBoxInfo.ReadOnly = true;
-            this.textBoxInfo.Size = new System.Drawing.Size(447, 133);
+            this.textBoxInfo.Size = new System.Drawing.Size(447, 111);
             this.textBoxInfo.TabIndex = 1;
             this.textBoxInfo.Text = resources.GetString("textBoxInfo.Text");
             // 
@@ -118,11 +121,35 @@
             this.picVideo.TabStop = false;
             this.picVideo.Click += new System.EventHandler(this.picVideo_Click);
             // 
+            // panelWarn
+            // 
+            this.panelWarn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(9)))), ((int)(((byte)(9)))));
+            this.panelWarn.Controls.Add(this.labelWarn);
+            this.panelWarn.Location = new System.Drawing.Point(2, 3);
+            this.panelWarn.Name = "panelWarn";
+            this.panelWarn.Padding = new System.Windows.Forms.Padding(1);
+            this.panelWarn.Size = new System.Drawing.Size(449, 17);
+            this.panelWarn.TabIndex = 7;
+            // 
+            // labelWarn
+            // 
+            this.labelWarn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(173)))), ((int)(((byte)(173)))));
+            this.labelWarn.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelWarn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelWarn.ForeColor = System.Drawing.Color.White;
+            this.labelWarn.Location = new System.Drawing.Point(1, 1);
+            this.labelWarn.Name = "labelWarn";
+            this.labelWarn.Size = new System.Drawing.Size(447, 15);
+            this.labelWarn.TabIndex = 0;
+            this.labelWarn.Text = "Remove this package before continue";
+            this.labelWarn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(453, 268);
+            this.Controls.Add(this.panelWarn);
             this.Controls.Add(this.picVideo);
             this.Controls.Add(this.panelInfo);
             this.Controls.Add(this.labelDllExportBatch);
@@ -140,6 +167,7 @@
             this.panelInfo.ResumeLayout(false);
             this.panelInfo.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picVideo)).EndInit();
+            this.panelWarn.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -153,5 +181,7 @@
         private System.Windows.Forms.Panel panelInfo;
         private System.Windows.Forms.TextBox textBoxInfo;
         private System.Windows.Forms.PictureBox picVideo;
+        private System.Windows.Forms.Panel panelWarn;
+        private System.Windows.Forms.Label labelWarn;
     }
 }

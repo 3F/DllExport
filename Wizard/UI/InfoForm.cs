@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.Extensions;
 
@@ -35,6 +36,8 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             this.exec = exec;
             InitializeComponent();
+
+            Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
         }
 
         private void linkWhy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -49,7 +52,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void linkRemoteDxp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            "https://github.com/3F/DllExport".OpenUrl(); // TODO:
+            "https://raw.githubusercontent.com/3F/DllExport/latest/manager/DllExport.bat".OpenUrl();
         }
 
         private void picVideo_Click(object sender, System.EventArgs e)

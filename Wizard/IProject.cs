@@ -40,14 +40,15 @@ namespace net.r_eg.DllExport.Wizard
         bool Installed { get; }
 
         /// <summary>
+        /// Special identifier. Like `ProjectGuid` that is not available in SDK-based projects.
+        /// https://github.com/3F/DllExport/issues/36#issuecomment-320794498
+        /// </summary>
+        string DxpIdent { get; }
+
+        /// <summary>
         /// Relative path from location of sln file.
         /// </summary>
         string ProjectPath { get; }
-
-        /// <summary>
-        /// The Guid of current project.
-        /// </summary>
-        string ProjectGuid { get; }
 
         /// <summary>
         /// Get defined namespace for project.

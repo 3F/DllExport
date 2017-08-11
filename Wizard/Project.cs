@@ -63,11 +63,31 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public bool Installed
         {
-            get {
-                string vNamespace = GetProperty(MSBuildProperties.DXP_NAMESPACE);
-                return !String.IsNullOrWhiteSpace(vNamespace);
+            get => !String.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
+        }
+
+        /// <summary>
+        /// Special identifier. Like `ProjectGuid` that is not available in SDK-based projects.
+        /// https://github.com/3F/DllExport/issues/36#issuecomment-320794498
+        /// </summary>
+        public string DxpIdent
+        {
+            get
+            {
+                if(_dxpIdent != null) {
+                    return _dxpIdent;
+                }
+
+                _dxpIdent = GetProperty(MSBuildProperties.DXP_ID);
+                if(String.IsNullOrWhiteSpace(_dxpIdent))
+                {
+                    _dxpIdent = Guid.NewGuid().ToString().ToUpperInvariant();
+                    Log.send(this, $"Generated new identifier: '{_dxpIdent}'", Message.Level.Debug);
+                }
+                return _dxpIdent;
             }
         }
+        private string _dxpIdent;
 
         /// <summary>
         /// Relative path from location of sln file.
@@ -75,14 +95,6 @@ namespace net.r_eg.DllExport.Wizard
         public string ProjectPath
         {
             get => XProject?.ProjectItem.project.path;
-        }
-
-        /// <summary>
-        /// The Guid of current project.
-        /// </summary>
-        public string ProjectGuid
-        {
-            get => XProject?.ProjectGuid;
         }
 
         /// <summary>
@@ -168,6 +180,7 @@ namespace net.r_eg.DllExport.Wizard
             Config.AddTopNamespace(ProjectNamespace);
 
             AllocateProperties(
+                MSBuildProperties.DXP_ID,
                 MSBuildProperties.DXP_NAMESPACE,
                 MSBuildProperties.DXP_ORDINALS_BASE,
                 MSBuildProperties.DXP_SKIP_ANYCPU,
@@ -176,6 +189,8 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_OUR_ILASM,
                 MSBuildProperties.PRJ_PLATFORM
             );
+
+            Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
         }
 
         protected void ActionRestore()
@@ -208,6 +223,8 @@ namespace net.r_eg.DllExport.Wizard
 
             if(Config.Install)
             {
+                SetProperty(MSBuildProperties.DXP_ID, DxpIdent);
+
                 CfgNamespace();
                 CfgPlatform();
                 CfgCompiler();
@@ -425,7 +442,7 @@ namespace net.r_eg.DllExport.Wizard
             foreach(string name in names)
             {
                 if(!String.IsNullOrWhiteSpace(name)) {
-                    Log.send(this, $"'{ProjectGuid}' Remove old properties: '{name}'", Message.Level.Trace);
+                    Log.send(this, $"'{ProjectPath}' Remove old properties: '{name}'", Message.Level.Trace);
                     while(XProject.RemoveProperty(name, true)) { }
                 }
             }
@@ -446,7 +463,7 @@ namespace net.r_eg.DllExport.Wizard
         private void SetProperty(string name, string value)
         {
             if(!String.IsNullOrWhiteSpace(name)) {
-                Log.send(this, $"'{ProjectGuid}' Schedule an adding property: '{name}':'{value}' ", Message.Level.Debug);
+                Log.send(this, $"'{ProjectPath}' Schedule an adding property: '{name}':'{value}' ", Message.Level.Debug);
                 ConfigProperties[name] = value;
             }
         }
