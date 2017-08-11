@@ -11,17 +11,18 @@
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(DevEnvDir)\..\..\</DllExportVSRoot>
     <DllExportVSBin Condition="'$(DllExportVSBin)' == ''">$(DllExportVSRoot)Common7\IDE\</DllExportVSBin>
 
-    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\$(ProjectGuid)\</DllExportLibPath>
+    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\metalib\$(DllExportNamespace)\</DllExportLibPath>
     <DllExportToolsPath Condition="'$(DllExportToolsPath)' == ''">tools\</DllExportToolsPath>
     
-    <DllExportNamespace Condition="'$(DllExportNamespace)' == ''">System.Runtime.InteropServices</DllExportNamespace>
+    <DllExportNamespace Condition="'$(DllExportNamespace)' == ''"></DllExportNamespace>
     <DllExportLibFullPath Condition="'$(DllExportLibFullPath)' == ''">$(DllExportRootPkg)$(DllExportLibPath)</DllExportLibFullPath>
     <DllExportMetaLibAttr Condition="'$(DllExportMetaLibAttr)' == ''">DllExportAttribute</DllExportMetaLibAttr>
     <DllExportMetaLibName Condition="'$(DllExportMetaLibName)' == ''">DllExport.dll</DllExportMetaLibName>
     <DllExportMetaLibFullPath Condition="'$(DllExportMetaLibFullPath)' == ''">$(DllExportLibFullPath)$(DllExportMetaLibName)</DllExportMetaLibFullPath>
-    <DllExportDDNSCecil Condition="'$(DllExportDDNSCecil)' == ''">true</DllExportDDNSCecil>
-    <DllExportOurILAsm Condition="'$(DllExportOurILAsm)' == ''">true</DllExportOurILAsm>
     <DllExportOurILAsmPath Condition="'$(DllExportOurILAsmPath)' == ''">$(DllExportRootPkg)$(DllExportToolsPath)coreclr\</DllExportOurILAsmPath>
+
+    <DllExportAttributeFullName Condition="'$(DllExportNamespace)' != ''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullName>
+    <DllExportAttributeFullName Condition="'$(DllExportNamespace)' == ''">$(DllExportMetaLibAttr)</DllExportAttributeFullName>
   </PropertyGroup>
 
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
@@ -41,6 +42,8 @@
       <DllExportTargetFrameworkVersion Condition="'$(DllExportTargetFrameworkVersion)' == ''">$(TargetFrameworkVersion)</DllExportTargetFrameworkVersion>
       <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
+      <DllExportDDNSCecil Condition="'$(DllExportDDNSCecil)' == ''">true</DllExportDDNSCecil>
+      <DllExportOurILAsm Condition="'$(DllExportOurILAsm)' == ''">true</DllExportOurILAsm>
       <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)' == ''">1</DllExportOrdinalsBase>
       <DllExportGenExpLib Condition="'$(DllExportGenExpLib)' == ''">false</DllExportGenExpLib>
       <DllExportOurILAsmPath Condition="'$(DllExportOurILAsm)' != 'true'"></DllExportOurILAsmPath>
@@ -51,7 +54,7 @@
     <DllExportAppDomainIsolatedTask 
           Platform="$(DllExportPlatform)"
           CpuType="$(DllExportCpuType)"
-          DllExportAttributeFullName="$(DllExportNamespace).$(DllExportMetaLibAttr)"
+          DllExportAttributeFullName="$(DllExportAttributeFullName)"
           EmitDebugSymbols="$(DllExportEmitDebugSymbols)"
           LeaveIntermediateFiles="$(DllExportLeaveIntermediateFiles)"
           Timeout="$(DllExportTimeout)"

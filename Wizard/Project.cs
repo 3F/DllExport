@@ -103,7 +103,8 @@ namespace net.r_eg.DllExport.Wizard
                         Path.Combine(
                             Config.Wizard.PkgPath,
                             "gcache",
-                            ProjectGuid,
+                            "metalib",
+                            Config.Namespace,
                             Path.GetFileName(Config.Wizard.MetaLib)
                         )
                    );
@@ -313,12 +314,12 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void Reset(bool properties)
         {
+            RemoveDllExportLib();
+
             if(properties) {
                 RemoveProperties(ConfigProperties.Keys.ToArray());
                 ConfigProperties.Clear();
             }
-
-            RemoveDllExportLib();
         }
 
         protected bool CmpPublicKeyTokens(string pkToken, string pkTokenAsm)
@@ -346,6 +347,7 @@ namespace net.r_eg.DllExport.Wizard
 
             var lib = MetaLib;
             Log.send(this, $"Add meta library: '{lib}'", Message.Level.Info);
+            //XProject.AddReference("DllExport", lib, false);
             XProject.AddReference(lib, false);
 
             AddRestoreDxp(

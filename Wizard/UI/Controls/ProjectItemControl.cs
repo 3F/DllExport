@@ -24,7 +24,6 @@
 
 using System;
 using System.ComponentModel;
-using System.IO;
 using System.Windows.Forms;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
@@ -68,7 +67,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         public ComboBox Namespaces
         {
             get => comboNS;
-            set => comboNS = value;
         }
 
         /// <summary>
@@ -130,6 +128,16 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             get;
             set;
+        }
+
+        public void SetNamespace(string name, bool addIfNotExists = true)
+        {
+            name = name?.Trim() ?? String.Empty;
+
+            if(addIfNotExists && !Namespaces.Items.Contains(name)) {
+                Namespaces.Items.Add(name);
+            }
+            Namespaces.Text = name;
         }
 
         public ProjectItemControl(IProject project)

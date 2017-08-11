@@ -64,8 +64,8 @@ namespace net.r_eg.DllExport.Wizard.UI
             projectItems.Browse  =
             projectItems.OpenUrl = OpenUrl;
 
-            projectItems.NamespaceValidate = (string str) => {
-                return DDNS.IsValidNS(str);
+            projectItems.NamespaceValidate = (string ns) => {
+                return DDNS.IsValidNS(ns?.Trim());
             };
 
             RenderSlnFiles();
@@ -191,7 +191,12 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            foreach(var prj in projectItems.Data) {
+            foreach(var prj in projectItems.Data)
+            {
+                if(!DDNS.IsValidNS(prj.Config.Namespace)) {
+                    MessageBox.Show($"Fix incorrect namespace before continue:\n\n'{prj.Config.Namespace}'", "Incorrect data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
                 prj.Configure(ActionType.Configure);
             }
             Close();

@@ -211,7 +211,10 @@ namespace net.r_eg.DllExport.Wizard
 
         private string GetValue(string property, IXProject project)
         {
-            return project?.GetProperty(property).evaluatedValue;
+            //TODO: update MvsSln
+            //NOTE: MS describes this as 'the evaluated property value, which is never null'
+            //      But, this is not true ! >(  .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
+            return project?.GetProperty(property).evaluatedValue ?? String.Empty;
         }
     }
 }

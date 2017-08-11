@@ -70,7 +70,7 @@ namespace net.r_eg.DllExport.NSBin
         public static bool IsValidNS(string name)
         {
             if(String.IsNullOrWhiteSpace(name)) {
-                return false;
+                return true;
             }
 
             return Regex.IsMatch(name, "^[a-z_][a-z_0-9.]*$", RegexOptions.IgnoreCase)
@@ -211,7 +211,7 @@ namespace net.r_eg.DllExport.NSBin
             // Regex.Replace(name, @"[\.\s]{1,}", ".").Trim(new char[] { '.', ' ' });
 
             if(IsValidNS(name)) {
-                return name.Replace(" ", "");
+                return name?.Replace(" ", "") ?? String.Empty;
             }
             return DEFAULT_NS;
         }

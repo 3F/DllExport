@@ -163,8 +163,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
             control.Namespaces.MaxLength = project.Config.NSBuffer;
 
-            if(!String.IsNullOrWhiteSpace(project.Config.Namespace)) {
-                control.Namespaces.Text = project.Config.Namespace;
+            if(project.Installed) {
+                control.SetNamespace(project.Config.Namespace, true);
             }
         }
 
@@ -174,7 +174,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             project.Config.UseCecil     = control.UseCecil;
             project.Config.Platform     = control.Platform;
             project.Config.Compiler     = control.Compiler;
-            project.Config.Namespace    = control.Namespaces.Text;
+            project.Config.Namespace    = control.Namespaces.Text.Trim();
 
             return project;
         }
