@@ -1,4 +1,5 @@
-﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
+﻿using System;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using net.r_eg.DllExport.NSBin;
 
 namespace net.r_eg.DllExport.NSBinTest
@@ -16,8 +17,10 @@ namespace net.r_eg.DllExport.NSBinTest
             Assert.AreEqual(false, DDNS.IsValidNS("net.r_eg.DllExport."));
             Assert.AreEqual(false, DDNS.IsValidNS("0net.r_eg.DllExport"));
             Assert.AreEqual(false, DDNS.IsValidNS(".net.r_eg.DllExport"));
-            Assert.AreEqual(false, DDNS.IsValidNS("  "));
-            Assert.AreEqual(false, DDNS.IsValidNS(null));
+
+            Assert.AreEqual(true, DDNS.IsValidNS("  "));
+            Assert.AreEqual(true, DDNS.IsValidNS(null));
+            Assert.AreEqual(true, DDNS.IsValidNS(String.Empty));
         }
 
 
