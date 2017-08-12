@@ -8,8 +8,9 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 ```
 
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
-[![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
+[![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
+[![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
 
 
 ```csharp
@@ -120,7 +121,7 @@ Attention please: **v1.6+** does not support standard NuGet clients anymore [[?]
 
 Firstly, get our [DllExport.bat](#) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
 
-* To install/uninstall or to reconfigure your project:
+* To install/uninstall or to reconfigure your projects:
 
 ```
 DllExport -action Configure
@@ -221,7 +222,7 @@ build_coreclr_x86_x64.cmd
 
 Please note again, the initial [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit its page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
 
-But this repository does not related with Robert and generally maintained by [github.com/3F](https://github.com/3F) developer (Follow: [[G+](https://plus.google.com/+DenisKuzmin3F)]; [[GitHub](https://github.com/3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
+But this repository does not related with Robert and generally maintained by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
 
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=entry%2ereg%40gmail%2ecom&lc=US&item_name=3F%2dOpenSource%20%5b%20github%2ecom%2f3F&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted) ( github.com/3F )

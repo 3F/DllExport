@@ -1,6 +1,60 @@
 DllExport - github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - 
 
+[v1.6-beta] 2017.08.12
+
+    * NEW: The new lightweight manager & distribution via MvsSln & GetNuTool projects. Issue #38.
+           Based on hMSBuild logic and includes GetNuTool core.
+           
+           Now you shouldn't use standard nuget clients anymore:
+           https://www.youtube.com/watch?v=okPThdWDZMM 
+           
+           Package from nuget.org already contains this, but you can also get it directly.
+           Latest version: https://raw.githubusercontent.com/3F/DllExport/latest/manager/DllExport.bat
+           ~18 Kb text-based embeddable batch-scripts that does not require powershell and dotnet-cli.
+           
+           To install/uninstall or to reconfigure your projects: `DllExport -action Configure`
+           To manually restore package: `DllExport -action Restore`
+           All available features: `DllExport -h`
+           
+           Server by default - nuget.org 
+           
+    * NEW: The new Wizard (configurator via MvsSln). To easy configure your projects in any place. Issue #38.
+           MvsSln v1.0.1.43422: https://github.com/3F/MvsSln
+           
+    * NEW: Added support of global namespaces - Issue #47. 
+           Use `Direct-Mod` if Cecil will not process this correctly.
+           
+    * FIXED: Fixed target platform detection. Issue #34.
+             Details: https://github.com/3F/DllExport/issues/34#issuecomment-306171060
+             
+    * FIXED: Fixed problem when the Post-Build event is triggered before our tool. Issue #35.
+             Use this if still is needed:
+             ```
+             <Target Name="PostBuildEventBeforeDllExport" BeforeTargets="DllExportMod">
+                ...
+             </Target>
+             ```
+             
+    * FIXED: Fixed generation of exp + .lib via MS Library Manager for VS2017. Issue #37.
+             Now it also includes processing through VsDevCmd & VcVarsAll initializer scripts. 
+             Use the folowing msbuild properties to override values by default:
+             * $(DllExportVcVarsAll); $(DllExportVsDevCmd)
+             
+    * FIXED: Fixes possible problem with multiple properties that contains *Undefined* word, 
+             e.g.: *Undefined*\path1;C:\path2 ...
+             
+    * CHANGED: Added information about finding lib tool. Issue #44.
+    * CHANGED: UI. Selected platform now affects to all configurations of project instead of active as before.
+    * CHANGED: Now, nuget package does not contain library in `lib/.../` Details in #36.
+    * CHANGED: Now, we also distribute .zip package for work through our manager etc.
+               https://github.com/3F/DllExport/releases
+               
+               The latest text-based manager you can find here: 
+               https://raw.githubusercontent.com/3F/DllExport/latest/manager/DllExport.bat
+               Illustration here: https://www.youtube.com/watch?v=okPThdWDZMM 
+               
+
 [v1.5.2] 2017.03.13
     
     * FIXED: Failing to compile in VS2017. Issue #29
