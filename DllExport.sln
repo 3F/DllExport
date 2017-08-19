@@ -27,7 +27,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED
 		tools\DllExport.nuspec = tools\DllExport.nuspec
 		tools\gnt.bat = tools\gnt.bat
 		tools\hMSBuild.bat = tools\hMSBuild.bat
-		tools\init.ps1 = tools\init.ps1
 		tools\net.r_eg.DllExport.targets = tools\net.r_eg.DllExport.targets
 	EndProjectSection
 EndProject
