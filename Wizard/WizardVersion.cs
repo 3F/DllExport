@@ -10,7 +10,7 @@ namespace net.r_eg.DllExport.Wizard
 
         public const string S_NUM = "1.6.0";
         public const string S_REV = "9361";
-        public const string S_REL = "beta";
+        public const string S_REL = "beta2";
 
         public const string S_NUM_REV = S_NUM + "." + S_REV;
 

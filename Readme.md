@@ -11,6 +11,7 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
+[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.6.1-93C10B.svg)](https://github.com/3F/GetNuTool)
 
 
 ```csharp
@@ -119,7 +120,7 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 Attention please: **v1.6+** does not support standard NuGet clients anymore [[?](https://github.com/3F/DllExport/issues/38)] But you can still easily get our package and flexibly configure what you need ([Sample](https://www.youtube.com/watch?v=okPThdWDZMM)):
 
-Firstly, get our [DllExport.bat](#) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
+Firstly, get our [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
 
 * To install/uninstall or to reconfigure your projects:
 

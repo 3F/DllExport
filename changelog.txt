@@ -1,6 +1,31 @@
 DllExport - github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - 
 
+[v1.6-beta2] 2017.08.19
+
+    * NOTE: This release contains trivial fixes only for our manager because of problems with nuget.org. Issue #38.
+            Please read all changes in previous beta release and please note again - you shouldn't use standard nuget clients anymore: 
+            https://www.youtube.com/watch?v=okPThdWDZMM 
+            
+            Test and comment anything about this in Issue #38 if you need.
+            
+    * FIXED: Updated GetNuTool v1.6.1 to fix problems with possible incorrect CRC & Compressed size info from nuget.org.
+            
+             Changelog here:
+             https://github.com/3F/GetNuTool/blob/master/changelog.txt
+            
+             Related issues:
+             * https://github.com/3F/GetNuTool/issues/3
+             * https://github.com/3F/DllExport/issues/38#issuecomment-322250229
+             
+    * CHANGED: Changed url to get latest manager directly. Please use this if you need:
+               * https://3F.github.io/DllExport/releases/latest/manager/
+               
+               Other versions you can find from GitHub Releases:
+               * https://github.com/3F/DllExport/releases
+               
+               Or get it from nuget packages starting with v1.6+
+
 [v1.6-beta] 2017.08.12
 
     * NEW: The new lightweight manager & distribution via MvsSln & GetNuTool projects. Issue #38.

@@ -52,7 +52,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void linkRemoteDxp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            "https://raw.githubusercontent.com/3F/DllExport/latest/manager/DllExport.bat".OpenUrl();
+            "https://3F.github.io/DllExport/releases/latest/manager/".OpenUrl();
         }
 
         private void picVideo_Click(object sender, System.EventArgs e)
