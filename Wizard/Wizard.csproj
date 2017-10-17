@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>IDE1006</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' or '$(Configuration)|$(Platform)' == 'PublicRelease|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -29,11 +30,10 @@
     <DefineConstants Condition=" '$(Configuration)' == 'PublicRelease' ">$(DefineConstants);PUBLIC_RELEASE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>IDE1006</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>true</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
@@ -46,8 +46,8 @@
     <Reference Include="Microsoft.Build.Utilities.v4.0">
       <Private>True</Private>
     </Reference>
-    <Reference Include="MvsSln, Version=1.0.1.43422, Culture=neutral, PublicKeyToken=87f0bd8fb7f0a2c4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvsSln.1.0.1\lib\net40\MvsSln.dll</HintPath>
+    <Reference Include="MvsSln, Version=2.0.0.24315, Culture=neutral, PublicKeyToken=87f0bd8fb7f0a2c4, processorArchitecture=MSIL">
+      <HintPath>..\packages\MvsSln.2.0.0\lib\net40\MvsSln.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -57,6 +57,7 @@
   <ItemGroup>
     <Compile Include="ActionType.cs" />
     <Compile Include="Executor.cs" />
+    <Compile Include="Extensions\XProjectExtension.cs" />
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="IConfigInitializer.cs" />

@@ -135,7 +135,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns>true if added.</returns>
         public bool AddTopNamespace(string ns)
         {
-            if(!Namespaces.Contains(ns)) {
+            if(!String.IsNullOrWhiteSpace(ns) && !Namespaces.Contains(ns)) {
                 Namespaces.Insert(0, ns);
                 return true;
             }
@@ -161,7 +161,7 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, project);
-            Platform    = GetPlatform(project.GetProperty(MSBuildProperties.PRJ_PLATFORM).evaluatedValue);
+            Platform    = GetPlatform(GetValue(MSBuildProperties.PRJ_PLATFORM, project));
             UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, project).ToBoolean();
 
             Compiler = new CompilerCfg() {
@@ -211,10 +211,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private string GetValue(string property, IXProject project)
         {
-            //TODO: update MvsSln
-            //NOTE: MS describes this as 'the evaluated property value, which is never null'
-            //      But, this is not true ! >(  .NETFramework\v4.0\Microsoft.Build.dll - Version=4.0.0.0, PublicKeyToken=b03f5f7f11d50a3a
-            return project?.GetProperty(property).evaluatedValue ?? String.Empty;
+            return project?.GetPropertyValue(property);
         }
     }
 }

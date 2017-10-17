@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
@@ -450,7 +451,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected string GetProperty(string name)
         {
-            return XProject?.GetProperty(name).evaluatedValue;
+            return XProject?.GetPropertyValue(name);
         }
 
         private void AllocateProperties(params string[] names)

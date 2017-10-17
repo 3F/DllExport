@@ -14,6 +14,9 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.6.1-93C10B.svg)](https://github.com/3F/GetNuTool)
 
 
+[`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
+
+
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
 public static int entrypoint(IntPtr L)
@@ -148,7 +151,7 @@ DllExport -h
 Other variants:
 
 * `gnt /p:ngpackages="DllExport"` [[?](https://github.com/3F/GetNuTool)]
-    * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [gnt](https://github.com/3F/GetNuTool/releases/download/v1.6/gnt.bat) /p:ngpackages="DllExport"
+    * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [`gnt`](https://3F.github.io/GetNuTool/releases/latest/gnt/)` /p:ngpackages="DllExport"`
 * (deprecated) NuGet PM: `Install-Package DllExport`
 * (deprecated) NuGet Commandline: `nuget install DllExport`
 * [/releases](https://github.com/3F/DllExport/releases) [ [latest](https://github.com/3F/DllExport/releases/latest) ]

@@ -181,10 +181,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void ControlSizeChanged(object sender, EventArgs e)
         {
-            if(sender is ProjectItemControl)
+            if(sender is ProjectItemControl control)
             {
-                var control = (ProjectItemControl)sender;
-
                 int xprev = control.Top + control.Height;
                 foreach(var item in items.Skip(control.Order + 1)) {
                     item.control.Top = xprev;
