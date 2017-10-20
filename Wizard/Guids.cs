@@ -24,46 +24,11 @@
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public interface IWizardConfig
+    public struct Guids
     {
         /// <summary>
-        /// Path to directory with .sln files to be processed.
+        /// Unspecified external storage for project. 
         /// </summary>
-        string SlnDir { get; }
-
-        /// <summary>
-        /// Optional predefined .sln file to process via the restore operations etc.
-        /// </summary>
-        string SlnFile { get; }
-
-        /// <summary>
-        /// Root path of the DllExport package.
-        /// </summary>
-        string PkgPath { get; }
-
-        /// <summary>
-        /// Relative path from PkgPath to DllExport meta library.
-        /// </summary>
-        string MetaLib { get; }
-
-        /// <summary>
-        /// Path to .targets file of the DllExport.
-        /// </summary>
-        string DxpTarget { get; }
-
-        /// <summary>
-        /// Path to external storage if used.
-        /// </summary>
-        string StoragePath { get; }
-
-        /// <summary>
-        /// Where to store configuration data.
-        /// </summary>
-        CfgStorageType CfgStorage { get; set; }
-
-        /// <summary>
-        /// The evaluated type of operation.
-        /// </summary>
-        ActionType Type { get; }
+        public const string X_EXT_STORAGE = "545F5C4B-1B08-4609-AFCC-B4B670B2A8DD";
     }
 }

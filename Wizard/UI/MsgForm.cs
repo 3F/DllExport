@@ -30,8 +30,18 @@ namespace net.r_eg.DllExport.Wizard.UI
 {
     internal partial class MsgForm: Form
     {
-        public void AddMsg(string msg)
+        public int MsgLevel
         {
+            get;
+            set;
+        }
+
+        public void AddMsg(string msg, MvsSln.Log.Message.Level level)
+        {
+            if(!IsValidMsg(level)) {
+                return;
+            }
+
             if(!String.IsNullOrWhiteSpace(msg))
             {
                 BeginInvoke((MethodInvoker)delegate {
@@ -40,11 +50,20 @@ namespace net.r_eg.DllExport.Wizard.UI
             }
         }
 
-        public MsgForm()
+        public MsgForm(int msgLevel)
         {
+            MsgLevel = msgLevel;
             InitializeComponent();
 
             Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
+        }
+
+        private bool IsValidMsg(MvsSln.Log.Message.Level level)
+        {
+            if(MsgLevel < 0) {
+                return false;
+            }
+            return ((int)level) >= MsgLevel;
         }
 
         private void menuSelectAll_Click(object sender, EventArgs e)

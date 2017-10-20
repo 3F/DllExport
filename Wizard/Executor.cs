@@ -40,12 +40,22 @@ namespace net.r_eg.DllExport.Wizard
         protected Dictionary<string, Sln> solutions = new Dictionary<string, Sln>();
 
         /// <summary>
+        /// Cache for loaded projects.
+        /// </summary>
+        protected Dictionary<Guid, IProject> pcache = new Dictionary<Guid, IProject>();
+
+        /// <summary>
         /// Access to wizard configuration.
         /// </summary>
         public IWizardConfig Config
         {
             get;
             protected set;
+        }
+
+        public ISender Log
+        {
+            get => LSender._;
         }
 
         /// <summary>
@@ -62,11 +72,24 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public IEnumerable<string> SlnFiles
         {
-            get {
-                return Directory.GetFiles(Config.SlnDir, "*.sln", SearchOption.TopDirectoryOnly)
+            get => Directory.GetFiles(Config.SlnDir, "*.sln", SearchOption.TopDirectoryOnly)
                                 .Select(s => Path.GetFullPath(s));
+        }
+
+        /// <summary>
+        /// Access to used external .targets.
+        /// </summary>
+        public ITargetsFile TargetsFile
+        {
+            get
+            {
+                if(_targetsFile == null && Config != null) {
+                    _targetsFile = new TargetsFile(Config);
+                }
+                return _targetsFile;
             }
         }
+        protected ITargetsFile _targetsFile;
 
         /// <summary>
         /// List of all found projects with different configurations.
@@ -75,7 +98,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public IEnumerable<IProject> ProjectsBy(string sln)
         {
-            return GetEnv(sln)?.Projects?.Select(p => new Project(p, this));
+            return GetEnv(sln)?.Projects?.Select(p => GetProject(p));
         }
 
         /// <summary>
@@ -85,15 +108,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public IEnumerable<IProject> UniqueProjectsBy(string sln)
         {
-            return GetEnv(sln)?.UniqueByGuidProjects?.Select(p => new Project(p, this));
-        }
-
-        /// <summary>
-        /// Access to logger.
-        /// </summary>
-        public ISender Log
-        {
-            get => LSender._;
+            return GetEnv(sln)?.UniqueByGuidProjects?.Select(p => GetProject(p));
         }
 
         /// <summary>
@@ -101,7 +116,7 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public void Configure()
         {
-            Log.send(this, $"Selected Action: {Config.Type}", Message.Level.Info);
+            Log.send(this, $"Action: {Config.Type}; Storage: {Config.CfgStorage}", Message.Level.Info);
 
             if(Config.Type == ActionType.Configure)
             {
@@ -113,20 +128,20 @@ namespace net.r_eg.DllExport.Wizard
             {
                 var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? 
                                     SlnFiles?.FirstOrDefault() : Config.SlnFile;
-                if(sln != null)
+                if(sln == null)
                 {
-                    Log.send(this, $"Selected sln '{sln}'", Message.Level.Info);
-                    UniqueProjectsBy(sln)?.ForEach(p => p.Configure(Config.Type));
-                    return;
+                    throw new ArgumentException(
+                        String.Format(
+                            "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
+                            nameof(IWizardConfig.SlnFile),
+                            nameof(IWizardConfig.SlnDir)
+                        )
+                    );
                 }
 
-                throw new ArgumentException(
-                    String.Format(
-                        "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
-                        nameof(IWizardConfig.SlnFile),
-                        nameof(IWizardConfig.SlnDir)
-                    )
-                );
+                Log.send(this, $"Selected sln '{sln}'", Message.Level.Info);
+                UpdateCfgStorageType(sln);
+                Configure(sln);
             }
 
             if(Config.Type == ActionType.Info)
@@ -137,10 +152,52 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
+        /// <summary>
+        /// Updates CfgStorage type via current state from selected .sln.
+        /// </summary>
+        /// <param name="sln">Path to .sln</param>
+        /// <returns></returns>
+        public bool UpdateCfgStorageType(string sln)
+        {
+            if(String.IsNullOrWhiteSpace(sln)) {
+                return false;
+            }
+
+            if(UniqueProjectsBy(sln).Any(p => p.HasExternalStorage)) {
+                Config.CfgStorage = CfgStorageType.TargetsFile;
+                return true;
+            }
+
+            Config.CfgStorage = CfgStorageType.ProjectFiles;
+            return true;
+        }
+
         /// <param name="cfg"></param>
         public Executor(IWizardConfig cfg)
         {
             Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
+        }
+
+        protected void Configure(string sln)
+        {
+            UniqueProjectsBy(sln)?.ForEach(p => 
+            {
+                if(Config.CfgStorage == CfgStorageType.TargetsFile) {
+                    TargetsFile?.Configure(Config.Type, p);
+                }
+                p.Configure(Config.Type);
+            });
+        }
+
+        protected IProject GetProject(IXProject xp)
+        {
+            var pid = xp.GetPId();
+
+            if(!pcache.ContainsKey(pid)) {
+                pcache[pid] = new Project(xp, this);
+            }
+
+            return pcache[pid];
         }
 
         protected IEnvironment GetEnv(string file)
@@ -155,14 +212,12 @@ namespace net.r_eg.DllExport.Wizard
             return solutions[file].Result.Env;
         }
 
-        protected void Free()
+        private void Free()
         {
-            if(solutions == null) {
-                return;
-            }
+            solutions?.ForEach(sln => sln.Value.Result?.Env?.Dispose());
 
-            foreach(var sln in solutions) {
-                sln.Value.Result?.Env?.Dispose();
+            if(_targetsFile != null) {
+                _targetsFile.Dispose();
             }
         }
 

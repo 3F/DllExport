@@ -29,18 +29,20 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.comboBoxStorage = new System.Windows.Forms.ComboBox();
             this.btnInfo = new System.Windows.Forms.Button();
             this.btnBug = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
-            this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
+            this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
             this.panelTop.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTop
             // 
             this.panelTop.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelTop.Controls.Add(this.comboBoxStorage);
             this.panelTop.Controls.Add(this.btnInfo);
             this.panelTop.Controls.Add(this.btnBug);
             this.panelTop.Controls.Add(this.btnApply);
@@ -48,8 +50,22 @@
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelTop.Location = new System.Drawing.Point(0, 0);
             this.panelTop.Name = "panelTop";
-            this.panelTop.Size = new System.Drawing.Size(469, 30);
+            this.panelTop.Size = new System.Drawing.Size(469, 29);
             this.panelTop.TabIndex = 0;
+            // 
+            // comboBoxStorage
+            // 
+            this.comboBoxStorage.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxStorage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStorage.DropDownWidth = 190;
+            this.comboBoxStorage.FormattingEnabled = true;
+            this.comboBoxStorage.Location = new System.Drawing.Point(297, 2);
+            this.comboBoxStorage.Margin = new System.Windows.Forms.Padding(1);
+            this.comboBoxStorage.Name = "comboBoxStorage";
+            this.comboBoxStorage.Size = new System.Drawing.Size(78, 21);
+            this.comboBoxStorage.TabIndex = 7;
+            this.toolTipMain.SetToolTip(this.comboBoxStorage, "Storage");
             // 
             // btnInfo
             // 
@@ -82,11 +98,13 @@
             // btnApply
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnApply.Location = new System.Drawing.Point(373, 1);
+            this.btnApply.Location = new System.Drawing.Point(377, 1);
+            this.btnApply.Margin = new System.Windows.Forms.Padding(1);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(50, 23);
+            this.btnApply.Size = new System.Drawing.Size(48, 23);
             this.btnApply.TabIndex = 1;
             this.btnApply.Text = "Apply";
+            this.toolTipMain.SetToolTip(this.btnApply, "Apply changes");
             this.btnApply.UseVisualStyleBackColor = true;
             this.btnApply.Click += new System.EventHandler(this.btnApply_Click);
             // 
@@ -95,23 +113,25 @@
             this.comboBoxSln.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSln.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxSln.DropDownWidth = 450;
+            this.comboBoxSln.DropDownWidth = 500;
             this.comboBoxSln.FormattingEnabled = true;
-            this.comboBoxSln.Location = new System.Drawing.Point(3, 3);
+            this.comboBoxSln.Location = new System.Drawing.Point(1, 2);
+            this.comboBoxSln.Margin = new System.Windows.Forms.Padding(1);
             this.comboBoxSln.Name = "comboBoxSln";
-            this.comboBoxSln.Size = new System.Drawing.Size(367, 21);
+            this.comboBoxSln.Size = new System.Drawing.Size(294, 21);
             this.comboBoxSln.TabIndex = 0;
+            this.toolTipMain.SetToolTip(this.comboBoxSln, "Solution File");
             this.comboBoxSln.SelectedIndexChanged += new System.EventHandler(this.comboBoxSln_SelectedIndexChanged);
             // 
             // projectItems
             // 
             this.projectItems.Browse = null;
             this.projectItems.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.projectItems.Location = new System.Drawing.Point(0, 30);
+            this.projectItems.Location = new System.Drawing.Point(0, 29);
             this.projectItems.Name = "projectItems";
             this.projectItems.NamespaceValidate = null;
             this.projectItems.OpenUrl = null;
-            this.projectItems.Size = new System.Drawing.Size(469, 420);
+            this.projectItems.Size = new System.Drawing.Size(469, 421);
             this.projectItems.TabIndex = 1;
             this.projectItems.RenderedItemsSizeChanged += new System.EventHandler(this.projectItems_RenderedItemsSizeChanged);
             // 
@@ -145,5 +165,6 @@
         private System.Windows.Forms.Button btnBug;
         private System.Windows.Forms.ToolTip toolTipMain;
         private System.Windows.Forms.Button btnInfo;
+        private System.Windows.Forms.ComboBox comboBoxStorage;
     }
 }

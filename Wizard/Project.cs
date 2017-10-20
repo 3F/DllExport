@@ -56,7 +56,7 @@ namespace net.r_eg.DllExport.Wizard
         public IXProject XProject
         {
             get;
-            private set;
+            protected set;
         }
 
         /// <summary>
@@ -95,7 +95,15 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public string ProjectPath
         {
-            get => XProject?.ProjectItem.project.path;
+            get
+            {
+                if(XProject == null) {
+                    return null;
+                }
+
+                return XProject.ProjectItem.project.path ??
+                            MakeBasePath(XProject.ProjectFullPath);
+            }
         }
 
         /// <summary>
@@ -107,20 +115,11 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <summary>
-        /// Returns fullpath to meta library for current project.
+        /// Checks usage of external storage for this project.
         /// </summary>
-        public virtual string MetaLib
+        public bool HasExternalStorage
         {
-            get => Path.GetFullPath
-                   (
-                        Path.Combine(
-                            Config.Wizard.PkgPath,
-                            "gcache",
-                            "metalib",
-                            Config.Namespace,
-                            Path.GetFileName(Config.Wizard.MetaLib)
-                        )
-                   );
+            get => XProject?.GetImports(null, Guids.X_EXT_STORAGE).Count() > 0;
         }
 
         /// <summary>
@@ -144,6 +143,29 @@ namespace net.r_eg.DllExport.Wizard
         protected ISender Log
         {
             get => Config?.Log;
+        }
+
+        /// <summary>
+        /// Returns fullpath to meta library for current project.
+        /// </summary>
+        /// <param name="evaluate">Will return unevaluated value if false.</param>
+        /// <returns></returns>
+        public virtual string MetaLib(bool evaluate)
+        {
+            return Path.GetFullPath
+            (
+                Path.Combine
+                (
+                    Config.Wizard.PkgPath,
+                    "gcache",
+                    "metalib",
+                    (evaluate && Config?.Namespace != null) ? 
+                        Config.Namespace : "$(DllExportNamespace)",
+
+                    (evaluate && Config?.Wizard?.MetaLib != null) ? 
+                        Path.GetFileName(Config.Wizard.MetaLib) : "$(DllExportMetaLibName)"
+                )
+            );
         }
 
         /// <summary>
@@ -174,9 +196,9 @@ namespace net.r_eg.DllExport.Wizard
         /// <param name="xproject"></param>
         /// <param name="init"></param>
         public Project(IXProject xproject, IConfigInitializer init)
+            : this(xproject)
         {
-            XProject    = xproject ?? throw new ArgumentNullException(nameof(xproject));
-            Config      = GetUserConfig(xproject, init);
+            Config = GetUserConfig(xproject, init);
 
             Config.AddTopNamespace(ProjectNamespace);
 
@@ -194,6 +216,12 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
         }
 
+        /// <param name="xproject"></param>
+        public Project(IXProject xproject)
+        {
+            XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
+        }
+
         protected void ActionRestore()
         {
             if(Installed) {
@@ -209,9 +237,7 @@ namespace net.r_eg.DllExport.Wizard
             if(Installed)
             {
                 CfgDDNS();
-
-                AddDllExportLib();
-                XProject.Reevaluate();
+                ActionStorage(Config.Wizard.CfgStorage);
             }
 
             Save();
@@ -226,17 +252,29 @@ namespace net.r_eg.DllExport.Wizard
             {
                 SetProperty(MSBuildProperties.DXP_ID, DxpIdent);
 
-                CfgNamespace();
-                CfgPlatform();
-                CfgCompiler();
-
-                AddDllExportLib();
+                if(Config.Wizard.CfgStorage != CfgStorageType.TargetsFile) {
+                    CfgCommonData();
+                }
 
                 XProject.SetProperties(ConfigProperties);
                 XProject.Reevaluate();
+
+                ActionStorage(Config.Wizard.CfgStorage);
             }
 
             Save();
+        }
+
+        protected void ActionStorage(CfgStorageType type)
+        {
+            if(type == CfgStorageType.TargetsFile) {
+                AddExternalStorage();
+            }
+            else {
+                AddDllExportLib();
+            }
+
+            XProject.Reevaluate();
         }
 
         protected IUserConfig GetUserConfig(IXProject project, IConfigInitializer cfg)
@@ -268,7 +306,7 @@ namespace net.r_eg.DllExport.Wizard
             Config.DDNS.setNamespace(
                 CopyFile(
                     Path.Combine(Config.Wizard.PkgPath, Config.Wizard.MetaLib), 
-                    MetaLib
+                    MetaLib(true)
                 ), 
                 Config.Namespace, 
                 Config.UseCecil,
@@ -330,6 +368,13 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
         }
 
+        protected void CfgCommonData()
+        {
+            CfgNamespace();
+            CfgPlatform();
+            CfgCompiler();
+        }
+
         protected void Reset(bool properties)
         {
             RemoveDllExportLib();
@@ -348,25 +393,29 @@ namespace net.r_eg.DllExport.Wizard
             return pkToken.Equals(pkTokenAsm, StringComparison.InvariantCultureIgnoreCase);
         }
 
-        protected void AddDllExportLib()
+        protected void AddExternalStorage()
         {
-            if(String.IsNullOrWhiteSpace(Config.Wizard.DxpTarget)) {
-                throw new ArgumentNullException(nameof(Config.Wizard.DxpTarget));
+            if(String.IsNullOrWhiteSpace(Config?.Wizard?.StoragePath)) {
+                throw new ArgumentException($"StoragePath is empty or null.", nameof(Config.Wizard.StoragePath));
             }
 
-            var dxpTarget = XProject.ProjectPath.MakeRelativePath(
-                Path.GetFullPath(
-                    Path.Combine(Config.Wizard.PkgPath, Config.Wizard.DxpTarget)
-                )
-            );
+            AddImport(Config.Wizard.StoragePath, false, Guids.X_EXT_STORAGE);
+        }
 
-            Log.send(this, $"Add .target: '{dxpTarget}':{METALIB_PK_TOKEN}", Message.Level.Info);
-            XProject.AddImport(dxpTarget, true, METALIB_PK_TOKEN);
+        protected void AddDllExportLib()
+        {
+            string dxpTarget = AddImport(Config.Wizard.DxpTarget, true, METALIB_PK_TOKEN);
 
-            var lib = MetaLib;
+            var lib = MetaLib(false);
             Log.send(this, $"Add meta library: '{lib}'", Message.Level.Info);
-            //XProject.AddReference("DllExport", lib, false);
-            XProject.AddReference(lib, false);
+            //XProject.AddReference(lib, false);
+            XProject.AddReference(
+                $"DllExport, PublicKeyToken={METALIB_PK_TOKEN}",
+                MakeBasePath(lib), 
+                false,
+                null,
+                false
+            );
 
             AddRestoreDxp(
                 DXP_TARGET_PKG_R, 
@@ -397,6 +446,10 @@ namespace net.r_eg.DllExport.Wizard
         {
             foreach(var refer in XProject.GetReferences().ToArray())
             {
+                if(refer.isImported) {
+                    continue;
+                }
+
                 if(CmpPublicKeyTokens(METALIB_PK_TOKEN, refer.Assembly.PublicKeyToken)) {
                     Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
                     XProject.RemoveItem(refer); // immediately modifies collection from XProject.GetReferences
@@ -411,6 +464,9 @@ namespace net.r_eg.DllExport.Wizard
 
             Log.send(this, $"Trying to remove old restore-target: '{DXP_TARGET_PKG_R}'", Message.Level.Info);
             while(RemoveXmlTarget(DXP_TARGET_PKG_R)) { }
+
+            Log.send(this, $"Trying to remove X_EXT_STORAGE Import elements: '{Guids.X_EXT_STORAGE}'", Message.Level.Info);
+            while(XProject.RemoveImport(XProject.GetImport(null, Guids.X_EXT_STORAGE))) { }
 
             if(String.IsNullOrWhiteSpace(Config.Wizard.DxpTarget)) {
                 return;
@@ -449,9 +505,38 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
+        /// <summary>
+        /// To add `import` section.
+        /// </summary>
+        /// <param name="file">Path to project or .targets file.</param>
+        /// <param name="checking">To check existence of target via 'Condition' attr.</param>
+        /// <param name="id">Id via `Label` attr.</param>
+        /// <returns>Will return final added path to project or .targets file.</returns>
+        protected string AddImport(string file, bool checking, string id)
+        {
+            if(String.IsNullOrWhiteSpace(file)) {
+                throw new ArgumentNullException(nameof(file));
+            }
+
+            var targets = MakeBasePath(
+                Path.GetFullPath(
+                    Path.Combine(Config.Wizard.PkgPath, file)
+                )
+            );
+
+            Log.send(this, $"Add .targets: '{targets}':{id}", Message.Level.Info);
+            XProject.AddImport(targets, checking, id);
+            return targets;
+        }
+
         protected string GetProperty(string name)
         {
             return XProject?.GetPropertyValue(name);
+        }
+
+        protected virtual string MakeBasePath(string path)
+        {
+            return "$(SolutionDir)" + Config.Wizard.SlnDir.MakeRelativePath(path);
         }
 
         private void AllocateProperties(params string[] names)

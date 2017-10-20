@@ -56,9 +56,9 @@ namespace net.r_eg.DllExport.Wizard
         string ProjectNamespace { get; }
 
         /// <summary>
-        /// Returns fullpath to meta library for current project.
+        /// Checks usage of external storage for this project.
         /// </summary>
-        string MetaLib { get; }
+        bool HasExternalStorage { get; }
 
         /// <summary>
         /// Active configuration of user data.
@@ -69,6 +69,13 @@ namespace net.r_eg.DllExport.Wizard
         /// List of used MSBuild properties.
         /// </summary>
         IDictionary<string, string> ConfigProperties { get; }
+
+        /// <summary>
+        /// Returns fullpath to meta library for current project.
+        /// </summary>
+        /// <param name="evaluate">Will return unevaluated value if false.</param>
+        /// <returns></returns>
+        string MetaLib(bool evaluate);
 
         /// <summary>
         /// To configure project via specific action.

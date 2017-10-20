@@ -24,6 +24,7 @@
 
 using System;
 using System.Globalization;
+using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -31,7 +32,7 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public class DllExportCfgTask: Task, ITask, IWizardConfig
+    public class DllExportCfgTask: Task, ITask, IWizardConfig, IDisposable
     {
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
 
@@ -93,7 +94,7 @@ namespace net.r_eg.DllExport.Wizard
         private string _metaLib;
 
         /// <summary>
-        /// Path to .target file of the DllExport.
+        /// Path to .targets file of the DllExport.
         /// </summary>
         [Required]
         public string DxpTarget
@@ -102,6 +103,57 @@ namespace net.r_eg.DllExport.Wizard
             set => _dxpTarget = value.FilePathFormat();
         }
         private string _dxpTarget;
+
+        /// <summary>
+        /// Path to external storage if used.
+        /// </summary>
+        public string StoragePath
+        {
+            get
+            {
+                if(_storagePath == null)
+                {
+                    _storagePath = Path.GetFullPath(
+                        Path.Combine(
+                            SlnDir ?? String.Empty,
+                            ".net.dllexport.targets"
+                        )
+                    );
+                }
+                return _storagePath;
+            }
+            set => _storagePath = value.FilePathFormat();
+        }
+        private string _storagePath;
+
+        /// <summary>
+        /// Raw storage type via CfgStorage. 
+        /// </summary>
+        public string Storage
+        {
+            set
+            {
+                if(String.IsNullOrWhiteSpace(value)) {
+                    CfgStorage = CfgStorageType.Default;
+                    return;
+                }
+
+                CfgStorage = (CfgStorageType)Enum.Parse(
+                    typeof(CfgStorageType), 
+                    value.Trim(), 
+                    true
+                );
+            }
+        }
+
+        /// <summary>
+        /// Where to store configuration data.
+        /// </summary>
+        public CfgStorageType CfgStorage
+        {
+            get;
+            set;
+        } = CfgStorageType.Default;
 
         /// <summary>
         /// Raw type of operation via ActionType.
@@ -113,12 +165,14 @@ namespace net.r_eg.DllExport.Wizard
             {
                 if(String.IsNullOrWhiteSpace(value)) {
                     Type = ActionType.Default;
+                    return;
                 }
-                value = value.Trim();
 
                 Type = (ActionType)Enum.Parse(
-                    typeof(ActionType), 
-                    char.ToUpperInvariant(value[0]) + value.Substring(1).ToLowerInvariant()
+                    typeof(ActionType),
+                    value.Trim(),
+                    //char.ToUpperInvariant(value[0]) + value.Substring(1).ToLowerInvariant()
+                    true
                 );
             }
         }
@@ -129,7 +183,7 @@ namespace net.r_eg.DllExport.Wizard
         public ActionType Type
         {
             get;
-            set;
+            protected set;
         }
 
         /// <summary>
@@ -159,7 +213,7 @@ namespace net.r_eg.DllExport.Wizard
             {
                 System.Threading.Tasks.Task.Factory.StartNew(() =>
                 {
-                    uimsg = new UI.MsgForm();
+                    uimsg = new UI.MsgForm(MsgGuiLevel);
                     UI.App.RunSTA(uimsg);
                     uimsg = null;
                 });
@@ -191,6 +245,7 @@ namespace net.r_eg.DllExport.Wizard
                     LSender.Send(this, $"MetaLib: '{MetaLib}'", Message.Level.Warn);
                     LSender.Send(this, $"DxpTarget: '{DxpTarget}'", Message.Level.Warn);
                     LSender.Send(this, $"RootPath: '{RootPath}'", Message.Level.Warn);
+                    LSender.Send(this, $"Storage: '{CfgStorage}'", Message.Level.Warn);
                     LSender.Send(this, $"Action: '{Type}'", Message.Level.Warn);
 #if DEBUG
                     LSender.Send(this, $"Stack trace: {ex.StackTrace}", Message.Level.Error);
@@ -225,27 +280,47 @@ namespace net.r_eg.DllExport.Wizard
             Console.ResetColor();
         }
 
-        private bool IsGuiMsg(Message.Level level)
-        {
-            if(MsgGuiLevel < 0) {
-                return false;
-            }
-            return ((int)level) >= MsgGuiLevel;
-        }
-
         private bool IsLevelOrAbove(Message.Level lvl1, Message.Level lvl2)
         {
             return ((int)lvl1) >= ((int)lvl2);
+        }
+
+        private void Free()
+        {
+            if(uimsg != null && !uimsg.IsDisposed) {
+                uimsg.Dispose();
+            }
         }
 
         private void OnMsg(object sender, Message e)
         {
             var msg = $"[{e.stamp.ToString(PTN_TIME)}] [{e.type}] {e.content}";
 
-            if(uimsg != null && IsGuiMsg(e.type)) {
-                uimsg.AddMsg(msg);
-            }
+            uimsg?.AddMsg(msg, e.type);
             ConWrite(msg, e.type);
         }
+
+        #region IDisposable
+
+        // To detect redundant calls
+        private bool disposed = false;
+
+        // To correctly implement the disposable pattern.
+        public void Dispose()
+        {
+            Dispose(true);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if(disposed) {
+                return;
+            }
+            disposed = true;
+
+            Free();
+        }
+
+        #endregion
     }
 }

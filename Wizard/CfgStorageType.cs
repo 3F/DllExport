@@ -22,45 +22,20 @@
  * THE SOFTWARE.
 */
 
-using System;
-using net.r_eg.MvsSln.Core;
-using net.r_eg.MvsSln.Extensions;
-
-namespace net.r_eg.DllExport.Wizard.Extensions
+namespace net.r_eg.DllExport.Wizard
 {
-    internal static class XProjectExtension
+    public enum CfgStorageType: uint
     {
-        /// <summary>
-        /// To get property value with global scope by default.
-        /// </summary>
-        /// <param name="xp"></param>
-        /// <param name="name">The name of the property.</param>
-        /// <param name="localScope">If true, will return default value for any special and imported properties type.</param>
-        /// <returns>The evaluated property value, which is never null.</returns>
-        public static string GetPropertyValue(this IXProject xp, string name, bool localScope = false)
-        {
-            return xp?.GetProperty(name, localScope).evaluatedValue;
-        }
+        Default,
 
         /// <summary>
-        /// Get unique identifier for project (not instance).
-        /// TODO: MvsSln should provide similar PId with v2.0.1+
+        /// Each project file e.g.: .csproj, ...
         /// </summary>
-        /// <param name="xp"></param>
-        /// <returns></returns>
-        public static Guid GetPId(this IXProject xp)
-        {
-            if(xp == null) {
-                return Guid.Empty;
-            }
+        ProjectFiles,
 
-            var pItem = xp.ProjectItem;
-            return (
-                pItem.project.pGuid
-                    + pItem.projectConfig 
-                    + pItem.solutionConfig
-            )
-            .Guid();
-        }
+        /// <summary>
+        /// External `.net.dllexport` etc. via import section.
+        /// </summary>
+        TargetsFile,
     }
 }

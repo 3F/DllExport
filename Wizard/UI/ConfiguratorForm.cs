@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -39,6 +40,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         public const int MAX_VIEW_ITEMS = 2;
 
         private IExecutor exec;
+        private CfgStorage storage;
         private FileDialog fdialog;
         private int prevSlnItemIndex = 0;
         private object sync = new object();
@@ -70,6 +72,9 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             RenderSlnFiles();
             comboBoxSln.SelectedIndex = 0;
+
+            storage = new CfgStorage(exec, comboBoxStorage);
+            storage.UpdateItem();
 
             Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
         }
@@ -148,6 +153,11 @@ namespace net.r_eg.DllExport.Wizard.UI
             }
             projectItems.Reset();
 
+            exec.UpdateCfgStorageType(sln);
+            storage.UpdateItem();
+
+            toolTipMain.SetToolTip(comboBoxSln, sln);
+
             var projects = exec.UniqueProjectsBy(sln);
             if(projects != null)
             {
@@ -198,6 +208,10 @@ namespace net.r_eg.DllExport.Wizard.UI
                 if(!DDNS.IsValidNS(prj.Config.Namespace)) {
                     MessageBox.Show($"Fix incorrect namespace before continue:\n\n'{prj.Config.Namespace}'", "Incorrect data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
+                }
+
+                if(exec.Config.CfgStorage == CfgStorageType.TargetsFile) {
+                    exec.TargetsFile?.Configure(ActionType.Configure, prj);
                 }
                 prj.Configure(ActionType.Configure);
             }

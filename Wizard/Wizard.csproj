@@ -55,6 +55,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Guids.cs" />
+    <Compile Include="CfgStorageType.cs" />
     <Compile Include="ActionType.cs" />
     <Compile Include="Executor.cs" />
     <Compile Include="Extensions\XProjectExtension.cs" />
@@ -67,6 +69,8 @@
     <Compile Include="MSBuildProperties.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="IProject.cs" />
+    <Compile Include="ITargetsFile.cs" />
+    <Compile Include="TargetsFile.cs" />
     <Compile Include="Project.cs" />
     <Compile Include="IUserConfig.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -74,6 +78,7 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Storage.cs" />
     <Compile Include="UI\Controls\ProjectItemsControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -117,6 +122,7 @@
     <None Include="installer.bat" />
     <None Include="net.r_eg.DllExport.Wizard.targets">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
     </None>
     <None Include="packages.config" />
   </ItemGroup>

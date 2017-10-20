@@ -36,6 +36,8 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         IWizardConfig Config { get; }
 
+        ISender Log { get; }
+
         /// <summary>
         /// ddNS feature core.
         /// </summary>
@@ -45,6 +47,11 @@ namespace net.r_eg.DllExport.Wizard
         /// List of available .sln files.
         /// </summary>
         IEnumerable<string> SlnFiles { get; }
+
+        /// <summary>
+        /// Access to used external .targets.
+        /// </summary>
+        ITargetsFile TargetsFile { get; }
 
         /// <summary>
         /// List of all found projects with different configurations.
@@ -61,13 +68,15 @@ namespace net.r_eg.DllExport.Wizard
         IEnumerable<IProject> UniqueProjectsBy(string sln);
 
         /// <summary>
-        /// Access to logger.
-        /// </summary>
-        ISender Log { get; }
-
-        /// <summary>
         /// To start process of the required configuration.
         /// </summary>
         void Configure();
+
+        /// <summary>
+        /// Updates CfgStorage type via current state from selected .sln.
+        /// </summary>
+        /// <param name="sln">Path to .sln</param>
+        /// <returns></returns>
+        bool UpdateCfgStorageType(string sln);
     }
 }

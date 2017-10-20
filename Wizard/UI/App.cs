@@ -43,6 +43,10 @@ namespace net.r_eg.DllExport.Wizard.UI
             thread.SetApartmentState(ApartmentState.STA);
             thread.Start();
             thread.Join();
+
+            if(!frm.IsDisposed) {
+                frm.Dispose();
+            }
         }
 
         private static void Run(Form frm)

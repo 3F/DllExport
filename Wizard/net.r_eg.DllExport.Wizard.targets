@@ -13,13 +13,15 @@
       <wPkgPath Condition="'$(wPkgPath)' == ''">packages\DllExport</wPkgPath>
       <wMetaLib Condition="'$(wMetaLib)' == ''">tools\raw\lib\net20\DllExport.dll</wMetaLib>
       <wDxpTarget Condition="'$(wDxpTarget)' == ''">tools\net.r_eg.DllExport.targets</wDxpTarget>
-      <wAction Condition="'$(wAction)' == ''">Restore</wAction>
+      <wAction Condition="'$(wAction)' == ''">Restore</wAction> <!-- Action by default. enum `ActionType`. -->
     </PropertyGroup>
     
     <PropertyGroup Label="Optional">
       <!-- SlnFile: Optional predefined .sln file to process via the restore operations etc. -->
       <wSlnFile Condition="'$(wSlnFile)' == ''"></wSlnFile> <!-- will be used the first found .sln file if it's empty -->
       <wRootPath Condition="'$(wRootPath)' == ''"></wRootPath> <!-- Optional root path of user paths. Affects on wSlnFile, wSlnDir, wPkgPath -->
+      <wStoragePath Condition="'$(wStoragePath)' == ''"></wStoragePath> <!-- Optional path to external storage if used. -->
+      <wStorage Condition="'$(wStorage)' == ''">Default</wStorage> <!-- Where to store configuration data. enum `CfgStorageType`. -->
     </PropertyGroup>
     
     <DllExportCfgTask 
@@ -29,6 +31,8 @@
         PkgPath="$(wPkgPath)" 
         MetaLib="$(wMetaLib)" 
         DxpTarget="$(wDxpTarget)" 
+        StoragePath="$(wStoragePath)" 
+        Storage="$(wStorage)" 
         Action="$(wAction)" 
         MsgGuiLevel="-1" 
     />
