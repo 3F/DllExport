@@ -38,33 +38,44 @@
             this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
+            this.chkIntermediateFiles = new System.Windows.Forms.CheckBox();
+            this.textBoxCustomILAsm = new System.Windows.Forms.TextBox();
+            this.chkCustomILAsm = new System.Windows.Forms.CheckBox();
             this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
             this.rbCecil = new System.Windows.Forms.RadioButton();
             this.rbDirect = new System.Windows.Forms.RadioButton();
             this.panelNScombo = new System.Windows.Forms.Panel();
             this.comboNS = new System.Windows.Forms.ComboBox();
+            this.labelBackgroundNS = new System.Windows.Forms.Label();
             this.linkDDNS = new System.Windows.Forms.LinkLabel();
             this.groupNS = new System.Windows.Forms.GroupBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.numTimeout = new System.Windows.Forms.NumericUpDown();
             this.gbProject = new System.Windows.Forms.GroupBox();
+            this.textBoxProjectPath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
             this.textBoxIdent = new System.Windows.Forms.TextBox();
             this.chkInstalled = new System.Windows.Forms.CheckBox();
-            this.panel1 = new System.Windows.Forms.Panel();
+            this.panelBottomLine = new System.Windows.Forms.Panel();
             this.panelStatus = new System.Windows.Forms.Panel();
+            this.groupTimeout = new System.Windows.Forms.GroupBox();
+            this.labelTimeout = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.numOrdinal)).BeginInit();
             this.groupCompiler.SuspendLayout();
             this.groupPlatform.SuspendLayout();
             this.panelNScombo.SuspendLayout();
             this.groupNS.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
             this.gbProject.SuspendLayout();
+            this.groupTimeout.SuspendLayout();
             this.SuspendLayout();
             // 
             // linkOurILAsm
             // 
             this.linkOurILAsm.AutoSize = true;
-            this.linkOurILAsm.Location = new System.Drawing.Point(292, 61);
+            this.linkOurILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkOurILAsm.Location = new System.Drawing.Point(292, 60);
             this.linkOurILAsm.Name = "linkOurILAsm";
             this.linkOurILAsm.Size = new System.Drawing.Size(13, 13);
             this.linkOurILAsm.TabIndex = 7;
@@ -81,10 +92,12 @@
             this.chkOurILAsm.TabIndex = 6;
             this.chkOurILAsm.Text = "Use our IL Assembler. Try to fix 0x13 / 0x11 opcodes.";
             this.chkOurILAsm.UseVisualStyleBackColor = true;
+            this.chkOurILAsm.CheckedChanged += new System.EventHandler(this.chkOurILAsm_CheckedChanged);
             // 
             // linkExpLib
             // 
             this.linkExpLib.AutoSize = true;
+            this.linkExpLib.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.linkExpLib.Location = new System.Drawing.Point(248, 40);
             this.linkExpLib.Name = "linkExpLib";
             this.linkExpLib.Size = new System.Drawing.Size(13, 13);
@@ -96,7 +109,8 @@
             // linkOrdinals
             // 
             this.linkOrdinals.AutoSize = true;
-            this.linkOrdinals.Location = new System.Drawing.Point(214, 16);
+            this.linkOrdinals.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkOrdinals.Location = new System.Drawing.Point(211, 17);
             this.linkOrdinals.Name = "linkOrdinals";
             this.linkOrdinals.Size = new System.Drawing.Size(13, 13);
             this.linkOrdinals.TabIndex = 4;
@@ -131,7 +145,7 @@
             // labelOrdinals
             // 
             this.labelOrdinals.AutoSize = true;
-            this.labelOrdinals.Location = new System.Drawing.Point(100, 19);
+            this.labelOrdinals.Location = new System.Drawing.Point(99, 19);
             this.labelOrdinals.Name = "labelOrdinals";
             this.labelOrdinals.Size = new System.Drawing.Size(110, 13);
             this.labelOrdinals.TabIndex = 1;
@@ -161,6 +175,9 @@
             // 
             // groupCompiler
             // 
+            this.groupCompiler.Controls.Add(this.chkIntermediateFiles);
+            this.groupCompiler.Controls.Add(this.textBoxCustomILAsm);
+            this.groupCompiler.Controls.Add(this.chkCustomILAsm);
             this.groupCompiler.Controls.Add(this.linkOurILAsm);
             this.groupCompiler.Controls.Add(this.chkOurILAsm);
             this.groupCompiler.Controls.Add(this.linkExpLib);
@@ -168,12 +185,42 @@
             this.groupCompiler.Controls.Add(this.chkGenExpLib);
             this.groupCompiler.Controls.Add(this.numOrdinal);
             this.groupCompiler.Controls.Add(this.labelOrdinals);
-            this.groupCompiler.Location = new System.Drawing.Point(130, 118);
+            this.groupCompiler.Location = new System.Drawing.Point(130, 82);
             this.groupCompiler.Name = "groupCompiler";
-            this.groupCompiler.Size = new System.Drawing.Size(313, 84);
+            this.groupCompiler.Size = new System.Drawing.Size(313, 120);
             this.groupCompiler.TabIndex = 9;
             this.groupCompiler.TabStop = false;
             this.groupCompiler.Text = "Compiler settings";
+            // 
+            // chkIntermediateFiles
+            // 
+            this.chkIntermediateFiles.AutoSize = true;
+            this.chkIntermediateFiles.Location = new System.Drawing.Point(10, 101);
+            this.chkIntermediateFiles.Name = "chkIntermediateFiles";
+            this.chkIntermediateFiles.Size = new System.Drawing.Size(254, 17);
+            this.chkIntermediateFiles.TabIndex = 11;
+            this.chkIntermediateFiles.Text = "Keep Intermediate Files (IL Code, Resources, ...)";
+            this.chkIntermediateFiles.UseVisualStyleBackColor = true;
+            // 
+            // textBoxCustomILAsm
+            // 
+            this.textBoxCustomILAsm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
+            this.textBoxCustomILAsm.Location = new System.Drawing.Point(103, 79);
+            this.textBoxCustomILAsm.Name = "textBoxCustomILAsm";
+            this.textBoxCustomILAsm.Size = new System.Drawing.Size(204, 20);
+            this.textBoxCustomILAsm.TabIndex = 9;
+            // 
+            // chkCustomILAsm
+            // 
+            this.chkCustomILAsm.AutoSize = true;
+            this.chkCustomILAsm.Location = new System.Drawing.Point(10, 81);
+            this.chkCustomILAsm.Name = "chkCustomILAsm";
+            this.chkCustomILAsm.Size = new System.Drawing.Size(96, 17);
+            this.chkCustomILAsm.TabIndex = 8;
+            this.chkCustomILAsm.Text = "Custom ILAsm:";
+            this.chkCustomILAsm.UseVisualStyleBackColor = true;
+            this.chkCustomILAsm.CheckedChanged += new System.EventHandler(this.chkCustomILAsm_CheckedChanged);
             // 
             // rbPlatformX86
             // 
@@ -190,7 +237,7 @@
             this.groupPlatform.Controls.Add(this.rbPlatformAnyCPU);
             this.groupPlatform.Controls.Add(this.rbPlatformX64);
             this.groupPlatform.Controls.Add(this.rbPlatformX86);
-            this.groupPlatform.Location = new System.Drawing.Point(5, 118);
+            this.groupPlatform.Location = new System.Drawing.Point(5, 82);
             this.groupPlatform.Name = "groupPlatform";
             this.groupPlatform.Size = new System.Drawing.Size(119, 84);
             this.groupPlatform.TabIndex = 8;
@@ -201,7 +248,7 @@
             // 
             this.rbCecil.AutoSize = true;
             this.rbCecil.Checked = true;
-            this.rbCecil.Location = new System.Drawing.Point(384, 41);
+            this.rbCecil.Location = new System.Drawing.Point(384, 7);
             this.rbCecil.Name = "rbCecil";
             this.rbCecil.Size = new System.Drawing.Size(48, 17);
             this.rbCecil.TabIndex = 4;
@@ -212,7 +259,7 @@
             // rbDirect
             // 
             this.rbDirect.AutoSize = true;
-            this.rbDirect.Location = new System.Drawing.Point(297, 41);
+            this.rbDirect.Location = new System.Drawing.Point(297, 7);
             this.rbDirect.Name = "rbDirect";
             this.rbDirect.Size = new System.Drawing.Size(85, 17);
             this.rbDirect.TabIndex = 5;
@@ -223,10 +270,10 @@
             // 
             this.panelNScombo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(92)))), ((int)(((byte)(158)))), ((int)(((byte)(207)))));
             this.panelNScombo.Controls.Add(this.comboNS);
-            this.panelNScombo.Location = new System.Drawing.Point(11, 16);
+            this.panelNScombo.Location = new System.Drawing.Point(5, 25);
             this.panelNScombo.Name = "panelNScombo";
             this.panelNScombo.Padding = new System.Windows.Forms.Padding(1);
-            this.panelNScombo.Size = new System.Drawing.Size(421, 23);
+            this.panelNScombo.Size = new System.Drawing.Size(429, 23);
             this.panelNScombo.TabIndex = 3;
             // 
             // comboNS
@@ -236,16 +283,28 @@
             this.comboNS.FormattingEnabled = true;
             this.comboNS.Location = new System.Drawing.Point(1, 1);
             this.comboNS.Name = "comboNS";
-            this.comboNS.Size = new System.Drawing.Size(419, 21);
+            this.comboNS.Size = new System.Drawing.Size(427, 21);
             this.comboNS.TabIndex = 1;
             this.comboNS.TextUpdate += new System.EventHandler(this.comboNS_TextUpdate);
+            // 
+            // labelBackgroundNS
+            // 
+            this.labelBackgroundNS.AutoSize = true;
+            this.labelBackgroundNS.BackColor = System.Drawing.SystemColors.Control;
+            this.labelBackgroundNS.ForeColor = System.Drawing.Color.DimGray;
+            this.labelBackgroundNS.Location = new System.Drawing.Point(5, 8);
+            this.labelBackgroundNS.Name = "labelBackgroundNS";
+            this.labelBackgroundNS.Size = new System.Drawing.Size(127, 13);
+            this.labelBackgroundNS.TabIndex = 6;
+            this.labelBackgroundNS.Text = "Namespace for DllExport:";
             // 
             // linkDDNS
             // 
             this.linkDDNS.AutoSize = true;
-            this.linkDDNS.Location = new System.Drawing.Point(8, 43);
+            this.linkDDNS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkDDNS.Location = new System.Drawing.Point(140, 8);
             this.linkDDNS.Name = "linkDDNS";
-            this.linkDDNS.Size = new System.Drawing.Size(100, 13);
+            this.linkDDNS.Size = new System.Drawing.Size(99, 13);
             this.linkDDNS.TabIndex = 2;
             this.linkDDNS.TabStop = true;
             this.linkDDNS.Text = "? More about ddNS";
@@ -253,91 +312,148 @@
             // 
             // groupNS
             // 
+            this.groupNS.Controls.Add(this.labelBackgroundNS);
+            this.groupNS.Controls.Add(this.panelNScombo);
             this.groupNS.Controls.Add(this.rbCecil);
             this.groupNS.Controls.Add(this.rbDirect);
-            this.groupNS.Controls.Add(this.panelNScombo);
             this.groupNS.Controls.Add(this.linkDDNS);
-            this.groupNS.Location = new System.Drawing.Point(5, 49);
+            this.groupNS.Location = new System.Drawing.Point(5, 30);
             this.groupNS.Name = "groupNS";
-            this.groupNS.Size = new System.Drawing.Size(438, 63);
+            this.groupNS.Size = new System.Drawing.Size(438, 52);
             this.groupNS.TabIndex = 7;
             this.groupNS.TabStop = false;
-            this.groupNS.Text = "Namespace for DllExport";
+            // 
+            // numTimeout
+            // 
+            this.numTimeout.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.numTimeout.Increment = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numTimeout.Location = new System.Drawing.Point(5, 12);
+            this.numTimeout.Maximum = new decimal(new int[] {
+            10000000,
+            0,
+            0,
+            0});
+            this.numTimeout.Name = "numTimeout";
+            this.numTimeout.Size = new System.Drawing.Size(64, 20);
+            this.numTimeout.TabIndex = 10;
+            this.numTimeout.ThousandsSeparator = true;
+            this.toolTip.SetToolTip(this.numTimeout, "Timeout in Milliseconds");
+            this.numTimeout.Value = new decimal(new int[] {
+            30000,
+            0,
+            0,
+            0});
             // 
             // gbProject
             // 
+            this.gbProject.Controls.Add(this.textBoxProjectPath);
             this.gbProject.Controls.Add(this.btnBrowse);
             this.gbProject.Controls.Add(this.textBoxIdent);
             this.gbProject.Controls.Add(this.chkInstalled);
-            this.gbProject.Location = new System.Drawing.Point(6, 0);
+            this.gbProject.Location = new System.Drawing.Point(5, -4);
             this.gbProject.Name = "gbProject";
-            this.gbProject.Size = new System.Drawing.Size(437, 43);
+            this.gbProject.Size = new System.Drawing.Size(438, 40);
             this.gbProject.TabIndex = 11;
             this.gbProject.TabStop = false;
-            this.gbProject.Text = "Project: ";
+            // 
+            // textBoxProjectPath
+            // 
+            this.textBoxProjectPath.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.textBoxProjectPath.Location = new System.Drawing.Point(71, 21);
+            this.textBoxProjectPath.Name = "textBoxProjectPath";
+            this.textBoxProjectPath.ReadOnly = true;
+            this.textBoxProjectPath.Size = new System.Drawing.Size(304, 13);
+            this.textBoxProjectPath.TabIndex = 4;
+            this.textBoxProjectPath.Text = "<Project Path>";
             // 
             // btnBrowse
             // 
             this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnBrowse.Location = new System.Drawing.Point(367, 13);
+            this.btnBrowse.Location = new System.Drawing.Point(380, 11);
             this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(63, 23);
+            this.btnBrowse.Size = new System.Drawing.Size(54, 23);
             this.btnBrowse.TabIndex = 3;
             this.btnBrowse.Text = "Browse";
             this.btnBrowse.UseVisualStyleBackColor = true;
             this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
             // 
-            // textBoxProjectGuid
+            // textBoxIdent
             // 
             this.textBoxIdent.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBoxIdent.Location = new System.Drawing.Point(126, 20);
-            this.textBoxIdent.Name = "textBoxProjectGuid";
+            this.textBoxIdent.Font = new System.Drawing.Font("Microsoft Sans Serif", 7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.textBoxIdent.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.textBoxIdent.Location = new System.Drawing.Point(71, 7);
+            this.textBoxIdent.Name = "textBoxIdent";
             this.textBoxIdent.ReadOnly = true;
-            this.textBoxIdent.Size = new System.Drawing.Size(268, 13);
+            this.textBoxIdent.Size = new System.Drawing.Size(304, 11);
             this.textBoxIdent.TabIndex = 2;
             this.textBoxIdent.Text = "{00000000-0000-0000-0000-000000000000}";
             // 
             // chkInstalled
             // 
             this.chkInstalled.AutoSize = true;
-            this.chkInstalled.Location = new System.Drawing.Point(42, 19);
+            this.chkInstalled.Location = new System.Drawing.Point(5, 14);
             this.chkInstalled.Name = "chkInstalled";
-            this.chkInstalled.Size = new System.Drawing.Size(80, 17);
+            this.chkInstalled.Size = new System.Drawing.Size(68, 17);
             this.chkInstalled.TabIndex = 0;
-            this.chkInstalled.Text = "Installed   - ";
+            this.chkInstalled.Text = "Installed:";
             this.chkInstalled.UseVisualStyleBackColor = true;
             this.chkInstalled.CheckedChanged += new System.EventHandler(this.chkInstalled_CheckedChanged);
             // 
-            // panel1
+            // panelBottomLine
             // 
-            this.panel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.panel1.BackColor = System.Drawing.Color.Gray;
-            this.panel1.Location = new System.Drawing.Point(6, 204);
-            this.panel1.Margin = new System.Windows.Forms.Padding(0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(435, 4);
-            this.panel1.TabIndex = 12;
+            this.panelBottomLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.panelBottomLine.BackColor = System.Drawing.Color.Gray;
+            this.panelBottomLine.Location = new System.Drawing.Point(6, 202);
+            this.panelBottomLine.Margin = new System.Windows.Forms.Padding(0);
+            this.panelBottomLine.Name = "panelBottomLine";
+            this.panelBottomLine.Size = new System.Drawing.Size(438, 2);
+            this.panelBottomLine.TabIndex = 12;
             // 
             // panelStatus
             // 
             this.panelStatus.BackColor = System.Drawing.Color.DarkRed;
-            this.panelStatus.Location = new System.Drawing.Point(0, 7);
+            this.panelStatus.Location = new System.Drawing.Point(0, 2);
             this.panelStatus.Name = "panelStatus";
-            this.panelStatus.Size = new System.Drawing.Size(4, 193);
+            this.panelStatus.Size = new System.Drawing.Size(4, 200);
             this.panelStatus.TabIndex = 0;
+            // 
+            // groupTimeout
+            // 
+            this.groupTimeout.Controls.Add(this.labelTimeout);
+            this.groupTimeout.Controls.Add(this.numTimeout);
+            this.groupTimeout.Location = new System.Drawing.Point(5, 163);
+            this.groupTimeout.Name = "groupTimeout";
+            this.groupTimeout.Size = new System.Drawing.Size(119, 39);
+            this.groupTimeout.TabIndex = 9;
+            this.groupTimeout.TabStop = false;
+            // 
+            // labelTimeout
+            // 
+            this.labelTimeout.AutoSize = true;
+            this.labelTimeout.Location = new System.Drawing.Point(71, 15);
+            this.labelTimeout.Name = "labelTimeout";
+            this.labelTimeout.Size = new System.Drawing.Size(45, 13);
+            this.labelTimeout.TabIndex = 11;
+            this.labelTimeout.Text = "Timeout";
             // 
             // ProjectItemControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.Controls.Add(this.panelBottomLine);
+            this.Controls.Add(this.groupPlatform);
+            this.Controls.Add(this.groupTimeout);
             this.Controls.Add(this.panelStatus);
-            this.Controls.Add(this.panel1);
             this.Controls.Add(this.gbProject);
             this.Controls.Add(this.groupCompiler);
-            this.Controls.Add(this.groupPlatform);
             this.Controls.Add(this.groupNS);
             this.Name = "ProjectItemControl";
-            this.Size = new System.Drawing.Size(444, 210);
+            this.Size = new System.Drawing.Size(444, 204);
             ((System.ComponentModel.ISupportInitialize)(this.numOrdinal)).EndInit();
             this.groupCompiler.ResumeLayout(false);
             this.groupCompiler.PerformLayout();
@@ -346,8 +462,11 @@
             this.panelNScombo.ResumeLayout(false);
             this.groupNS.ResumeLayout(false);
             this.groupNS.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).EndInit();
             this.gbProject.ResumeLayout(false);
             this.gbProject.PerformLayout();
+            this.groupTimeout.ResumeLayout(false);
+            this.groupTimeout.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -375,8 +494,16 @@
         private System.Windows.Forms.GroupBox gbProject;
         private System.Windows.Forms.Button btnBrowse;
         private System.Windows.Forms.CheckBox chkInstalled;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelBottomLine;
         private System.Windows.Forms.TextBox textBoxIdent;
         private System.Windows.Forms.Panel panelStatus;
+        private System.Windows.Forms.CheckBox chkIntermediateFiles;
+        private System.Windows.Forms.NumericUpDown numTimeout;
+        private System.Windows.Forms.TextBox textBoxCustomILAsm;
+        private System.Windows.Forms.CheckBox chkCustomILAsm;
+        private System.Windows.Forms.GroupBox groupTimeout;
+        private System.Windows.Forms.Label labelBackgroundNS;
+        private System.Windows.Forms.TextBox textBoxProjectPath;
+        private System.Windows.Forms.Label labelTimeout;
     }
 }

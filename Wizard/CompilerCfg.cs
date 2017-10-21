@@ -26,6 +26,9 @@ namespace net.r_eg.DllExport.Wizard
 {
     public struct CompilerCfg
     {
+        public const string PATH_CTM_ILASM = @"$(SolutionDir)bin\";
+        public const int TIMEOUT_EXEC = 30000;
+
         /// <summary>
         /// Base for ordinals.
         /// </summary>
@@ -40,5 +43,20 @@ namespace net.r_eg.DllExport.Wizard
         /// To use our ILAsm / ILDasm if true.
         /// </summary>
         public bool ourILAsm;
+
+        /// <summary>
+        /// Path to custom ILAsm, or null if not used.
+        /// </summary>
+        public string customILAsm;
+
+        /// <summary>
+        /// Flag to keep intermediate Files (IL Code, Resources, ...).
+        /// </summary>
+        public bool intermediateFiles;
+
+        /// <summary>
+        /// Timeout of execution in milliseconds.
+        /// </summary>
+        public int timeout;
     }
 }

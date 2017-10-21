@@ -41,10 +41,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         public string ProjectPath
         {
-            get => gbProject.Text;
+            get => textBoxProjectPath.Text;
             set {
-                gbProject.Text = value;
-                toolTip.SetToolTip(gbProject, gbProject.Text);
+                textBoxProjectPath.Text = value;
+                toolTip.SetToolTip(textBoxProjectPath, textBoxProjectPath.Text);
             }
         }
 
@@ -82,7 +82,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         public bool UseCecil
         {
             get => rbCecil.Checked;
-            set {
+            set
+            {
                 if(value) {
                     rbCecil.Checked = true;
                 }
@@ -102,15 +103,30 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             get => new CompilerCfg()
             {
-                ordinalsBase    = (int)numOrdinal.Value,
-                genExpLib       = chkGenExpLib.Checked,
-                ourILAsm        = chkOurILAsm.Checked
+                ordinalsBase        = (int)numOrdinal.Value,
+                genExpLib           = chkGenExpLib.Checked,
+                ourILAsm            = chkOurILAsm.Checked,
+                customILAsm         = chkCustomILAsm.Checked ? textBoxCustomILAsm.Text : null,
+                intermediateFiles   = chkIntermediateFiles.Checked,
+                timeout             = (int)numTimeout.Value
             };
-
-            set {
+            set
+            {
                 numOrdinal.Value        = value.ordinalsBase;
                 chkGenExpLib.Checked    = value.genExpLib;
                 chkOurILAsm.Checked     = value.ourILAsm;
+                numTimeout.Value        = value.timeout;
+
+                if(String.IsNullOrWhiteSpace(value.customILAsm)) {
+                    textBoxCustomILAsm.Text = CompilerCfg.PATH_CTM_ILASM;
+                    chkCustomILAsm.Checked  = false;
+                }
+                else {
+                    textBoxCustomILAsm.Text = value.customILAsm;
+                    chkCustomILAsm.Checked  = true;
+                }
+
+                chkIntermediateFiles.Checked = value.intermediateFiles;
             }
         }
 
@@ -146,6 +162,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
             InitializeComponent();
             EX_HEIGHT = Height;
+
+            textBoxIdent.BackColor = System.Drawing.SystemColors.Control;
+            textBoxIdent.ForeColor = System.Drawing.Color.DimGray;
 
             InstalledStatus(false);
         }
@@ -195,7 +214,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
             else {
                 panelStatus.BackColor = System.Drawing.Color.FromArgb(168, 47, 17);
-                Height = gbProject.Location.X + gbProject.Height;
+                Height = gbProject.Location.Y + gbProject.Height;
             }
         }
 
@@ -266,6 +285,24 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private void chkInstalled_CheckedChanged(object sender, EventArgs e)
         {
             InstalledStatus(chkInstalled.Checked);
+        }
+
+        private void chkCustomILAsm_CheckedChanged(object sender, EventArgs e)
+        {
+            if(chkCustomILAsm.Checked) {
+                chkOurILAsm.Checked = false;
+                textBoxCustomILAsm.ForeColor = System.Drawing.SystemColors.WindowText;
+            }
+            else {
+                textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
+            }
+        }
+
+        private void chkOurILAsm_CheckedChanged(object sender, EventArgs e)
+        {
+            if(chkOurILAsm.Checked) {
+                chkCustomILAsm.Checked = false;
+            }
         }
     }
 }

@@ -43,6 +43,18 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         }
 
         /// <summary>
+        /// To get unevaluated property value with global scope by default.
+        /// </summary>
+        /// <param name="xp"></param>
+        /// <param name="name">The name of the property.</param>
+        /// <param name="localScope">If true, will return default value for any special and imported properties type.</param>
+        /// <returns>The unevaluated property value, which is never null.</returns>
+        public static string GetUnevaluatedPropertyValue(this IXProject xp, string name, bool localScope = false)
+        {
+            return xp?.GetProperty(name, localScope).unevaluatedValue;
+        }
+
+        /// <summary>
         /// Get unique identifier for project (not instance).
         /// TODO: MvsSln should provide similar PId with v2.0.1+
         /// </summary>

@@ -7,7 +7,7 @@
   
   <PropertyGroup>
     <DllExportRootPkg Condition="'$(DllExportRootPkg)' == ''">$(MSBuildThisFileDirectory)..\</DllExportRootPkg>
-    <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(VsInstallRoot)\</DllExportVSRoot>
+    <DllExportVSRoot Condition="'$(DllExportVSRoot)' == '' And '$(VsInstallRoot)' != ''">$(VsInstallRoot)\</DllExportVSRoot>
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(DevEnvDir)\..\..\</DllExportVSRoot>
     <DllExportVSBin Condition="'$(DllExportVSBin)' == ''">$(DllExportVSRoot)Common7\IDE\</DllExportVSBin>
 
@@ -20,6 +20,7 @@
     <DllExportMetaLibName Condition="'$(DllExportMetaLibName)' == ''">DllExport.dll</DllExportMetaLibName>
     <DllExportMetaLibFullPath Condition="'$(DllExportMetaLibFullPath)' == ''">$(DllExportLibFullPath)$(DllExportMetaLibName)</DllExportMetaLibFullPath>
     <DllExportOurILAsmPath Condition="'$(DllExportOurILAsmPath)' == ''">$(DllExportRootPkg)$(DllExportToolsPath)coreclr\</DllExportOurILAsmPath>
+    <DllExportILAsmCustomPath Condition="'$(DllExportILAsmCustomPath)' == ''"></DllExportILAsmCustomPath>
 
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)' != ''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullName>
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)' == ''">$(DllExportMetaLibAttr)</DllExportAttributeFullName>
@@ -31,19 +32,19 @@
       <DllExportCpuType Condition="'$(DllExportCpuType)' == ''">$(CpuType)</DllExportCpuType>
       <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)' == ''">$(DebugSymbols)</DllExportEmitDebugSymbols>
       <DllExportLeaveIntermediateFiles Condition="'$(DllExportLeaveIntermediateFiles)' == ''">false</DllExportLeaveIntermediateFiles>
-      <DllExportTimeout Condition="'$(DllExportTimeout)' == ''">$(DllExportTimeout)</DllExportTimeout>
+      <DllExportTimeout Condition="'$(DllExportTimeout)' == ''">45000</DllExportTimeout>
       <DllExportKeyContainer Condition="'$(DllExportKeyContainer)' == ''">$(KeyContainerName)$(AssemblyKeyContainerName)</DllExportKeyContainer>
       <DllExportKeyFile Condition="'$(DllExportKeyFile)' == ''">$(KeyOriginatorFile)</DllExportKeyFile>
       <DllExportProjectDirectory Condition="'$(DllExportProjectDirectory)' == ''">$(MSBuildProjectDirectory)</DllExportProjectDirectory>
       <DllExportInputFileName Condition="'$(DllExportInputFileName)' == ''">$(TargetPath)</DllExportInputFileName>
-      <DllExportFrameworkPath Condition="'$(DllExportFrameworkPath)' == ''">$(TargetedFrameworkDir);$(TargetFrameworkDirectory)</DllExportFrameworkPath>
+      <DllExportFrameworkPath Condition="'$(DllExportFrameworkPath)' == ''">$(DllExportILAsmCustomPath);$(TargetedFrameworkDir);$(TargetFrameworkDirectory)</DllExportFrameworkPath>
       <DllExportLibToolPath Condition="'$(DllExportLibToolPath)' == ''">$(DllExportVSRoot)VC\bin</DllExportLibToolPath>
       <DllExportLibToolDllPath Condition="'$(DllExportLibToolDllPath)' == ''">$(DllExportVSBin)</DllExportLibToolDllPath>
       <DllExportTargetFrameworkVersion Condition="'$(DllExportTargetFrameworkVersion)' == ''">$(TargetFrameworkVersion)</DllExportTargetFrameworkVersion>
-      <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
+      <DllExportSdkPath Condition="'$(DllExportSdkPath)' == ''">$(DllExportILAsmCustomPath);$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
       <DllExportDDNSCecil Condition="'$(DllExportDDNSCecil)' == ''">true</DllExportDDNSCecil>
-      <DllExportOurILAsm Condition="'$(DllExportOurILAsm)' == ''">true</DllExportOurILAsm>
+      <DllExportOurILAsm Condition="'$(DllExportOurILAsm)' == ''">false</DllExportOurILAsm>
       <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)' == ''">1</DllExportOrdinalsBase>
       <DllExportGenExpLib Condition="'$(DllExportGenExpLib)' == ''">false</DllExportGenExpLib>
       <DllExportOurILAsmPath Condition="'$(DllExportOurILAsm)' != 'true'"></DllExportOurILAsmPath>

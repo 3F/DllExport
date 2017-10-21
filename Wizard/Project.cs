@@ -210,6 +210,9 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_DDNS_CECIL,
                 MSBuildProperties.DXP_GEN_EXP_LIB,
                 MSBuildProperties.DXP_OUR_ILASM,
+                MSBuildProperties.DXP_CUSTOM_ILASM,
+                MSBuildProperties.DXP_INTERMEDIATE_FILES,
+                MSBuildProperties.DXP_TIMEOUT,
                 MSBuildProperties.PRJ_PLATFORM
             );
 
@@ -288,7 +291,8 @@ namespace net.r_eg.DllExport.Wizard
                 UseCecil    = true,
                 Platform    = Platform.x86x64,
                 Compiler = new CompilerCfg() {
-                    ordinalsBase = 1
+                    ordinalsBase    = 1,
+                    timeout         = CompilerCfg.TIMEOUT_EXEC
                 },
             };
         }
@@ -366,6 +370,19 @@ namespace net.r_eg.DllExport.Wizard
 
             SetProperty(MSBuildProperties.DXP_OUR_ILASM, Config.Compiler.ourILAsm);
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
+
+            if(Config.Compiler.customILAsm != null) {
+                SetProperty(MSBuildProperties.DXP_CUSTOM_ILASM, Config.Compiler.customILAsm);
+                Log.send(this, $"Set path to custom ILAsm: {Config.Compiler.customILAsm}");
+            }
+
+            SetProperty(MSBuildProperties.DXP_INTERMEDIATE_FILES, Config.Compiler.intermediateFiles);
+            Log.send(this, $"Flag to keep intermediate Files (IL Code, Resources, ...): {Config.Compiler.intermediateFiles}");
+
+            if(Config.Compiler.timeout >= 0) {
+                SetProperty(MSBuildProperties.DXP_TIMEOUT, Config.Compiler.timeout);
+                Log.send(this, $"Timeout of execution in milliseconds: {Config.Compiler.timeout}");
+            }
         }
 
         protected void CfgCommonData()

@@ -153,21 +153,26 @@ namespace net.r_eg.DllExport.Wizard
             };
         }
 
-        public UserConfig(IWizardConfig cfg, IXProject project)
+        public UserConfig(IWizardConfig cfg, IXProject xp)
             : this(cfg)
         {
-            if(project == null) {
+            if(xp == null) {
                 return;
             }
 
-            Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, project);
-            Platform    = GetPlatform(GetValue(MSBuildProperties.PRJ_PLATFORM, project));
-            UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, project).ToBoolean();
+            Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, xp);
+            Platform    = GetPlatform(GetValue(MSBuildProperties.PRJ_PLATFORM, xp));
+            UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, xp).ToBoolean();
+
+            var rawTimeout = GetValue(MSBuildProperties.DXP_TIMEOUT, xp);
 
             Compiler = new CompilerCfg() {
-                genExpLib       = GetValue(MSBuildProperties.DXP_GEN_EXP_LIB, project).ToBoolean(),
-                ordinalsBase    = GetValue(MSBuildProperties.DXP_ORDINALS_BASE, project).ToInteger(),
-                ourILAsm        = GetValue(MSBuildProperties.DXP_OUR_ILASM, project).ToBoolean()
+                genExpLib           = GetValue(MSBuildProperties.DXP_GEN_EXP_LIB, xp).ToBoolean(),
+                ordinalsBase        = GetValue(MSBuildProperties.DXP_ORDINALS_BASE, xp).ToInteger(),
+                ourILAsm            = GetValue(MSBuildProperties.DXP_OUR_ILASM, xp).ToBoolean(),
+                customILAsm         = GetUnevaluatedValue(MSBuildProperties.DXP_CUSTOM_ILASM, xp),
+                intermediateFiles   = GetValue(MSBuildProperties.DXP_INTERMEDIATE_FILES, xp).ToBoolean(),
+                timeout             = String.IsNullOrWhiteSpace(rawTimeout) ? CompilerCfg.TIMEOUT_EXEC : rawTimeout.ToInteger()
             };
         }
 
@@ -212,6 +217,11 @@ namespace net.r_eg.DllExport.Wizard
         private string GetValue(string property, IXProject project)
         {
             return project?.GetPropertyValue(property);
+        }
+
+        private string GetUnevaluatedValue(string property, IXProject project)
+        {
+            return project?.GetUnevaluatedPropertyValue(property);
         }
     }
 }

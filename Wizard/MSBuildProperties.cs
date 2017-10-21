@@ -59,6 +59,21 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_OUR_ILASM = "DllExportOurILAsm";
 
         /// <summary>
+        /// Path to custom ILAsm.
+        /// </summary>
+        public const string DXP_CUSTOM_ILASM = "DllExportILAsmCustomPath";
+
+        /// <summary>
+        /// Flag to keep intermediate Files (IL Code, Resources, ...).
+        /// </summary>
+        public const string DXP_INTERMEDIATE_FILES = "DllExportLeaveIntermediateFiles";
+
+        /// <summary>
+        /// Timeout of execution in milliseconds.
+        /// </summary>
+        public const string DXP_TIMEOUT = "DllExportTimeout";
+
+        /// <summary>
         /// Platform Target for binaries.
         /// </summary>
         public const string PRJ_PLATFORM = "PlatformTarget";
