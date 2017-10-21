@@ -280,34 +280,23 @@ namespace RGiesecke.DllExport.Parsing
 
         private string CreateDefFile(CpuPlatform cpu, string directory, string libraryName)
         {
-            string path = Path.Combine(directory, libraryName + "." + (object)cpu + ".def");
+            string path = Path.Combine(directory, libraryName + "." + cpu + ".def");
             try
             {
-                Stream stream = null;
-                try {
-                    stream = new FileStream(path, FileMode.Create);
-                    using(StreamWriter swriter = new StreamWriter(stream, Encoding.UTF8))
+                using(var swriter = new StreamWriter(path, false, Encoding.UTF8))
+                {
+                    var data = new List<string>()
                     {
-                        stream = null; // avoid CA2202
+                        $"LIBRARY {libraryName}.dll",
+                        "",
+                        "EXPORTS"
+                    };
 
-                        var data = new List<string>()
-                        {
-                            $"LIBRARY {libraryName}.dll",
-                            "",
-                            "EXPORTS"
-                        };
+                    data.AddRange(Exports.ClassesByName.Values
+                                                        .SelectMany(c =>
+                                                            c.Methods.Select(m => m.ExportName)));
 
-                        data.AddRange(Exports.ClassesByName.Values
-                                                            .SelectMany(c =>
-                                                                c.Methods.Select(m => m.ExportName)));
-
-                        swriter.WriteLine(String.Join(Environment.NewLine, data));
-                    }
-                }
-                finally {
-                    if(stream != null) {
-                        stream.Dispose();
-                    }
+                    swriter.WriteLine(String.Join(Environment.NewLine, data));
                 }
 
                 return path;

@@ -123,7 +123,7 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 Attention please: **v1.6+** does not support standard NuGet clients anymore [[?](https://github.com/3F/DllExport/issues/38)] But you can still easily get our package and flexibly configure what you need ([Sample](https://www.youtube.com/watch?v=okPThdWDZMM)):
 
-Firstly, get our [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
+Firstly, get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
 
 * To install/uninstall or to reconfigure your projects:
 
