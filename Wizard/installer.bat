@@ -21,7 +21,7 @@ set "wAction="
 set "dxpName=DllExport"
 set "tWizard=tools/net.r_eg.DllExport.Wizard.targets"
 set "dxpPackages=packages"
-set "ngserver=https://www.nuget.org/api/v2/package/"
+set "pkgSrv=https://www.nuget.org/api/v2/package/"
 set "buildInfoFile=build_info.txt"
 set "wRootPath=%cd%"
 
@@ -30,6 +30,7 @@ set "wRootPath=%cd%"
 set /a dxpDebug=0
 set /a buildInfo=0
 set "gMsbPath="
+set "pkgLink="
 
 set ERROR_SUCCESS=0
 set ERROR_FILE_NOT_FOUND=2
@@ -85,13 +86,14 @@ echo.
 echo  -msb {path}           - Full path to specific msbuild.
 echo  -packages {path}      - A common directory for packages.
 echo  -server {url}         - Url for searching remote packages.
+echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
 echo  -wz-target {path}     - Relative path to .target file of the Wizard.
 echo  -eng                  - Try to use english language for all build messages.
 echo  -GetNuTool {args}     - Access to GetNuTool core. https://github.com/3F/GetNuTool
-echo  -debug                - To show additional information from hMSBuild.
-echo  -version              - Display version of hMSBuild.
-echo  -build-info           - Display build information of DllExport.
-echo  -help                 - Display this help. Aliases: -help -h -?
+echo  -debug                - To show additional information.
+echo  -version              - Displays version for which (together with) it was compiled.
+echo  -build-info           - Displays actual build information from selected DllExport.
+echo  -help                 - Displays this help. Aliases: -help -h -?
 echo.
 echo. 
 echo -------- 
@@ -105,10 +107,6 @@ echo  DllExport -restore -sln-dir -sln-dir ..\ -debug
 echo.
 echo  DllExport -GetNuTool -unpack
 echo  DllExport -GetNuTool /p:ngpackages="Conari;regXwild"
-echo.
-echo ---------------------
-echo Possible Error Codes: ERROR_FILE_NOT_FOUND (0x2), ERROR_PATH_NOT_FOUND (0x3), ERROR_SUCCESS (0x0)
-echo ---------------------
 echo.
 
 exit /B 0
@@ -124,7 +122,7 @@ if [!_is!]==[1] (
     goto usage
 )
 
-set /a idx=1 & set cmdMax=15
+set /a idx=1 & set cmdMax=16
 :loopargs
 
     if "!args:~0,8!"=="-action " (
@@ -178,7 +176,13 @@ set /a idx=1 & set cmdMax=15
 
     if "!args:~0,8!"=="-server " (
         call :popars %1 & shift
-        set ngserver=%2
+        set pkgSrv=%2
+        call :popars %2 & shift
+    )
+
+    if "!args:~0,10!"=="-pkg-link " (
+        call :popars %1 & shift
+        set pkgLink=%2
         call :popars %2 & shift
     )
 
@@ -204,7 +208,7 @@ set /a idx=1 & set cmdMax=15
     )
     
     if "!args:~0,9!"=="-version " (
-        @echo DllExport - $-version-$
+        @echo $-version-$
         exit /B 0
     )
 
@@ -248,16 +252,6 @@ if defined dxpVersion (
     set "wPkgPath=!wPkgPath!.!dxpVersion!"
 )
 
-if "!buildInfo!"=="1" (
-    call :dbgprint "buildInfo = '!wPkgPath!\\!buildInfoFile!'"
-    if not exist "!wPkgPath!\\!buildInfoFile!" (
-        echo information about build is not available.
-        exit /B %ERROR_FILE_NOT_FOUND%
-    )
-    type "!wPkgPath!\\!buildInfoFile!"
-    exit /B 0
-)
-
 set dxpTarget="!wPkgPath!\\!tWizard!"
 call :dbgprint "dxpTarget = '!dxpTarget!'"
 
@@ -267,13 +261,35 @@ if not exist !dxpTarget! (
         rmdir /S/Q "!wPkgPath!"
     )
 
+    call :dbgprint "-pkg-link = '!pkgLink!'"
+    call :dbgprint "-server = '!pkgSrv!'"
+
+    :: TODO: hack for GNT v1.6.1
+    if defined pkgLink (
+        set pkgSrv=!pkgLink!
+        set "_remoteUrl=:../!wPkgPath!"
+    )
+
     call :dbgprint "_remoteUrl = '!_remoteUrl!'"
+    call :dbgprint "ngpath = '!dxpPackages!'"
+
+    set _gntC=/p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!"
 
     if "!dxpDebug!"=="1" (
-        call :gntpoint /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!"
+        call :gntpoint !_gntC!
     ) else (
-        call :gntpoint /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" >nul
+        call :gntpoint !_gntC! >nul
     )
+)
+
+if "!buildInfo!"=="1" (
+    call :dbgprint "buildInfo = '!wPkgPath!\\!buildInfoFile!'"
+    if not exist "!wPkgPath!\\!buildInfoFile!" (
+        echo information about build is not available.
+        exit /B %ERROR_FILE_NOT_FOUND%
+    )
+    type "!wPkgPath!\\!buildInfoFile!"
+    exit /B 0
 )
 
 if not exist !dxpTarget! (
@@ -285,7 +301,6 @@ call :dbgprint "-sln-dir = '!wSlnDir!'"
 call :dbgprint "-sln-file = '!wSlnFile!'"
 call :dbgprint "-metalib = '!wMetaLib!'"
 call :dbgprint "-dxp-target = '!wDxpTarget!'"
-call :dbgprint "-server = '!ngserver!'"
 call :dbgprint "wRootPath = !wRootPath!"
 call :dbgprint "wAction = !wAction!"
 

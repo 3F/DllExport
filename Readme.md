@@ -11,7 +11,9 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
+[![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-F34B7D.svg)](https://github.com/3F/coreclr)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.6.1-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v1.0.1-865FC5.svg)](https://github.com/3F/MvsSln)
 
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
@@ -62,6 +64,8 @@ Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature),
 
 New Wizard and our lightweight manager [[?](https://github.com/3F/DllExport/issues/38)]:
 
+[![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
+
 [![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=okPThdWDZMM)
 
 ----
@@ -82,9 +86,9 @@ It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/mast
 
 ### How it works
 
-Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that does the all required steps via `.export` directive ([it's specific directive for ILAsm compiler only](https://github.com/3F/DllExport/issues/45#issuecomment-317802099)).
+Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that makes the all required steps via `.export` directive ([it's specific directive for ILAsm compiler only](https://github.com/3F/DllExport/issues/45#issuecomment-317802099)).
 
-**What inside ? or how works the .export directive ?**
+**What inside ? or how does work the .export directive ?**
 
 Read about format PE32/PE32+, start with grammar from asmparse and move to writer:
 
