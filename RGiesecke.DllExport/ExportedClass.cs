@@ -77,7 +77,7 @@ namespace RGiesecke.DllExport
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
-        internal ExportedMethod nextExportedMethod(string name)
+        internal ExportedMethod NextExportedMethod(string name)
         {
             if(String.IsNullOrWhiteSpace(name)) {
                 throw new ArgumentException("The name cannot be null or empty for EMIndex.");
@@ -89,7 +89,7 @@ namespace RGiesecke.DllExport
             return MethodsByName[name][emOrder[name]++]; // moving in order by adding
         }
 
-        internal void resetExportedMethods()
+        internal void ResetExportedMethods()
         {
             if(emOrder == null) {
                 emOrder = new EMIndex();

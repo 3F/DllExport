@@ -203,7 +203,7 @@ namespace RGiesecke.DllExport
         private void cleanup(IlAsm ilAsm)
         {
             foreach(var _class in ilAsm.Exports.ClassesByName.Values) {
-                _class.resetExportedMethods();
+                _class.ResetExportedMethods();
             }
         }
     }

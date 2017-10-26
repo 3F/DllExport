@@ -72,7 +72,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
         private ExportedMethod getExportedMethod(ParserStateValues state, ExportedClass exportedClass)
         {
             //TODO: see details in nextExportedMethod()
-            return exportedClass.nextExportedMethod(state.Method.Name);
+            return exportedClass.NextExportedMethod(state.Method.Name);
         }
     }
 }

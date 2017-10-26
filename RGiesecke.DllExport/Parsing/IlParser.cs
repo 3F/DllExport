@@ -127,20 +127,11 @@ namespace RGiesecke.DllExport.Parsing
                 };
                 Stopwatch stopwatch1 = Stopwatch.StartNew();
 
-                Stream stream = null;
-                try {
-                    stream = new FileStream(Path.Combine(TempDirectory, InputValues.FileName + ".il"), FileMode.Open);
-                    using(StreamReader sreader = new StreamReader(stream, Encoding.Unicode)) {
-                        stream = null; // avoid CA2202
-
-                        while(!sreader.EndOfStream) {
-                            stringList1.Add(sreader.ReadLine());
-                        }
-                    }
-                }
-                finally {
-                    if(stream != null) {
-                        stream.Dispose();
+                var dest = Path.Combine(TempDirectory, InputValues.FileName + ".il");
+                using(var sreader = new StreamReader(new FileStream(dest, FileMode.Open), Encoding.Unicode))
+                {
+                    while(!sreader.EndOfStream) {
+                        stringList1.Add(sreader.ReadLine());
                     }
                 }
 

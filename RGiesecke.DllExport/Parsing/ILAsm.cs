@@ -34,54 +34,47 @@ namespace RGiesecke.DllExport.Parsing
         public int ReassembleFile(string outputFile, string ilSuffix, CpuPlatform cpu)
         {
             string currentDirectory = Directory.GetCurrentDirectory();
-            Directory.SetCurrentDirectory(this.TempDirectory);
+            Directory.SetCurrentDirectory(TempDirectory);
+
             try
             {
                 string directoryName = Path.GetDirectoryName(outputFile);
-                if(directoryName != null && !Directory.Exists(directoryName))
-                {
+                if(directoryName != null && !Directory.Exists(directoryName)) {
                     Directory.CreateDirectory(directoryName);
                 }
-                using(IlParser ilParser = new IlParser(this.ServiceProvider))
-                {
-                    ilParser.Exports = this.Exports;
-                    ilParser.InputValues = this.InputValues;
-                    ilParser.TempDirectory = this.TempDirectory;
-                    List<string> stringList = new List<string>(ilParser.GetLines(cpu));
-                    if(stringList.Count > 0)
-                    {
-                        string input = stringList[stringList.Count - 1];
-                        if(!input.NullSafeCall<string, bool>((Func<string, bool>)(l => {
-                            if(!l.EndsWith("\\r"))
-                            {
-                                return l.EndsWith("\\n");
-                            }
-                            return true;
-                        })))
-                            stringList[stringList.Count - 1] = input + Environment.NewLine;
-                    }
 
-                    Stream stream = null;
-                    try {
-                        stream = new FileStream(Path.Combine(TempDirectory, InputValues.FileName + ilSuffix + ".il"), FileMode.Create);
-                        using(StreamWriter swriter = new StreamWriter(stream, Encoding.Unicode))
-                        {
-                            stream = null; // avoid CA2202
-                            swriter.WriteLine(String.Join(Environment.NewLine, stringList));
-                        }
-                    }
-                    finally {
-                        if(stream != null) {
-                            stream.Dispose();
-                        }
-                    }
-
+                using(IlParser ilParser = new IlParser(ServiceProvider)) {
+                    ReassembleFile(ilParser, ilSuffix, cpu);
                 }
-                return this.Run(outputFile, ilSuffix, cpu);
+
+                return Run(outputFile, ilSuffix, cpu);
             }
             finally
             {
                 Directory.SetCurrentDirectory(currentDirectory);
+            }
+        }
+
+        private void ReassembleFile(IlParser ilParser, string ilSuffix, CpuPlatform cpu)
+        {
+            ilParser.Exports        = Exports;
+            ilParser.InputValues    = InputValues;
+            ilParser.TempDirectory  = TempDirectory;
+
+            var stringList = new List<string>(ilParser.GetLines(cpu));
+            if(stringList.Count > 0)
+            {
+                string input = stringList[stringList.Count - 1];
+
+                if(!input.NullSafeCall(l => !l.EndsWith("\\r") ? l.EndsWith("\\n") : true)) {
+                    stringList[stringList.Count - 1] = input + Environment.NewLine;
+                }
+            }
+
+            var dest = Path.Combine(TempDirectory, InputValues.FileName + ilSuffix + ".il");
+
+            using(var swriter = new StreamWriter(dest, false, Encoding.Unicode)) {
+                swriter.WriteLine(String.Join(Environment.NewLine, stringList));
             }
         }
 
