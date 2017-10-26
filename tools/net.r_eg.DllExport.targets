@@ -50,6 +50,7 @@
       <DllExportOurILAsmPath Condition="'$(DllExportOurILAsm)' != 'true'"></DllExportOurILAsmPath>
       <DllExportVsDevCmd Condition="'$(DllExportVsDevCmd)' == ''">$(DllExportVSRoot)Common7\Tools\VsDevCmd.bat</DllExportVsDevCmd>
       <DllExportVcVarsAll Condition="'$(DllExportVcVarsAll)' == ''">$(DllExportVSRoot)VC\vcvarsall.bat;$(DllExportVSRoot)VC\Auxiliary\Build\vcvarsall.bat</DllExportVcVarsAll>
+      <DllExportPeCheck Condition="'$(DllExportPeCheck)' == ''"></DllExportPeCheck>
     </PropertyGroup>
 
     <DllExportAppDomainIsolatedTask 
@@ -75,6 +76,7 @@
           GenExpLib="$(DllExportGenExpLib)"
           OurILAsmPath="$(DllExportOurILAsmPath)"
           MetaLib="$(DllExportMetaLibFullPath)"
+          PeCheckRaw="$(DllExportPeCheck)" 
          />
     
     <PropertyGroup>

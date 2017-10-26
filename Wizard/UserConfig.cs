@@ -28,6 +28,7 @@ using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
+using RGiesecke.DllExport;
 
 namespace net.r_eg.DllExport.Wizard
 {
@@ -172,7 +173,8 @@ namespace net.r_eg.DllExport.Wizard
                 ourILAsm            = GetValue(MSBuildProperties.DXP_OUR_ILASM, xp).ToBoolean(),
                 customILAsm         = GetUnevaluatedValue(MSBuildProperties.DXP_CUSTOM_ILASM, xp),
                 intermediateFiles   = GetValue(MSBuildProperties.DXP_INTERMEDIATE_FILES, xp).ToBoolean(),
-                timeout             = String.IsNullOrWhiteSpace(rawTimeout) ? CompilerCfg.TIMEOUT_EXEC : rawTimeout.ToInteger()
+                timeout             = String.IsNullOrWhiteSpace(rawTimeout) ? CompilerCfg.TIMEOUT_EXEC : rawTimeout.ToInteger(),
+                peCheck             = (PeCheckType)GetValue(MSBuildProperties.DXP_PE_CHECK, xp).ToInteger()
             };
         }
 

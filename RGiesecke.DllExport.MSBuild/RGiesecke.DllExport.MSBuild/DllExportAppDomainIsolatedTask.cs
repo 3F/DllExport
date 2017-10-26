@@ -12,7 +12,7 @@ namespace RGiesecke.DllExport.MSBuild
 {
     [LoadInSeparateAppDomain]
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
-    public class DllExportAppDomainIsolatedTask: AppDomainIsolatedTask, IDllExportTask, IInputValues, IServiceProvider, ITask
+    public class DllExportAppDomainIsolatedTask: AppDomainIsolatedTask, IDllExportTask, IInputValues, IInputRawValues, IServiceProvider, ITask
     {
         private readonly ExportTaskImplementation<DllExportAppDomainIsolatedTask> _ExportTaskImplementation;
 
@@ -331,6 +331,17 @@ namespace RGiesecke.DllExport.MSBuild
             set {
                 _ExportTaskImplementation.MetaLib = value;
             }
+        }
+
+        public PeCheckType PeCheck
+        {
+            get => _ExportTaskImplementation.PeCheck;
+            set => _ExportTaskImplementation.PeCheck = value;
+        }
+
+        public int PeCheckRaw
+        {
+            set => PeCheck = (PeCheckType)value;
         }
 
         public string DllExportAttributeFullName

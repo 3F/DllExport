@@ -11,7 +11,7 @@ using Microsoft.Build.Utilities;
 namespace RGiesecke.DllExport.MSBuild
 {
     [PermissionSet(SecurityAction.InheritanceDemand, Name = "FullTrust")]
-    public class DllExportTask: Task, IDllExportTask, IInputValues, IServiceProvider
+    public class DllExportTask: Task, IDllExportTask, IInputValues, IInputRawValues, IServiceProvider
     {
         private readonly ExportTaskImplementation<DllExportTask> _ExportTaskImplementation;
 
@@ -338,6 +338,17 @@ namespace RGiesecke.DllExport.MSBuild
             set {
                 _ExportTaskImplementation.MetaLib = value;
             }
+        }
+
+        public PeCheckType PeCheck
+        {
+            get => _ExportTaskImplementation.PeCheck;
+            set => _ExportTaskImplementation.PeCheck = value;
+        }
+
+        public int PeCheckRaw
+        {
+            set => PeCheck = (PeCheckType)value;
         }
 
         public string DllExportAttributeFullName

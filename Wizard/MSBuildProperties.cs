@@ -74,6 +74,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_TIMEOUT = "DllExportTimeout";
 
         /// <summary>
+        /// Type of checking PE32/PE32+ module.
+        /// </summary>
+        public const string DXP_PE_CHECK = "DllExportPeCheck";
+
+        /// <summary>
         /// Platform Target for binaries.
         /// </summary>
         public const string PRJ_PLATFORM = "PlatformTarget";

@@ -30,6 +30,7 @@ using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
+using RGiesecke.DllExport;
 
 namespace net.r_eg.DllExport.Wizard
 {
@@ -292,7 +293,8 @@ namespace net.r_eg.DllExport.Wizard
                 Platform    = Platform.x86x64,
                 Compiler = new CompilerCfg() {
                     ordinalsBase    = 1,
-                    timeout         = CompilerCfg.TIMEOUT_EXEC
+                    timeout         = CompilerCfg.TIMEOUT_EXEC,
+                    peCheck         = PeCheckType.PeIl
                 },
             };
         }
@@ -383,6 +385,9 @@ namespace net.r_eg.DllExport.Wizard
                 SetProperty(MSBuildProperties.DXP_TIMEOUT, Config.Compiler.timeout);
                 Log.send(this, $"Timeout of execution in milliseconds: {Config.Compiler.timeout}");
             }
+
+            SetProperty(MSBuildProperties.DXP_PE_CHECK, (int)Config.Compiler.peCheck);
+            Log.send(this, $"Type of checking PE32/PE32+ module: {Config.Compiler.peCheck}");
         }
 
         protected void CfgCommonData()

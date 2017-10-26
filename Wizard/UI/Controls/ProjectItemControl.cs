@@ -25,6 +25,7 @@
 using System;
 using System.ComponentModel;
 using System.Windows.Forms;
+using RGiesecke.DllExport;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
@@ -108,7 +109,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 ourILAsm            = chkOurILAsm.Checked,
                 customILAsm         = chkCustomILAsm.Checked ? textBoxCustomILAsm.Text : null,
                 intermediateFiles   = chkIntermediateFiles.Checked,
-                timeout             = (int)numTimeout.Value
+                timeout             = (int)numTimeout.Value,
+                peCheck             = GetPeCheckType()
             };
             set
             {
@@ -127,6 +129,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 }
 
                 chkIntermediateFiles.Checked = value.intermediateFiles;
+                SetPeCheckType(value.peCheck);
             }
         }
 
@@ -204,6 +207,27 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                     return;
                 }
             }
+        }
+
+        private PeCheckType GetPeCheckType()
+        {
+            PeCheckType peCheck = PeCheckType.None;
+
+            if(chkPECheck1to1.Checked) {
+                peCheck |= PeCheckType.Pe1to1;
+            }
+
+            if(chkPECheckIl.Checked) {
+                peCheck |= PeCheckType.PeIl;
+            }
+
+            return peCheck;
+        }
+
+        private void SetPeCheckType(PeCheckType type)
+        {
+            chkPECheck1to1.Checked  = (type & PeCheckType.Pe1to1) == PeCheckType.Pe1to1;
+            chkPECheckIl.Checked    = (type & PeCheckType.PeIl) == PeCheckType.PeIl;
         }
 
         private void InstalledStatus(bool status)

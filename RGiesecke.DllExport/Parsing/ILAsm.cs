@@ -165,6 +165,11 @@ namespace RGiesecke.DllExport.Parsing
                 }
             );
 
+            if(ret != 0) {
+                return ret;
+            }
+
+            ret = CheckPE(cpu, fileName);
             if(ret == 0) {
                 RunLibTool(cpu, fileName, Path.GetFullPath(Path.GetDirectoryName(fileName)));
             }
@@ -184,6 +189,7 @@ namespace RGiesecke.DllExport.Parsing
 
             try
             {
+                Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"VsDevCmd: {InputValues.VsDevCmd}");
                 if(!String.IsNullOrWhiteSpace(InputValues.VsDevCmd))
                 {
                     int code = RunLibToolCore(
@@ -197,6 +203,7 @@ namespace RGiesecke.DllExport.Parsing
                     }
                 }
 
+                Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"LibToolPath: {InputValues.LibToolPath}");
                 if(!String.IsNullOrWhiteSpace(InputValues.LibToolPath))
                 {
                     string reqPath = (String.IsNullOrEmpty(InputValues.LibToolDllPath) || !Directory.Exists(InputValues.LibToolDllPath)) ? null : InputValues.LibToolDllPath;
@@ -208,6 +215,7 @@ namespace RGiesecke.DllExport.Parsing
                     }
                 }
 
+                Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"VcVarsAll: {InputValues.VcVarsAll}");
                 if(!String.IsNullOrWhiteSpace(InputValues.VcVarsAll))
                 {
                     int code = RunLibToolCore(
@@ -222,12 +230,12 @@ namespace RGiesecke.DllExport.Parsing
                 }
 
                 int ret = RunLibToolCore("lib.exe", cfg, String.Empty, InputValues.LibToolDllPath);
-                Notifier.Notify(0, DllExportLogginCodes.LibToolLooging, $"lib tool via LibToolDllPath: {ret}");
+                Notifier.Notify(0, DllExportLogginCodes.LibToolLooging, $"lib tool via LibToolDllPath '{InputValues.LibToolDllPath}': {ret}");
                 if(ret != -1) {
                     return ret;
                 }
 
-                throw new Exception();
+                throw new FileNotFoundException("The library manager still cannot be found or something went wrong.");
             }
             catch(Exception ex)
             {
@@ -269,6 +277,74 @@ namespace RGiesecke.DllExport.Parsing
                 Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, Resources.An_error_occurred_while_calling_0_1_, $" {tool} {args} ", ex.Message);
                 return -1;
             }
+        }
+
+        /// <param name="cpu"></param>
+        /// <param name="file">Modified PE-file.</param>
+        private int CheckPE(CpuPlatform cpu, string pefile)
+        {
+            int ret = 0;
+
+            if(InputValues.PeCheck == PeCheckType.None) {
+                return ret;
+            }
+
+            using(var pe = new net.r_eg.Conari.PE.PEFile(pefile))
+            {
+                var ilMethods = Exports.ClassesByName.Values
+                                                    .SelectMany(c => c.Methods.Select(m => m.ExportName))
+                                                    .ToArray();
+
+                var peMethods = pe.ExportedProcNames.ToArray();
+
+                if((InputValues.PeCheck & PeCheckType.Pe1to1) == PeCheckType.Pe1to1)
+                {
+                    Notifier.Notify(-2, DllExportLogginCodes.PeCheck1to1, $"{nameof(PeCheckType.Pe1to1)} is activated.");
+                    if(!CheckPE1to1(ilMethods, peMethods, pefile)) {
+                        ret = -1;
+                    }
+                }
+
+                if((InputValues.PeCheck & PeCheckType.PeIl) == PeCheckType.PeIl)
+                {
+                    Notifier.Notify(-2, DllExportLogginCodes.PeCheckIl, $"{nameof(PeCheckType.PeIl)} is activated.");
+                    if(!CheckPEIl(ilMethods, peMethods, pefile)) {
+                        ret = -1;
+                    }
+                }
+            }
+
+            return ret;
+        }
+
+        private bool CheckPE1to1(string[] ilMethods, string[] peMethods, string pefile)
+        {
+            if(ilMethods.Length == peMethods.Length) {
+                return true;
+            }
+
+            Notifier.Notify(
+                2, 
+                DllExportLogginCodes.PeCheck1to1, 
+                $"The number ({peMethods.Length}) of exports from PE32/PE32+ module '{pefile}' is not equal to number ({ilMethods.Length}) from IL code."
+            );
+            return false;
+        }
+
+        private bool CheckPEIl(string[] ilMethods, string[] peMethods, string pefile)
+        {
+            var notFound = ilMethods.Except(peMethods).ToArray();
+
+            if(notFound.Length < 1) {
+                return true;
+            }
+
+            Notifier.Notify(
+                2, 
+                DllExportLogginCodes.PeCheckIl, 
+                $"Something went wrong. We can't find '{notFound.Length}' exports from PE32/PE32+ module '{pefile}': {String.Join(" ; ", notFound)}"
+            );
+            return false;
         }
 
         private string CreateDefFile(CpuPlatform cpu, string directory, string libraryName)

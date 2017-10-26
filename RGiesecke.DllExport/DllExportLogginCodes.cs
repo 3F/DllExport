@@ -24,5 +24,7 @@ namespace RGiesecke.DllExport
         public static readonly string MethodIsNotStatic = "EXP0016";
         public static readonly string ExportInGenericType = "EXP0017";
         public static readonly string ExportOnGenericMethod = "EXP0018";
+        public static readonly string PeCheck1to1 = "EXP0019";
+        public static readonly string PeCheckIl = "EXP0020";
     }
 }

@@ -43,6 +43,9 @@
             this.chkCustomILAsm = new System.Windows.Forms.CheckBox();
             this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
+            this.labelX86X64 = new System.Windows.Forms.Label();
+            this.labelX64 = new System.Windows.Forms.Label();
+            this.labelX86 = new System.Windows.Forms.Label();
             this.rbCecil = new System.Windows.Forms.RadioButton();
             this.rbDirect = new System.Windows.Forms.RadioButton();
             this.panelNScombo = new System.Windows.Forms.Panel();
@@ -52,6 +55,8 @@
             this.groupNS = new System.Windows.Forms.GroupBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.numTimeout = new System.Windows.Forms.NumericUpDown();
+            this.chkPECheckIl = new System.Windows.Forms.CheckBox();
+            this.chkPECheck1to1 = new System.Windows.Forms.CheckBox();
             this.gbProject = new System.Windows.Forms.GroupBox();
             this.textBoxProjectPath = new System.Windows.Forms.TextBox();
             this.btnBrowse = new System.Windows.Forms.Button();
@@ -155,22 +160,24 @@
             // 
             this.rbPlatformAnyCPU.AutoSize = true;
             this.rbPlatformAnyCPU.Checked = true;
-            this.rbPlatformAnyCPU.Location = new System.Drawing.Point(21, 61);
+            this.rbPlatformAnyCPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformAnyCPU.Location = new System.Drawing.Point(81, 25);
             this.rbPlatformAnyCPU.Name = "rbPlatformAnyCPU";
-            this.rbPlatformAnyCPU.Size = new System.Drawing.Size(71, 17);
+            this.rbPlatformAnyCPU.Size = new System.Drawing.Size(14, 13);
             this.rbPlatformAnyCPU.TabIndex = 2;
             this.rbPlatformAnyCPU.TabStop = true;
-            this.rbPlatformAnyCPU.Text = "x86 + x64";
+            this.toolTip.SetToolTip(this.rbPlatformAnyCPU, "Export for both Platforms: x86 + x64");
             this.rbPlatformAnyCPU.UseVisualStyleBackColor = true;
             // 
             // rbPlatformX64
             // 
             this.rbPlatformX64.AutoSize = true;
-            this.rbPlatformX64.Location = new System.Drawing.Point(21, 40);
+            this.rbPlatformX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformX64.Location = new System.Drawing.Point(44, 25);
             this.rbPlatformX64.Name = "rbPlatformX64";
-            this.rbPlatformX64.Size = new System.Drawing.Size(42, 17);
+            this.rbPlatformX64.Size = new System.Drawing.Size(14, 13);
             this.rbPlatformX64.TabIndex = 1;
-            this.rbPlatformX64.Text = "x64";
+            this.toolTip.SetToolTip(this.rbPlatformX64, "Export for Platform: x64");
             this.rbPlatformX64.UseVisualStyleBackColor = true;
             // 
             // groupCompiler
@@ -225,24 +232,60 @@
             // rbPlatformX86
             // 
             this.rbPlatformX86.AutoSize = true;
-            this.rbPlatformX86.Location = new System.Drawing.Point(21, 19);
+            this.rbPlatformX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformX86.Location = new System.Drawing.Point(9, 25);
             this.rbPlatformX86.Name = "rbPlatformX86";
-            this.rbPlatformX86.Size = new System.Drawing.Size(42, 17);
+            this.rbPlatformX86.Size = new System.Drawing.Size(14, 13);
             this.rbPlatformX86.TabIndex = 0;
-            this.rbPlatformX86.Text = "x86";
+            this.toolTip.SetToolTip(this.rbPlatformX86, "Export for Platform: x86");
             this.rbPlatformX86.UseVisualStyleBackColor = true;
             // 
             // groupPlatform
             // 
+            this.groupPlatform.Controls.Add(this.labelX86X64);
+            this.groupPlatform.Controls.Add(this.labelX64);
+            this.groupPlatform.Controls.Add(this.labelX86);
             this.groupPlatform.Controls.Add(this.rbPlatformAnyCPU);
             this.groupPlatform.Controls.Add(this.rbPlatformX64);
             this.groupPlatform.Controls.Add(this.rbPlatformX86);
             this.groupPlatform.Location = new System.Drawing.Point(5, 82);
             this.groupPlatform.Name = "groupPlatform";
-            this.groupPlatform.Size = new System.Drawing.Size(119, 84);
+            this.groupPlatform.Size = new System.Drawing.Size(119, 43);
             this.groupPlatform.TabIndex = 8;
             this.groupPlatform.TabStop = false;
-            this.groupPlatform.Text = "Export for platform:";
+            // 
+            // labelX86X64
+            // 
+            this.labelX86X64.AutoSize = true;
+            this.labelX86X64.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelX86X64.Location = new System.Drawing.Point(67, 9);
+            this.labelX86X64.Name = "labelX86X64";
+            this.labelX86X64.Size = new System.Drawing.Size(47, 13);
+            this.labelX86X64.TabIndex = 5;
+            this.labelX86X64.Text = "x86+x64";
+            this.toolTip.SetToolTip(this.labelX86X64, "Export for both Platforms: x86 + x64");
+            // 
+            // labelX64
+            // 
+            this.labelX64.AutoSize = true;
+            this.labelX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelX64.Location = new System.Drawing.Point(37, 9);
+            this.labelX64.Name = "labelX64";
+            this.labelX64.Size = new System.Drawing.Size(24, 13);
+            this.labelX64.TabIndex = 4;
+            this.labelX64.Text = "x64";
+            this.toolTip.SetToolTip(this.labelX64, "Export for Platform: x64");
+            // 
+            // labelX86
+            // 
+            this.labelX86.AutoSize = true;
+            this.labelX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelX86.Location = new System.Drawing.Point(3, 9);
+            this.labelX86.Name = "labelX86";
+            this.labelX86.Size = new System.Drawing.Size(24, 13);
+            this.labelX86.TabIndex = 3;
+            this.labelX86.Text = "x86";
+            this.toolTip.SetToolTip(this.labelX86, "Export for Platform: x86");
             // 
             // rbCecil
             // 
@@ -331,7 +374,7 @@
             0,
             0,
             0});
-            this.numTimeout.Location = new System.Drawing.Point(5, 12);
+            this.numTimeout.Location = new System.Drawing.Point(5, 13);
             this.numTimeout.Maximum = new decimal(new int[] {
             10000000,
             0,
@@ -347,6 +390,29 @@
             0,
             0,
             0});
+            // 
+            // chkPECheckIl
+            // 
+            this.chkPECheckIl.AutoSize = true;
+            this.chkPECheckIl.Location = new System.Drawing.Point(5, 61);
+            this.chkPECheckIl.Name = "chkPECheckIl";
+            this.chkPECheckIl.Size = new System.Drawing.Size(113, 17);
+            this.chkPECheckIl.TabIndex = 13;
+            this.chkPECheckIl.Text = "PE Check IL code";
+            this.toolTip.SetToolTip(this.chkPECheckIl, "Will check existence of all planned exports (IL code) in actual PE32/PE32+ module" +
+        ".");
+            this.chkPECheckIl.UseVisualStyleBackColor = true;
+            // 
+            // chkPECheck1to1
+            // 
+            this.chkPECheck1to1.AutoSize = true;
+            this.chkPECheck1to1.Location = new System.Drawing.Point(5, 40);
+            this.chkPECheck1to1.Name = "chkPECheck1to1";
+            this.chkPECheck1to1.Size = new System.Drawing.Size(92, 17);
+            this.chkPECheck1to1.TabIndex = 12;
+            this.chkPECheck1to1.Text = "PE Check 1:1";
+            this.toolTip.SetToolTip(this.chkPECheck1to1, "Will check count of all planned exports from final PE32/PE32+ module.");
+            this.chkPECheck1to1.UseVisualStyleBackColor = true;
             // 
             // gbProject
             // 
@@ -424,18 +490,20 @@
             // 
             // groupTimeout
             // 
+            this.groupTimeout.Controls.Add(this.chkPECheckIl);
+            this.groupTimeout.Controls.Add(this.chkPECheck1to1);
             this.groupTimeout.Controls.Add(this.labelTimeout);
             this.groupTimeout.Controls.Add(this.numTimeout);
-            this.groupTimeout.Location = new System.Drawing.Point(5, 163);
+            this.groupTimeout.Location = new System.Drawing.Point(5, 120);
             this.groupTimeout.Name = "groupTimeout";
-            this.groupTimeout.Size = new System.Drawing.Size(119, 39);
+            this.groupTimeout.Size = new System.Drawing.Size(119, 82);
             this.groupTimeout.TabIndex = 9;
             this.groupTimeout.TabStop = false;
             // 
             // labelTimeout
             // 
             this.labelTimeout.AutoSize = true;
-            this.labelTimeout.Location = new System.Drawing.Point(71, 15);
+            this.labelTimeout.Location = new System.Drawing.Point(71, 16);
             this.labelTimeout.Name = "labelTimeout";
             this.labelTimeout.Size = new System.Drawing.Size(45, 13);
             this.labelTimeout.TabIndex = 11;
@@ -505,5 +573,10 @@
         private System.Windows.Forms.Label labelBackgroundNS;
         private System.Windows.Forms.TextBox textBoxProjectPath;
         private System.Windows.Forms.Label labelTimeout;
+        private System.Windows.Forms.Label labelX86X64;
+        private System.Windows.Forms.Label labelX64;
+        private System.Windows.Forms.Label labelX86;
+        private System.Windows.Forms.CheckBox chkPECheckIl;
+        private System.Windows.Forms.CheckBox chkPECheck1to1;
     }
 }

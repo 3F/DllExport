@@ -60,6 +60,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="RGiesecke.DllExport.MSBuild\IInputRawValues.cs" />
     <Compile Include="RGiesecke.DllExport\DllExportServiceProviderExtensions.cs" />
     <Compile Include="RGiesecke.DllExport\Null.cs" />
     <Compile Include="RGiesecke.DllExport\Set.cs" />

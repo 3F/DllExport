@@ -267,6 +267,12 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public PeCheckType PeCheck
+        {
+            get => _Values.PeCheck;
+            set => _Values.PeCheck = value;
+        }
+
         public string DllExportAttributeFullName
         {
             get {

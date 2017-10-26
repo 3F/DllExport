@@ -96,6 +96,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        PeCheckType PeCheck
+        {
+            get;
+            set;
+        }
+
         string MethodAttributes
         {
             get;

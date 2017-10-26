@@ -131,6 +131,10 @@
       <Project>{311706a5-5ed2-4006-b794-055009d8a256}</Project>
       <Name>NSBin</Name>
     </ProjectReference>
+    <ProjectReference Include="..\RGiesecke.DllExport\RGiesecke.DllExport.csproj">
+      <Project>{ac6947c6-0637-429a-a5f1-54447a494e6d}</Project>
+      <Name>RGiesecke.DllExport</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

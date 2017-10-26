@@ -22,6 +22,8 @@
  * THE SOFTWARE.
 */
 
+using RGiesecke.DllExport;
+
 namespace net.r_eg.DllExport.Wizard
 {
     public struct CompilerCfg
@@ -58,5 +60,10 @@ namespace net.r_eg.DllExport.Wizard
         /// Timeout of execution in milliseconds.
         /// </summary>
         public int timeout;
+
+        /// <summary>
+        /// Type of checking PE32/PE32+ module.
+        /// </summary>
+        public PeCheckType peCheck;
     }
 }
