@@ -1,12 +1,12 @@
-## How to reproduce
+### How to reproduce
 
 ... Try to isolate problem via very simple code.
     
-## What version and selected configuration ?
+### What version and selected configuration ?
 
 ... 
 
-## Can you provide detailed log of your build ?
+### Can you provide detailed log of your build ?
 
 ...
 
