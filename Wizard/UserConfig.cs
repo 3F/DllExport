@@ -40,6 +40,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string NS_DEFAULT_VALUE = "System.Runtime.InteropServices";
 
         /// <summary>
+        /// Default meta library.
+        /// </summary>
+        public const string METALIB_NAME = "DllExport.dll";
+
+        /// <summary>
         /// Flag of installation.
         /// </summary>
         public bool Install

@@ -29,6 +29,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_ID = "DllExportIdent";
 
         /// <summary>
+        /// Meta library file name.
+        /// </summary>
+        public const string DXP_METALIB_NAME = "DllExportMetaLibName";
+
+        /// <summary>
         /// https://github.com/3F/DllExport/issues/2
         /// </summary>
         public const string DXP_NAMESPACE = "DllExportNamespace";

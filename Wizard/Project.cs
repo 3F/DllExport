@@ -205,6 +205,7 @@ namespace net.r_eg.DllExport.Wizard
 
             AllocateProperties(
                 MSBuildProperties.DXP_ID,
+                MSBuildProperties.DXP_METALIB_NAME,
                 MSBuildProperties.DXP_NAMESPACE,
                 MSBuildProperties.DXP_ORDINALS_BASE,
                 MSBuildProperties.DXP_SKIP_ANYCPU,
@@ -214,6 +215,7 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_CUSTOM_ILASM,
                 MSBuildProperties.DXP_INTERMEDIATE_FILES,
                 MSBuildProperties.DXP_TIMEOUT,
+                MSBuildProperties.DXP_PE_CHECK,
                 MSBuildProperties.PRJ_PLATFORM
             );
 
@@ -324,6 +326,7 @@ namespace net.r_eg.DllExport.Wizard
         {
             CfgDDNS();
 
+            SetProperty(MSBuildProperties.DXP_METALIB_NAME, UserConfig.METALIB_NAME);
             SetProperty(MSBuildProperties.DXP_NAMESPACE, Config.Namespace ?? String.Empty);
             SetProperty(MSBuildProperties.DXP_DDNS_CECIL, Config.UseCecil);
         }
