@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.15
+VisualStudioVersion = 15.0.27004.2002
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
@@ -49,6 +49,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBinTest", "NSBinTest\NSBinTest.csproj", "{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "Wizard\Wizard.csproj", "{D10CF407-4483-4657-9FEA-BDB467391F3A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeViewer", "PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -99,6 +101,12 @@ Global
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.PublicRelease|Any CPU.Build.0 = PublicRelease|Any CPU
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D10CF407-4483-4657-9FEA-BDB467391F3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -106,5 +114,8 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 		{55898433-0EEF-4B38-B144-B2A40150E4F4} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {EEADC215-3983-4718-A397-729069C59742}
 	EndGlobalSection
 EndGlobal

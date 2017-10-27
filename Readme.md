@@ -62,11 +62,13 @@ Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature),
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
 
-New Wizard and our lightweight manager [[?](https://github.com/3F/DllExport/issues/38)]:
+Our Wizard and lightweight manager [[?](https://github.com/3F/DllExport/issues/38)]:
 
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
 [![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=okPThdWDZMM)
+
+[![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
 ----
 

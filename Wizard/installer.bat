@@ -31,6 +31,7 @@ set /a dxpDebug=0
 set /a buildInfo=0
 set "gMsbPath="
 set "pkgLink="
+set "peExpList="
 
 set ERROR_SUCCESS=0
 set ERROR_FILE_NOT_FOUND=2
@@ -88,6 +89,7 @@ echo  -packages {path}      - A common directory for packages.
 echo  -server {url}         - Url for searching remote packages.
 echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
 echo  -wz-target {path}     - Relative path to .target file of the Wizard.
+echo  -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
 echo  -eng                  - Try to use english language for all build messages.
 echo  -GetNuTool {args}     - Access to GetNuTool core. https://github.com/3F/GetNuTool
 echo  -debug                - To show additional information.
@@ -107,7 +109,7 @@ echo  DllExport -restore -sln-dir -sln-dir ..\ -debug
 echo.
 echo  DllExport -GetNuTool -unpack
 echo  DllExport -GetNuTool /p:ngpackages="Conari;regXwild"
-echo.
+echo  DllExport -pe-exp-list bin\Debug\regXwild.dll
 
 exit /B 0
 
@@ -122,7 +124,7 @@ if [!_is!]==[1] (
     goto usage
 )
 
-set /a idx=1 & set cmdMax=16
+set /a idx=1 & set cmdMax=17
 :loopargs
 
     if "!args:~0,8!"=="-action " (
@@ -192,6 +194,12 @@ set /a idx=1 & set cmdMax=16
         call :popars %2 & shift
     )
 
+    if "!args:~0,13!"=="-pe-exp-list " (
+        call :popars %1 & shift
+        set peExpList=%2
+        call :popars %2 & shift
+    )
+
     if "!args:~0,5!"=="-eng " (
         call :popars %1 & shift
         chcp 437 >nul
@@ -250,6 +258,11 @@ set "wPkgPath=!dxpPackages!!dxpName!"
 if defined dxpVersion (
     set "_remoteUrl=!_remoteUrl!/!dxpVersion!"
     set "wPkgPath=!wPkgPath!.!dxpVersion!"
+)
+
+if defined peExpList (
+    !wPkgPath!\\tools\\PeViewer.exe -list -pemodule "!peExpList!"
+    exit /B %ERRORLEVEL%
 )
 
 set dxpTarget="!wPkgPath!\\!tWizard!"
