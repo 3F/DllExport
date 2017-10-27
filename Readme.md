@@ -11,9 +11,10 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
-[![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-F34B7D.svg)](https://github.com/3F/coreclr)
+[![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.6.1-93C10B.svg)](https://github.com/3F/GetNuTool)
-[![MvsSln](https://img.shields.io/badge/MvsSln-v1.0.1-865FC5.svg)](https://github.com/3F/MvsSln)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v2.0.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
@@ -67,8 +68,7 @@ Our Wizard and lightweight manager [[?](https://github.com/3F/DllExport/issues/3
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
 [![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=okPThdWDZMM)
-
-[![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://3f.github.io/DllExport/releases/latest/manager/)
+[![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://github.com/3F/DllExport/issues/55)
 
 ----
 

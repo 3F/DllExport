@@ -1,5 +1,34 @@
-DllExport - github.com/3F/DllExport
-- - - - - - - - - - - - - - - - - - 
+DllExport - https://github.com/3F/DllExport
+- - - - - - - - - - - - - - - - - - - - - - 
+
+[v1.6-beta3] 2017.10.27
+
+    * NEW: Implemented another storage for configuration: '.net.dllexport.targets'. Issue #49.
+    * NEW: Implemented automatic checking existence of a correct exported proc via Conari. Issue #55.
+           Wizard controls it via `$(DllExportPeCheck)`:
+            * 0x01 bit - Will check count of all planned exports from final PE32/PE32+ module.
+            * 0x02 bit - Will check existence of all planned exports (IL code) in actual PE32/PE32+ module.
+            
+    * NEW: Implemented PE32/PE32+ Viewer to check manually available exports from final modules. Issue #55.
+           New key for manager:
+            ```
+            -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
+            ```
+
+            Sample:
+            ```
+            DllExport -pe-exp-list bin\Debug\regXwild.dll
+            ```
+            
+    * NEW: Implemented `-pkg-link {uri}` key for DllExport manager. Issue #53.
+    * NEW: New settings for Wizard:
+            * Path to custom ILAsm.
+            * Flag to keep intermediate Files (IL Code, Resources, ...).
+            * Timeout of execution in milliseconds.
+            
+    * CHANGED: Updated MvsSln v2.0. Full changelog: https://github.com/3F/MvsSln/blob/master/changelog.txt
+    * NOTE: PE-features via Conari v1.3.0 https://github.com/3F/Conari
+
 
 [v1.6-beta2] 2017.08.19
 

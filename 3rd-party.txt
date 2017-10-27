@@ -16,6 +16,10 @@ DllExport  [ github.com/3F/DllExport ]
         ### MvSln 
 
             * https://github.com/3F/MvsSln
+            
+        ### Conari
+        
+            * https://github.com/3F/Conari
 
         ### GetNuTool core & hMSBuild logic 
 
