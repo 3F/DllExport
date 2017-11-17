@@ -40,6 +40,12 @@ namespace net.r_eg.DllExport.Wizard
         bool Installed { get; }
 
         /// <summary>
+        /// Message if an internal error occurred, otherwise null value.
+        /// TODO: because of DxpIsolatedEnv. See details there.
+        /// </summary>
+        string InternalError { get; }
+
+        /// <summary>
         /// Special identifier. Like `ProjectGuid` that is not available in SDK-based projects.
         /// https://github.com/3F/DllExport/issues/36#issuecomment-320794498
         /// </summary>

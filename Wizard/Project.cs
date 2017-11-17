@@ -65,7 +65,16 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public bool Installed
         {
-            get => !String.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
+            get => InternalError == null && !String.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
+        }
+
+        /// <summary>
+        /// Message if an internal error occurred, otherwise null value.
+        /// TODO: because of DxpIsolatedEnv. See details there.
+        /// </summary>
+        public string InternalError
+        {
+            get => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluatedValue;
         }
 
         /// <summary>
@@ -306,7 +315,9 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         protected void Save()
         {
-            XProject?.Save();
+            if(XProject?.ProjectFullPath != null && InternalError == null) {
+                XProject.Save();
+            }
         }
 
         protected void CfgDDNS()

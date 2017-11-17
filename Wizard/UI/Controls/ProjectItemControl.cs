@@ -24,6 +24,7 @@
 
 using System;
 using System.ComponentModel;
+using System.IO;
 using System.Windows.Forms;
 using RGiesecke.DllExport;
 
@@ -32,7 +33,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
     internal sealed partial class ProjectItemControl: UserControl
     {
         private readonly int EX_HEIGHT;
-        private IProject project;
+
+        public IProject Project
+        {
+            get;
+            private set;
+        }
 
         public bool Installed
         {
@@ -159,9 +165,21 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             Namespaces.Text = name;
         }
 
+        public bool LockIfError(string msg)
+        {
+            if(msg == null) {
+                return false;
+            }
+
+            chkInstalled.Enabled    = false;
+            textBoxIdent.Text       = "Project cannot be loaded:";
+            textBoxProjectPath.Text = msg;
+            return true;
+        }
+
         public ProjectItemControl(IProject project)
         {
-            this.project = project;
+            Project = project ?? throw  new ArgumentNullException(nameof(project));
 
             InitializeComponent();
             EX_HEIGHT = Height;
@@ -244,9 +262,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            var path = project?.XProject?.ProjectPath;
+            var path = Project.XProject?.ProjectItem.project.fullPath;
             if(!String.IsNullOrWhiteSpace(path)) {
-                Browse?.Invoke(path);
+                Browse?.Invoke(Path.GetDirectoryName(path));
             }
         }
 

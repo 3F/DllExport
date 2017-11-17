@@ -158,13 +158,8 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             toolTipMain.SetToolTip(comboBoxSln, sln);
 
-            var projects = exec.UniqueProjectsBy(sln);
-            if(projects != null)
-            {
-                foreach(var project in projects) {
-                    projectItems.Add(project);
-                }
-            }
+            exec.UniqueProjectsBy(sln)?
+                .ForEach(prj => projectItems.Add(prj));
         }
 
         private void DoSilentAction(Action act, ComboBox box, EventHandler handler)

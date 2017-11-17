@@ -153,17 +153,21 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             control.Platform        = project.Config.Platform;
             control.Compiler        = project.Config.Compiler;
 
-            control.Browse              = Browse;
-            control.NamespaceValidate   = NamespaceValidate;
-            control.OpenUrl             = OpenUrl;
+            control.Browse  = Browse;
+            control.OpenUrl = OpenUrl;
+
+            if(control.LockIfError(project.InternalError)) {
+                return;
+            }
+
+            control.NamespaceValidate = NamespaceValidate;
 
             control.Namespaces.Items.Clear();
             control.Namespaces.Items.AddRange(project.Config.Namespaces.ToArray());
             control.Namespaces.SelectedIndex = 0;
-
             control.Namespaces.MaxLength = project.Config.NSBuffer;
 
-            if(project.Installed) {
+            if(control.Installed) {
                 control.SetNamespace(project.Config.Namespace, true);
             }
         }

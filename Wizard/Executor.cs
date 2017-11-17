@@ -37,7 +37,7 @@ namespace net.r_eg.DllExport.Wizard
 {
     public class Executor: IExecutor, IConfigInitializer, IDisposable
     {
-        protected Dictionary<string, Sln> solutions = new Dictionary<string, Sln>();
+        protected Dictionary<string, IEnvironment> solutions = new Dictionary<string, IEnvironment>();
 
         /// <summary>
         /// Cache for loaded projects.
@@ -163,7 +163,7 @@ namespace net.r_eg.DllExport.Wizard
                 return false;
             }
 
-            if(UniqueProjectsBy(sln).Any(p => p.HasExternalStorage)) {
+            if(UniqueProjectsBy(sln)?.Any(p => p.HasExternalStorage) == true) {
                 Config.CfgStorage = CfgStorageType.TargetsFile;
                 return true;
             }
@@ -206,15 +206,22 @@ namespace net.r_eg.DllExport.Wizard
                 return null;
             }
 
-            if(!solutions.ContainsKey(file)) {
-                solutions[file] = new Sln(file, SlnItems.EnvWithMinimalProjects);
+            if(!solutions.ContainsKey(file))
+            {
+                var sln = new Sln(file, SlnItems.Projects 
+                                            | SlnItems.SolutionConfPlatforms 
+                                            | SlnItems.ProjectConfPlatforms);
+
+                solutions[file] = new DxpIsolatedEnv(sln.Result);
+                solutions[file].LoadMinimalProjects();
             }
-            return solutions[file].Result.Env;
+
+            return solutions[file];
         }
 
         private void Free()
         {
-            solutions?.ForEach(sln => sln.Value.Result?.Env?.Dispose());
+            solutions?.ForEach(sln => sln.Value?.Dispose());
 
             if(_targetsFile != null) {
                 _targetsFile.Dispose();
