@@ -112,8 +112,16 @@ namespace net.r_eg.DllExport.Wizard
                 }
 
                 return XProject.ProjectItem.project.path ??
-                            MakeBasePath(XProject.ProjectFullPath);
+                            MakeBasePath(XProject.ProjectFullPath, false);
             }
+        }
+
+        /// <summary>
+        /// Full path to root solution directory.
+        /// </summary>
+        public virtual string SlnDir
+        {
+            get => XProject?.Sln?.SolutionDir ?? Config?.Wizard?.SlnDir;
         }
 
         /// <summary>
@@ -183,7 +191,7 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public bool Configure(ActionType type)
+        public virtual bool Configure(ActionType type)
         {
             switch(type) {
                 case ActionType.Restore: {
@@ -435,7 +443,12 @@ namespace net.r_eg.DllExport.Wizard
                 throw new ArgumentException($"StoragePath is empty or null.", nameof(Config.Wizard.StoragePath));
             }
 
-            AddImport(Config.Wizard.StoragePath, false, Guids.X_EXT_STORAGE);
+            string xfile = Config.Wizard.StoragePath;
+            if(SlnDir != null) {
+                xfile = Path.Combine(SlnDir, xfile);
+            }
+
+            AddImport(xfile, false, Guids.X_EXT_STORAGE);
         }
 
         protected void AddDllExportLib()
@@ -570,9 +583,13 @@ namespace net.r_eg.DllExport.Wizard
             return XProject?.GetPropertyValue(name);
         }
 
-        protected virtual string MakeBasePath(string path)
+        protected virtual string MakeBasePath(string path, bool prefix = true)
         {
-            return "$(SolutionDir)" + Config.Wizard.SlnDir.MakeRelativePath(path);
+            string ret = SlnDir?.MakeRelativePath(path);
+            if(prefix) {
+                return $"$(SolutionDir){ret}";
+            }
+            return ret;
         }
 
         private void AllocateProperties(params string[] names)

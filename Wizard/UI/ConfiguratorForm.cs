@@ -23,7 +23,6 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Text;
@@ -153,7 +152,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             }
             projectItems.Reset();
 
-            exec.UpdateCfgStorageType(sln);
+            exec.ActiveSlnFile = sln;
             storage.UpdateItem();
 
             toolTipMain.SetToolTip(comboBoxSln, sln);

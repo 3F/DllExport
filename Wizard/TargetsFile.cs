@@ -32,15 +32,37 @@ namespace net.r_eg.DllExport.Wizard
 {
     public class TargetsFile: Project, IProject, ITargetsFile, IDisposable
     {
+        internal const string DEF_CFG_FILE = ".net.dllexport.targets";
+
+        /// <summary>
+        /// Full path to root solution directory.
+        /// </summary>
+        public override string SlnDir
+        {
+            get => _slndir;
+        }
+        private string _slndir;
+
+        /// <summary>
+        /// To configure project via specific action.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        public override bool Configure(ActionType type)
+        {
+            return Configure(type, null);
+        }
+
         /// <summary>
         /// To configure external .targets through parent project.
         /// </summary>
         /// <param name="type"></param>
         /// <param name="parent"></param>
-        public void Configure(ActionType type, IProject parent)
+        /// <returns></returns>
+        public bool Configure(ActionType type, IProject parent)
         {
             if(type != ActionType.Update && type != ActionType.Configure) {
-                return;
+                return false;
             }
 
             Config = parent?.Config ?? throw new ArgumentNullException(nameof(parent));
@@ -54,18 +76,14 @@ namespace net.r_eg.DllExport.Wizard
 
             XProject.Reevaluate();
             XProject.Save();
+            return true;
         }
 
-        public TargetsFile(string file)
+        public TargetsFile(string file, string rootpath)
             : base(new XProject(new ProjectItemCfg(), new Microsoft.Build.Evaluation.Project()))
         {
+            _slndir = rootpath;
             XProject.Project.FullPath = file;
-        }
-
-        public TargetsFile(IWizardConfig cfg)
-           : this(cfg?.StoragePath)
-        {
-
         }
 
         protected void Configure(IProject parent)
@@ -75,7 +93,7 @@ namespace net.r_eg.DllExport.Wizard
             SetProperties(
                 ConfigProperties, 
                 $"'$(DllExportIdent)'=='{parent.DxpIdent}'",
-                MakeBasePath(parent.XProject.ProjectFullPath)
+                MakeBasePath(parent.XProject.ProjectFullPath, false)
             );
             XProject.Reevaluate();
 
@@ -95,7 +113,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private void Free()
         {
-            if(XProject?.Project != null && XProject?.Project.FullPath != null) {
+            if(XProject?.Project != null && XProject.Project.FullPath != null) {
                 Microsoft.Build.Evaluation.ProjectCollection.GlobalProjectCollection?.UnloadProject(XProject.Project);
             }
         }

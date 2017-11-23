@@ -68,6 +68,22 @@ namespace net.r_eg.DllExport.Wizard
         } = new DDNS(Encoding.UTF8);
 
         /// <summary>
+        /// Latest selected .sln file.
+        /// </summary>
+        public virtual string ActiveSlnFile
+        {
+            get => _activeSlnFile;
+            set
+            {
+                _activeSlnFile = value;
+                Log.send(this, $"Selected .sln '{_activeSlnFile}'", Message.Level.Info);
+                UpdateCfgStorageType(_activeSlnFile);
+                _targetsFile = null;
+            }
+        }
+        private string _activeSlnFile;
+
+        /// <summary>
         /// List of available .sln files.
         /// </summary>
         public IEnumerable<string> SlnFiles
@@ -83,9 +99,20 @@ namespace net.r_eg.DllExport.Wizard
         {
             get
             {
-                if(_targetsFile == null && Config != null) {
-                    _targetsFile = new TargetsFile(Config);
+                if(_targetsFile != null) {
+                    return _targetsFile;
                 }
+
+                if(String.IsNullOrWhiteSpace(Config?.StoragePath) 
+                    || String.IsNullOrWhiteSpace(ActiveSlnFile))
+                {
+                    return null;
+                }
+
+                string dir      = Path.GetDirectoryName(ActiveSlnFile);
+                string xfile    = Path.Combine(dir, Config.StoragePath);
+
+                _targetsFile = new TargetsFile(xfile, dir);
                 return _targetsFile;
             }
         }
@@ -128,19 +155,15 @@ namespace net.r_eg.DllExport.Wizard
             {
                 var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? 
                                     SlnFiles?.FirstOrDefault() : Config.SlnFile;
-                if(sln == null)
-                {
-                    throw new ArgumentException(
-                        String.Format(
-                            "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
-                            nameof(IWizardConfig.SlnFile),
-                            nameof(IWizardConfig.SlnDir)
-                        )
-                    );
-                }
 
-                Log.send(this, $"Selected sln '{sln}'", Message.Level.Info);
-                UpdateCfgStorageType(sln);
+                ActiveSlnFile = sln ?? throw new ArgumentException(
+                    String.Format(
+                        "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
+                        nameof(IWizardConfig.SlnFile),
+                        nameof(IWizardConfig.SlnDir)
+                    )
+                );
+
                 Configure(sln);
             }
 
@@ -150,26 +173,6 @@ namespace net.r_eg.DllExport.Wizard
                 UI.App.RunSTA(new UI.InfoForm(this));
                 return;
             }
-        }
-
-        /// <summary>
-        /// Updates CfgStorage type via current state from selected .sln.
-        /// </summary>
-        /// <param name="sln">Path to .sln</param>
-        /// <returns></returns>
-        public bool UpdateCfgStorageType(string sln)
-        {
-            if(String.IsNullOrWhiteSpace(sln)) {
-                return false;
-            }
-
-            if(UniqueProjectsBy(sln)?.Any(p => p.HasExternalStorage) == true) {
-                Config.CfgStorage = CfgStorageType.TargetsFile;
-                return true;
-            }
-
-            Config.CfgStorage = CfgStorageType.ProjectFiles;
-            return true;
         }
 
         /// <param name="cfg"></param>
@@ -187,6 +190,26 @@ namespace net.r_eg.DllExport.Wizard
                 }
                 p.Configure(Config.Type);
             });
+        }
+
+        /// <summary>
+        /// Updates CfgStorage type via current state from selected .sln.
+        /// </summary>
+        /// <param name="sln">Path to .sln</param>
+        /// <returns></returns>
+        protected bool UpdateCfgStorageType(string sln)
+        {
+            if(String.IsNullOrWhiteSpace(sln)) {
+                return false;
+            }
+
+            if(UniqueProjectsBy(sln)?.Any(p => p.HasExternalStorage) == true) {
+                Config.CfgStorage = CfgStorageType.TargetsFile;
+                return true;
+            }
+
+            Config.CfgStorage = CfgStorageType.ProjectFiles;
+            return true;
         }
 
         protected IProject GetProject(IXProject xp)

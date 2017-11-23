@@ -24,7 +24,6 @@
 
 using System;
 using System.Globalization;
-using System.IO;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -37,7 +36,7 @@ namespace net.r_eg.DllExport.Wizard
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
 
         private UI.MsgForm uimsg;
-        private object synch = new object();
+        private object sync = new object();
 
         /// <summary>
         /// Optional root path of user paths. 
@@ -111,14 +110,8 @@ namespace net.r_eg.DllExport.Wizard
         {
             get
             {
-                if(_storagePath == null)
-                {
-                    _storagePath = Path.GetFullPath(
-                        Path.Combine(
-                            SlnDir ?? String.Empty,
-                            ".net.dllexport.targets"
-                        )
-                    );
+                if(_storagePath == null) {
+                    _storagePath = TargetsFile.DEF_CFG_FILE;
                 }
                 return _storagePath;
             }
@@ -226,10 +219,13 @@ namespace net.r_eg.DllExport.Wizard
 
         internal bool TryExecute(IExecutor exec, Action act)
         {
-            lock(synch)
+            lock(sync)
             {
                 exec.Log.Received -= OnMsg;
                 exec.Log.Received += OnMsg;
+
+                LSender.Send(this, $"vW: {WizardVersion.S_INFO}", Message.Level.Info);
+                PrintKeys(Message.Level.Debug);
 
                 try
                 {
@@ -239,14 +235,7 @@ namespace net.r_eg.DllExport.Wizard
                 catch(Exception ex)
                 {
                     LSender.Send(this, $"ERROR-Wizard: {ex.Message}", Message.Level.Fatal);
-                    LSender.Send(this, $"SlnDir: '{SlnDir}'", Message.Level.Warn);
-                    LSender.Send(this, $"SlnFile: '{SlnFile}'", Message.Level.Warn);
-                    LSender.Send(this, $"PkgPath: '{PkgPath}'", Message.Level.Warn);
-                    LSender.Send(this, $"MetaLib: '{MetaLib}'", Message.Level.Warn);
-                    LSender.Send(this, $"DxpTarget: '{DxpTarget}'", Message.Level.Warn);
-                    LSender.Send(this, $"RootPath: '{RootPath}'", Message.Level.Warn);
-                    LSender.Send(this, $"Storage: '{CfgStorage}'", Message.Level.Warn);
-                    LSender.Send(this, $"Action: '{Type}'", Message.Level.Warn);
+                    PrintKeys(Message.Level.Warn);
 #if DEBUG
                     LSender.Send(this, $"Stack trace: {ex.StackTrace}", Message.Level.Error);
 #endif
@@ -278,6 +267,20 @@ namespace net.r_eg.DllExport.Wizard
                 Console.WriteLine(message);
             }
             Console.ResetColor();
+        }
+
+        private void PrintKeys(Message.Level level)
+        {
+            LSender.Send(this, $"SlnDir: '{SlnDir}'", level);
+            LSender.Send(this, $"SlnFile: '{SlnFile}'", level);
+            LSender.Send(this, $"PkgPath: '{PkgPath}'", level);
+            LSender.Send(this, $"MetaLib: '{MetaLib}'", level);
+            LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
+            LSender.Send(this, $"RootPath: '{RootPath}'", level);
+            LSender.Send(this, $"Storage: '{CfgStorage}'", level);
+            LSender.Send(this, $"StoragePath: '{StoragePath}'", level);
+            LSender.Send(this, $"Action: '{Type}'", level);
+            LSender.Send(this, $"MsgGuiLevel: '{MsgGuiLevel}'", level);
         }
 
         private bool IsLevelOrAbove(Message.Level lvl1, Message.Level lvl2)

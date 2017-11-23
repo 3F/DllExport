@@ -33,6 +33,7 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         /// <param name="type"></param>
         /// <param name="parent"></param>
-        void Configure(ActionType type, IProject parent);
+        /// <returns></returns>
+        bool Configure(ActionType type, IProject parent);
     }
 }

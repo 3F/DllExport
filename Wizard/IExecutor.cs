@@ -44,6 +44,11 @@ namespace net.r_eg.DllExport.Wizard
         IDDNS DDNS { get; }
 
         /// <summary>
+        /// Latest selected .sln file.
+        /// </summary>
+        string ActiveSlnFile { get; set; }
+
+        /// <summary>
         /// List of available .sln files.
         /// </summary>
         IEnumerable<string> SlnFiles { get; }
@@ -71,12 +76,5 @@ namespace net.r_eg.DllExport.Wizard
         /// To start process of the required configuration.
         /// </summary>
         void Configure();
-
-        /// <summary>
-        /// Updates CfgStorage type via current state from selected .sln.
-        /// </summary>
-        /// <param name="sln">Path to .sln</param>
-        /// <returns></returns>
-        bool UpdateCfgStorageType(string sln);
     }
 }
