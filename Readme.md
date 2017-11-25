@@ -4,7 +4,7 @@
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
-Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
+Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 ```
 
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
@@ -17,8 +17,12 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com>
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
 
+**Start with:**
+
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
+
+~~~---~~~
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -63,11 +67,11 @@ Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature),
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
 
-Our Wizard and lightweight manager [[?](https://github.com/3F/DllExport/issues/38)]:
+Our Wizard and embeddable manager [[?](https://github.com/3F/DllExport/issues/38)]:
 
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
-[![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=okPThdWDZMM)
+[![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://youtu.be/okPThdWDZMM?t=46s)
 [![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://github.com/3F/DllExport/issues/55)
 
 ----
@@ -86,7 +90,7 @@ It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/mast
 
 ## &
 
-### How it works
+### How does it work
 
 Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that makes the all required steps via `.export` directive ([it's specific directive for ILAsm compiler only](https://github.com/3F/DllExport/issues/45#issuecomment-317802099)).
 
@@ -127,9 +131,14 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 ### How to get DllExport
 
-Attention please: **v1.6+** does not support standard NuGet clients anymore [[?](https://github.com/3F/DllExport/issues/38)] But you can still easily get our package and flexibly configure what you need ([Sample](https://www.youtube.com/watch?v=okPThdWDZMM)):
+**v1.6+** have no official support of any standard NuGet clients. [[?](https://github.com/3F/DllExport/issues/38)] 
 
-Firstly, get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb) from any place (for example, you can still get it from package via NuGet server - [how to](https://www.youtube.com/watch?v=okPThdWDZMM)) or it also can be embedded inside any other your scripts because it's simple batch script (without powershell scripts and dotnet-cli).
+* [New Wizard and embeddable manager](https://youtu.be/okPThdWDZMM?t=55s)
+
+Use [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb without powershell scripts and dotnet-cli) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts because of simple batch script.
+
+**Please note**: You do not need to call manually DllExport.bat after initial configuration. It still will be **automatically** for ~`-action Restore` command etc.
+
 
 * To install/uninstall or to reconfigure your projects:
 
@@ -143,7 +152,7 @@ DllExport -action Configure
 DllExport -action Update
 ```
 
-* To manually restore package (It should be automatically restored by any Build operation of your configured projects or when you open Visual Studio. But if you need, use this):
+* To manually restore package (**It should be automatically** restored by any Build operation of your configured projects or when you open Visual Studio. But if you need, use this):
 ```
 DllExport -action Restore
 ```

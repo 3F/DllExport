@@ -2,7 +2,7 @@
 <package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
   <metadata>
     <id>DllExport</id>
-    <version>1.6.0-beta3</version>
+    <version>$-version-$</version>
     <title>.NET DllExport</title>
     <authors>github.com/3F/DllExport</authors>
     <owners>reg</owners>
@@ -14,10 +14,20 @@
         The open implementation of unmanaged exports for .NET ( DllExport )
         Source code and all details here: https://github.com/3F/DllExport
         
+        To configure projects via current package:
+        ========================================================
+        DllExport -action Configure -dxp-version $-version-$ 
+        ========================================================
+        https://3F.github.io/DllExport/releases/latest/manager/
+        
+        
+        Demonstration of the new manager:
+        * https://youtu.be/okPThdWDZMM
+                
         ~~~~~~~~
         Get it via GetNuTool:
         ==========================================
-        gnt /p:ngpackages="DllExport/1.6.0-beta3"
+        gnt /p:ngpackages="DllExport/$-version-$"
         ==========================================
         * https://github.com/3F/GetNuTool   
         
@@ -26,11 +36,8 @@
         
     </description>
     <summary>Unmanaged Exports ( .NET DllExport )</summary>
-    <tags>DllExport unmanaged-exports net-c-func ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke tools pe32 pe32-plus dotnet-DllExport unmanaged-export</tags>
+    <tags>DllExport unmanaged-exports net-c-func ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln</tags>
     <releaseNotes></releaseNotes>
     <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2017  Denis Kuzmin [entry.reg@gmail.com] </copyright>
-    <references>
-      <reference file="DllExport.dll" />
-    </references>
   </metadata>
 </package>
