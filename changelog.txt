@@ -1,6 +1,23 @@
 DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - 
 
+[v1.6-RC] 2017.11.26
+
+    * FIXED: Avoids crashes when project cannot be loaded for some reasons. Issue #56
+    * FIXED: Fixed usage of manager outside the Solution directory.
+    * FIXED: Fixed restoring package when using `-pe-exp-list` command.
+    * NEW: Added `-mgr-up` key. Will update manager to version from '-dxp-version'.
+    * NOTE: Thanks for your feedback. Now we're ready for release v1.6, soon. 
+            Please check release-candidate as carefully as possible.
+            
+            Start with:
+            ==============================
+            DllExport -action Configure
+            ==============================
+            https://3F.github.io/DllExport/releases/latest/manager/
+            https://www.youtube.com/watch?v=okPThdWDZMM&t=46s 
+            
+
 [v1.6-beta3] 2017.10.27
 
     * NEW: Implemented another storage for configuration: '.net.dllexport.targets'. Issue #49.
