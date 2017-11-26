@@ -32,13 +32,14 @@ set /a buildInfo=0
 set "gMsbPath="
 set "pkgLink="
 set "peExpList="
+set "mgrUp="
 
 set ERROR_SUCCESS=0
 set ERROR_FILE_NOT_FOUND=2
 set ERROR_PATH_NOT_FOUND=3
 
 set "args=%* "
-
+set "fManager=%~dpnx0"
 
 :: - - -
 :: Help command
@@ -88,6 +89,7 @@ echo  -msb {path}           - Full path to specific msbuild.
 echo  -packages {path}      - A common directory for packages.
 echo  -server {url}         - Url for searching remote packages.
 echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
+echo  -mgr-up               - Updates this manager to version from '-dxp-version'.
 echo  -wz-target {path}     - Relative path to .target file of the Wizard.
 echo  -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
 echo  -eng                  - Try to use english language for all build messages.
@@ -124,7 +126,7 @@ if [!_is!]==[1] (
     goto usage
 )
 
-set /a idx=1 & set cmdMax=17
+set /a idx=1 & set cmdMax=18
 :loopargs
 
     if "!args:~0,8!"=="-action " (
@@ -160,7 +162,6 @@ set /a idx=1 & set cmdMax=17
     if "!args:~0,13!"=="-dxp-version " (
         call :popars %1 & shift
         set dxpVersion=%2
-        echo Selected new DllExport version: !dxpVersion!
         call :popars %2 & shift
     )
 
@@ -186,6 +187,11 @@ set /a idx=1 & set cmdMax=17
         call :popars %1 & shift
         set pkgLink=%2
         call :popars %2 & shift
+    )
+
+    if "!args:~0,8!"=="-mgr-up " (
+        call :popars %1 & shift
+        set /a mgrUp=1
     )
 
     if "!args:~0,11!"=="-wz-target " (
@@ -260,11 +266,6 @@ if defined dxpVersion (
     set "wPkgPath=!wPkgPath!.!dxpVersion!"
 )
 
-if defined peExpList (
-    !wPkgPath!\\tools\\PeViewer.exe -list -pemodule "!peExpList!"
-    exit /B %ERRORLEVEL%
-)
-
 set dxpTarget="!wPkgPath!\\!tWizard!"
 call :dbgprint "dxpTarget = '!dxpTarget!'"
 
@@ -293,6 +294,11 @@ if not exist !dxpTarget! (
     ) else (
         call :gntpoint !_gntC! >nul
     )
+)
+
+if defined peExpList (
+    !wPkgPath!\\tools\\PeViewer.exe -list -pemodule "!peExpList!"
+    exit /B %ERRORLEVEL%
 )
 
 if "!buildInfo!"=="1" (
@@ -343,6 +349,10 @@ set xMSBuild="!msbuildPath!"
 call :dbgprint "Target: !xMSBuild! !dxpTarget!"
 
 !xMSBuild! /nologo /v:m /m:4 !dxpTarget!
+
+if defined mgrUp (
+    (copy /B/Y "!wPkgPath!\\DllExport.bat" "%fManager%" > nul) & echo Manager has been updated. & exit /B 0
+)
 exit /B 0
 
 :: - - -
