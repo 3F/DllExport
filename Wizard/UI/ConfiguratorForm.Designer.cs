@@ -58,6 +58,7 @@
             this.comboBoxStorage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxStorage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxStorage.DropDownWidth = 190;
+            this.comboBoxStorage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxStorage.FormattingEnabled = true;
             this.comboBoxStorage.Location = new System.Drawing.Point(297, 2);
             this.comboBoxStorage.Margin = new System.Windows.Forms.Padding(1);
@@ -70,6 +71,7 @@
             // 
             this.btnInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnInfo.Location = new System.Drawing.Point(425, 1);
             this.btnInfo.Margin = new System.Windows.Forms.Padding(0);
             this.btnInfo.Name = "btnInfo";
@@ -84,6 +86,7 @@
             // 
             this.btnBug.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnBug.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnBug.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnBug.Location = new System.Drawing.Point(444, 1);
             this.btnBug.Margin = new System.Windows.Forms.Padding(0);
             this.btnBug.Name = "btnBug";
@@ -97,6 +100,7 @@
             // btnApply
             // 
             this.btnApply.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnApply.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnApply.Location = new System.Drawing.Point(377, 1);
             this.btnApply.Margin = new System.Windows.Forms.Padding(1);
             this.btnApply.Name = "btnApply";
@@ -113,6 +117,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSln.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSln.DropDownWidth = 500;
+            this.comboBoxSln.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.comboBoxSln.FormattingEnabled = true;
             this.comboBoxSln.Location = new System.Drawing.Point(1, 2);
             this.comboBoxSln.Margin = new System.Windows.Forms.Padding(1);
