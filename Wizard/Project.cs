@@ -52,6 +52,12 @@ namespace net.r_eg.DllExport.Wizard
         protected const string DXP_TARGET_PKG_R = "DllExportRestorePkg";
 
         /// <summary>
+        /// To support dynamic `import` section.
+        /// https://github.com/3F/DllExport/issues/62
+        /// </summary>
+        protected const string DXP_TARGET_R_DYN = "DllExportRPkgDynamicImport";
+
+        /// <summary>
         /// Access to found project.
         /// </summary>
         public IXProject XProject
@@ -471,13 +477,16 @@ namespace net.r_eg.DllExport.Wizard
                 $"'$(DllExportModImported)' != 'true' Or !Exists('{dxpTarget}')",
                 CfgBatWrapper.DXP_INSTALLER
             );
+
+            AddDynRestore(
+                DXP_TARGET_R_DYN, 
+                $"'$(DllExportModImported)' != 'true' And '$(DllExportRPkgDyn)' != 'false'"
+            );
         }
 
         protected void AddRestoreDxp(string name, string condition, string installer)
         {
-            Log.send(this, $"Add '{name}' target", Message.Level.Info);
-
-            var target = XProject.Project.Xml.AddTarget(name);
+            var target = AddTarget(name);
             target.BeforeTargets = "PrepareForBuild";
 
             var ifInstaller = $"Exists('$(SolutionDir){installer}')";
@@ -489,6 +498,29 @@ namespace net.r_eg.DllExport.Wizard
             var taskExec = target.AddTask("Exec");
             taskExec.Condition = $"({condition}) And {ifInstaller}";
             taskExec.SetParameter("Command", $"cd \"$(SolutionDir)\" & {installer} -action Restore");
+        }
+
+        // https://github.com/3F/DllExport/issues/62#issuecomment-353785676
+        protected void AddDynRestore(string name, string condition)
+        {
+            var target = AddTarget(name);
+            target.BeforeTargets    = "PostBuildEvent";
+            target.DependsOnTargets = "GetFrameworkPaths";
+            target.Condition        = condition;
+
+            var taskMsb = target.AddTask("MSBuild");
+
+            taskMsb.SetParameter("BuildInParallel", "true");
+            taskMsb.SetParameter("UseResultsCache", "true");
+            taskMsb.SetParameter("Projects", "$(MSBuildProjectFullPath)");
+            taskMsb.SetParameter("Properties", "DllExportRPkgDyn=true");
+            taskMsb.SetParameter("Targets", "Build");
+        }
+
+        protected Microsoft.Build.Construction.ProjectTargetElement AddTarget(string name)
+        {
+            Log.send(this, $"Add '{name}' target", Message.Level.Info);
+            return XProject.Project.Xml.AddTarget(name);
         }
 
         protected void RemoveDllExportLib()
@@ -513,6 +545,9 @@ namespace net.r_eg.DllExport.Wizard
 
             Log.send(this, $"Trying to remove old restore-target: '{DXP_TARGET_PKG_R}'", Message.Level.Info);
             while(RemoveXmlTarget(DXP_TARGET_PKG_R)) { }
+
+            Log.send(this, $"Trying to remove dynamic `import` section: '{DXP_TARGET_R_DYN}'", Message.Level.Info);
+            while(RemoveXmlTarget(DXP_TARGET_R_DYN)) { }
 
             Log.send(this, $"Trying to remove X_EXT_STORAGE Import elements: '{Guids.X_EXT_STORAGE}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(null, Guids.X_EXT_STORAGE))) { }
