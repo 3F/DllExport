@@ -1,6 +1,112 @@
 DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - 
 
+[v1.6] 2017.12.29
+
+    * NEW: The new embeddable lightweight manager for distribution via MvsSln & GetNuTool projects. Issue #38.
+           Based on hMSBuild logic and includes GetNuTool core v1.6.1.
+           
+           Now you shouldn't use standard nuget clients anymore:
+           https://www.youtube.com/watch?v=9bYgywZ9pPE
+           
+           Quick start: https://www.youtube.com/watch?v=sBWt-KdQtoc
+            ==============================
+            DllExport -action Configure
+            ==============================
+           
+           Package from nuget.org already contains manager, but you can also get it directly.
+           Latest manager: https://3F.github.io/DllExport/releases/latest/manager/
+           ~18 Kb text-based embeddable batch-script that does not require powershell and dotnet-cli.
+           
+           Automatic restoring still is available but you can also use: `DllExport -action Restore`
+           All available features: `DllExport -h`
+           
+           Direct links to remote package (without nuget server) via `-pkg-link {uri}` key. Issue #53.
+           NuGet Server by default: nuget.org.
+           
+    * NEW: The new Wizard (configurator via MvsSln). To easy configure your projects in any place. Part of Issue #38.
+           MvsSln v2.0: https://github.com/3F/MvsSln
+           
+    * NEW: Added support of empty/global namespaces - Issue #47. 
+           Use `Direct-Mod` if Cecil will not process this correctly.
+           
+    * NEW: Implemented another storage for configuration: '.net.dllexport.targets'. Issue #49.
+    
+    * NEW: New settings for configurator (Wizard):
+            * Path to custom ILAsm.
+            * Flag to keep intermediate Files (IL Code, Resources, ...).
+            * Timeout of execution in milliseconds.
+    
+    * NEW: Implemented automatic checking existence of a correct exported proc via Conari. Issue #55.
+           Wizard controls it via `$(DllExportPeCheck)`:
+            * 0x01 bit - Will check count of all planned exports from final PE32/PE32+ module.
+            * 0x02 bit - Will check existence of all planned exports (IL code) in actual PE32/PE32+ module.
+            
+    * NEW: Implemented PE32/PE32+ Viewer to check manually available exports from final modules. Issue #55.
+           New key for manager:
+            ```
+            -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
+            ```
+
+            Sample:
+            ```
+            DllExport -pe-exp-list bin\Debug\regXwild.dll
+            ```
+            
+    * FIXED: Fixed target platform detection. Issue #34.
+             Details: https://github.com/3F/DllExport/issues/34#issuecomment-306171060
+             
+    * FIXED: Fixed problem when the Post-Build event is triggered before our tool. Issue #35.
+             Use this if still is needed:
+             ```
+             <Target Name="PostBuildEventBeforeDllExport" BeforeTargets="DllExportMod">
+                ...
+             </Target>
+             ```
+             
+    * FIXED: Fixed generation of exp + .lib via MS Library Manager for VS2017. Issue #37.
+             Now it also includes processing through VsDevCmd & VcVarsAll initializer scripts. 
+             Use the folowing msbuild properties to override values by default:
+             * $(DllExportVcVarsAll); $(DllExportVsDevCmd)
+             
+    * FIXED: Fixes possible problem with multiple properties that contains *Undefined* word, 
+             e.g.: *Undefined*\path1;C:\path2 ...
+             
+    * CHANGED: Added information about finding lib tool. Issue #44.
+    
+    * CHANGED: UI. Selected platform now affects to all configurations of project instead of active as before.
+    
+    * CHANGED: Now nuget package does not contain library in `lib/.../` Details in #36.
+    
+    * CHANGED: Now we also distribute .zip package for work through our manager etc.
+               https://github.com/3F/DllExport/releases
+               
+    * NOTE: How to avoid EXP0014: RunIlAsm. The library manager still cannot be found.
+            https://www.youtube.com/watch?v=zUejJ4vUPGw
+            Related Issue #44
+            
+    * NOTE: Quick start (Configuring, Automatic restoring, Pe-Viewer): 
+            https://www.youtube.com/watch?v=sBWt-KdQtoc
+            
+    * NOTE: The latest text-based manager: 
+            https://3F.github.io/DllExport/releases/latest/manager/
+            
+               Other versions you can find from GitHub Releases:
+               * https://github.com/3F/DllExport/releases
+               
+               Or get it from nuget packages starting with v1.6+
+               
+    * NOTE: PE-features via Conari v1.3.0 https://github.com/3F/Conari
+               
+    * KNOWN: Bug when - "Build successful but methods are not exported." Issue #59
+             For today, anyone else may also try to use https://github.com/3F/Conari to avoid similar @Genteure's problem.
+             
+    * DIFF(v1.6-RC):
+    
+        * FIXED: Wizard. Fixed incorrect layout for zh_CN Simplified Chinese (Thanks @Genteure). Issue #61
+        * FIXED: Fixes automatic restoring the package via msbuild. Issue #62
+        
+
 [v1.6-RC] 2017.11.26
 
     * FIXED: Avoids crashes when project cannot be loaded for some reasons. Issue #56

@@ -57,7 +57,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void picVideo_Click(object sender, System.EventArgs e)
         {
-            "https://www.youtube.com/watch?v=okPThdWDZMM".OpenUrl();
+            "https://www.youtube.com/watch?v=9bYgywZ9pPE".OpenUrl();
         }
     }
 }

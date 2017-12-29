@@ -21,6 +21,7 @@ Copyright (c) 2016-2017  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
+> *[How to (Screencast)](https://www.youtube.com/watch?v=sBWt-KdQtoc)*
 
 ~~~---~~~
 
@@ -37,7 +38,7 @@ public static int entrypoint(IntPtr L)
 }
 ```
 
-* **For work with Unmanaged code/libraries (binding between .NET and C/C++ etc.), see [Conari](https://github.com/3F/Conari)**
+* **For work with Unmanaged code/libraries (binding between .NET and unmanaged native C/C++ etc.), see [Conari](https://github.com/3F/Conari)**
 * If you need convenient work with Lua (5.1, 5.2, 5.3, ...), see [LunaRoad](https://github.com/3F/LunaRoad)
 
 ```csharp
@@ -51,12 +52,10 @@ public static int entrypoint(IntPtr L)
 Support of Modules: Library (**.dll**) and Executable (**.exe**) [[?](https://github.com/3F/DllExport/issues/18)]
 
 
-Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature), thus you can use what you want - details **[here](https://github.com/3F/DllExport/issues/2)**
+Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature), thus you can use what you need - details **[here](https://github.com/3F/DllExport/issues/2)**
 
 ```cpp
     Via Cecil or direct modification:
-
-    Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
 
     000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Ä{..../...
     000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
@@ -71,7 +70,7 @@ Our Wizard and embeddable manager [[?](https://github.com/3F/DllExport/issues/38
 
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
-[![youtube.com/watch?v=okPThdWDZMM](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://youtu.be/okPThdWDZMM?t=46s)
+[![youtube.com/watch?v=sBWt-KdQtoc](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=sBWt-KdQtoc)
 [![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://github.com/3F/DllExport/issues/55)
 
 ----
@@ -100,6 +99,7 @@ Read about format PE32/PE32+, start with grammar from asmparse and move to write
 
 ```cpp
 ...
+//yacc
 if(PASM->m_pCurMethod->m_dwExportOrdinal == 0xFFFFFFFF)
 {
   PASM->m_pCurMethod->m_dwExportOrdinal = $3;
@@ -133,7 +133,7 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 **v1.6+** have no official support of any standard NuGet clients. [[?](https://github.com/3F/DllExport/issues/38)] 
 
-* [New Wizard and embeddable manager](https://youtu.be/okPThdWDZMM?t=55s)
+* [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
 
 Use [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb without powershell scripts and dotnet-cli) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts because of simple batch script.
 
@@ -152,7 +152,7 @@ DllExport -action Configure
 DllExport -action Update
 ```
 
-* To manually restore package (**It should be automatically** restored by any Build operation of your configured projects or when you open Visual Studio. But if you need, use this):
+* To manually restore package (**It should be automatically** restored by any Build operation for your configured projects. But if you need, use this):
 ```
 DllExport -action Restore
 ```
@@ -174,7 +174,7 @@ Other variants:
 
 ### How to Build
 
-Use build.bat if you need final binaries, or NuGet package as `DllExport.<version>.nupkg` and other.
+Use build.bat if you need final binaries (NuGet package as `DllExport.<version>.nupkg`, Manager, zip-archive, and others).
 
 ```bash
 > build
@@ -182,7 +182,7 @@ Use build.bat if you need final binaries, or NuGet package as `DllExport.<versio
 
 Part of this build scripts works via vssbe ([?](https://github.com/3F/DllExport/issues/31#issuecomment-294231378)) and for build via console (including CI etc.) uses [CIM](https://www.nuget.org/packages/vsSBE.CI.MSBuild/) version of this. So you do not need anything else, just type `build`.
 
-For Visual Studio, use this [vsix version for IDE](https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/)
+For Visual Studio use this [vsix version for IDE](https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/)
 
 ### How to Debug
 
