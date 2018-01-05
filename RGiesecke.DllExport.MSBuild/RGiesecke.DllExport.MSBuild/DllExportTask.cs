@@ -1,6 +1,8 @@
-﻿// [Decompiled] Assembly: RGiesecke.DllExport.MSBuild, Version=1.2.7.38851, Culture=neutral, PublicKeyToken=8f52d83c1a22df51
-// Author of original assembly (MIT-License): Robert Giesecke
-// Use Readme & LICENSE files for details.
+﻿//# Author of original code ([Decompiled] MIT-License): Copyright (c) 2009-2015  Robert Giesecke
+//# Use Readme & LICENSE files for details.
+
+//# Modifications: Copyright (c) 2016-2018  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
+//$ Distributed under the MIT License (MIT)
 
 using System;
 using System.Resources;

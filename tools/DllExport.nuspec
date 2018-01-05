@@ -38,6 +38,6 @@
     <summary>Unmanaged Exports ( .NET DllExport )</summary>
     <tags>DllExport unmanaged-exports net-c-func ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln</tags>
     <releaseNotes></releaseNotes>
-    <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2017  Denis Kuzmin [entry.reg@gmail.com] </copyright>
+    <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2018  Denis Kuzmin [entry.reg@gmail.com] </copyright>
   </metadata>
 </package>

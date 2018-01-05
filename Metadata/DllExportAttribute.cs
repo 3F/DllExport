@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2016  Denis Kuzmin <entry.reg@gmail.com>
+ * Copyright (c) 2016-2018  Denis Kuzmin < entry.reg@gmail.com > :: github.com/3F
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -25,17 +25,6 @@
 /* 
  *  Via Cecil or direct modification:
     https://github.com/3F/DllExport/issues/2#issuecomment-231593744
-
-    Offset(h) 00 01 02 03 04 05 06 07 08 09 0A 0B 0C 0D 0E 0F
-
-    000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Д{..../...
-    000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
-    000005D0  20 02 00 00 00 00 00 00 00 44 33 46 30 30 46 46   ........D3F00FF
-    000005E0  31 37 37 30 44 45 44 39 37 38 45 43 37 37 34 42  1770DED978EC774B
-    000005F0  41 33 38 39 46 32 44 43 39 2E 42 30 30 30 30 30  A389F2DC9.B00000
-    00000600  30 30 30 30 30 30 30 30 30 30 30 30 30 30 30 30  0000000000000000
-
-    ->
 
     000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Д{..../...
     000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
