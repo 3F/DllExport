@@ -1,6 +1,6 @@
 # [DllExport](https://github.com/3F/DllExport)
 
-*Unmanaged Exports ( .NET DllExport )*
+*.NET DllExport*
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
@@ -17,7 +17,7 @@ Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
 
-**Start with:**
+**[Quick start:](https://github.com/3F/DllExport/wiki/Quick-start)**
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
@@ -66,7 +66,7 @@ Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature),
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
 [![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
 
-Our Wizard and embeddable manager [[?](https://github.com/3F/DllExport/issues/38)]:
+Our Wizard and embeddable manager:
 
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
@@ -85,9 +85,9 @@ Now, we will be more open ! all details [here](https://github.com/3F/DllExport/i
 
 ## License
 
-It still under the [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE)
+The [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE)
 
-## &
+## &_
 
 ### How does it work
 
@@ -134,10 +134,13 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 **v1.6+** have no official support of any standard NuGet clients. [[?](https://github.com/3F/DllExport/issues/38)] 
 
 * [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
+    * [Quick start](https://github.com/3F/DllExport/wiki/Quick-start)
 
-Use [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (~18 Kb without powershell scripts and dotnet-cli) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts because of simple batch script.
+Get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (text-based script ~18 Kb without powershell and dotnet-cli) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts/project files/etc.
 
-**Please note**: You do not need to call manually DllExport.bat after initial configuration. It still will be **automatically** for ~`-action Restore` command etc.
+DllExport.**bat** mainly is a wrapper that's based on [GetNuTool core](https://github.com/3F/GetNuTool). Finally it just aggregates calling to Wizard that's based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/issues/63#issuecomment-354633464)]
+
+**Please note**: You do not need to call manually DllExport.bat after initial configuration. It still will be **automatically** for `-action Restore` command etc.
 
 
 * To install/uninstall or to reconfigure your projects:
@@ -241,7 +244,7 @@ build_coreclr_x86_x64.cmd
 
 Please note again, the initial [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit its page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
 
-But this repository does not related with Robert and generally maintained by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
+But this repository does not related with Robert and generally **still** being developed by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
 
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=entry%2ereg%40gmail%2ecom&lc=US&item_name=3F%2dOpenSource%20%5b%20github%2ecom%2f3F&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted) ( github.com/3F )

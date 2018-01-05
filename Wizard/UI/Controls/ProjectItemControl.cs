@@ -24,6 +24,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using RGiesecke.DllExport;
@@ -184,8 +185,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             InitializeComponent();
             EX_HEIGHT = Height;
 
-            textBoxIdent.BackColor = System.Drawing.SystemColors.Control;
-            textBoxIdent.ForeColor = System.Drawing.Color.DimGray;
+            textBoxIdent.BackColor = SystemColors.Control;
+            textBoxIdent.ForeColor = Color.DimGray;
 
             InstalledStatus(false);
         }
@@ -251,11 +252,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private void InstalledStatus(bool status)
         {
             if(status) {
-                panelStatus.BackColor = System.Drawing.Color.FromArgb(111, 145, 6);
+                panelStatus.BackColor = Color.FromArgb(111, 145, 6);
                 Height = EX_HEIGHT;
             }
             else {
-                panelStatus.BackColor = System.Drawing.Color.FromArgb(168, 47, 17);
+                panelStatus.BackColor = Color.FromArgb(168, 47, 17);
                 Height = gbProject.Location.Y + gbProject.Height;
             }
         }
@@ -317,10 +318,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
 
             if(!NamespaceValidate(comboNS.Text)) {
-                panelNScombo.BackColor = System.Drawing.Color.FromArgb(234, 0, 0);
+                panelNScombo.BackColor = Color.FromArgb(234, 0, 0);
             }
             else {
-                panelNScombo.BackColor = System.Drawing.Color.FromArgb(92, 158, 207);
+                panelNScombo.BackColor = Color.FromArgb(92, 158, 207);
             }
         }
 
@@ -333,10 +334,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             if(chkCustomILAsm.Checked) {
                 chkOurILAsm.Checked = false;
-                textBoxCustomILAsm.ForeColor = System.Drawing.SystemColors.WindowText;
+                textBoxCustomILAsm.ForeColor = SystemColors.WindowText;
             }
             else {
-                textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
+                textBoxCustomILAsm.ForeColor = Color.DarkGray;
             }
         }
 
@@ -345,6 +346,15 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(chkOurILAsm.Checked) {
                 chkCustomILAsm.Checked = false;
             }
+        }
+
+        private void menuItemLimitPKT_Click(object sender, EventArgs e)
+        {
+            menuItemLimitPKT.Checked    = Project.PublicKeyTokenLimit
+                                        = !menuItemLimitPKT.Checked;
+
+            chkInstalled.ForeColor = (Project.PublicKeyTokenLimit) ?
+                                        SystemColors.ControlText : Color.FromArgb(43, 145, 175);
         }
     }
 }

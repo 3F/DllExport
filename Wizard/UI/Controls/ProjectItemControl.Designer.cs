@@ -38,8 +38,8 @@
             this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
-            this.chkIntermediateFiles = new System.Windows.Forms.CheckBox();
             this.textBoxCustomILAsm = new System.Windows.Forms.TextBox();
+            this.chkIntermediateFiles = new System.Windows.Forms.CheckBox();
             this.chkCustomILAsm = new System.Windows.Forms.CheckBox();
             this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
@@ -58,10 +58,12 @@
             this.chkPECheckIl = new System.Windows.Forms.CheckBox();
             this.chkPECheck1to1 = new System.Windows.Forms.CheckBox();
             this.gbProject = new System.Windows.Forms.GroupBox();
+            this.btnBrowse = new System.Windows.Forms.Button();
             this.textBoxIdent = new System.Windows.Forms.TextBox();
             this.textBoxProjectPath = new System.Windows.Forms.TextBox();
-            this.btnBrowse = new System.Windows.Forms.Button();
             this.chkInstalled = new System.Windows.Forms.CheckBox();
+            this.menuForInstalled = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.menuItemLimitPKT = new System.Windows.Forms.ToolStripMenuItem();
             this.panelBottomLine = new System.Windows.Forms.Panel();
             this.panelStatus = new System.Windows.Forms.Panel();
             this.groupTimeout = new System.Windows.Forms.GroupBox();
@@ -73,6 +75,7 @@
             this.groupNS.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).BeginInit();
             this.gbProject.SuspendLayout();
+            this.menuForInstalled.SuspendLayout();
             this.groupTimeout.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -206,6 +209,16 @@
             this.groupCompiler.TabStop = false;
             this.groupCompiler.Text = "Compiler settings";
             // 
+            // textBoxCustomILAsm
+            // 
+            this.textBoxCustomILAsm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.textBoxCustomILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
+            this.textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
+            this.textBoxCustomILAsm.Location = new System.Drawing.Point(103, 79);
+            this.textBoxCustomILAsm.Name = "textBoxCustomILAsm";
+            this.textBoxCustomILAsm.Size = new System.Drawing.Size(204, 20);
+            this.textBoxCustomILAsm.TabIndex = 9;
+            // 
             // chkIntermediateFiles
             // 
             this.chkIntermediateFiles.AutoSize = true;
@@ -216,16 +229,6 @@
             this.chkIntermediateFiles.TabIndex = 11;
             this.chkIntermediateFiles.Text = "Keep Intermediate Files (IL Code, Resources, ...)";
             this.chkIntermediateFiles.UseVisualStyleBackColor = true;
-            // 
-            // textBoxCustomILAsm
-            // 
-            this.textBoxCustomILAsm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBoxCustomILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
-            this.textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
-            this.textBoxCustomILAsm.Location = new System.Drawing.Point(103, 79);
-            this.textBoxCustomILAsm.Name = "textBoxCustomILAsm";
-            this.textBoxCustomILAsm.Size = new System.Drawing.Size(204, 20);
-            this.textBoxCustomILAsm.TabIndex = 9;
             // 
             // chkCustomILAsm
             // 
@@ -443,6 +446,18 @@
             this.gbProject.TabIndex = 11;
             this.gbProject.TabStop = false;
             // 
+            // btnBrowse
+            // 
+            this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnBrowse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnBrowse.Location = new System.Drawing.Point(380, 11);
+            this.btnBrowse.Name = "btnBrowse";
+            this.btnBrowse.Size = new System.Drawing.Size(54, 23);
+            this.btnBrowse.TabIndex = 3;
+            this.btnBrowse.Text = "Browse";
+            this.btnBrowse.UseVisualStyleBackColor = true;
+            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
+            // 
             // textBoxIdent
             // 
             this.textBoxIdent.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -466,21 +481,10 @@
             this.textBoxProjectPath.TabIndex = 4;
             this.textBoxProjectPath.Text = "<Project Path>";
             // 
-            // btnBrowse
-            // 
-            this.btnBrowse.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnBrowse.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBrowse.Location = new System.Drawing.Point(380, 11);
-            this.btnBrowse.Name = "btnBrowse";
-            this.btnBrowse.Size = new System.Drawing.Size(54, 23);
-            this.btnBrowse.TabIndex = 3;
-            this.btnBrowse.Text = "Browse";
-            this.btnBrowse.UseVisualStyleBackColor = true;
-            this.btnBrowse.Click += new System.EventHandler(this.btnBrowse_Click);
-            // 
             // chkInstalled
             // 
             this.chkInstalled.AutoSize = true;
+            this.chkInstalled.ContextMenuStrip = this.menuForInstalled;
             this.chkInstalled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkInstalled.Location = new System.Drawing.Point(5, 14);
             this.chkInstalled.Name = "chkInstalled";
@@ -489,6 +493,22 @@
             this.chkInstalled.Text = "Installed:";
             this.chkInstalled.UseVisualStyleBackColor = true;
             this.chkInstalled.CheckedChanged += new System.EventHandler(this.chkInstalled_CheckedChanged);
+            // 
+            // menuForInstalled
+            // 
+            this.menuForInstalled.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.menuItemLimitPKT});
+            this.menuForInstalled.Name = "menuForInstalled";
+            this.menuForInstalled.Size = new System.Drawing.Size(280, 48);
+            // 
+            // menuItemLimitPKT
+            // 
+            this.menuItemLimitPKT.Checked = true;
+            this.menuItemLimitPKT.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.menuItemLimitPKT.Name = "menuItemLimitPKT";
+            this.menuItemLimitPKT.Size = new System.Drawing.Size(279, 22);
+            this.menuItemLimitPKT.Text = "Limitations if not used PublicKeyToken";
+            this.menuItemLimitPKT.Click += new System.EventHandler(this.menuItemLimitPKT_Click);
             // 
             // panelBottomLine
             // 
@@ -554,6 +574,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.numTimeout)).EndInit();
             this.gbProject.ResumeLayout(false);
             this.gbProject.PerformLayout();
+            this.menuForInstalled.ResumeLayout(false);
             this.groupTimeout.ResumeLayout(false);
             this.groupTimeout.PerformLayout();
             this.ResumeLayout(false);
@@ -599,5 +620,7 @@
         private System.Windows.Forms.Label labelX86;
         private System.Windows.Forms.CheckBox chkPECheckIl;
         private System.Windows.Forms.CheckBox chkPECheck1to1;
+        private System.Windows.Forms.ContextMenuStrip menuForInstalled;
+        private System.Windows.Forms.ToolStripMenuItem menuItemLimitPKT;
     }
 }

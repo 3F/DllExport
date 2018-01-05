@@ -164,6 +164,16 @@ namespace net.r_eg.DllExport.Wizard
             private set;
         } = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Limitation of actions if not used PublicKeyToken.
+        /// https://github.com/3F/DllExport/issues/65
+        /// </summary>
+        public bool PublicKeyTokenLimit
+        {
+            get;
+            set;
+        } = true;
+
         protected ISender Log
         {
             get => Config?.Log;
@@ -531,9 +541,16 @@ namespace net.r_eg.DllExport.Wizard
                     continue;
                 }
 
-                if(CmpPublicKeyTokens(METALIB_PK_TOKEN, refer.Assembly.PublicKeyToken)) {
+                if(PublicKeyTokenLimit && CmpPublicKeyTokens(METALIB_PK_TOKEN, refer.Assembly.PublicKeyToken)) {
                     Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
                     XProject.RemoveItem(refer); // immediately modifies collection from XProject.GetReferences
+                    continue;
+                }
+
+                // all obsolete packages - https://github.com/3F/DllExport/issues/65
+                if(!PublicKeyTokenLimit && refer.evaluatedInclude == "DllExport") {
+                    Log.send(this, $"Remove old reference no-pk:'{refer.evaluatedInclude}'", Message.Level.Info);
+                    XProject.RemoveItem(refer);
                 }
             }
 

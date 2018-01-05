@@ -120,12 +120,11 @@
   <data name="textBoxInfo.Text" xml:space="preserve">
     <value>
  .NET DllExport v1.6+ have no official support of any standard NuGet clients.
- https://github.com/3F/DllExport/issues/38
 
- Please use our embeddable manager via [ DllExport.bat ].
+ Please use our embeddable manager.
 
  Find it in root solution directory of this project, or receive latest version from other place.
- Please remove this package before continue.</value>
+[ Please remove this package before continue. ]</value>
   </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="picVideo.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">

@@ -82,6 +82,12 @@ namespace net.r_eg.DllExport.Wizard
         IDictionary<string, string> ConfigProperties { get; }
 
         /// <summary>
+        /// Limitation of actions if not used PublicKeyToken.
+        /// https://github.com/3F/DllExport/issues/65
+        /// </summary>
+        bool PublicKeyTokenLimit { get; set; }
+
+        /// <summary>
         /// Returns fullpath to meta library for current project.
         /// </summary>
         /// <param name="evaluate">Will return unevaluated value if false.</param>

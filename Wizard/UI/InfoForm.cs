@@ -40,11 +40,6 @@ namespace net.r_eg.DllExport.Wizard.UI
             Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
         }
 
-        private void linkWhy_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            "https://github.com/3F/DllExport/issues/38".OpenUrl();
-        }
-
         private void linkLocalDxp_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             exec.Config.SlnDir.OpenUrl();

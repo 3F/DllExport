@@ -28,7 +28,6 @@
         private void InitializeComponent()
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InfoForm));
-            this.linkWhy = new System.Windows.Forms.LinkLabel();
             this.linkLocalDxp = new System.Windows.Forms.LinkLabel();
             this.linkRemoteDxp = new System.Windows.Forms.LinkLabel();
             this.labelDllExportBatch = new System.Windows.Forms.Label();
@@ -41,17 +40,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.picVideo)).BeginInit();
             this.panelWarn.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // linkWhy
-            // 
-            this.linkWhy.AutoSize = true;
-            this.linkWhy.Location = new System.Drawing.Point(12, 156);
-            this.linkWhy.Name = "linkWhy";
-            this.linkWhy.Size = new System.Drawing.Size(62, 13);
-            this.linkWhy.TabIndex = 1;
-            this.linkWhy.TabStop = true;
-            this.linkWhy.Text = "Why is so ?";
-            this.linkWhy.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkWhy_LinkClicked);
             // 
             // linkLocalDxp
             // 
@@ -80,9 +68,9 @@
             this.labelDllExportBatch.AutoSize = true;
             this.labelDllExportBatch.Location = new System.Drawing.Point(12, 178);
             this.labelDllExportBatch.Name = "labelDllExportBatch";
-            this.labelDllExportBatch.Size = new System.Drawing.Size(175, 13);
+            this.labelDllExportBatch.Size = new System.Drawing.Size(197, 13);
             this.labelDllExportBatch.TabIndex = 4;
-            this.labelDllExportBatch.Text = "DllExport.bat ( batch script ~18 Kb )";
+            this.labelDllExportBatch.Text = "DllExport.bat ( text-based script ~18 Kb )";
             // 
             // panelInfo
             // 
@@ -155,7 +143,6 @@
             this.Controls.Add(this.labelDllExportBatch);
             this.Controls.Add(this.linkRemoteDxp);
             this.Controls.Add(this.linkLocalDxp);
-            this.Controls.Add(this.linkWhy);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
@@ -174,7 +161,6 @@
         }
 
         #endregion
-        private System.Windows.Forms.LinkLabel linkWhy;
         private System.Windows.Forms.LinkLabel linkLocalDxp;
         private System.Windows.Forms.LinkLabel linkRemoteDxp;
         private System.Windows.Forms.Label labelDllExportBatch;
