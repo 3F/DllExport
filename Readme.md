@@ -16,23 +16,22 @@ Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 [![MvsSln](https://img.shields.io/badge/MvsSln-v2.0.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
-
-**[Quick start:](https://github.com/3F/DllExport/wiki/Quick-start)**
-
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
-> *[How to (Screencast)](https://www.youtube.com/watch?v=sBWt-KdQtoc)*
+> 1:[ ***[Quick start](https://www.youtube.com/watch?v=sBWt-KdQtoc)*** ] 2:[ [C++ ❤ C# 💕C++](https://www.youtube.com/watch?v=9Hyg3_WE9Ks) ] 3:[ [Complex types and Strings](https://www.youtube.com/watch?v=QXMj9-8XJnY) ]
+> -> { **[Wiki](https://github.com/3F/DllExport/wiki)** }
 
-~~~---~~~
+
+`~~~---~~~`
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
-public static int entrypoint(IntPtr L)
+public static int entrypoint(IntPtr l)
 {
     // ... it will be called from Lua script
 
-    lua_pushcclosure(L, onProc, 0);
-    lua_setglobal(L, "onKeyDown");
+    lua_pushcclosure(l, onProc, 0);
+    lua_setglobal(l, "onKeyDown");
 
     return 0;
 }
@@ -57,7 +56,7 @@ Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature),
 ```cpp
     Via Cecil or direct modification:
 
-    000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .�{..../...
+    000005B0                 00 C4 7B 01 00 00 00 2F 00 12 05       .Д{..../...
     000005C0  00 00 02 00 00 00 00 00 00 00 00 00 00 00 26 00  ..............&.
     000005D0  20 02 00 00 00 00 00 00 00 49 2E 77 61 6E 74 2E   ........I.want.   <<<-
     000005E0  74 6F 2E 66 6C 79 00 00 00 00 00 00 00 00 00 00  to.fly..........  <<<-
@@ -79,7 +78,7 @@ Our Wizard and embeddable manager:
 [Initially](https://github.com/3F/DllExport/issues/3) the original tool `UnmanagedExports` was distributed by Robert Giesecke as an closed-source tool **under the [MIT License](https://opensource.org/licenses/mit-license.php)**:
 
 * [Official page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) - *posted Jul 9, 2009 [ updated Dec 19, 2012 ]*
-* [Official NuGet Packages](https://www.nuget.org/packages/UnmanagedExports) 
+* [Official NuGet Packages](https://www.nuget.org/packages/UnmanagedExports)
 
 Now, we will be more open ! all details [here](https://github.com/3F/DllExport/issues/3)
 
@@ -131,14 +130,14 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 ### How to get DllExport
 
-**v1.6+** have no official support of any standard NuGet clients. [[?](https://github.com/3F/DllExport/issues/38)] 
+**v1.6+** have no official support of any standard NuGet clients. [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A)]
 
 * [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
-    * [Quick start](https://github.com/3F/DllExport/wiki/Quick-start)
+    * Wiki. [Quick start](https://github.com/3F/DllExport/wiki/Quick-start)
 
-Get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) (text-based script ~18 Kb without powershell and dotnet-cli) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts/project files/etc.
+Get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts/project files/etc.
 
-DllExport.**bat** mainly is a wrapper that's based on [GetNuTool core](https://github.com/3F/GetNuTool). Finally it just aggregates calling to Wizard that's based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/issues/63#issuecomment-354633464)]
+*DllExport.bat was based on [GetNuTool core](https://github.com/3F/GetNuTool) that's Cross-Platform Embeddable Package Manager that requires only MSBuild. Finally it just aggregates calling to Wizard that was based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A#is-this-cross-platform-solution-)]*
 
 **Please note**: You do not need to call manually DllExport.bat after initial configuration. It still will be **automatically** for `-action Restore` command etc.
 
@@ -174,6 +173,7 @@ Other variants:
 * (deprecated) NuGet Commandline: `nuget install DllExport`
 * [/releases](https://github.com/3F/DllExport/releases) [ [latest](https://github.com/3F/DllExport/releases/latest) ]
 * [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
+  * Artifacts [older than 6 months](https://www.appveyor.com/docs/packaging-artifacts/#artifacts-retention-policy) you can also find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/DllExport/releases) page.
 
 ### How to Build
 

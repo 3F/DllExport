@@ -13,10 +13,18 @@ set _gntArgs=%*
 :found
 
 echo. 
-echo. [ Restoring of packages. Please wait ... ]
+echo. [ Restoring packages. Please wait ... ]
 echo. 
 
 
+:: -
+echo.
+echo MvsSln ...
+call %_gnt% %_gntArgs% /p:wpath="%cd%/MvsSln" /p:ngconfig="packages.config;MvsSlnTest/packages.config" /nologo /v:m /m:4 || goto err
+
+:: -
+echo.
+echo General ...
 call %_gnt% %_gntArgs% /p:wpath="%cd%" /p:ngconfig="packages.config;Wizard/packages.config;PeViewer/packages.config;NSBin/packages.config;RGiesecke.DllExport/packages.config;RGiesecke.DllExport.MSBuild/packages.config" /nologo /v:m /m:4 || goto err
 
 goto exit

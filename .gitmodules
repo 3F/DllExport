@@ -4,3 +4,6 @@
 [submodule "GetNuTool"]
 	path = GetNuTool
 	url = https://github.com/3F/GetNuTool.git
+[submodule "MvsSln"]
+	path = MvsSln
+	url = https://github.com/3F/MvsSln.git

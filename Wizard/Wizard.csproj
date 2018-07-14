@@ -46,9 +46,6 @@
     <Reference Include="Microsoft.Build.Utilities.v4.0">
       <Private>True</Private>
     </Reference>
-    <Reference Include="MvsSln, Version=2.0.0.24315, Culture=neutral, PublicKeyToken=87f0bd8fb7f0a2c4, processorArchitecture=MSIL">
-      <HintPath>..\packages\MvsSln.2.0.0\lib\net40\MvsSln.dll</HintPath>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -125,9 +122,12 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MvsSln\MvsSln\MvsSln.csproj">
+      <Project>{f905dfb2-2e67-4ff7-9001-924f6f2d645d}</Project>
+      <Name>MvsSln</Name>
+    </ProjectReference>
     <ProjectReference Include="..\NSBin\NSBin.csproj">
       <Project>{311706a5-5ed2-4006-b794-055009d8a256}</Project>
       <Name>NSBin</Name>

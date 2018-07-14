@@ -25,6 +25,9 @@ echo.
 :: GetNuTool
 git submodule update --init --recursive GetNuTool || goto gitNotFound
 
+:: MvsSln
+git submodule update --init --recursive MvsSln || goto gitNotFound
+
 :: TODO option for expensive coreclr
 
 exit /B 0

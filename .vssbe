@@ -91,7 +91,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -110,6 +110,7 @@
           "$(pDllExport    = \"RGiesecke.DllExport\")",
           "$(pMeta         = \"Metadata\")",
           "$(pNSBin        = \"NSBin\")",
+          "$(pMvsSln       = \"MvsSln\")",
           "$(pConf         = \"Configurator\")",
           "$(pWizard       = \"Wizard\")",
           "$(pPeViewer     = \"PeViewer\")",
@@ -125,7 +126,7 @@
     {
       "Enabled": true,
       "Name": "ActSubmodules",
-      "Caption": "git submodules",
+      "Caption": "submodules and packages",
       "SupportMSBuild": true,
       "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": false,
@@ -145,16 +146,24 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]\n\n#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )\n{ \n    #[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]\n}\nelse{\n    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]\n}]",
+        "Command": "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]\n\n#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )\n{ \n    ##[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]\n    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]\n}\nelse{\n    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]\n}]\n\n#[\" Packages \"]\n\n#[( !(#[IO exists.directory(\"packages\")]) || !(#[IO exists.directory(\"$(pMvsSln)/packages\")]) )\n{\n    #[File call(\"packages_restore.cmd\", \"\", 2000)]\n}]",
         "Command__": [
           "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]",
           "",
           "#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )",
           "{ ",
-          "    #[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]",
+          "    ##[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]",
+          "    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]",
           "}",
           "else{",
           "    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]",
+          "}]",
+          "",
+          "#[\" Packages \"]",
+          "",
+          "#[( !(#[IO exists.directory(\"packages\")]) || !(#[IO exists.directory(\"$(pMvsSln)/packages\")]) )",
+          "{",
+          "    #[File call(\"packages_restore.cmd\", \"\", 2000)]",
           "}]"
         ]
       }
@@ -484,16 +493,8 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[( #[IO exists.directory(\"packages/ILAsm/bin\")] )\n{ \n    #[File scall(\"packages_restore.cmd\", \"\", 400)]\n}\nelse{\n    #[File call(\"packages_restore.cmd\", \"\", 2000)]\n}]\n\n#[IO copy.file({\n                \"packages/ILAsm/bin/Win.x86/*.dll\",\n                \"packages/ILAsm/bin/Win.x86/*.exe\",\n                \"packages/ILAsm/*.txt\",\n                \"packages/ILAsm/*.md\"\n               }, \n               \"$(odir)/tools/coreclr/\", true)]",
+        "Command": "#[IO copy.file({\n                \"packages/ILAsm/bin/Win.x86/*.dll\",\n                \"packages/ILAsm/bin/Win.x86/*.exe\",\n                \"packages/ILAsm/*.txt\",\n                \"packages/ILAsm/*.md\"\n               }, \n               \"$(odir)/tools/coreclr/\", true)]",
         "Command__": [
-          "#[( #[IO exists.directory(\"packages/ILAsm/bin\")] )",
-          "{ ",
-          "    #[File scall(\"packages_restore.cmd\", \"\", 400)]",
-          "}",
-          "else{",
-          "    #[File call(\"packages_restore.cmd\", \"\", 2000)]",
-          "}]",
-          "",
           "#[IO copy.file({",
           "                \"packages/ILAsm/bin/Win.x86/*.dll\",",
           "                \"packages/ILAsm/bin/Win.x86/*.exe\",",

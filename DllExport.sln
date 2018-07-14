@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27004.2002
+VisualStudioVersion = 15.0.26430.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
@@ -30,6 +30,29 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED
 		tools\net.r_eg.DllExport.targets = tools\net.r_eg.DllExport.targets
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MvsSln", "MvsSln", "{4862DD29-ED07-4342-9E4D-CDAE89433A88}"
+	ProjectSection(SolutionItems) = preProject
+		MvsSln\.gitignore = MvsSln\.gitignore
+		MvsSln\.version = MvsSln\.version
+		MvsSln\build.bat = MvsSln\build.bat
+		MvsSln\changelog.txt = MvsSln\changelog.txt
+		MvsSln\License.txt = MvsSln\License.txt
+		MvsSln\packages.config = MvsSln\packages.config
+		MvsSln\Readme.md = MvsSln\Readme.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".gnt", ".gnt", "{D221D332-2A57-44F9-B866-F7C00C29032D}"
+	ProjectSection(SolutionItems) = preProject
+		GetNuTool\.gitignore = GetNuTool\.gitignore
+		GetNuTool\.version = GetNuTool\.version
+		GetNuTool\build.bat = GetNuTool\build.bat
+		GetNuTool\changelog.txt = GetNuTool\changelog.txt
+		GetNuTool\LICENSE = GetNuTool\LICENSE
+		GetNuTool\logic.targets = GetNuTool\logic.targets
+		GetNuTool\packages.config = GetNuTool\packages.config
+		GetNuTool\Readme.md = GetNuTool\Readme.md
+	EndProjectSection
+EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55898433-0EEF-4B38-B144-B2A40150E4F4}"
 	ProjectSection(SolutionItems) = preProject
 		.vssbe = .vssbe
@@ -51,6 +74,13 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "Wizard\Wizard.csproj", "{D10CF407-4483-4657-9FEA-BDB467391F3A}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeViewer", "PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSln", "MvsSln\MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSlnTest", "MvsSln\MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
+	ProjectSection(ProjectDependencies) = postProject
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -107,12 +137,25 @@ Global
 		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
+		{4862DD29-ED07-4342-9E4D-CDAE89433A88} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 		{55898433-0EEF-4B38-B144-B2A40150E4F4} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
