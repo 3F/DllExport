@@ -626,7 +626,19 @@ namespace net.r_eg.DllExport.Wizard
             );
 
             Log.send(this, $"Add .targets: '{targets}':{id}", Message.Level.Info);
-            XProject.AddImport(targets, checking, id);
+
+            // we'll add inside ImportGroup because of: https://github.com/3F/DllExport/issues/77
+            XProject.AddImport(
+                new [] {
+                    new MvsSln.Projects.ImportElement() {
+                        project     = targets,
+                        condition   = $"Exists('{targets}')",
+                        label       = id
+                    }
+                }, 
+                null, 
+                ".NET DllExport"
+            );
             return targets;
         }
 
