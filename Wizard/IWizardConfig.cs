@@ -52,6 +52,11 @@ namespace net.r_eg.DllExport.Wizard
         string DxpTarget { get; }
 
         /// <summary>
+        /// Arguments to manager.
+        /// </summary>
+        string MgrArgs { get; }
+
+        /// <summary>
         /// Path to external storage if used.
         /// </summary>
         string StoragePath { get; }

@@ -22,14 +22,16 @@
       <wRootPath Condition="'$(wRootPath)' == ''"></wRootPath> <!-- Optional root path of user paths. Affects on wSlnFile, wSlnDir, wPkgPath -->
       <wStoragePath Condition="'$(wStoragePath)' == ''"></wStoragePath> <!-- Optional path to external storage if used. -->
       <wStorage Condition="'$(wStorage)' == ''">Default</wStorage> <!-- Where to store configuration data. enum `CfgStorageType`. -->
+      <wMgrArgs Condition="'$(wMgrArgs)' == ''"></wMgrArgs>
     </PropertyGroup>
-    
+
     <DllExportCfgTask 
         RootPath="$(wRootPath)" 
         SlnDir="$(wSlnDir)" 
         SlnFile="$(wSlnFile)" 
         PkgPath="$(wPkgPath)" 
         MetaLib="$(wMetaLib)" 
+        MgrArgs="$(wMgrArgs)" 
         DxpTarget="$(wDxpTarget)" 
         StoragePath="$(wStoragePath)" 
         Storage="$(wStorage)" 

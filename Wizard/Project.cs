@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
@@ -485,7 +486,7 @@ namespace net.r_eg.DllExport.Wizard
             AddRestoreDxp(
                 DXP_TARGET_PKG_R, 
                 $"'$(DllExportModImported)' != 'true' Or !Exists('{dxpTarget}')",
-                CfgBatWrapper.DXP_INSTALLER
+                UserConfig.MGR_FILE
             );
 
             AddDynRestore(
@@ -494,20 +495,22 @@ namespace net.r_eg.DllExport.Wizard
             );
         }
 
-        protected void AddRestoreDxp(string name, string condition, string installer)
+        protected void AddRestoreDxp(string name, string condition, string manager)
         {
             var target = AddTarget(name);
             target.BeforeTargets = "PrepareForBuild";
 
-            var ifInstaller = $"Exists('$(SolutionDir){installer}')";
+            var ifManager = $"Exists('$(SolutionDir){manager}')";
 
             var taskMsg = target.AddTask("Warning");
-            taskMsg.Condition = $"!{ifInstaller}";
-            taskMsg.SetParameter("Text", "We can't find 'DllExport.bat' in '$(SolutionDir)' - https://github.com/3F/DllExport");
+            taskMsg.Condition = $"!{ifManager}";
+            taskMsg.SetParameter("Text", $"We can't find '{manager}' in '$(SolutionDir)' - https://github.com/3F/DllExport");
 
             var taskExec = target.AddTask("Exec");
-            taskExec.Condition = $"({condition}) And {ifInstaller}";
-            taskExec.SetParameter("Command", $"cd \"$(SolutionDir)\" & {installer} -action Restore");
+            taskExec.Condition = $"({condition}) And {ifManager}";
+
+            string args = Regex.Replace(Config.Wizard.MgrArgs, @"-action\s\w+", "", RegexOptions.IgnoreCase);
+            taskExec.SetParameter("Command", $"cd \"$(SolutionDir)\" & {manager} {args} -action Restore");
         }
 
         // https://github.com/3F/DllExport/issues/62#issuecomment-353785676

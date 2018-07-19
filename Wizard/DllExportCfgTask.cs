@@ -104,6 +104,16 @@ namespace net.r_eg.DllExport.Wizard
         private string _dxpTarget;
 
         /// <summary>
+        /// Arguments to manager.
+        /// </summary>
+        public string MgrArgs
+        {
+            get => _mgrArgs;
+            set => _mgrArgs = value.OpenDoubleQuotes();
+        }
+        public string _mgrArgs;
+
+        /// <summary>
         /// Path to external storage if used.
         /// </summary>
         public string StoragePath
@@ -275,6 +285,7 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"SlnFile: '{SlnFile}'", level);
             LSender.Send(this, $"PkgPath: '{PkgPath}'", level);
             LSender.Send(this, $"MetaLib: '{MetaLib}'", level);
+            LSender.Send(this, $"MgrArgs: '{MgrArgs}'", level);
             LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
             LSender.Send(this, $"RootPath: '{RootPath}'", level);
             LSender.Send(this, $"Storage: '{CfgStorage}'", level);

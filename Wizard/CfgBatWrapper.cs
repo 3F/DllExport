@@ -32,8 +32,6 @@ namespace net.r_eg.DllExport.Wizard
     //TODO:
     internal sealed class CfgBatWrapper
     {
-        internal const string DXP_INSTALLER = "DllExport.bat";
-
         private IWizardConfig config;
         private ISender log;
 
@@ -46,7 +44,7 @@ namespace net.r_eg.DllExport.Wizard
         public bool TryPrepare()
         {
             try {
-                CopyFromPkg(DXP_INSTALLER);
+                CopyFromPkg(UserConfig.MGR_FILE);
                 return true;
             }
             catch(Exception ex) {

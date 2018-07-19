@@ -117,7 +117,8 @@
   <ItemGroup>
     <None Include=".compressor" />
     <None Include="key.snk" />
-    <None Include="installer.bat" />
+    <None Include="Manager.bat" />
+    <None Include="Manager.offline.bat" />
     <None Include="net.r_eg.DllExport.Wizard.targets">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

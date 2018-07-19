@@ -24,6 +24,7 @@ set "dxpPackages=packages"
 set "pkgSrv=https://www.nuget.org/api/v2/package/"
 set "buildInfoFile=build_info.txt"
 set "wRootPath=%cd%"
+set wMgrArgs="%*"
 
 :: -
 
