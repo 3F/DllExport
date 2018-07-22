@@ -34,6 +34,7 @@ set "gMsbPath="
 set "pkgLink="
 set "peExpList="
 set "mgrUp="
+set "proxy="
 
 set ERROR_SUCCESS=0
 set ERROR_FILE_NOT_FOUND=2
@@ -89,6 +90,7 @@ echo.
 echo  -msb {path}           - Full path to specific msbuild.
 echo  -packages {path}      - A common directory for packages.
 echo  -server {url}         - Url for searching remote packages.
+echo  -proxy {cfg}          - To use proxy. The format: [usr[:pwd]@]host[:port]
 echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
 echo  -mgr-up               - Updates this manager to version from '-dxp-version'.
 echo  -wz-target {path}     - Relative path to .target file of the Wizard.
@@ -106,6 +108,7 @@ echo Samples:
 echo -------- 
 echo  DllExport -action Configure
 echo  DllExport -action Restore -sln-file "Conari.sln"
+echo  DllExport -proxy guest:1234@10.0.2.15:7428 -action Configure
 echo.
 echo  DllExport -build-info
 echo  DllExport -restore -sln-dir -sln-dir ..\ -debug
@@ -127,7 +130,7 @@ if [!_is!]==[1] (
     goto usage
 )
 
-set /a idx=1 & set cmdMax=18
+set /a idx=1 & set cmdMax=19
 :loopargs
 
     if "!args:~0,8!"=="-action " (
@@ -181,6 +184,12 @@ set /a idx=1 & set cmdMax=18
     if "!args:~0,8!"=="-server " (
         call :popars %1 & shift
         set pkgSrv=%2
+        call :popars %2 & shift
+    )
+
+    if "!args:~0,7!"=="-proxy " (
+        call :popars %1 & shift
+        set proxy=%2
         call :popars %2 & shift
     )
 
@@ -279,7 +288,7 @@ if not exist !dxpTarget! (
     call :dbgprint "-pkg-link = '!pkgLink!'"
     call :dbgprint "-server = '!pkgSrv!'"
 
-    :: TODO: hack for GNT v1.6.1
+    :: https://github.com/3F/GetNuTool/issues/6
     if defined pkgLink (
         set pkgSrv=!pkgLink!
         set "_remoteUrl=:../!wPkgPath!"
@@ -288,7 +297,7 @@ if not exist !dxpTarget! (
     call :dbgprint "_remoteUrl = '!_remoteUrl!'"
     call :dbgprint "ngpath = '!dxpPackages!'"
 
-    set _gntC=/p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!"
+    set _gntC=/p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
 
     if "!dxpDebug!"=="1" (
         call :gntpoint !_gntC!
