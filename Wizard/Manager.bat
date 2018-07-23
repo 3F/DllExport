@@ -33,6 +33,7 @@ set /a buildInfo=0
 set "gMsbPath="
 set "pkgLink="
 set "peExpList="
+set "kForce="
 set "mgrUp="
 set "proxy="
 
@@ -92,6 +93,7 @@ echo  -packages {path}      - A common directory for packages.
 echo  -server {url}         - Url for searching remote packages.
 echo  -proxy {cfg}          - To use proxy. The format: [usr[:pwd]@]host[:port]
 echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
+echo  -force                - Aggressive behavior, e.g. like removing pkg when updating.
 echo  -mgr-up               - Updates this manager to version from '-dxp-version'.
 echo  -wz-target {path}     - Relative path to .target file of the Wizard.
 echo  -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
@@ -130,7 +132,7 @@ if [!_is!]==[1] (
     goto usage
 )
 
-set /a idx=1 & set cmdMax=19
+set /a idx=1 & set cmdMax=20
 :loopargs
 
     if "!args:~0,8!"=="-action " (
@@ -178,6 +180,7 @@ set /a idx=1 & set cmdMax=19
     if "!args:~0,10!"=="-packages " (
         call :popars %1 & shift
         set dxpPackages=%2
+        set "dxpPackages=!dxpPackages:"=!"
         call :popars %2 & shift
     )
 
@@ -197,6 +200,11 @@ set /a idx=1 & set cmdMax=19
         call :popars %1 & shift
         set pkgLink=%2
         call :popars %2 & shift
+    )
+
+    if "!args:~0,7!"=="-force " (
+        call :popars %1 & shift
+        set /a kForce=1
     )
 
     if "!args:~0,8!"=="-mgr-up " (
@@ -274,6 +282,13 @@ set "wPkgPath=!dxpPackages!!dxpName!"
 if defined dxpVersion (
     set "_remoteUrl=!_remoteUrl!/!dxpVersion!"
     set "wPkgPath=!wPkgPath!.!dxpVersion!"
+)
+
+if defined kForce (
+    if exist "!wPkgPath!" (
+        call :dbgprint "Removing old version '!wPkgPath!' before continue. '-force' key rule."
+        rmdir /S/Q "!wPkgPath!"
+    )
 )
 
 set dxpTarget="!wPkgPath!\\!tWizard!"

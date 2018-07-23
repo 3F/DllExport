@@ -89,6 +89,7 @@ namespace net.r_eg.DllExport.Wizard
         public IEnumerable<string> SlnFiles
         {
             get => Directory.GetFiles(Config.SlnDir, "*.sln", SearchOption.TopDirectoryOnly)
+                                .Combine(Config.SlnFile, true)
                                 .Select(s => Path.GetFullPath(s));
         }
 
