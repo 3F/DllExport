@@ -306,7 +306,11 @@ if not exist !dxpTarget! (
     :: https://github.com/3F/GetNuTool/issues/6
     if defined pkgLink (
         set pkgSrv=!pkgLink!
-        set "_remoteUrl=:../!wPkgPath!"
+
+        if "!wPkgPath::=!"=="!wPkgPath!" ( 
+            set "_rlp=../" 
+        )
+        set "_remoteUrl=:!_rlp!!wPkgPath!"
     )
 
     call :dbgprint "_remoteUrl = '!_remoteUrl!'"
@@ -317,7 +321,7 @@ if not exist !dxpTarget! (
         set gntmsb=-msbuild !gMsbPath!
     )
 
-    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
+    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:proxycfg="!proxy!"
 
     if "!dxpDebug!"=="1" (
         call :gntpoint !_gntC!
