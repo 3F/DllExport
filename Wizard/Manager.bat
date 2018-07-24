@@ -137,7 +137,7 @@ set /a idx=1 & set cmdMax=20
 
     if "!args:~0,8!"=="-action " (
         call :popars %1 & shift
-        set "wAction=%2"
+        set wAction=%2
         call :popars %2 & shift
     )
 
@@ -312,7 +312,12 @@ if not exist !dxpTarget! (
     call :dbgprint "_remoteUrl = '!_remoteUrl!'"
     call :dbgprint "ngpath = '!dxpPackages!'"
 
-    set _gntC=/p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
+    :: https://github.com/3F/DllExport/issues/74
+    if defined gMsbPath (
+        set gntmsb=-msbuild !gMsbPath!
+    )
+
+    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
 
     if "!dxpDebug!"=="1" (
         call :gntpoint !_gntC!
@@ -349,6 +354,7 @@ call :dbgprint "wRootPath = !wRootPath!"
 call :dbgprint "wAction = !wAction!"
 
 if defined gMsbPath (
+    set "gMsbPath=%gMsbPath:"=%"
     call :dbgprint "Use specific MSBuild tools '!gMsbPath!'"
     set msbuildPath=!gMsbPath!
     goto rundxp
@@ -371,7 +377,7 @@ if [!_is!]==[1] (
 
 set xMSBuild="!msbuildPath!"
 
-call :dbgprint "Target: !xMSBuild! !dxpTarget!"
+call :dbgprint "Target: '!msbuildPath!' !dxpTarget!"
 
 !xMSBuild! /nologo /v:m /m:4 !dxpTarget!
 
