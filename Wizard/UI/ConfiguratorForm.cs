@@ -25,6 +25,7 @@
 using System;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -158,7 +159,9 @@ namespace net.r_eg.DllExport.Wizard.UI
             toolTipMain.SetToolTip(comboBoxSln, sln);
 
             exec.UniqueProjectsBy(sln)?
-                .ForEach(prj => projectItems.Add(prj));
+                    .OrderByDescending(p => p.Installed)
+                    .OrderByDescending(p => p.InternalError == null)
+                    .ForEach(prj => projectItems.Add(prj));
         }
 
         private void DoSilentAction(Action act, ComboBox box, EventHandler handler)

@@ -31,7 +31,7 @@ using RGiesecke.DllExport;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
-    internal sealed partial class ProjectItemControl: UserControl
+    internal sealed partial class ProjectItemControl: UserControl, IDisposable
     {
         private readonly int EX_HEIGHT;
 
@@ -356,5 +356,25 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             chkInstalled.ForeColor = (Project.PublicKeyTokenLimit) ?
                                         SystemColors.ControlText : Color.FromArgb(43, 145, 175);
         }
+
+        #region disposing
+
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing && (components != null)) {
+                components.Dispose();
+            }
+
+            foreach(var ctrl in Controls) {
+                if(ctrl is IDisposable elem) {
+                    elem.Dispose();
+                }
+            }
+
+            base.Dispose(disposing);
+        }
+
+        #endregion
     }
 }

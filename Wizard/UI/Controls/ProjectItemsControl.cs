@@ -30,7 +30,7 @@ using System.Windows.Forms;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
-    internal sealed partial class ProjectItemsControl: UserControl
+    internal sealed partial class ProjectItemsControl: UserControl, IDisposable
     {
         private List<UProject> items = new List<UProject>();
 
@@ -127,6 +127,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// </summary>
         public void Reset()
         {
+            items.ForEach((i) => { i.control.Dispose(); });
+
             items.Clear();
             panelMain.Controls.Clear();
         }
@@ -195,5 +197,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
             RenderedItemsSizeChanged(this, EventArgs.Empty);
         }
+
+        #region disposing
+
+        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
+        protected override void Dispose(bool disposing)
+        {
+            if(disposing && (components != null)) {
+                components.Dispose();
+            }
+
+            Reset();
+            base.Dispose(disposing);
+        }
+
+        #endregion
     }
 }
