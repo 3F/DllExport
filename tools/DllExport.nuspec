@@ -11,32 +11,52 @@
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
     
-        The open implementation of unmanaged exports for .NET ( DllExport )
-        Source code and all details here: https://github.com/3F/DllExport
+        Open source project .NET DllExport 
+        https://github.com/3F/DllExport
+        
+        All versions including Nightly builds: 
+        https://github.com/3F/DllExport/releases
+        
         
         To configure projects via current package:
-        ========================================================
-        DllExport -action Configure -dxp-version $-version-$ 
-        ========================================================
+        ==================================================
+        DllExport -action Configure -dxp-version $-version-$
+        ==================================================
         https://3F.github.io/DllExport/releases/latest/manager/
         
         
-        Demonstration of the new manager:
+        Documentation for manager:
+        * https://github.com/3F/DllExport/wiki/DllExport-Manager
+        * Its Q/A: https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A
+        
+        
+        Quick start:
         * https://youtu.be/sBWt-KdQtoc
-                
+        
+        Basic examples for C++ and C#:
+        * https://youtu.be/9Hyg3_WE9Ks
+        
+        Complex types and Strings:
+        * https://youtu.be/QXMj9-8XJnY
+        
+        
+        Issue tracker: https://github.com/3F/DllExport/issues
+        
+
+
         ~~~~~~~~
         Get it via GetNuTool:
-        ==========================================
+        =======================================
         gnt /p:ngpackages="DllExport/$-version-$"
-        ==========================================
+        =======================================
         * https://github.com/3F/GetNuTool   
         
         Build info:  
 {build_info}
         
     </description>
-    <summary>Unmanaged Exports ( .NET DllExport )</summary>
-    <tags>DllExport unmanaged-exports net-c-func ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln</tags>
+    <summary>.NET DllExport</summary>
+    <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke net-c-func tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln</tags>
     <releaseNotes></releaseNotes>
     <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2018  Denis Kuzmin [entry.reg@gmail.com] </copyright>
   </metadata>

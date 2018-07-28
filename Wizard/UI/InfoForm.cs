@@ -54,5 +54,10 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             "https://www.youtube.com/watch?v=9bYgywZ9pPE".OpenUrl();
         }
+
+        private void linkManagerWiki_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            "https://github.com/3F/DllExport/wiki/DllExport-Manager".OpenUrl();
+        }
     }
 }

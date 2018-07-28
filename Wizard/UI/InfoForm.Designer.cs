@@ -36,6 +36,7 @@
             this.picVideo = new System.Windows.Forms.PictureBox();
             this.panelWarn = new System.Windows.Forms.Panel();
             this.labelWarn = new System.Windows.Forms.Label();
+            this.linkManagerWiki = new System.Windows.Forms.LinkLabel();
             this.panelInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picVideo)).BeginInit();
             this.panelWarn.SuspendLayout();
@@ -44,6 +45,7 @@
             // linkLocalDxp
             // 
             this.linkLocalDxp.AutoSize = true;
+            this.linkLocalDxp.LinkColor = System.Drawing.Color.Purple;
             this.linkLocalDxp.Location = new System.Drawing.Point(41, 200);
             this.linkLocalDxp.Name = "linkLocalDxp";
             this.linkLocalDxp.Size = new System.Drawing.Size(157, 13);
@@ -68,18 +70,18 @@
             this.labelDllExportBatch.AutoSize = true;
             this.labelDllExportBatch.Location = new System.Drawing.Point(12, 178);
             this.labelDllExportBatch.Name = "labelDllExportBatch";
-            this.labelDllExportBatch.Size = new System.Drawing.Size(197, 13);
+            this.labelDllExportBatch.Size = new System.Drawing.Size(120, 13);
             this.labelDllExportBatch.TabIndex = 4;
-            this.labelDllExportBatch.Text = "DllExport.bat ( text-based script ~18 Kb )";
+            this.labelDllExportBatch.Text = "DllExport.bat ( ~ 20 Kb )";
             // 
             // panelInfo
             // 
             this.panelInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(229)))), ((int)(((byte)(195)))), ((int)(((byte)(101)))));
             this.panelInfo.Controls.Add(this.textBoxInfo);
-            this.panelInfo.Location = new System.Drawing.Point(2, 24);
+            this.panelInfo.Location = new System.Drawing.Point(2, 44);
             this.panelInfo.Name = "panelInfo";
             this.panelInfo.Padding = new System.Windows.Forms.Padding(1);
-            this.panelInfo.Size = new System.Drawing.Size(449, 113);
+            this.panelInfo.Size = new System.Drawing.Size(449, 73);
             this.panelInfo.TabIndex = 5;
             // 
             // textBoxInfo
@@ -91,9 +93,11 @@
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
             this.textBoxInfo.ReadOnly = true;
-            this.textBoxInfo.Size = new System.Drawing.Size(447, 111);
+            this.textBoxInfo.Size = new System.Drawing.Size(447, 71);
             this.textBoxInfo.TabIndex = 1;
-            this.textBoxInfo.Text = resources.GetString("textBoxInfo.Text");
+            this.textBoxInfo.Text = "\r\n To continue, you should use our embeddable manager [ after removing this packa" +
+    "ge ].\r\n \r\n Find it inside your solution directory, or receive latest version fro" +
+    "m other place.\r\n";
             // 
             // picVideo
             // 
@@ -113,7 +117,7 @@
             // 
             this.panelWarn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(9)))), ((int)(((byte)(9)))));
             this.panelWarn.Controls.Add(this.labelWarn);
-            this.panelWarn.Location = new System.Drawing.Point(2, 3);
+            this.panelWarn.Location = new System.Drawing.Point(2, 15);
             this.panelWarn.Name = "panelWarn";
             this.panelWarn.Padding = new System.Windows.Forms.Padding(1);
             this.panelWarn.Size = new System.Drawing.Size(449, 17);
@@ -129,14 +133,26 @@
             this.labelWarn.Name = "labelWarn";
             this.labelWarn.Size = new System.Drawing.Size(447, 15);
             this.labelWarn.TabIndex = 0;
-            this.labelWarn.Text = "Remove this package before continue";
+            this.labelWarn.Text = ".NET DllExport v1.6+ have no official support of NuGet clients";
             this.labelWarn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // linkManagerWiki
+            // 
+            this.linkManagerWiki.AutoSize = true;
+            this.linkManagerWiki.Location = new System.Drawing.Point(3, 140);
+            this.linkManagerWiki.Name = "linkManagerWiki";
+            this.linkManagerWiki.Size = new System.Drawing.Size(110, 13);
+            this.linkManagerWiki.TabIndex = 8;
+            this.linkManagerWiki.TabStop = true;
+            this.linkManagerWiki.Text = "About Manager (Wiki)";
+            this.linkManagerWiki.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkManagerWiki_LinkClicked);
             // 
             // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(453, 268);
+            this.Controls.Add(this.linkManagerWiki);
             this.Controls.Add(this.panelWarn);
             this.Controls.Add(this.picVideo);
             this.Controls.Add(this.panelInfo);
@@ -169,5 +185,6 @@
         private System.Windows.Forms.PictureBox picVideo;
         private System.Windows.Forms.Panel panelWarn;
         private System.Windows.Forms.Label labelWarn;
+        private System.Windows.Forms.LinkLabel linkManagerWiki;
     }
 }
