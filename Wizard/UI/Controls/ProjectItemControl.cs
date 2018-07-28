@@ -27,6 +27,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
+using net.r_eg.DllExport.Wizard.UI.Extensions;
 using RGiesecke.DllExport;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
@@ -366,11 +367,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 components.Dispose();
             }
 
-            foreach(var ctrl in Controls) {
-                if(ctrl is IDisposable elem) {
-                    elem.Dispose();
-                }
-            }
+            Controls.Dispose();
 
             base.Dispose(disposing);
         }

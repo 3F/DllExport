@@ -29,9 +29,9 @@
         {
             this.components = new System.ComponentModel.Container();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.progressLine = new net.r_eg.DllExport.Wizard.UI.Controls.ProgressLineControl();
             this.comboBoxStorage = new System.Windows.Forms.ComboBox();
-            this.btnInfo = new System.Windows.Forms.Button();
-            this.btnBug = new System.Windows.Forms.Button();
+            this.btnExt = new System.Windows.Forms.Button();
             this.btnApply = new System.Windows.Forms.Button();
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
@@ -42,9 +42,9 @@
             // panelTop
             // 
             this.panelTop.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelTop.Controls.Add(this.progressLine);
             this.panelTop.Controls.Add(this.comboBoxStorage);
-            this.panelTop.Controls.Add(this.btnInfo);
-            this.panelTop.Controls.Add(this.btnBug);
+            this.panelTop.Controls.Add(this.btnExt);
             this.panelTop.Controls.Add(this.btnApply);
             this.panelTop.Controls.Add(this.comboBoxSln);
             this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
@@ -52,6 +52,15 @@
             this.panelTop.Name = "panelTop";
             this.panelTop.Size = new System.Drawing.Size(469, 29);
             this.panelTop.TabIndex = 0;
+            // 
+            // progressLine
+            // 
+            this.progressLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.progressLine.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.progressLine.Location = new System.Drawing.Point(0, 21);
+            this.progressLine.Name = "progressLine";
+            this.progressLine.Size = new System.Drawing.Size(275, 5);
+            this.progressLine.TabIndex = 8;
             // 
             // comboBoxStorage
             // 
@@ -67,35 +76,21 @@
             this.comboBoxStorage.TabIndex = 7;
             this.toolTipMain.SetToolTip(this.comboBoxStorage, "Storage");
             // 
-            // btnInfo
+            // btnExt
             // 
-            this.btnInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnInfo.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
-            this.btnInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnInfo.Location = new System.Drawing.Point(425, 1);
-            this.btnInfo.Margin = new System.Windows.Forms.Padding(0);
-            this.btnInfo.Name = "btnInfo";
-            this.btnInfo.Size = new System.Drawing.Size(18, 23);
-            this.btnInfo.TabIndex = 3;
-            this.btnInfo.Text = "!";
-            this.toolTipMain.SetToolTip(this.btnInfo, "Information");
-            this.btnInfo.UseVisualStyleBackColor = true;
-            this.btnInfo.Click += new System.EventHandler(this.btnInfo_Click);
-            // 
-            // btnBug
-            // 
-            this.btnBug.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnBug.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnBug.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnBug.Location = new System.Drawing.Point(444, 1);
-            this.btnBug.Margin = new System.Windows.Forms.Padding(0);
-            this.btnBug.Name = "btnBug";
-            this.btnBug.Size = new System.Drawing.Size(21, 23);
-            this.btnBug.TabIndex = 2;
-            this.btnBug.Text = "#";
-            this.toolTipMain.SetToolTip(this.btnBug, "Bugs ?");
-            this.btnBug.UseVisualStyleBackColor = true;
-            this.btnBug.Click += new System.EventHandler(this.btnBug_Click);
+            this.btnExt.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.btnExt.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnExt.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnExt.Location = new System.Drawing.Point(439, 1);
+            this.btnExt.Margin = new System.Windows.Forms.Padding(0);
+            this.btnExt.Name = "btnExt";
+            this.btnExt.Size = new System.Drawing.Size(26, 23);
+            this.btnExt.TabIndex = 2;
+            this.btnExt.Text = "+";
+            this.btnExt.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.toolTipMain.SetToolTip(this.btnExt, "Features");
+            this.btnExt.UseVisualStyleBackColor = true;
+            this.btnExt.Click += new System.EventHandler(this.btnExt_Click);
             // 
             // btnApply
             // 
@@ -104,7 +99,7 @@
             this.btnApply.Location = new System.Drawing.Point(377, 1);
             this.btnApply.Margin = new System.Windows.Forms.Padding(1);
             this.btnApply.Name = "btnApply";
-            this.btnApply.Size = new System.Drawing.Size(48, 23);
+            this.btnApply.Size = new System.Drawing.Size(61, 23);
             this.btnApply.TabIndex = 1;
             this.btnApply.Text = "Apply";
             this.toolTipMain.SetToolTip(this.btnApply, "Apply changes");
@@ -166,9 +161,9 @@
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.ComboBox comboBoxSln;
         private Controls.ProjectItemsControl projectItems;
-        private System.Windows.Forms.Button btnBug;
+        private System.Windows.Forms.Button btnExt;
         private System.Windows.Forms.ToolTip toolTipMain;
-        private System.Windows.Forms.Button btnInfo;
         private System.Windows.Forms.ComboBox comboBoxStorage;
+        private Controls.ProgressLineControl progressLine;
     }
 }

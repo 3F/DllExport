@@ -76,6 +76,22 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Kit\FilterLineControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Kit\FilterLineControl.Designer.cs">
+      <DependentUpon>FilterLineControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Extensions\ControlExtension.cs" />
+    <Compile Include="UI\Controls\ProgressLineControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\ProgressLineControl.Designer.cs">
+      <DependentUpon>ProgressLineControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UI\IRender.cs" />
+    <Compile Include="UI\IExtCfg.cs" />
+    <Compile Include="UI\ProjectFilter.cs" />
     <Compile Include="UI\Storage.cs" />
     <Compile Include="UI\Controls\ProjectItemsControl.cs">
       <SubType>UserControl</SubType>
@@ -147,6 +163,12 @@
     <EmbeddedResource Include="UI\ConfiguratorForm.resx">
       <DependentUpon>ConfiguratorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Kit\FilterLineControl.resx">
+      <DependentUpon>FilterLineControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\ProgressLineControl.resx">
+      <DependentUpon>ProgressLineControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Controls\ProjectItemControl.resx">
       <DependentUpon>ProjectItemControl.cs</DependentUpon>

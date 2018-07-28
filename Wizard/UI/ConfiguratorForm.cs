@@ -23,31 +23,58 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
+using net.r_eg.DllExport.Wizard.UI.Extensions;
+using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard.UI
 {
-    internal sealed partial class ConfiguratorForm: Form
+    internal sealed partial class ConfiguratorForm: Form, IRender
     {
         public const int MAX_VIEW_ITEMS = 2;
 
         private IExecutor exec;
+        private Lazy<IExtCfg> extcfg;
+
         private CfgStorage storage;
         private FileDialog fdialog;
         private int prevSlnItemIndex = 0;
         private object sync = new object();
 
+        /// <summary>
+        /// To apply filter for rendered projects.
+        /// </summary>
+        /// <param name="filter"></param>
+        public void ApplyFilter(ProjectFilter filter)
+        {
+            RenderProjects(exec.ActiveSlnFile, filter);
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="enabled"></param>
+        public void ShowProgressLine(bool enabled)
+        {
+            if(enabled) {
+                progressLine.StartTrainEffect(panelTop.Width, 40, 50);
+            }
+            else {
+                progressLine.StopAll();
+            }
+        }
+
         public ConfiguratorForm(IExecutor exec)
         {
             this.exec = exec ?? throw new ArgumentNullException(nameof(exec));
+
+            extcfg = new Lazy<IExtCfg>(() => new Kit.FilterLineControl(this, exec));
 
             InitializeComponent();
 
@@ -70,11 +97,15 @@ namespace net.r_eg.DllExport.Wizard.UI
                 return DDNS.IsValidNS(ns?.Trim());
             };
 
-            RenderSlnFiles();
-            comboBoxSln.SelectedIndex = 0;
+            progressLine.StartTrainEffect(panelTop.Width);
+            {
+                RenderSlnFiles();
+                comboBoxSln.SelectedIndex = 0;
 
-            storage = new CfgStorage(exec, comboBoxStorage);
-            storage.UpdateItem();
+                storage = new CfgStorage(exec, comboBoxStorage);
+                storage.UpdateItem();
+            }
+            progressLine.StopAll();
 
             Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
         }
@@ -151,22 +182,43 @@ namespace net.r_eg.DllExport.Wizard.UI
             if(String.IsNullOrWhiteSpace(sln)) {
                 return;
             }
-            projectItems.Reset();
 
             exec.ActiveSlnFile = sln;
             storage.UpdateItem();
 
             toolTipMain.SetToolTip(comboBoxSln, sln);
 
-            exec.UniqueProjectsBy(sln)?
-                    .OrderByDescending(p => p.Installed)
-                    .OrderByDescending(p => p.InternalError == null)
-                    .ForEach(prj => projectItems.Add(prj));
+            GetProjects(sln).ForEach(prj => projectItems.Add(prj));
+        }
+
+        private void RenderProjects(string sln, ProjectFilter filter)
+        {
+            lock(sync)
+            {
+                projectItems.RenderedItemsSizeChanged -= projectItems_RenderedItemsSizeChanged;
+                projectItems.Reset();
+
+                projectItems.Pause();
+
+                extcfg.Value.FilterProjects(filter, GetProjects(sln))
+                                .ForEach(prj => projectItems.Add(prj));
+
+                projectItems.Resume();
+                projectItems.RenderedItemsSizeChanged += projectItems_RenderedItemsSizeChanged;
+            }
+        }
+
+        private IEnumerable<IProject> GetProjects(string sln)
+        {
+            return exec.UniqueProjectsBy(sln)?
+                            .OrderByDescending(p => p.Installed)
+                            .OrderByDescending(p => p.InternalError == null);
         }
 
         private void DoSilentAction(Action act, ComboBox box, EventHandler handler)
         {
-            lock(sync) {
+            lock(sync)
+            {
                 box.SelectedIndexChanged -= handler;
                 act();
                 box.SelectedIndexChanged += handler;
@@ -215,48 +267,34 @@ namespace net.r_eg.DllExport.Wizard.UI
             Close();
         }
 
-        private void btnBug_Click(object sender, EventArgs e)
+        private void btnExt_Click(object sender, EventArgs e)
         {
-            OpenUrl("https://github.com/3F/DllExport/issues");
+            if(extcfg.IsValueCreated) {
+                ((Kit.FilterLineControl)extcfg.Value).Show();
+                return;
+            }
+
+            LSender.Send(this, $"Create {nameof(Kit.FilterLineControl)} panel");
+
+            var panel = ((Kit.FilterLineControl)extcfg.Value);
+
+            panel.Left      = 0;
+            panel.Top       = 0;
+            panel.Width     = panelTop.Width;
+            panel.Height    = panelTop.Height/* - progressLine.Height*/;
+
+            panelTop.Controls.Add(panel);
+            panel.Dock = DockStyle.Fill;
+
+            panel.BringToFront();
+            progressLine.BringToFront();
+
+            panel.Show();
         }
 
         private void projectItems_RenderedItemsSizeChanged(object sender, EventArgs e)
         {
             ResizeHeight();
-        }
-
-        private void btnInfo_Click(object sender, EventArgs e)
-        {
-            var sb = new StringBuilder();
-
-#if !PUBLIC_RELEASE
-            sb.Append($"The base: ");
-#endif
-            sb.Append($"{WizardVersion.S_NUM_REV} {WizardVersion.S_REL} [{WizardVersion.BRANCH_SHA1}]");
-#if DEBUG
-            sb.Append("[ Debug ] ");
-#else
-            sb.Append("[ Release ] ");
-#endif
-            sb.AppendLine();
-            sb.AppendLine();
-
-            sb.Append("https://github.com/3F/DllExport");
-            sb.AppendLine();
-
-            var info = Path.Combine(exec.Config.PkgPath, "build_info.txt");
-            if(!File.Exists(info)) {
-                sb.Append("Detailed information about build was not found. :(");
-            }
-            else {
-                File.ReadAllLines(info).ForEach(s => 
-                {
-                    sb.Append(Regex.Replace(s, @":(\s\s*)(?!generated)", (Match m) => $": {m.Groups[1].Value.Replace(' ', '_')} "));
-                    sb.AppendLine();
-                });
-            }
-
-            MessageBox.Show(sb.ToString(), ".NET DllExport");
         }
     }
 }
