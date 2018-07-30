@@ -39,10 +39,6 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         Update,
 
-        //TODO: via predefined list etc.
-        //Install,
-        //Remove,
-
         /// <summary>
         /// To restore already configured environment.
         /// </summary>
@@ -52,5 +48,26 @@ namespace net.r_eg.DllExport.Wizard
         /// Information about obsolete nuget clients etc.
         /// </summary>
         Info,
+
+        /// <summary>
+        /// To re-configure projects via predefined/exported data.
+        /// </summary>
+        Recover,
+
+        /// <summary>
+        /// To export configured projects data.
+        /// </summary>
+        Export,
+
+        /// <summary>
+        /// To unset all data from specified projects.
+        /// </summary>
+        Unset,
+
+        /// <summary>
+        /// To list projects and their statuses. As plain text data.
+        /// TODO:
+        /// </summary>
+        //ListPlain
     }
 }

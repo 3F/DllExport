@@ -26,7 +26,7 @@ using System;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public interface ITargetsFile: IDisposable
+    public interface ITargetsFile: IProject, IDisposable
     {
         /// <summary>
         /// To configure external .targets through parent project.
@@ -35,5 +35,18 @@ namespace net.r_eg.DllExport.Wizard
         /// <param name="parent"></param>
         /// <returns></returns>
         bool Configure(ActionType type, IProject parent);
+
+        /// <summary>
+        /// To export data via parent project into .targets file.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        bool Export(IProject parent);
+
+        /// <summary>
+        /// Saves data to the file system.
+        /// </summary>
+        /// <param name="reevaluate">Try to reevaluate data of project before saving.</param>
+        void Save(bool reevaluate);
     }
 }

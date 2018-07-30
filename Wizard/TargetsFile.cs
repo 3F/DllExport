@@ -74,13 +74,47 @@ namespace net.r_eg.DllExport.Wizard
                 Configure(parent);
             }
 
-            XProject.Reevaluate();
-            XProject.Save();
+            Save(true);
             return true;
         }
 
+        /// <summary>
+        /// To export data via parent project into .targets file.
+        /// </summary>
+        /// <param name="parent"></param>
+        /// <returns></returns>
+        public bool Export(IProject parent)
+        {
+            Config = parent?.Config ?? throw new ArgumentNullException(nameof(parent));
+            Log.send(this, $"Export data via TargetsFile '{parent.DxpIdent}'", Message.Level.Debug);
+
+            if(parent.Installed || Config.Install) {
+                Configure(parent);
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Saves data to the file system.
+        /// </summary>
+        /// <param name="reevaluate">Try to reevaluate data of project before saving.</param>
+        public void Save(bool reevaluate)
+        {
+            if(reevaluate) {
+                XProject.Reevaluate();
+            }
+            Save();
+        }
+
         public TargetsFile(string file, string rootpath)
-            : base(new XProject(new ProjectItemCfg(), new Microsoft.Build.Evaluation.Project()))
+            : this(file, rootpath, ActionType.Default)
+        {
+
+        }
+
+        public TargetsFile(string file, string rootpath, ActionType type)
+            : base(type == ActionType.Recover ? new XProject(file) : new XProject())
         {
             _slndir = rootpath;
             XProject.Project.FullPath = file;
@@ -90,10 +124,15 @@ namespace net.r_eg.DllExport.Wizard
         {
             CfgCommonData();
 
+            var projectFile = MakeBasePath(parent.XProject.ProjectFullPath, false);
+
+            ConfigProperties[MSBuildProperties.DXP_CFG_ID] = parent.DxpIdent;
+            ConfigProperties[MSBuildProperties.DXP_PRJ_FILE] = projectFile;
+
             SetProperties(
                 ConfigProperties, 
-                $"'$(DllExportIdent)'=='{parent.DxpIdent}'",
-                MakeBasePath(parent.XProject.ProjectFullPath, false)
+                $"'$({MSBuildProperties.DXP_ID})'=='{parent.DxpIdent}'",
+                projectFile
             );
             XProject.Reevaluate();
 

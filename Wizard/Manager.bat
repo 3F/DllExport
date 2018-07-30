@@ -78,6 +78,9 @@ echo  -action {type}        - Specified action for Wizard. Where {type}:
 echo                           * Configure - To configure DllExport for specific projects.
 echo                           * Update    - To update pkg reference for already configured projects.
 echo                           * Restore   - To restore configured DllExport.
+echo                           * Export    - To export configured projects data.
+echo                           * Recover   - To re-configure projects via predefined/exported data.
+echo                           * Unset     - To unset all data from specified projects.
 echo.
 echo  -sln-dir {path}       - Path to directory with .sln files to be processed.
 echo  -sln-file {path}      - Optional predefined .sln file to process via the restore operations etc.

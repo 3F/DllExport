@@ -104,6 +104,7 @@ namespace net.r_eg.DllExport.Wizard
                 }
                 return _dxpIdent;
             }
+            protected set => _dxpIdent = value;
         }
         private string _dxpIdent;
 
@@ -204,6 +205,32 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <summary>
+        /// To recover references with project file.
+        /// IWizardConfig.CfgStorage value can affect on type of this references.
+        /// </summary>
+        /// <param name="id">Known identifier of the references.</param>
+        public void Recover(string id)
+        {
+            if(String.IsNullOrWhiteSpace(id)) {
+                throw new ArgumentNullException(nameof(id));
+            }
+            DxpIdent = id;
+
+            Reset(true);
+            ActionConfigure(true);
+        }
+
+        /// <summary>
+        /// To unset configured data from project if presented.
+        /// </summary>
+        public void Unset()
+        {
+            Log.send(this, $"Trying to unset data from '{DxpIdent}'", Message.Level.Info);
+            Reset(true);
+            Save();
+        }
+
+        /// <summary>
         /// To configure project via specific action.
         /// </summary>
         /// <param name="type"></param>
@@ -272,7 +299,6 @@ namespace net.r_eg.DllExport.Wizard
         protected void ActionUpdate()
         {
             Reset(false);
-            XProject.Reevaluate();
 
             if(Installed)
             {
@@ -283,12 +309,11 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        protected void ActionConfigure()
+        protected void ActionConfigure(bool force = false)
         {
             Reset(true);
-            XProject.Reevaluate();
 
-            if(Config.Install)
+            if(Config.Install || force)
             {
                 SetProperty(MSBuildProperties.DXP_ID, DxpIdent);
 
@@ -444,6 +469,8 @@ namespace net.r_eg.DllExport.Wizard
                 RemoveProperties(ConfigProperties.Keys.ToArray());
                 ConfigProperties.Clear();
             }
+
+            XProject.Reevaluate();
         }
 
         protected bool CmpPublicKeyTokens(string pkToken, string pkTokenAsm)
@@ -509,7 +536,13 @@ namespace net.r_eg.DllExport.Wizard
             var taskExec = target.AddTask("Exec");
             taskExec.Condition = $"({condition}) And {ifManager}";
 
-            string args = Regex.Replace(Config.Wizard.MgrArgs, @"-action\s\w+", "", RegexOptions.IgnoreCase);
+            string args;
+            if(Config?.Wizard?.MgrArgs != null) {
+                args = Regex.Replace(Config.Wizard.MgrArgs, @"-action\s\w+", "", RegexOptions.IgnoreCase);
+            }
+            else {
+                args = String.Empty;
+            }
             taskExec.SetParameter("Command", $"cd \"$(SolutionDir)\" & {manager} {args} -action Restore");
         }
 

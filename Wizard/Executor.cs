@@ -113,7 +113,7 @@ namespace net.r_eg.DllExport.Wizard
                 string dir      = Path.GetDirectoryName(ActiveSlnFile);
                 string xfile    = Path.Combine(dir, Config.StoragePath);
 
-                _targetsFile = new TargetsFile(xfile, dir);
+                _targetsFile = new TargetsFile(xfile, dir, Config.Type);
                 return _targetsFile;
             }
         }
@@ -146,33 +146,31 @@ namespace net.r_eg.DllExport.Wizard
         {
             Log.send(this, $"Action: {Config.Type}; Storage: {Config.CfgStorage}", Message.Level.Info);
 
-            if(Config.Type == ActionType.Configure)
+            switch(Config.Type)
             {
-                UI.App.RunSTA(new UI.ConfiguratorForm(this));
-                return;
-            }
-
-            if(Config.Type == ActionType.Restore || Config.Type == ActionType.Update)
-            {
-                var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ? 
-                                    SlnFiles?.FirstOrDefault() : Config.SlnFile;
-
-                ActiveSlnFile = sln ?? throw new ArgumentException(
-                    String.Format(
-                        "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
-                        nameof(IWizardConfig.SlnFile),
-                        nameof(IWizardConfig.SlnDir)
-                    )
-                );
-
-                Configure(sln);
-            }
-
-            if(Config.Type == ActionType.Info)
-            {
-                (new CfgBatWrapper(Config, Log)).TryPrepare();
-                UI.App.RunSTA(new UI.InfoForm(this));
-                return;
+                case ActionType.Configure: {
+                        UI.App.RunSTA(new UI.ConfiguratorForm(this));
+                        break;
+                }
+                case ActionType.Recover: {
+                        ActivateSln();
+                        Configure(TargetsFile.XProject);
+                        break;
+                }
+                case ActionType.Restore:
+                case ActionType.Update:
+                case ActionType.Export:
+                case ActionType.Unset:
+                case ActionType.Default: {
+                        Configure(ActivateSln());
+                        break;
+                }
+                case ActionType.Info: {
+                        (new CfgBatWrapper(Config, Log)).TryPrepare();
+                        UI.App.RunSTA(new UI.InfoForm(this));
+                        break;
+                }
+                default: throw new NotImplementedException();
             }
         }
 
@@ -182,15 +180,90 @@ namespace net.r_eg.DllExport.Wizard
             Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
         }
 
+        /// <summary>
+        /// Activates sln by using config.
+        /// </summary>
+        /// <returns></returns>
+        protected string ActivateSln()
+        {
+            var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ?
+                                SlnFiles?.FirstOrDefault() : Config.SlnFile;
+
+            ActiveSlnFile = sln ?? throw new ArgumentException(
+                String.Format(
+                    "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
+                    nameof(IWizardConfig.SlnFile),
+                    nameof(IWizardConfig.SlnDir)
+                )
+            );
+
+            return sln;
+        }
+
         protected void Configure(string sln)
         {
-            UniqueProjectsBy(sln)?.ForEach(p => 
+            var projects = UniqueProjectsBy(sln);
+            if(projects == null) {
+                Log.send(this, $"{nameof(UniqueProjectsBy)} returned null for '{sln}'", Message.Level.Debug);
+                return;
+            }
+
+            foreach(var prj in projects)
             {
-                if(Config.CfgStorage == CfgStorageType.TargetsFile) {
-                    TargetsFile?.Configure(Config.Type, p);
+                if(Config.Type == ActionType.Export) {
+                    TargetsFile.Export(prj);
+                    continue;
                 }
-                p.Configure(Config.Type);
-            });
+
+                if(Config.Type == ActionType.Unset) {
+                    prj.Unset();
+                    continue;
+                }
+
+                if(Config.CfgStorage == CfgStorageType.TargetsFile) {
+                    TargetsFile?.Configure(Config.Type, prj);
+                }
+                prj.Configure(Config.Type);
+            }
+
+            if(Config.Type == ActionType.Export) {
+                TargetsFile.Save(true);
+            }
+        }
+
+        protected void Configure(IXProject xp)
+        {
+            Config.CfgStorage = CfgStorageType.TargetsFile;
+
+            foreach(var pgr in xp.Project.Xml.PropertyGroups)
+            {
+                string file = null;
+                string id   = null;
+
+                Log.send(this, $"Searching the recover properties from '{pgr.Condition}':'{pgr.Label}'");
+
+                foreach(var prop in pgr.Properties)
+                {
+                    if(prop.Name == MSBuildProperties.DXP_PRJ_FILE) {
+                        file = prop.Value;
+                        Log.send(this, $"Found {MSBuildProperties.DXP_PRJ_FILE} = '{file}'", Message.Level.Debug);
+                        continue;
+                    }
+
+                    if(prop.Name == MSBuildProperties.DXP_CFG_ID) {
+                        id = prop.Value;
+                        Log.send(this, $"Found {MSBuildProperties.DXP_CFG_ID} = '{id}'", Message.Level.Debug);
+                    }
+                }
+
+                if(file != null && id != null)
+                {
+                    Log.send(this, $"Trying to recover '{file}' : '{id}'", Message.Level.Info);
+                    UniqueProjectsBy(ActiveSlnFile)?
+                            .Where(p => p.ProjectPath == file)
+                            .ForEach(p => p.Recover(id));
+                }
+            }
         }
 
         /// <summary>

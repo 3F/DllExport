@@ -95,6 +95,18 @@ namespace net.r_eg.DllExport.Wizard
         string MetaLib(bool evaluate);
 
         /// <summary>
+        /// To recover references with project file.
+        /// IWizardConfig.CfgStorage value can affect on type of this references.
+        /// </summary>
+        /// <param name="id">Known identifier of the references.</param>
+        void Recover(string id);
+
+        /// <summary>
+        /// To unset configured data from project if presented.
+        /// </summary>
+        void Unset();
+
+        /// <summary>
         /// To configure project via specific action.
         /// </summary>
         /// <param name="type"></param>

@@ -92,5 +92,15 @@ namespace net.r_eg.DllExport.Wizard
         /// Used namespace for project.
         /// </summary>
         public const string PRJ_NAMESPACE = "RootNamespace";
+
+        /// <summary>
+        /// Relative path to project file where it was configured.
+        /// </summary>
+        public const string DXP_PRJ_FILE = "DllExportProjectFile";
+
+        /// <summary>
+        /// DXP_ID for new configure. Presented by 'Recover' action.
+        /// </summary>
+        public const string DXP_CFG_ID = "DllExportCfgId";
     }
 }
