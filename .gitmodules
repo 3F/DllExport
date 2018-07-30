@@ -7,3 +7,6 @@
 [submodule "MvsSln"]
 	path = MvsSln
 	url = https://github.com/3F/MvsSln.git
+[submodule "hMSBuild"]
+	path = hMSBuild
+	url = https://github.com/3F/hMSBuild.git

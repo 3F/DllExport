@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26430.13
+VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
@@ -41,7 +41,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MvsSln", "MvsSln", "{4862DD
 		MvsSln\Readme.md = MvsSln\Readme.md
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".gnt", ".gnt", "{D221D332-2A57-44F9-B866-F7C00C29032D}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GetNuTool", "GetNuTool", "{D221D332-2A57-44F9-B866-F7C00C29032D}"
 	ProjectSection(SolutionItems) = preProject
 		GetNuTool\.gitignore = GetNuTool\.gitignore
 		GetNuTool\.version = GetNuTool\.version
@@ -80,6 +80,36 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSlnTest", "MvsSln\MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hMSBuild", "hMSBuild", "{A708B33C-7E00-4AB0-BD02-2B748F2C713B}"
+	ProjectSection(SolutionItems) = preProject
+		hMSBuild\.gitignore = hMSBuild\.gitignore
+		hMSBuild\.version = hMSBuild\.version
+		hMSBuild\build.bat = hMSBuild\build.bat
+		hMSBuild\changelog.txt = hMSBuild\changelog.txt
+		hMSBuild\compress.bat = hMSBuild\compress.bat
+		hMSBuild\frontend.bat = hMSBuild\frontend.bat
+		hMSBuild\License.txt = hMSBuild\License.txt
+		hMSBuild\Readme.md = hMSBuild\Readme.md
+		hMSBuild\submodules.bat = hMSBuild\submodules.bat
+		hMSBuild\tests.bat = hMSBuild\tests.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0969DEC4-0832-4110-AB49-A4BE30677862}"
+	ProjectSection(SolutionItems) = preProject
+		hMSBuild\tests\_run.bat = hMSBuild\tests\_run.bat
+		hMSBuild\tests\diffversions.bat = hMSBuild\tests\diffversions.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "minified", "minified", "{9309746A-7318-4784-95B9-3C78C437BA39}"
+	ProjectSection(SolutionItems) = preProject
+		hMSBuild\minified\.compressor = hMSBuild\minified\.compressor
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "light", "light", "{6C22B481-EB28-4AF3-8C81-8AB931A8D569}"
+	ProjectSection(SolutionItems) = preProject
+		hMSBuild\light\.compressor = hMSBuild\light\.compressor
 	EndProjectSection
 EndProject
 Global
@@ -157,6 +187,9 @@ Global
 		{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 		{4862DD29-ED07-4342-9E4D-CDAE89433A88} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 		{55898433-0EEF-4B38-B144-B2A40150E4F4} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
+		{0969DEC4-0832-4110-AB49-A4BE30677862} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
+		{9309746A-7318-4784-95B9-3C78C437BA39} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
+		{6C22B481-EB28-4AF3-8C81-8AB931A8D569} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EEADC215-3983-4718-A397-729069C59742}

@@ -91,7 +91,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(phMSBuild     = \"hMSBuild\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -115,6 +115,7 @@
           "$(pWizard       = \"Wizard\")",
           "$(pPeViewer     = \"PeViewer\")",
           "$(pGetNuTool    = \"GetNuTool\")",
+          "$(phMSBuild     = \"hMSBuild\")",
           "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
           "$(odir          = \"$(dbin)raw/\")",
           "",
@@ -602,6 +603,45 @@
           "",
           "#[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]",
           ""
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "hMSBuild",
+      "Caption": "Build hMSBuild ...",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 400
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeInterpreter, vsSolutionBuildEvent",
+        "Type": "Interpreter",
+        "Handler": "cmd.exe /C",
+        "Newline": "&",
+        "Wrapper": "",
+        "Command": "echo Build hMSBuild ... \r\necho. \r\necho. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") \r\necho. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")\r\necho. \r\ncd hMSBuild \r\ncall build \r\n(copy /Y/B \"$(hMSBuildRawDir)hMSBuild_minified.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild_minified.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")",
+        "Command__": [
+          "echo Build hMSBuild ... ",
+          "echo. ",
+          "echo. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") ",
+          "echo. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")",
+          "echo. ",
+          "cd hMSBuild ",
+          "call build ",
+          "(copy /Y/B \"$(hMSBuildRawDir)hMSBuild_minified.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild_minified.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")"
         ]
       }
     },
