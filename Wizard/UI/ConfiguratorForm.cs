@@ -196,7 +196,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             lock(sync)
             {
                 projectItems.RenderedItemsSizeChanged -= projectItems_RenderedItemsSizeChanged;
-                projectItems.Reset();
+                projectItems.Reset(false);
 
                 projectItems.Pause();
 

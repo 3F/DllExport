@@ -39,14 +39,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// </summary>
         public event EventHandler RenderedItemsSizeChanged = delegate(object sender, EventArgs e) { };
 
-        private struct UProject
+        private sealed class UProject
         {
             public ProjectItemControl control;
             public IProject project;
+
+            /// <summary>
+            /// false when item should not be rendered (GUI).
+            /// </summary>
+            public bool rendered = true;
         }
 
         /// <summary>
         /// Access to data via IProject.
+        /// Includes non-rendered items.
         /// </summary>
         public IEnumerable<IProject> Data
         {
@@ -54,11 +60,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         }
 
         /// <summary>
-        /// Count of added items.
+        /// Count of rendered items.
         /// </summary>
-        public int Count
+        public int CountRendered
         {
-            get => items.Count;
+            get => RenderedItems.Count();
         }
 
         public int MaxItemHeight
@@ -68,7 +74,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         public int MaxItemsHeight
         {
-            get => GetMaxItemsHeight(Count);
+            get => GetMaxItemsHeight(CountRendered);
         }
 
         /// <summary>
@@ -101,44 +107,70 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             set;
         }
 
+        private IEnumerable<UProject> RenderedItems
+        {
+            get => items.Where(i => i.rendered);
+        }
+
         /// <summary>
-        /// To add new item that's configured by IProject.
+        /// To add IProject for panel.
+        /// Will also add an item into collection if it's still not presented there.
         /// </summary>
         /// <param name="project"></param>
         public void Add(IProject project)
         {
-            var control = new ProjectItemControl(project) {
-                Order = items.Count
-            };
-            control.Top = MaxItemsHeight;
+            if(project == null) {
+                throw new ArgumentNullException(nameof(project));
+            }
 
-            control.SizeChanged += ControlSizeChanged;
-            ConfigureControl(control, project);
+            var prj = items.Where(i => i.control.Project.DxpIdent == project.DxpIdent)
+                            .FirstOrDefault();
+
+            var control     = prj?.control ?? new ProjectItemControl(project);
+            control.Order   = CountRendered;
+            control.Top     = MaxItemsHeight;
+
+            if(prj?.control == null)
+            {
+                control.SizeChanged += ControlSizeChanged;
+                ConfigureControl(control, project);
+
+                items.Add(new UProject() {
+                    control = control,
+                    project = project
+                });
+            }
+            else {
+                prj.rendered = true;
+            }
 
             panelMain.Controls.Add(control);
-            items.Add(new UProject() {
-                control = control,
-                project = project
-            });
         }
 
         /// <summary>
         /// Reset items.
         /// </summary>
-        public void Reset()
+        /// <param name="disposing">true value allows the real disposing for each control; false only avoids gui rendering.</param>
+        public void Reset(bool disposing)
         {
-            items.ForEach((i) => { i.control.Dispose(); });
-
-            items.Clear();
             panelMain.Controls.Clear();
+
+            if(!disposing) {
+                items.ForEach(i => i.rendered = false);
+                return;
+            }
+
+            items.ForEach(i => i.control.Dispose());
+            items.Clear();
         }
 
         public int GetMaxItemsHeight(int count)
         {
-            return (Count < 1 || items.Count < 1) ? 
-                        0 : items.OrderByDescending(i => i.control.Height)
-                                    .Take(count)
-                                    .Sum(i => i.control.Height);
+            return (CountRendered < 1) ? 
+                        0 : RenderedItems
+                                .OrderByDescending(i => i.control.Height)
+                                .Take(count)
+                                .Sum(i => i.control.Height);
         }
 
         public ProjectItemsControl()
@@ -190,7 +222,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(sender is ProjectItemControl control)
             {
                 int xprev = control.Top + control.Height;
-                foreach(var item in items.Skip(control.Order + 1)) {
+                foreach(var item in RenderedItems.Skip(control.Order + 1)) {
                     item.control.Top = xprev;
                     xprev += item.control.Height;
                 }
@@ -207,7 +239,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 components.Dispose();
             }
 
-            Reset();
+            Reset(true);
             base.Dispose(disposing);
         }
 

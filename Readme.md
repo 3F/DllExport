@@ -18,7 +18,7 @@ Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
-> 1:[ ***[Quick start](https://www.youtube.com/watch?v=sBWt-KdQtoc)*** ] 2:[ [C++ ❤ C# 💕C++](https://www.youtube.com/watch?v=9Hyg3_WE9Ks) ] 3:[ [Complex types and Strings](https://www.youtube.com/watch?v=QXMj9-8XJnY) ]
+> 1:[ ***[Quick start](https://www.youtube.com/watch?v=sBWt-KdQtoc)*** ] 2:[ [Basic examples for C++ and C#](https://www.youtube.com/watch?v=9Hyg3_WE9Ks) ] 3:[ [Complex types and Strings](https://www.youtube.com/watch?v=QXMj9-8XJnY) ]
 > -> { **[Wiki](https://github.com/3F/DllExport/wiki)** }
 
 
@@ -139,7 +139,7 @@ Get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) fro
 
 *DllExport.bat was based on [GetNuTool core](https://github.com/3F/GetNuTool) that's Cross-Platform Embeddable Package Manager that requires only MSBuild. Finally it just aggregates calling to Wizard that was based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A#is-this-cross-platform-solution-)]*
 
-**Please note**: You do not need to call manually DllExport.bat after initial configuration. It still will be **automatically** for `-action Restore` command etc.
+**Please note**: You do not need to call manually DllExport.bat after initial configuration. It will be **automatically** restored by any Build operation for your configured projects.
 
 
 * To install/uninstall or to reconfigure your projects:
@@ -148,22 +148,8 @@ Get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) fro
 DllExport -action Configure
 ```
 
-* To upgrade already used version:
+[Please read the documentation.](https://github.com/3F/DllExport/wiki/DllExport-Manager)
 
-```
-DllExport -action Update
-```
-
-* To manually restore package (**It should be automatically** restored by any Build operation for your configured projects. But if you need, use this):
-```
-DllExport -action Restore
-```
-
-* All available features:
-
-```
-DllExport -h
-```
 
 Other variants:
 
@@ -171,7 +157,7 @@ Other variants:
     * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [`gnt`](https://3F.github.io/GetNuTool/releases/latest/gnt/)` /p:ngpackages="DllExport"`
 * (deprecated) NuGet PM: `Install-Package DllExport`
 * (deprecated) NuGet Commandline: `nuget install DllExport`
-* [/releases](https://github.com/3F/DllExport/releases) [ [latest](https://github.com/3F/DllExport/releases/latest) ]
+* [/releases](https://github.com/3F/DllExport/releases) [ [latest stable](https://github.com/3F/DllExport/releases/latest) ]
 * [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). But remember: It can be unstable or not work at all. Use this for tests of latest changes.
   * Artifacts [older than 6 months](https://www.appveyor.com/docs/packaging-artifacts/#artifacts-retention-policy) you can also find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/DllExport/releases) page.
 
@@ -189,27 +175,47 @@ For Visual Studio use this [vsix version for IDE](https://visualstudiogallery.ms
 
 ### How to Debug
 
-For example, find the DllExport.MSBuild project in solution:
+Wizard through MSBuild, for example:
 
-* `Properties` > `Debug`:
-    * `Start Action`: set as `Start External program`
-        * Add full path to **msbuild.exe**, for example: C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe
-    * `Start Options` > `Command line arguments` write for example:
+```
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe
+```
+
+Arguments:
+
+```bash
+"net.r_eg.DllExport.Wizard.targets" /p:wRootPath="<...>" 
+/p:wSlnFile="<SolutionFile_for_debugging>.sln" /p:wAction="Configure" 
+/p:wPkgPath=packages/DllExport<version>
+```
+
+Working directory:
+```
+<path_to>\packages\DllExport<version>\tools
+```
+
+DllExport.MSBuild, for example:
+
+```
+C:\Program Files (x86)\MSBuild\14.0\Bin\MSBuild.exe
+```
+
+Arguments:
 
 ```bash
 "<path_to_SolutionFile_for_debugging>.sln" /t:Build /p:Configuration=<Configuration>
 ```
 
-use additional `Diagnostic` key to msbuild if you need details from .targets
+use additional `Diagnostic` key to msbuild if you need more details:
 ```bash
-"<path_to_SolutionFile_for_debugging>.sln" /verbosity:Diagnostic /t:Rebuild /p:Configuration=<Configuration>
+"<SolutionFile>.sln" /verbosity:Diagnostic /t:Rebuild /p:Configuration=<Configuration>
 ```
 
-Go to `Start Debugging`. Now you can debug at runtime.
+Now you can debug at runtime.
 
 ### coreclr - ILAsm / ILDasm
 
-We use **our custom versions of coreclr**, special for DllExport project - https://github.com/3F/coreclr
+We use **our custom versions on coreclr**, special for DllExport project - https://github.com/3F/coreclr
 
 This helps to avoid some problems ([like this](https://github.com/3F/DllExport/issues/17)) and more...
 
@@ -247,5 +253,5 @@ Please note again, the initial [UnmanagedExports](https://www.nuget.org/packages
 But this repository does not related with Robert and generally **still** being developed by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
 
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=entry%2ereg%40gmail%2ecom&lc=US&item_name=3F%2dOpenSource%20%5b%20github%2ecom%2f3F&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donate_SM%2egif%3aNonHosted) ( github.com/3F )
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://r-eg.net/Donation/) ( github.com/3F )
 
