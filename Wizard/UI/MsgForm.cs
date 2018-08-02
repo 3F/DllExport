@@ -25,6 +25,7 @@
 using System;
 using System.Text;
 using System.Windows.Forms;
+using net.r_eg.DllExport.Wizard.UI.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.UI
 {
@@ -44,7 +45,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             if(!String.IsNullOrWhiteSpace(msg))
             {
-                BeginInvoke((MethodInvoker)delegate {
+                this.UIAction(() => {
                     listBoxLog.Items.Add(msg);
                 });
             }

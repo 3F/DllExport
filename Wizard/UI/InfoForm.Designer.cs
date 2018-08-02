@@ -45,6 +45,7 @@
             // linkLocalDxp
             // 
             this.linkLocalDxp.AutoSize = true;
+            this.linkLocalDxp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkLocalDxp.LinkColor = System.Drawing.Color.Purple;
             this.linkLocalDxp.Location = new System.Drawing.Point(41, 200);
             this.linkLocalDxp.Name = "linkLocalDxp";
@@ -57,6 +58,7 @@
             // linkRemoteDxp
             // 
             this.linkRemoteDxp.AutoSize = true;
+            this.linkRemoteDxp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkRemoteDxp.Location = new System.Drawing.Point(41, 224);
             this.linkRemoteDxp.Name = "linkRemoteDxp";
             this.linkRemoteDxp.Size = new System.Drawing.Size(164, 13);
@@ -68,6 +70,7 @@
             // labelDllExportBatch
             // 
             this.labelDllExportBatch.AutoSize = true;
+            this.labelDllExportBatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelDllExportBatch.Location = new System.Drawing.Point(12, 178);
             this.labelDllExportBatch.Name = "labelDllExportBatch";
             this.labelDllExportBatch.Size = new System.Drawing.Size(120, 13);
@@ -89,6 +92,7 @@
             this.textBoxInfo.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(253)))), ((int)(((byte)(244)))), ((int)(((byte)(191)))));
             this.textBoxInfo.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBoxInfo.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.textBoxInfo.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxInfo.Location = new System.Drawing.Point(1, 1);
             this.textBoxInfo.Multiline = true;
             this.textBoxInfo.Name = "textBoxInfo";
@@ -127,7 +131,7 @@
             // 
             this.labelWarn.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(173)))), ((int)(((byte)(173)))));
             this.labelWarn.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.labelWarn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelWarn.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelWarn.ForeColor = System.Drawing.Color.White;
             this.labelWarn.Location = new System.Drawing.Point(1, 1);
             this.labelWarn.Name = "labelWarn";
@@ -139,6 +143,7 @@
             // linkManagerWiki
             // 
             this.linkManagerWiki.AutoSize = true;
+            this.linkManagerWiki.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkManagerWiki.Location = new System.Drawing.Point(3, 140);
             this.linkManagerWiki.Name = "linkManagerWiki";
             this.linkManagerWiki.Size = new System.Drawing.Size(110, 13);

@@ -42,6 +42,7 @@
             this.listBoxLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listBoxLog.ContextMenuStrip = this.contextMenuLog;
             this.listBoxLog.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.listBoxLog.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.listBoxLog.FormattingEnabled = true;
             this.listBoxLog.HorizontalScrollbar = true;
             this.listBoxLog.IntegralHeight = false;
