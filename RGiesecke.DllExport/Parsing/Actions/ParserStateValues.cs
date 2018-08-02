@@ -113,6 +113,15 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 set;
             }
 
+            /// <summary>
+            /// May contain related signature ~ pinvokeimpl(".dll" winapi) or null value.
+            /// </summary>
+            public string Pinvokeimpl
+            {
+                get;
+                set;
+            }
+
             public string Result
             {
                 get;
@@ -127,22 +136,28 @@ namespace RGiesecke.DllExport.Parsing.Actions
 
             public MethodStateValues()
             {
-                this.Reset();
+                Reset();
             }
 
             public override string ToString()
             {
-                return this.Name.IfEmpty(Resources.no_name___) + "; " + this.Declaration.IfEmpty(Resources.no_declaration___);
+                return String.Format(
+                    "{0}; {1}",
+                    Name.IfEmpty(Resources.no_name___),
+                    Declaration.IfEmpty(Resources.no_declaration___)
+                );
             }
 
             public void Reset()
             {
-                this.Declaration = "";
-                this.Name = "";
-                this.Attributes = "";
-                this.Result = "";
-                this.ResultAttributes = "";
-                this.After = "";
+                Declaration         = String.Empty;
+                Name                = String.Empty;
+                Attributes          = String.Empty;
+                Result              = String.Empty;
+                ResultAttributes    = String.Empty;
+                After               = String.Empty;
+
+                Pinvokeimpl = null;
             }
         }
     }

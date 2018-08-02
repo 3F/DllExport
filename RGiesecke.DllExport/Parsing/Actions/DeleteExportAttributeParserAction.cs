@@ -30,7 +30,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
                 return;
             }
 
-            ExportedMethod exportMethod = getExportedMethod(state, exportedClass);
+            ExportedMethod exportMethod = GetExportedMethod(state, exportedClass);
             string declaration          = state.Method.Declaration;
             StringBuilder stringBuilder = new StringBuilder(250);
 
@@ -71,9 +71,9 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
         }
 
-        private ExportedMethod getExportedMethod(ParserStateValues state, ExportedClass exportedClass)
+        private ExportedMethod GetExportedMethod(ParserStateValues state, ExportedClass exportedClass)
         {
-            //TODO: see details in nextExportedMethod()
+            //TODO: see details in NextExportedMethod()
             return exportedClass.NextExportedMethod(state.Method.Name);
         }
     }

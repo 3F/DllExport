@@ -72,7 +72,7 @@
             this.linkOurILAsm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkOurILAsm.AutoSize = true;
             this.linkOurILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkOurILAsm.Location = new System.Drawing.Point(284, 57);
+            this.linkOurILAsm.Location = new System.Drawing.Point(291, 57);
             this.linkOurILAsm.Name = "linkOurILAsm";
             this.linkOurILAsm.Size = new System.Drawing.Size(13, 13);
             this.linkOurILAsm.TabIndex = 7;
@@ -97,7 +97,7 @@
             this.linkExpLib.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkExpLib.AutoSize = true;
             this.linkExpLib.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkExpLib.Location = new System.Drawing.Point(241, 38);
+            this.linkExpLib.Location = new System.Drawing.Point(247, 37);
             this.linkExpLib.Name = "linkExpLib";
             this.linkExpLib.Size = new System.Drawing.Size(13, 13);
             this.linkExpLib.TabIndex = 5;
@@ -110,7 +110,7 @@
             this.linkOrdinals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkOrdinals.AutoSize = true;
             this.linkOrdinals.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkOrdinals.Location = new System.Drawing.Point(206, 14);
+            this.linkOrdinals.Location = new System.Drawing.Point(211, 15);
             this.linkOrdinals.Name = "linkOrdinals";
             this.linkOrdinals.Size = new System.Drawing.Size(13, 13);
             this.linkOrdinals.TabIndex = 4;
@@ -487,7 +487,7 @@
             this.menuForInstalled.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.menuItemLimitPKT});
             this.menuForInstalled.Name = "menuForInstalled";
-            this.menuForInstalled.Size = new System.Drawing.Size(280, 48);
+            this.menuForInstalled.Size = new System.Drawing.Size(280, 26);
             // 
             // menuItemLimitPKT
             // 

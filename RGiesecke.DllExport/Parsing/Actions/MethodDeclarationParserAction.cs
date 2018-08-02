@@ -276,22 +276,49 @@ namespace RGiesecke.DllExport.Parsing.Actions
             return flag2;
         }
 
+        private string ExtractPinvokeimpl(ParserStateValues state)
+        {
+            string data = state?.Method?.Result;
+            if(String.IsNullOrWhiteSpace(data)) {
+                return null;
+            }
+
+            const string sign = "pinvokeimpl";
+
+            int op = data.IndexOf(sign, StringComparison.InvariantCulture);
+            if(op == -1) {
+                return null;
+            }
+
+            int ed = data.IndexOf(')', op);
+            if(ed == -1) {
+                throw new MissingMethodException($"Failed {sign} signature.");
+            }
+
+            return data.Substring(op, ed - op + 1);
+        }
+
         private bool ExtractMethodParts(ParserStateValues state)
         {
-            string methodName;
-            string afterMethodName;
-            string foundResult;
-            string foundResultModifier;
-            string foundMethodAttributes;
-            if(!this.GetPartBeforeParameters(state.Method.Declaration, out methodName, out afterMethodName, out foundResult, out foundResultModifier, out foundMethodAttributes))
+            if(!GetPartBeforeParameters
+                (
+                    state.Method.Declaration, 
+                    out string name, 
+                    out string afterName, 
+                    out string result, 
+                    out string resultAttrs, 
+                    out string attributes
+                ))
             {
                 return false;
             }
-            state.Method.After = afterMethodName;
-            state.Method.Name = methodName;
-            state.Method.Attributes = foundMethodAttributes;
-            state.Method.Result = foundResult;
-            state.Method.ResultAttributes = foundResultModifier;
+
+            state.Method.Name               = name;
+            state.Method.After              = afterName;
+            state.Method.Attributes         = attributes;
+            state.Method.Result             = result;
+            state.Method.ResultAttributes   = resultAttrs;
+            state.Method.Pinvokeimpl        = ExtractPinvokeimpl(state);
             return true;
         }
     }

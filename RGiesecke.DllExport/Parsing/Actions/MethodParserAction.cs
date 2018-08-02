@@ -13,11 +13,15 @@ namespace RGiesecke.DllExport.Parsing.Actions
     {
         public override void Execute(ParserStateValues state, string trimmedLine)
         {
-            if(!trimmedLine.StartsWith("} // end of method", StringComparison.Ordinal))
-            {
+            if(state.Method.Pinvokeimpl != null && trimmedLine == "}") {
+                state.State = ParserState.Class;
                 return;
             }
-            state.State = ParserState.Class;
+
+            if(trimmedLine.StartsWith("} // end of method", StringComparison.Ordinal)) {
+                state.State = ParserState.Class;
+                return;
+            }
         }
     }
 }
