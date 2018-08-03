@@ -81,11 +81,12 @@ echo                           * Restore   - To restore configured DllExport.
 echo                           * Export    - To export configured projects data.
 echo                           * Recover   - To re-configure projects via predefined/exported data.
 echo                           * Unset     - To unset all data from specified projects.
+echo                           * Upgrade   - Aggregates an Update action with additions for upgrading.
 echo.
 echo  -sln-dir {path}       - Path to directory with .sln files to be processed.
 echo  -sln-file {path}      - Optional predefined .sln file to process via the restore operations etc.
 echo  -metalib {path}       - Relative path from PkgPath to DllExport meta library.
-echo  -dxp-target {path}    - Relative path to .target file of the DllExport.
+echo  -dxp-target {path}    - Relative path to entrypoint wrapper of the main core.
 echo  -dxp-version {num}    - Specific version of DllExport. Where {num}:
 echo                           * Versions: 1.6.0 ...
 echo                           * Keywords: 
@@ -98,7 +99,7 @@ echo  -proxy {cfg}          - To use proxy. The format: [usr[:pwd]@]host[:port]
 echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
 echo  -force                - Aggressive behavior, e.g. like removing pkg when updating.
 echo  -mgr-up               - Updates this manager to version from '-dxp-version'.
-echo  -wz-target {path}     - Relative path to .target file of the Wizard.
+echo  -wz-target {path}     - Relative path to entrypoint wrapper of the main wizard.
 echo  -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
 echo  -eng                  - Try to use english language for all build messages.
 echo  -GetNuTool {args}     - Access to GetNuTool core. https://github.com/3F/GetNuTool
@@ -274,6 +275,12 @@ if defined dxpVersion (
     if "!dxpVersion!"=="actual" (
         set "dxpVersion="
     )
+)
+
+if z%wAction%==zUpgrade (
+    call :dbgprint "Upgrade is on"
+    set /a mgrUp=1
+    set /a kForce=1
 )
 
 call :trim dxpPackages

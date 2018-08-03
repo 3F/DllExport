@@ -22,6 +22,11 @@
         ==================================================
         DllExport -action Configure -dxp-version $-version-$
         ==================================================
+        
+        To upgrade configured version on v$-version-$:
+        ==================================================
+        DllExport -action Upgrade -dxp-version $-version-$
+        ==================================================
         https://3F.github.io/DllExport/releases/latest/manager/
         
         

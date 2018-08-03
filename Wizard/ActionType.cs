@@ -65,6 +65,12 @@ namespace net.r_eg.DllExport.Wizard
         Unset,
 
         /// <summary>
+        /// Aggregates an Update action with additions for upgrading.
+        /// TODO: Currently is equal to the Update action.
+        /// </summary>
+        Upgrade = Update,
+
+        /// <summary>
         /// To list projects and their statuses. As plain text data.
         /// TODO:
         /// </summary>

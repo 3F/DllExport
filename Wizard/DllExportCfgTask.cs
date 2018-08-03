@@ -175,7 +175,7 @@ namespace net.r_eg.DllExport.Wizard
                     typeof(ActionType),
                     value.Trim(),
                     //char.ToUpperInvariant(value[0]) + value.Substring(1).ToLowerInvariant()
-                    true
+                    false
                 );
             }
         }

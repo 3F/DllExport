@@ -160,8 +160,7 @@ namespace net.r_eg.DllExport.Wizard
                 case ActionType.Restore:
                 case ActionType.Update:
                 case ActionType.Export:
-                case ActionType.Unset:
-                case ActionType.Default: {
+                case ActionType.Unset: {
                         Configure(ActivateSln());
                         break;
                 }
@@ -169,6 +168,9 @@ namespace net.r_eg.DllExport.Wizard
                         (new CfgBatWrapper(Config, Log)).TryPrepare();
                         UI.App.RunSTA(new UI.InfoForm(this));
                         break;
+                }
+                case ActionType.Default: {
+                        return;
                 }
                 default: throw new NotImplementedException();
             }
