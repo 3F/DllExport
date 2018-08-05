@@ -1,6 +1,6 @@
 # [DllExport](https://github.com/3F/DllExport)
 
-*Unmanaged Exports ( .NET DllExport )*
+*.NET DllExport*
 
 
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
@@ -8,6 +8,9 @@
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-core-93C10B.svg)](https://github.com/3F/GetNuTool)
+
+
+* https://github.com/3F/DllExport
 
 ## License
 
