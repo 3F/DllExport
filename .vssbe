@@ -171,6 +171,37 @@
     },
     {
       "Enabled": true,
+      "Name": "CBuild",
+      "Caption": "Custom build for dependencies ...",
+      "SupportMSBuild": false,
+      "SupportSBEScripts": false,
+      "IgnoreIfBuildFailed": false,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [
+        "PublicRelease|Any CPU"
+      ],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 300
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeFile, vsSolutionBuildEvent",
+        "Type": "File",
+        "Command": "cd MvsSln & build PublicRelease",
+        "Command__": [
+          "cd MvsSln & build PublicRelease"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
       "Name": "ActUpdVersions",
       "Caption": "Update version number",
       "SupportMSBuild": true,

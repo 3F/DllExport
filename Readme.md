@@ -12,8 +12,8 @@ Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
-[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.6.1-93C10B.svg)](https://github.com/3F/GetNuTool)
-[![MvsSln](https://img.shields.io/badge/MvsSln-v2.0.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.6.2-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v2.1.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]

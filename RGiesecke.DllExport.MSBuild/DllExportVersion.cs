@@ -10,6 +10,6 @@ namespace RGiesecke.DllExport
     // but currently I don't want to change this, because it will be automatically changed if plugin exists (use .version)
     internal struct DllExportVersion
     {
-        internal const string Version = "1.6.0";
+        internal const string Version = "1.6.1";
     }
 }

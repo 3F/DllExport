@@ -1,6 +1,76 @@
 DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - 
 
+[v1.6.1] 2018.08.05
+
+    * FIXED: Fixed bug when some methods cannot be exported. Issue #59.
+    * FIXED: Bug 'The node is not parented by this object' when Configuring projects. Issue: #77.
+    * FIXED: Fixed GDI objects leak in Wizard.
+    * FIXED: `-msb` key cannot affect for GetNuTool section. Issue #74.
+    * FIXED: Bug when automatic restoring still uses default keys from manager after configuring with custom `-server`.
+    * FIXED: Problem with double quotes for `-packages` key. 
+    * FIXED: Possible incorrect repetition of the relative path for `-packages` key. 
+    * FIXED: Possible problem 'The request was aborted: Could not create SSL/TLS secure channel.'. Issue: #77.
+    * FIXED: Possible problem with path when `-msb` key contains round brackets, 
+             e.g.: `D:\C\Program Files (x86)\Microsoft Visual Studio\`...
+             
+    * NEW: Implemented features for additional automation. Issue #76.
+            New actions:             
+                * `-action Export` 
+                * `-action Recover`
+                * `-action Unset`
+            
+            Documentation: https://github.com/3F/DllExport/wiki/DllExport-Manager#automation
+            
+    * NEW: Added proxy support for manager.
+            The common format: `[usr[:pwd]@]host[:port]`
+            
+            Documentation: https://github.com/3F/DllExport/wiki/DllExport-Manager#proxy
+            
+    * NEW: Wizard. Added sorting an projects in main window by its installing status and by availability.
+    * NEW: Wizard. Added filter for list of projects in main wizard window.
+    * NEW: New 'Offline' versions from our packages. See GitHub Releases page.
+    * NEW: Added key to force update `Reference` without PublicKeyToken. Issue #65.
+    * NEW: Added `-force` key for manager to use aggressive behavior, e.g. like removing pkg when updating. 
+           Wiki: https://github.com/3F/DllExport/wiki/DllExport-Manager#receiving-new-package-version
+
+    * NEW: New action `-action Upgrade`.
+           Aggregates an Update action with additions for upgrading. 
+
+                Today's an Upgrade action:
+                ```
+                DllExport -action Upgrade ...
+                ```
+
+                is equal to:
+                ```
+                DllExport -action Update -mgr-up -force ...
+                ```
+                
+                Wiki: https://github.com/3F/DllExport/wiki/DllExport-Manager#updating
+
+    * CHANGED: Case sensitivity for the Action names.
+    * CHANGED: `-action Default` for nothing.
+    * CHANGED: UI layout fixes for -Info form (Thanks @Genteure, Issue #61). 
+    * CHANGED: Allows absolute path for `-packages` key.
+    * CHANGED: `-sln-file` key now can affect to `-action Configure`
+    * CHANGED: hMSBuild tool now is also distributed inside root directory of the packages zip & nupkg.
+               Use this for EXP0014 problem: "RunIlAsm. The library manager still cannot be found."
+               Example: https://www.youtube.com/watch?v=zUejJ4vUPGw
+
+    * CHANGED: Updated GetNuTool v1.6.2
+    * CHANGED: Updated MvsSln v2.1.0        
+    * OTHER: Some other fixes and changes with manager and wizard.
+    * NOTE: To upgrade configured version: `DllExport -action Upgrade ...`
+    * NOTE: Configuring projects: `DllExport -action Configure ...`
+    * NOTE: Screencasts:
+                * Quick start: https://www.youtube.com/watch?v=sBWt-KdQtoc
+                * Basic examples for C++ and C#: https://www.youtube.com/watch?v=9Hyg3_WE9Ks
+                * Complex types and Strings: https://www.youtube.com/watch?v=QXMj9-8XJnY
+                
+    * NOTE: Our actual wiki - https://github.com/3F/DllExport/wiki
+            * Documentation for manager: https://github.com/3F/DllExport/wiki/DllExport-Manager
+
 [v1.6] 2017.12.29
 
     * NEW: The new embeddable lightweight manager for distribution via MvsSln & GetNuTool projects. Issue #38.
