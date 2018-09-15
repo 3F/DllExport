@@ -63,9 +63,12 @@ namespace RGiesecke.DllExport
                 switch(platformTarget.NullSafeToLowerInvariant())
                 {
                     case "anycpu":
+                    case "any cpu":
                     return CpuPlatform.AnyCpu;
 
                     case "x86":
+                    case "x32":
+                    case "win32":
                     return CpuPlatform.X86;
 
                     case "x64":

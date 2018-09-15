@@ -207,14 +207,18 @@ namespace net.r_eg.DllExport.Wizard
                 return Platform.Default;
             }
 
-            switch(value.Trim().ToLowerInvariant()) {
-                case "x86": {
+            switch(value.Trim().ToLowerInvariant())
+            {
+                case "x86":
+                case "x32":
+                case "win32": {
                     return Platform.x86;
                 }
                 case "x64": {
                     return Platform.x64;
                 }
-                case "anycpu": {
+                case "anycpu":
+                case "any cpu": {
                     return Platform.AnyCPU;
                 }
             }
