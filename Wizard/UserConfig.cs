@@ -169,7 +169,7 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, xp);
-            Platform    = GetPlatform(GetValue(MSBuildProperties.PRJ_PLATFORM, xp));
+            Platform    = GetPlatform(xp);
             UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, xp).ToBoolean();
 
             var rawTimeout = GetValue(MSBuildProperties.DXP_TIMEOUT, xp);
@@ -199,6 +199,14 @@ namespace net.r_eg.DllExport.Wizard
                 DDNS        = cfg.DDNS;
             }
             Log = cfg.Log;
+        }
+
+        protected Platform GetPlatform(IXProject project)
+        {
+            if(GetUnevaluatedValue(MSBuildProperties.DXP_PLATFORM, project) == Platform.Auto.ToString()) {
+                return Platform.Auto;
+            }
+            return GetPlatform(GetValue(MSBuildProperties.PRJ_PLATFORM, project));
         }
 
         protected Platform GetPlatform(string value)

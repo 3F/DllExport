@@ -277,7 +277,7 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_INTERMEDIATE_FILES,
                 MSBuildProperties.DXP_TIMEOUT,
                 MSBuildProperties.DXP_PE_CHECK,
-                MSBuildProperties.PRJ_PLATFORM
+                MSBuildProperties.DXP_PLATFORM
             );
 
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
@@ -351,7 +351,7 @@ namespace net.r_eg.DllExport.Wizard
             return new UserConfig(cfg)
             {
                 UseCecil    = true,
-                Platform    = Platform.x86x64,
+                Platform    = Platform.Auto,
                 Compiler = new CompilerCfg() {
                     ordinalsBase    = 1,
                     timeout         = CompilerCfg.TIMEOUT_EXEC,
@@ -394,23 +394,23 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void CfgPlatform()
         {
-            string platform, platformS;
+            string platform, platformS = null;
 
             switch(Config.Platform)
             {
-                case Platform.x64: {
-                    platformS   =
-                    platform    = 
-                                "x64";
-                    break;
-                }
-                case Platform.x86: {
-                    platformS   =
-                    platform    = 
-                                "x86";
-                    break;
-                }
+                case Platform.Auto:
                 case Platform.Default:
+                {
+                    SetProperty(MSBuildProperties.DXP_SKIP_ANYCPU, false);
+                    SetProperty(MSBuildProperties.DXP_PLATFORM, Platform.Auto.ToString());
+                    Log.send(this, $"Export will try to use available platform from user settings.");
+                    return;
+                }
+                case Platform.x64:
+                case Platform.x86: {
+                    platform = Config.Platform.ToString();
+                    break;
+                }
                 case Platform.AnyCPU: {
                     platform = "AnyCPU";
                     SetProperty(MSBuildProperties.DXP_SKIP_ANYCPU, false);
@@ -423,7 +423,7 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             SetProperty(MSBuildProperties.PRJ_PLATFORM, platform);
-            Log.send(this, $"Export has been configured for platform: {platformS}");
+            Log.send(this, $"Export has been configured for platform: {platformS ?? platform}");
         }
 
         protected void CfgCompiler()

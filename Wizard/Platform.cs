@@ -27,9 +27,15 @@ namespace net.r_eg.DllExport.Wizard
     public enum Platform
     {
         Default,
+
         x86,
+
         x64,
+
         AnyCPU,
+
         x86x64 = AnyCPU,
+
+        Auto,
     }
 }

@@ -24,11 +24,14 @@
 
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)' != ''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullName>
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)' == ''">$(DllExportMetaLibAttr)</DllExportAttributeFullName>
+
+    <DllExportDefPlatform>$(PlatformTarget)</DllExportDefPlatform>
+    <DllExportDefPlatform Condition="'$(DllExportDefPlatform)' == ''">AnyCPU</DllExportDefPlatform>
   </PropertyGroup>
 
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
-      <DllExportPlatform Condition="'$(DllExportPlatform)' == ''">$(PlatformTarget)</DllExportPlatform>
+      <DllExportPlatform Condition="'$(DllExportPlatform)' == '' Or '$(DllExportPlatform)' == 'Auto'">$(DllExportDefPlatform)</DllExportPlatform>
       <DllExportCpuType Condition="'$(DllExportCpuType)' == ''">$(CpuType)</DllExportCpuType>
       <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)' == ''">$(DebugSymbols)</DllExportEmitDebugSymbols>
       <DllExportLeaveIntermediateFiles Condition="'$(DllExportLeaveIntermediateFiles)' == ''">false</DllExportLeaveIntermediateFiles>

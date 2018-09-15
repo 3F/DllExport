@@ -206,6 +206,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 return Platform.AnyCPU;
             }
 
+            if(rbPlatformAuto.Checked) {
+                return Platform.Auto;
+            }
+
             return Platform.Default;
         }
 
@@ -221,9 +225,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                     rbPlatformX64.Checked = true;
                     return;
                 }
-                case Platform.AnyCPU:
-                case Platform.Default: {
+                case Platform.AnyCPU: {
                     rbPlatformAnyCPU.Checked = true;
+                    return;
+                }
+                case Platform.Auto:
+                case Platform.Default: {
+                    rbPlatformAuto.Checked = true;
                     return;
                 }
             }

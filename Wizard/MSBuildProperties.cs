@@ -102,5 +102,10 @@ namespace net.r_eg.DllExport.Wizard
         /// DXP_ID for new configure. Presented by 'Recover' action.
         /// </summary>
         public const string DXP_CFG_ID = "DllExportCfgId";
+
+        /// <summary>
+        /// Platform for DllExport tool.
+        /// </summary>
+        public const string DXP_PLATFORM = "DllExportPlatform";
     }
 }
