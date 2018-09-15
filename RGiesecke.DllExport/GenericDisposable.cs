@@ -14,11 +14,7 @@ namespace RGiesecke.DllExport
 
         public GenericDisposable(Action action)
         {
-            if(action == null)
-            {
-                throw new ArgumentNullException("action");
-            }
-            this._Action = action;
+            _Action = action ?? throw new ArgumentNullException(nameof(action));
         }
 
         #region IDisposable

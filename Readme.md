@@ -18,11 +18,10 @@ Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
-> 1:[ ***[Quick start](https://www.youtube.com/watch?v=sBWt-KdQtoc)*** ] 2:[ [Basic examples for C++ and C#](https://www.youtube.com/watch?v=9Hyg3_WE9Ks) ] 3:[ [Complex types and Strings](https://www.youtube.com/watch?v=QXMj9-8XJnY) ]
+> 1:[ ***[Quick start](https://github.com/3F/DllExport/wiki/Quick-start)*** ] 2:[ [Basic examples for C++ and C#](https://www.youtube.com/watch?v=9Hyg3_WE9Ks) ] 3:[ [Complex types and Strings](https://www.youtube.com/watch?v=QXMj9-8XJnY) ]
 > -> { **[Wiki](https://github.com/3F/DllExport/wiki)** }
 
-
-`~~~---~~~`
+~ ~ ~ --- ~ ~ ~
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -90,7 +89,7 @@ The [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE)
 
 ### How does it work
 
-Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that makes the all required steps via `.export` directive ([it's specific directive for ILAsm compiler only](https://github.com/3F/DllExport/issues/45#issuecomment-317802099)).
+Current features has been implemented through [ILDasm](https://github.com/3F/coreclr/tree/master/src/ildasm) & [ILAsm](https://github.com/3F/coreclr/tree/master/src/ilasm) that prepares the all required steps via `.export` directive ([it's specific directive for ILAsm compiler only](https://github.com/3F/DllExport/issues/45#issuecomment-317802099)).
 
 **What inside ? or how does work the .export directive ?**
 
@@ -130,28 +129,21 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 ### How to get DllExport
 
-**v1.6+** have no official support of any standard NuGet clients. [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A)]
+v1.6+ have no official support of NuGet clients. [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A)]
 
 * [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
     * Wiki. [Quick start](https://github.com/3F/DllExport/wiki/Quick-start)
 
-Get [DllExport.bat](https://3F.github.io/DllExport/releases/latest/manager/) from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts/project files/etc.
+Get our manager from any place. For example, you can still get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) or it also can be embedded inside any other your scripts/project files/etc.
 
 *DllExport.bat was based on [GetNuTool core](https://github.com/3F/GetNuTool) that's Cross-Platform Embeddable Package Manager that requires only MSBuild. Finally it just aggregates calling to Wizard that was based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A#is-this-cross-platform-solution-)]*
 
 **Please note**: You do not need to call manually DllExport.bat after initial configuration. It will be **automatically** restored by any Build operation for your configured projects.
 
-
-* To install/uninstall or to reconfigure your projects:
-
-```
-DllExport -action Configure
-```
-
-[Please read the documentation.](https://github.com/3F/DllExport/wiki/DllExport-Manager)
+[ [Please read the documentation.](https://github.com/3F/DllExport/wiki/DllExport-Manager) ]
 
 
-Other variants:
+Other way:
 
 * `gnt /p:ngpackages="DllExport"` [[?](https://github.com/3F/GetNuTool)]
     * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [`gnt`](https://3F.github.io/GetNuTool/releases/latest/gnt/)` /p:ngpackages="DllExport"`
@@ -163,7 +155,7 @@ Other variants:
 
 ### How to Build
 
-Use build.bat if you need final binaries (NuGet package as `DllExport.<version>.nupkg`, Manager, zip-archive, and others).
+Use build.bat if you need final binaries (NuGet package as `DllExport.<version>.nupkg`, Manager, zip-archives, and others).
 
 ```bash
 > build

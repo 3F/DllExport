@@ -32,20 +32,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
     {
         internal static class NativeMethods
         {
-            public const int WM_SETREDRAW = 0x000B;
+            public const uint WM_SETREDRAW = 0x000B;
 
             [DllImport("user32.dll")]
-            public static extern int SendMessage(IntPtr hWnd, int wMsg, int wParam, int lParam);
+            public static extern IntPtr SendMessage(IntPtr hWnd, uint wMsg, IntPtr wParam, IntPtr lParam);
         }
 
         public static void SuspendDraw(this Control ctrl)
         {
-            NativeMethods.SendMessage(ctrl.Handle, NativeMethods.WM_SETREDRAW, 0, 0);
+            NativeMethods.SendMessage(ctrl.Handle, NativeMethods.WM_SETREDRAW, new IntPtr(0), new IntPtr(0));
         }
 
         public static void ResumeDraw(this Control ctrl)
         {
-            NativeMethods.SendMessage(ctrl.Handle, NativeMethods.WM_SETREDRAW, 1, 0);
+            NativeMethods.SendMessage(ctrl.Handle, NativeMethods.WM_SETREDRAW, new IntPtr(1), new IntPtr(0));
             ctrl.Refresh();
         }
 

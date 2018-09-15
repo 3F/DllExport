@@ -66,7 +66,7 @@ echo.
 echo.
 echo Distributed under the MIT license
 @echo https://github.com/3F/DllExport
-echo Wizard - based on hMSBuild logic and includes GetNuTool core - https://github.com/3F
+echo It was based on hMSBuild logic and includes GetNuTool core - https://github.com/3F
 echo.
 @echo.
 @echo Usage: DllExport [args to DllExport] [args to GetNuTool core]
@@ -74,23 +74,23 @@ echo ------
 echo.
 echo Arguments:
 echo ----------
-echo  -action {type}        - Specified action for Wizard. Where {type}:
-echo                           * Configure - To configure DllExport for specific projects.
-echo                           * Update    - To update pkg reference for already configured projects.
-echo                           * Restore   - To restore configured DllExport.
-echo                           * Export    - To export configured projects data.
-echo                           * Recover   - To re-configure projects via predefined/exported data.
-echo                           * Unset     - To unset all data from specified projects.
-echo                           * Upgrade   - Aggregates an Update action with additions for upgrading.
+echo  -action {type} - Specified action for Wizard. Where {type}:
+echo       * Configure - To configure DllExport for specific projects.
+echo       * Update    - To update pkg reference for already configured projects.
+echo       * Restore   - To restore configured DllExport.
+echo       * Export    - To export configured projects data.
+echo       * Recover   - To re-configure projects via predefined/exported data.
+echo       * Unset     - To unset all data from specified projects.
+echo       * Upgrade   - Aggregates an Update action with additions for upgrading.
 echo.
-echo  -sln-dir {path}       - Path to directory with .sln files to be processed.
-echo  -sln-file {path}      - Optional predefined .sln file to process via the restore operations etc.
-echo  -metalib {path}       - Relative path from PkgPath to DllExport meta library.
-echo  -dxp-target {path}    - Relative path to entrypoint wrapper of the main core.
-echo  -dxp-version {num}    - Specific version of DllExport. Where {num}:
-echo                           * Versions: 1.6.0 ...
-echo                           * Keywords: 
-echo                             `actual` to use unspecified local version or to get latest available;
+echo  -sln-dir {path}    - Path to directory with .sln files to be processed.
+echo  -sln-file {path}   - Optional predefined .sln file to be processed.
+echo  -metalib {path}    - Relative path from PkgPath to DllExport meta library.
+echo  -dxp-target {path} - Relative path to entrypoint wrapper of the main core.
+echo  -dxp-version {num} - Specific version of DllExport. Where {num}:
+echo       * Versions: 1.6.0 ...
+echo       * Keywords: 
+echo         `actual` to use unspecified local version or to get latest available;
 echo.
 echo  -msb {path}           - Full path to specific msbuild.
 echo  -packages {path}      - A common directory for packages.
@@ -115,9 +115,12 @@ echo --------
 echo  DllExport -action Configure
 echo  DllExport -action Restore -sln-file "Conari.sln"
 echo  DllExport -proxy guest:1234@10.0.2.15:7428 -action Configure
+echo  DllExport -action Configure -force -pkg-link http://host/v1.6.1.nupkg
 echo.
 echo  DllExport -build-info
-echo  DllExport -restore -sln-dir -sln-dir ..\ -debug
+echo  DllExport -debug -restore -sln-dir ..\ 
+echo  DllExport -mgr-up -dxp-version 1.6.1
+echo  DllExport -action Upgrade -dxp-version 1.6.1
 echo.
 echo  DllExport -GetNuTool -unpack
 echo  DllExport -GetNuTool /p:ngpackages="Conari;regXwild"

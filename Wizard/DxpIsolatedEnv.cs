@@ -33,7 +33,7 @@ namespace net.r_eg.DllExport.Wizard
     /// https://github.com/3F/DllExport/issues/56
     /// TODO: MvsSln core
     /// </summary>
-    public class DxpIsolatedEnv: IsolatedEnv, IEnvironment
+    public class DxpIsolatedEnv: IsolatedEnv, IEnvironment, IDisposable
     {
         public const string ERR_MSG = "DXPInternalErrorMsg";
 
@@ -57,6 +57,11 @@ namespace net.r_eg.DllExport.Wizard
                 prj.SetProperty(ERR_MSG, ex.Message);
                 return prj;
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            base.Dispose(disposing);
         }
     }
 }

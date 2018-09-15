@@ -468,7 +468,7 @@ namespace RGiesecke.DllExport.MSBuild
                 {
                     _ActualTask.Log.LogErrorFromException(ex);
                     _ActualTask.Log.LogMessage(ex.StackTrace);
-                    problemSolver(ex);
+                    ProblemSolver(ex);
                 }
                 this._LoggedMessages.Clear();
             }
@@ -795,8 +795,7 @@ namespace RGiesecke.DllExport.MSBuild
                 return true;
             }
 
-            string found;
-            if(ValidateToolPath(file, paths, toolp, out found)) {
+            if(ValidateToolPath(file, paths, toolp, out string found)) {
                 File.Copy(Path.Combine(found, file), dest);
                 return true;
             }
@@ -870,8 +869,7 @@ namespace RGiesecke.DllExport.MSBuild
                 return true;
             }
 
-            string foundPath;
-            if(!ValidateToolPath("ildasm.exe", SdkPath, GetSdkToolPath, out foundPath)) {
+            if(!ValidateToolPath("ildasm.exe", SdkPath, GetSdkToolPath, out string foundPath)) {
                 return false;
             }
 
@@ -895,8 +893,7 @@ namespace RGiesecke.DllExport.MSBuild
                 return null;
             }
 
-            string ret;
-            if(TrySearchToolPath(data, String.Empty, out ret)) {
+            if(TrySearchToolPath(data, String.Empty, out string ret)) {
                 return ret;
             }
             _ActualTask.Log.LogMessage(MessageImportance.Normal, Resources.Cannot_find_0_, data);
@@ -1045,7 +1042,7 @@ namespace RGiesecke.DllExport.MSBuild
             return flag;
         }
 
-        private void problemSolver(Exception ex)
+        private void ProblemSolver(Exception ex)
         {
             var found = new ProblemSolver(ex).FMsg;
             if(found != null) {
