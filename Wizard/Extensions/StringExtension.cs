@@ -121,7 +121,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         }
 
         /// <summary>
-        /// To open value from double quotes.
+        /// To open value from double quotes if they present.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -131,8 +131,13 @@ namespace net.r_eg.DllExport.Wizard.Extensions
                 return value;
             }
 
-            // leave trailing and leading whitespaces inside double quotes
-            return value.Trim().Trim(new[] { '"' });
+            var v = value.Trim();
+
+            if(v[0] == '"' && v.Length > 1 && v[v.Length - 1] == '"') {
+                return v.Substring(1, v.Length - 2);
+            }
+
+            return v;
         }
 
         /// <summary>

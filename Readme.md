@@ -24,7 +24,7 @@ Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
 ~ ~ ~ --- ~ ~ ~
 
 ```csharp
-[DllExport("Init", CallingConvention.Cdecl)]
+[DllExport]
 public static int entrypoint(IntPtr l)
 {
     // ... it will be called from Lua script
@@ -244,6 +244,4 @@ Please note again, the initial [UnmanagedExports](https://www.nuget.org/packages
 
 But this repository does not related with Robert and generally **still** being developed by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something are helpful for you from this, donations are welcome, and thanks !
 
-
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif)](https://r-eg.net/Donation/) ( github.com/3F )
-
+[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif) ☕](https://3F.github.io/Donation/)  ( github.com/3F )

@@ -529,9 +529,9 @@ namespace net.r_eg.DllExport.Wizard
 
             var ifManager = $"Exists('$(SolutionDir){manager}')";
 
-            var taskMsg = target.AddTask("Warning");
+            var taskMsg = target.AddTask("Error");
             taskMsg.Condition = $"!{ifManager}";
-            taskMsg.SetParameter("Text", $"We can't find '{manager}' in '$(SolutionDir)' - https://github.com/3F/DllExport");
+            taskMsg.SetParameter("Text", $"{manager} is not found. Path: '$(SolutionDir)' - https://github.com/3F/DllExport");
 
             var taskExec = target.AddTask("Exec");
             taskExec.Condition = $"({condition}) And {ifManager}";
@@ -539,11 +539,13 @@ namespace net.r_eg.DllExport.Wizard
             string args;
             if(Config?.Wizard?.MgrArgs != null) {
                 args = Regex.Replace(Config.Wizard.MgrArgs, @"-action\s\w+", "", RegexOptions.IgnoreCase);
+                args = args.Replace("%", "%%"); // part of issue 88, probably because of %(_data.FullPath) etc.
             }
             else {
                 args = String.Empty;
             }
-            taskExec.SetParameter("Command", $"cd \"$(SolutionDir)\" & {manager} {args} -action Restore");
+            taskExec.SetParameter("Command", $"{manager} {args} -action Restore");
+            taskExec.SetParameter("WorkingDirectory", "$(SolutionDir)");
         }
 
         // https://github.com/3F/DllExport/issues/62#issuecomment-353785676
@@ -668,7 +670,9 @@ namespace net.r_eg.DllExport.Wizard
                 new [] {
                     new MvsSln.Projects.ImportElement() {
                         project     = targets,
-                        condition   = $"Exists('{targets}')",
+                        // [MSBuild]::Escape for bug when path contains ';' symbol:
+                        // -The "exists" function only accepts a scalar value, but its argument ... evaluates to ...\path;\... which is not a scalar value. yeah
+                        condition   = $"Exists($([MSBuild]::Escape('{targets}')))",
                         label       = id
                     }
                 }, 

@@ -36,7 +36,7 @@ namespace net.r_eg.DllExport.Wizard
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
 
         private UI.MsgForm uimsg;
-        private object sync = new object();
+        private readonly object sync = new object();
 
         /// <summary>
         /// Optional root path of user paths. 
@@ -109,6 +109,7 @@ namespace net.r_eg.DllExport.Wizard
         public string MgrArgs
         {
             get => _mgrArgs;
+            // possible double quotes at least from 1.6.0 and 1.6.1
             set => _mgrArgs = value.OpenDoubleQuotes();
         }
         public string _mgrArgs;
