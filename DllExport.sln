@@ -112,6 +112,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "light", "light", "{6C22B481
 		hMSBuild\light\.compressor = hMSBuild\light\.compressor
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manager", "Manager", "{A82C146D-054C-4F7A-A140-0BF79E5BCE4F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "batch", "batch", "{603C7C21-263D-4357-99C7-5653474A8F22}"
+	ProjectSection(SolutionItems) = preProject
+		Manager\batch\.compressor = Manager\batch\.compressor
+		Manager\batch\Manager.bat = Manager\batch\Manager.bat
+		Manager\batch\Manager.offline.bat = Manager\batch\Manager.offline.bat
+		Manager\batch\map.tpl.targets = Manager\batch\map.tpl.targets
+		Manager\batch\tests.bat = Manager\batch\tests.bat
+		Manager\batch\tests.targets = Manager\batch\tests.targets
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -190,6 +202,7 @@ Global
 		{0969DEC4-0832-4110-AB49-A4BE30677862} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
 		{9309746A-7318-4784-95B9-3C78C437BA39} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
 		{6C22B481-EB28-4AF3-8C81-8AB931A8D569} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
+		{603C7C21-263D-4357-99C7-5653474A8F22} = {A82C146D-054C-4F7A-A140-0BF79E5BCE4F}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EEADC215-3983-4718-A397-729069C59742}

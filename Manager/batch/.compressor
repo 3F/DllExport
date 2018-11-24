@@ -18,11 +18,12 @@
     <PropertyGroup>
         <core Condition="'$(core)' == ''">DllExport.bat</core>
         <output Condition="'$(output)' == ''">DllExport_minified.bat</output>
+        <maptpl Condition="'$(maptpl)' == ''">map.tpl.targets</maptpl>
     </PropertyGroup>
 
     <!-- Entry point -->
     <Target Name="handler" BeforeTargets="Build">
-        <Compress core="$(core)" output="$(output)" />
+        <Compress core="$(core)" output="$(output)" maptpl="$(maptpl)" />
     </Target>
     
     <!-- Tasks settings -->
@@ -31,7 +32,6 @@
         <TaskCoreDllPath Condition="'$(TaskCoreDllPath)' == '' and Exists('$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll')">$(MSBuildToolsPath)\Microsoft.Build.Tasks.Core.dll</TaskCoreDllPath>
     </PropertyGroup>
     
-    <!-- Prepares list for downloader below -->
     <UsingTask
         TaskName="Compress"
         TaskFactory="CodeTaskFactory"
@@ -40,6 +40,7 @@
         <ParameterGroup>
             <core ParameterType="System.String" Required="true" />
             <output ParameterType="System.String" Required="true" />
+            <maptpl ParameterType="System.String" Required="true" />
         </ParameterGroup>
 
         <Task>
@@ -81,6 +82,8 @@
                     return set.ToArray();
                 };
 
+                var variables = new Dictionary<string, string>();
+
                 var cdict = new[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j',
                                     'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't',
                                     'u', 'v', 'w', 'x', 'y', 'z', '0', '1', '2', '3',
@@ -89,7 +92,7 @@
                 var vdict = gencomb(cdict, 2, (int i) => { return char.IsLetter(cdict[i]) || cdict[i] == '_'; });
 
                 // to skip processing for:
-                var exvar = new[] { "wMgrArgs", "wSlnDir", "wPkgPath", "wMetaLib", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver" };
+                var exvar = new[] { "wMgrArgs", "wSlnDir", "wPkgPath", "wMetaLib", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver", "qmoff" };
 
                 const string VNAME  = "[a-z_][a-z_0-9]+";
                 const string VERS   = "[Minified version]";
@@ -97,10 +100,33 @@
                 using(StreamReader reader = new StreamReader(core, System.Text.Encoding.UTF8, true))
                 {
                     var content = reader.ReadToEnd();
-
+                    
+                    /* set /a ERROR_ codes */
+                    
+                    var errorsCodes = new Dictionary<string, string>();
+                    content = Regex.Replace
+                    (
+                        content,
+                        @"set\s+\/a\s+(?'k'ERROR_[^= ]+)\s*=\s*(?'v'\d+)", 
+                        (Match m) =>
+                        {
+                            errorsCodes[m.Groups["k"].Value] = m.Groups["v"].Value;
+                            return String.Empty;
+                        }
+                    );
+                    
+                    foreach(var err in errorsCodes)
+                    {
+                        content = Regex.Replace(
+                            content, 
+                            String.Format("({1}{0}{1}|{2}{0}{2})", err.Key, "%", "!"), 
+                            err.Value
+                        );
+                    }
+                    
+                    
                     /* Shorten variables & labels */
 
-                    var variables = new Dictionary<string, string>();
                     uint uniqVars = 0;
                     content = Regex.Replace
                     (
@@ -245,6 +271,30 @@
                         writer.Write(content);
                     }
                     Console.WriteLine("{0} version of `{1}` has been created -> `{2}`", VERS, core, output);
+                }
+
+
+                /* map */
+
+                using(TextWriter wmap = new StreamWriter(core + ".map", false, new UTF8Encoding(false)))
+                {
+                    string map = String.Empty;
+                    foreach(var v in variables) {
+                        map += String.Format("{0}={1}\n", v.Key, v.Value);
+                    }
+
+                    wmap.Write(map);
+                }
+
+                using(StreamReader mtpl = new StreamReader(maptpl, System.Text.Encoding.UTF8, true))
+                using(TextWriter wmap = new StreamWriter(core + ".map.targets", false, new UTF8Encoding(false)))
+                {
+                    string map = String.Empty;
+                    foreach(var v in variables) {
+                        map += String.Format("<CreateProperty Value=\"{0}({1})\"><Output TaskParameter=\"Value\" PropertyName=\"{2}\"/></CreateProperty>\r\n", "$", v.Value, v.Key);
+                    }
+
+                    wmap.Write(mtpl.ReadToEnd().Replace("{0}", map));
                 }
 
             ]]></Code>

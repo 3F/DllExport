@@ -131,10 +131,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include=".compressor" />
     <None Include="key.snk" />
-    <None Include="Manager.bat" />
-    <None Include="Manager.offline.bat" />
     <None Include="net.r_eg.DllExport.Wizard.targets">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>

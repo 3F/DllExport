@@ -91,7 +91,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(phMSBuild     = \"hMSBuild\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pConf         = \"Configurator\")\n$(pWizard       = \"Wizard\")\n$(pManager      = \"Manager\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(phMSBuild     = \"hMSBuild\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -113,6 +113,7 @@
           "$(pMvsSln       = \"MvsSln\")",
           "$(pConf         = \"Configurator\")",
           "$(pWizard       = \"Wizard\")",
+          "$(pManager      = \"Manager\")",
           "$(pPeViewer     = \"PeViewer\")",
           "$(pGetNuTool    = \"GetNuTool\")",
           "$(phMSBuild     = \"hMSBuild\")",
@@ -563,12 +564,12 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]\n\n#[var frontend = $(pWizard)\\\\Manager.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVerRel)\")]\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[$(wzPrintVer = \"v$(pVer)$(partRelV)\")]\n    #[( $(Configuration) ~= \"Debug\" )\n    {\n        #[$(wzPrintVer += \" [ Debug ]\")]\n    }]    \n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(wzPrintVer)\")]\n}\nelse\n{\n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n}]\n\n#[\" \n    .compressor\n\"]\n#[IO writeLine(STDOUT): Generate minified version of Wizard installer ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(SolutionDir)$(pWizard)/.compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /nologo /v:m /m:4 \", 400)]]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ)_full.bat\", true)]\n#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]\n#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]\n\n\n#[\" \n    quick commands\n\"]\n\n#[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]\n",
+        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]\n\n#[var frontend = $(pManager)\\\\batch\\\\Manager.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVerRel)\")]\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[$(wzPrintVer = \"v$(pVer)$(partRelV)\")]\n    #[( $(Configuration) ~= \"Debug\" )\n    {\n        #[$(wzPrintVer += \" [ Debug ]\")]\n    }]    \n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(wzPrintVer)\")]\n}\nelse\n{\n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n}]\n\n#[\" \n    .compressor\n\"]\n#[IO writeLine(STDOUT): Generate minified version of the Wizard's manager ...]\n#[$(mbatch = \"$(SolutionDir)$(pManager)/batch/\")]\n#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(mbatch).compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /p:maptpl=\\\"$(mbatch)map.tpl.targets\\\" /nologo /v:m /m:4 \", 400)]]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ).full.bat\", true)]\n#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]\n#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]\n\n\n#[\" \n    quick commands\n\"]\n\n#[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]\n",
         "Command__": [
           "#[IO writeLine(STDOUT): Build GetNuTool ...]",
           "#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]",
           "",
-          "#[var frontend = $(pWizard)\\\\Manager.bat]",
+          "#[var frontend = $(pManager)\\\\batch\\\\Manager.bat]",
           "#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]",
           "#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]",
           "",
@@ -618,10 +619,11 @@
           "#[\" ",
           "    .compressor",
           "\"]",
-          "#[IO writeLine(STDOUT): Generate minified version of Wizard installer ...]",
-          "#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(SolutionDir)$(pWizard)/.compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /nologo /v:m /m:4 \", 400)]]",
+          "#[IO writeLine(STDOUT): Generate minified version of the Wizard's manager ...]",
+          "#[$(mbatch = \"$(SolutionDir)$(pManager)/batch/\")]",
+          "#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(mbatch).compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /p:maptpl=\\\"$(mbatch)map.tpl.targets\\\" /nologo /v:m /m:4 \", 400)]]",
           "",
-          "#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ)_full.bat\", true)]",
+          "#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ).full.bat\", true)]",
           "#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]",
           "#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]",
           "",
@@ -634,6 +636,55 @@
           "",
           "#[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]",
           ""
+        ]
+      }
+    },
+    {
+      "Enabled": true,
+      "Name": "MgrTests",
+      "Caption": "Preparing tests for manager ...",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": false,
+        "TimeLimit": 400
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "\n#[$(mgrTests = \"$(dbin)/tests/mgr/\")]\n\n#[IO copy.file(\n            {\n                \"$(dbin)*.bat\",\n                \"$(dbin)*.map\",\n                \"$(dbin)*.targets\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]\n\n\n#[IO copy.file(\n            {\n                \"$(mbatch)tests.*\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]",
+        "Command__": [
+          "",
+          "#[$(mgrTests = \"$(dbin)/tests/mgr/\")]",
+          "",
+          "#[IO copy.file(",
+          "            {",
+          "                \"$(dbin)*.bat\",",
+          "                \"$(dbin)*.map\",",
+          "                \"$(dbin)*.targets\"",
+          "            }, ",
+          "            \"$(mgrTests)/\", ",
+          "            true",
+          ")]",
+          "",
+          "",
+          "#[IO copy.file(",
+          "            {",
+          "                \"$(mbatch)tests.*\"",
+          "            }, ",
+          "            \"$(mgrTests)/\", ",
+          "            true",
+          ")]"
         ]
       }
     },
@@ -663,7 +714,7 @@
         "Handler": "cmd.exe /C",
         "Newline": "&",
         "Wrapper": "",
-        "Command": "echo Build hMSBuild ... \r\necho. \r\necho. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") \r\necho. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")\r\necho. \r\ncd hMSBuild \r\ncall build \r\n(copy /Y/B \"$(hMSBuildRawDir)hMSBuild_minified.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild_minified.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")",
+        "Command": "echo Build hMSBuild ... \necho. \necho. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") \necho. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")\necho. \ncd hMSBuild \ncall build \n(copy /Y/B \"$(hMSBuildRawDir)hMSBuild_minified.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild_minified.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")",
         "Command__": [
           "echo Build hMSBuild ... ",
           "echo. ",
@@ -702,12 +753,12 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[\" \n    Offline version\n\"]\n#[$(mgrOffline = \"$(pWizard)\\\\Manager.offline.bat\")]\n\n#[IO copy.directory(\"$(odir)\", \"$(dbin)/raw.offline/packages.offline/DllExport\", true, true)]\n#[IO copy.file(\"$(mgrOffline)\", \"$(dbin)/raw.offline/DllExport.bat\", true)]\n#[IO write(\"$(dbin)/raw.offline/DllExport_Configure.bat\"): DllExport -action Configure %*]\n\n#[IO write(\"$(dbin)/raw.offline/Readme.txt\"): \n! Please note ! this folder contains an offline version of the .NET DllExport package, and this does not require internet connection for any build.\n\nThis means that manager is already configured for already received package inside this folder through DllExport.bat wrapper in upper level.\n\nUse the same commands to this wrapper as for the classic version, for example:\n\n```\n    DllExport -action Configure\n```\n\nYou can also find the DllExport_Configure.bat that contains mentioned command inside. It just for your convenience (feel free to remove it). \n\nPlease read our documentation or press:\n\n```\n    DllExport -help\n```\n\n! Don't forget to check the latest offline versions of this packages with new features and fixes ! \n    \n\nAbout manager:\nhttps://github.com/3F/DllExport/wiki/DllExport-Manager\n\nThe latest releases including nightly builds:\nhttps://github.com/3F/DllExport/releases\n\nThe project repo on GitHub:\nhttps://github.com/3F/DllExport\n\n\n- - - -\n Enjoy!\n- - - -\n\n]\n\n",
+        "Command": "#[\" \n    Offline version\n\"]\n#[$(mgrOffline = \"$(pManager)\\\\batch\\\\Manager.offline.bat\")]\n\n#[IO copy.directory(\"$(odir)\", \"$(dbin)/raw.offline/packages.offline/DllExport\", true, true)]\n#[IO copy.file(\"$(mgrOffline)\", \"$(dbin)/raw.offline/DllExport.bat\", true)]\n#[IO write(\"$(dbin)/raw.offline/DllExport_Configure.bat\"): DllExport -action Configure %*]\n\n#[IO write(\"$(dbin)/raw.offline/Readme.txt\"): \n! Please note ! this folder contains an offline version of the .NET DllExport package, and this does not require internet connection for any build.\n\nThis means that manager is already configured for already received package inside this folder through DllExport.bat wrapper in upper level.\n\nUse the same commands to this wrapper as for the classic version, for example:\n\n```\n    DllExport -action Configure\n```\n\nYou can also find the DllExport_Configure.bat that contains mentioned command inside. It just for your convenience (feel free to remove it). \n\nPlease read our documentation or press:\n\n```\n    DllExport -help\n```\n\n! Don't forget to check the latest offline versions of this packages with new features and fixes ! \n    \n\nAbout manager:\nhttps://github.com/3F/DllExport/wiki/DllExport-Manager\n\nThe latest releases including nightly builds:\nhttps://github.com/3F/DllExport/releases\n\nThe project repo on GitHub:\nhttps://github.com/3F/DllExport\n\n\n- - - -\n Enjoy!\n- - - -\n\n]\n\n",
         "Command__": [
           "#[\" ",
           "    Offline version",
           "\"]",
-          "#[$(mgrOffline = \"$(pWizard)\\\\Manager.offline.bat\")]",
+          "#[$(mgrOffline = \"$(pManager)\\\\batch\\\\Manager.offline.bat\")]",
           "",
           "#[IO copy.directory(\"$(odir)\", \"$(dbin)/raw.offline/packages.offline/DllExport\", true, true)]",
           "#[IO copy.file(\"$(mgrOffline)\", \"$(dbin)/raw.offline/DllExport.bat\", true)]",

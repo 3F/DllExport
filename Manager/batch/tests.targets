@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Tests for DllExport Manager. https://github.com/3F/DllExport -->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="Build">
+    <CallTarget Targets="vmap" />
+    <CallTarget Targets="testCase1" Condition="'$(testCase)' == '1'" />
+    <CallTarget Targets="testCase2" Condition="'$(testCase)' == '2'" />
+    <CallTarget Targets="testCase3" Condition="'$(testCase)' == '3'" />
+    <CallTarget Targets="testCase4" Condition="'$(testCase)' == '4'" />
+    <CallTarget Targets="testCase5" Condition="'$(testCase)' == '5'" />
+    <CallTarget Targets="testCase6" Condition="'$(testCase)' == '6'" />
+    <CallTarget Targets="testCase7" Condition="'$(testCase)' == '7'" />
+    <CallTarget Targets="testCase9" Condition="'$(testCase)' == '9'" />
+    <CallTarget Targets="testCase10" Condition="'$(testCase)' == '10'" />
+    <CallTarget Targets="testCase11" Condition="'$(testCase)' == '11'" />
+    <CallTarget Targets="testCase12" Condition="'$(testCase)' == '12'" />
+    <CallTarget Targets="testCase13" Condition="'$(testCase)' == '13'" />
+    <CallTarget Targets="testCase14" Condition="'$(testCase)' == '14'" />
+    <CallTarget Targets="testCase15" Condition="'$(testCase)' == '15'" />
+    <CallTarget Targets="testCase16" Condition="'$(testCase)' == '16'" />
+  </Target>
+  <Import Project="$(MSBuildThisFileDirectory)\$(tmapFile)" />
+  
+  <PropertyGroup Label="Expected data">
+    <!-- "crazy' dir&name!356~`@#$^(+)_=-;[.]{,}" -->
+    <DataSpecSymbols>$([MSBuild]::Escape("crazy&#39; dir&amp;name!356~`@#$^^(+)_=-;[.]{,}"))</DataSpecSymbols>
+    <DataSpecSymbolsQ>&quot;$(DataSpecSymbols)&quot;</DataSpecSymbolsQ>
+    <!-- "any % data % 123" -->
+    <DataPercentSymbols>"any % data % 123"</DataPercentSymbols>
+    <DataDefWz>tools/net.r_eg.DllExport.Wizard.targets</DataDefWz>
+    <DataDefSrv>https://127.0.0.1:8082/</DataDefSrv>
+    <DataDefProxy>guest:1234@127.0.0.1:7428</DataDefProxy>
+  </PropertyGroup>
+
+  <Target Name="testCase1">
+    <Error Text="wAction: $(wAction) == Configure" Condition="'$(wAction)' != 'Configure'" />
+    <Message Text="wAction: $(wAction) == Configure" Importance="High" />
+  </Target>
+
+  <Target Name="testCase2">
+    <Error Text="wAction: $(wAction) == Update" Condition="'$(wAction)' != 'Update'" />
+    <Message Text="wAction: $(wAction) == Update" Importance="High" />
+  </Target>
+
+  <Target Name="testCase3">
+    <Error Text="wAction: $(wAction) == Restore" Condition="'$(wAction)' != 'Restore'" />
+    <Message Text="wAction: $(wAction) == Restore" Importance="High" />
+  </Target>
+
+  <Target Name="testCase4">
+    <Error Text="wAction: $(wAction) == Export" Condition="'$(wAction)' != 'Export'" />
+    <Message Text="wAction: $(wAction) == Export" Importance="High" />
+  </Target>
+
+  <Target Name="testCase5">
+    <Error Text="wAction: $(wAction) == Recover" Condition="'$(wAction)' != 'Recover'" />
+    <Message Text="wAction: $(wAction) == Recover" Importance="High" />
+  </Target>
+
+  <Target Name="testCase6">
+    <Error Text="wAction: $(wAction) == Unset" Condition="'$(wAction)' != 'Unset'" />
+    <Message Text="wAction: $(wAction) == Unset" Importance="High" />
+  </Target>
+
+  <Target Name="testCase7">
+    <Error Text="wAction: $(wAction) == Upgrade" Condition="'$(wAction)' != 'Upgrade'" />
+    <Message Text="wAction: $(wAction) == Upgrade" Importance="High" />
+  </Target>
+
+  <Target Name="testCase9">
+    <Error Text="wSlnDir: $(wSlnDir) == directory123" Condition="'$(wSlnDir)' != 'directory123'" />
+    <Message Text="wSlnDir: $(wSlnDir) == directory123" Importance="High" />
+  </Target>
+
+  <Target Name="testCase10">
+    <Error Text="wSlnDir: $(wSlnDir) == &quot;directory 123&quot;" Condition="'$(wSlnDir)' != '&quot;directory 123&quot;'" />
+    <Message Text="wSlnDir: $(wSlnDir) == &quot;directory 123&quot;" Importance="High" />
+  </Target>
+
+  <Target Name="testCase11">
+    <Error Text="wSlnDir: $(wSlnDir) == $(DataSpecSymbolsQ)" Condition="$(wSlnDir) != $(DataSpecSymbolsQ)" />
+    <Message Text="wSlnDir: $(wSlnDir) == $(DataSpecSymbolsQ)" Importance="High" />
+  </Target>
+
+  <Target Name="testCase12">
+    <Error Text="wSlnDir: $(wSlnDir) == $(DataPercentSymbols)" Condition="'$(wSlnDir)' != '$(DataPercentSymbols)'" />
+    <Message Text="wSlnDir: $(wSlnDir) == $(DataPercentSymbols)" Importance="High" />
+  </Target>
+  
+  <Target Name="testCase13">
+  
+    <Error Text="wSlnFile: $(wSlnFile) == $(DataSpecSymbolsQ)" Condition="'$(wSlnFile)' != '$(DataSpecSymbolsQ)'" />
+    <Message Text="wSlnFile: $(wSlnFile) == $(DataSpecSymbolsQ)" Importance="High" />
+
+    <Error Text="wMetaLib: $(wMetaLib) == $(DataSpecSymbolsQ)" Condition="'$(wMetaLib)' != '$(DataSpecSymbolsQ)'" />
+    <Message Text="wMetaLib: $(wMetaLib) == $(DataSpecSymbolsQ)" Importance="High" />
+
+    <Error Text="wDxpTarget: $(wDxpTarget) == $(DataSpecSymbolsQ)" Condition="'$(wDxpTarget)' != '$(DataSpecSymbolsQ)'" />
+    <Message Text="wDxpTarget: $(wDxpTarget) == $(DataSpecSymbolsQ)" Importance="High" />
+
+    <Error Text="tWizard: $(tWizard) == $(DataDefWz)" Condition="'$(tWizard)' != '$(DataDefWz)'" />
+    <Message Text="tWizard: $(tWizard) == $(DataDefWz)" Importance="High" />
+    
+  </Target>
+
+  <Target Name="testCase14">
+    <Error Text="wSlnDir: $(wSlnDir) == &quot;D:\\dir1/dir2/&quot;" Condition="'$(wSlnDir)' != '&quot;D:\\dir1/dir2/&quot;'" />
+    <Message Text="wSlnDir: $(wSlnDir) == &quot;D:\\dir1/dir2/&quot;" Importance="High" />
+  </Target>
+
+  <Target Name="testCase15">
+    <!-- TODO: see remark in batch -->
+    <Error Text="ngpath: $(dxpPackages) == $(DataSpecSymbols)\\" Condition="'$(dxpPackages)' != '$(DataSpecSymbols)\\'" />
+    <Message Text="ngpath: $(dxpPackages) == $(DataSpecSymbols)\\" Importance="High" />    
+  </Target>
+
+  <Target Name="testCase16">
+    <Error Text="dxpVersion: $(dxpVersion) == 1.6.0" Condition="'$(dxpVersion)' != '1.6.0'" />
+    <Message Text="dxpVersion: $(dxpVersion) == 1.6.0" Importance="High" />
+
+    <Error Text="pkgSrv: $(pkgSrv) == $(DataDefSrv)" Condition="'$(pkgSrv)' != '$(DataDefSrv)'" />
+    <Message Text="pkgSrv: $(pkgSrv) == $(DataDefSrv)" Importance="High" />
+
+    <Error Text="proxy: $(proxy) == $(DataDefProxy)" Condition="'$(proxy)' != '$(DataDefProxy)'" />
+    <Message Text="proxy: $(proxy) == $(DataDefProxy)" Importance="High" />
+
+    <!-- <Error Text="peExpList: $(peExpList) == bin\Debug\regXwild.dll" Condition="'$(peExpList)' != 'bin\Debug\regXwild.dll'" />
+    <Message Text="peExpList: $(peExpList) == bin\Debug\regXwild.dll" Importance="High" /> -->
+  </Target>
+
+</Project>

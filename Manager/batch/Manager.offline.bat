@@ -24,7 +24,7 @@ set "mgrFile=DllExport.bat"
 :: - - - - - - - - - - - - - - -
 setlocal enableDelayedExpansion
 
-set "args=%*"
+set args=%*
 
 call :isEmptyOrWhitespace args _is
 if [!_is!]==[1] (
