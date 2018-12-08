@@ -19,6 +19,7 @@ if not exist %mgrFile% (
 set "tmapFile=%mgrFile%.map.targets"
 
 setlocal
+set __p_call=1
 set app=%mgrFile% -tests "tests.targets"
 set appl=%app% -pkg-link "..\..\DllExport.1.6.1.nupkg"
 
@@ -97,11 +98,10 @@ set appl=%app% -pkg-link "..\..\DllExport.1.6.1.nupkg"
 
         rem possible: ~`!@#$%^&()_+=-;'[]{}.,
         rem not allowed: *?"<>|
-        rem escaping '^': ^^
 
-        rem passed via real build for msbuild: crazy' dir&name!~`@$#^^(+);_=-[.]%{,}
+        rem passed via real build for msbuild: crazy' dir&name!~`@$#^(+);_=-[.]%{,}
 
-        call %appl% -action Configure -sln-dir "crazy' dir&name!356~`@#$^^(+)_=-;[.]{,}" -eng
+        call %appl% -action Configure -sln-dir "crazy' dir&name!356~`@#$^(+)_=-;[.]{,}" -eng
 
     endlocal
 
@@ -110,11 +110,16 @@ set appl=%app% -pkg-link "..\..\DllExport.1.6.1.nupkg"
 
         rem because of calling type %% + %% is needed.
 
-            :: call DllExport  %%%% - %
-            :: call DllExport  %%   - empty
-            :: call DllExport  %    - empty
-            :: DllExport       %%   - %
-            :: DllExport       %    - empty
+        :: [I] from scripts:
+        :: # call DllExport  %%%% - %
+        :: # call DllExport  %%   - empty
+        :: # call DllExport  %    - empty
+        :: # DllExport       %%   - %
+        :: # DllExport       %    - empty
+                    
+        :: [II] from command-line:
+        :: # call DllExport   %  -  %
+        :: # DllExport        %  -  %
         
         call %appl% -action Configure -sln-dir "any %%%% data %%%% 123" -eng
 
@@ -123,7 +128,7 @@ set appl=%app% -pkg-link "..\..\DllExport.1.6.1.nupkg"
     setlocal 
         echo Test case 13: special symbols for -sln-file, -metalib, -dxp-target & set "%flagName%=13"
 
-        set _arg="crazy' dir&name!356~`@#$^^(+)_=-;[.]{,}"
+        set _arg="crazy' dir&name!356~`@#$^(+)_=-;[.]{,}"
         
         call %appl% -action Configure -sln-file %_arg% -metalib %_arg% -dxp-target %_arg%
 
@@ -143,7 +148,7 @@ set appl=%app% -pkg-link "..\..\DllExport.1.6.1.nupkg"
         ::   that does not allow ';' symbols in paths.
         ::   i.e. while -packages will accept correct data the gnt.core 1.6.2 will parse this incorrectly like: Could not find a part of the path ...
 
-        set _arg="crazy' dir&name!356~`@#$^^(+)_=-;[.]{,}"
+        set _arg="crazy' dir&name!356~`@#$^(+)_=-;[.]{,}"
         
         call %appl% -action Configure -packages %_arg%
 

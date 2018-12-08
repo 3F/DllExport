@@ -92,7 +92,7 @@
                 var vdict = gencomb(cdict, 2, (int i) => { return char.IsLetter(cdict[i]) || cdict[i] == '_'; });
 
                 // to skip processing for:
-                var exvar = new[] { "wMgrArgs", "wSlnDir", "wPkgPath", "wMetaLib", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver", "qmoff" };
+                var exvar = new[] { "__p_call", "wMgrArgs", "wSlnDir", "wPkgPath", "wMetaLib", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver" };
 
                 const string VNAME  = "[a-z_][a-z_0-9]+";
                 const string VERS   = "[Minified version]";
@@ -165,7 +165,7 @@
                     content = Regex.Replace
                     (
                         content,
-                        @"(?'def'call\s+:"+ VNAME + @"\s)(?'args'.+?)(?'eol'[\s&$])", 
+                        @"(?'def'call\s+:"+ VNAME + @"\s)(?'args'.+?)(?'eol'&|\r\n)", 
                         (Match m) =>
                         {
                             var def     = m.Groups["def"].Value;
@@ -175,11 +175,20 @@
                             return def + Regex.Replace
                             (
                                 cargs,
-                                @"(?'split'^|\s)(?'name'" + VNAME + ")",
+                                @"(?'split'^|\s)(?:(?'str'"".+?"")|(?'name'" + VNAME + "))",
                                 (Match _m) =>
                                 {
                                     var split = _m.Groups["split"].Value;
+                                    
+                                    if(_m.Groups["str"].Success) {
+                                        return split + _m.Groups["str"].Value;
+                                    }
+                                    
                                     var vname = _m.Groups["name"].Value;
+
+                                    if(exvar.Contains(vname)) {
+                                        return split + vname;
+                                    }
 
                                     if(variables.ContainsKey(vname)) {
                                         return split + variables[vname];
@@ -194,7 +203,7 @@
                                 RegexOptions.IgnoreCase | RegexOptions.Multiline
                             ) + eol;
                         },
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline
+                        RegexOptions.IgnoreCase
                     );
 
                     // %name... & !name...
@@ -219,7 +228,7 @@
                     content = Regex.Replace
                     (
                         content,
-                        @"(?'def'call\s*:|^\s*:|goto\s*:?)(?'label'" + VNAME + @")(?'eol'\s|$)", 
+                        @"(?'def'call\s*:|^\s*:|goto\s*:?)(?'label'" + VNAME + @")(?'eol'\s|\r\n)", 
                         (Match m) =>
                         {
                             var def     = m.Groups["def"].Value;
@@ -239,15 +248,40 @@
                         RegexOptions.IgnoreCase | RegexOptions.Multiline
                     );
 
-                    /* A common rules */
 
-                    content = Regex.Replace(content, @"(\r\n){2,}", "$1");
-                    content = Regex.Replace(content, @"(\r\n)\s*", "$1");
+                    /* exit/B */
+
+                    content = Regex.Replace(content, @"exit\s*\/B\s*(?'code'\d+)?\s*?", (Match m) => 
+                    {
+                        string ret  = "exit/B ";
+                        string code = m.Groups["code"].Value;
+
+                        if(m.Groups["code"].Success) {
+                            // 'exit /B 0' is not equal to 'exit /B' - it will pass the latest raised code i.e. without changing it.
+                            return ret + code;
+                        }
+                        return ret;
+                    },
+                    RegexOptions.IgnoreCase);
+
+
+                    /* pseudo arguments from labels */
+
+                    content = Regex.Replace(content, @"^\s*(?'label':" + VNAME + @").*?\r\n", (Match m) => 
+                    {
+                        return m.Groups["label"].Value + "\r\n";
+                    },
+                    RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+
+                    /* A common rules */
+                    
                     //content = Regex.Replace(content, @"(?:rem|::)\s.*[\r\n]*", "");
 
-                    content = Regex.Replace(content, @"(^\s*?(?:rem|::)\s)(?'data'.*)([\r\n]*)", (Match m) =>
+                    content = Regex.Replace(content, @"(^\s*?(?:rem|::)\s+)(?'data'.*?)\r\n", (Match m) =>
                     {
-                        var data = m.Groups["data"].Value.TrimStart();
+                        var data = m.Groups["data"].Value;
+                        
                         if(!data.StartsWith("Copyright") 
                             && !data.StartsWith("GetNuTool") 
                             && !data.StartsWith("DllExport") 
@@ -263,7 +297,12 @@
                         }
 
                         return m.Groups[0].Value;
-                    }, RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                    }, 
+                    RegexOptions.IgnoreCase | RegexOptions.Multiline);
+
+                    content = Regex.Replace(content, @"(\r\n){2,}", "$1");
+                    content = Regex.Replace(content, @"(\r\n)\s*", "$1");
+                    content = Regex.Replace(content, @"\s+(\r\n)", "$1");
                     
                     //content = content.Replace(" " + APP + " - ", String.Format(" {0} {1} - ", APP, VERS));
 

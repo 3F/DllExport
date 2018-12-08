@@ -1,46 +1,71 @@
 @echo off & echo Incomplete script. Compile it first via 'build.bat' - github.com/3F/DllExport 1>&2 & exit /B 1
 
-:: Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com ] :: github.com/3F
-:: Distributed under the DllExport project:
+:: Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com ]
 :: https://github.com/3F/DllExport
-:: ---
-:: Based on hMSBuild logic and includes GetNuTool core.
-:: https://github.com/3F/hMSBuild
-:: https://github.com/3F/GetNuTool
+
+
+:: /? will cause problems for the call commands below, so we just escape this via supported alternative:
+:: TODO: 
+if "%~1"=="/?" goto usage
 
 set "dpnx0=%~dpnx0"
 set args=%*
-set esc=%args:!=^!%
 
-:: Escaping '^' is not identical for all cases (DllExport ... vs call DllExport ...). 
-:: thus, the most stable way just to leave this 'as is' for user.
-REM set esc=%args:^=^^%
-REM set esc=%esc:!=^!%
+:: Escaping '^' is not identical for all cases (DllExport ... vs call DllExport ...)
+set ddargs=%*
+if defined args (
+    if defined __p_call (
+        set ddargs=%ddargs:^^=^%
+    ) else (
+        set args=%args:^=^^%
+    )
+)
+set wMgrArgs=%ddargs%
 
-:: # call DllExport  ^^ - ^^
+:: When ~ !args! and "!args!"
 :: # call DllExport  ^  - ^
-:: # DllExport       ^^ - ^
-:: # DllExport       ^  - empty
+:: #      DllExport  ^  - empty
+:: # call DllExport  ^^ - ^^
+:: #      DllExport  ^^ - ^
 
+:: When ~ %args%  (disableDelayedExpansion)
+:: # call DllExport  ^  - ^^
+:: #      DllExport  ^  - ^
+:: # call DllExport  ^^ - ^^^^
+:: #      DllExport  ^^ - ^^
+
+:: Do not use: ~ "%args%" or %args%  + (enableDelayedExpansion)
+
+
+:: [I] from scripts:
 :: # call DllExport  %%%% - %
 :: # call DllExport  %%   - empty
 :: # call DllExport  %    - empty
 :: # DllExport       %%   - %
 :: # DllExport       %    - empty
 
+:: [II] from command-line:
+:: # call DllExport   %  -  %
+:: # DllExport        %  -  %
+
+set esc=%args:!=^!%
 setlocal enableDelayedExpansion
 
 :: https://github.com/3F/DllExport/issues/88
-:: Bugs for '&' symbol when:
+:: For '&':
 :: 1. "_=%*" or _="%*"
 :: 2.1. _=%* Works correctly only for delayed evaluation inside "...", i.e. don't use "args=%_% "
 :: 2.2. Mostly can be safely called only as !args!, i.e. try do not use %args%
 ::
-:: Bug for '!' symbol when:
+:: For '!':
 :: 1. %~dpnx0 and %cd% in enableDelayedExpansion mode.
 :: 1.1. Derivative assignments can be used safely only as !cd!, i.e. a=!cd! ... b=!a! but not as b=%a%
 :: !cd! -ok
 :: %~dpnx0 via !dpnx0! -ok
+
+set "E_CARET=^"
+set "esc=!esc:%%=%%%%!"
+set "esc=!esc:&=%%E_CARET%%&!"
 
 :: - - -
 :: Settings by default
@@ -57,7 +82,6 @@ set "pkgSrv=https://www.nuget.org/api/v2/package/"
 set "buildInfoFile=build_info.txt"
 set "fManager=!dpnx0!"
 set "wRootPath=!cd!"
-set wMgrArgs=!args!
 
 :: -
 
@@ -71,7 +95,6 @@ set "mgrUp="
 set "proxy="
 set "xmgrtest="
 
-set "E_CARET=^"
 
 set /a ERROR_SUCCESS=0
 set /a ERROR_FAILED=1
@@ -82,14 +105,14 @@ set /a ERROR_PATH_NOT_FOUND=3
 set /a EXIT_CODE=0
 
 :: - - -
-:: Help command
+:: Initialization of user arguments
 
-for %%v in (!esc!) do (
-    if [%%v]==[-help] goto usage
-    if [%%v]==[-h] goto usage
+if not defined args (
+    if defined wAction goto action
+    goto usage
 )
-if not defined qmoff if defined args if not z!args!==z!args:-?=! goto usage
 
+call :initargs arg !esc! amax
 goto commands
 
 :usage
@@ -97,11 +120,12 @@ goto commands
 echo.
 @echo DllExport - $-version-$
 @echo Copyright (c) 2009-2015  Robert Giesecke
-@echo Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com :: github.com/3F ]
+@echo Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com ] :: github.com/3F
 echo.
 echo Distributed under the MIT license
 @echo https://github.com/3F/DllExport
-echo It was based on hMSBuild logic and includes GetNuTool core - https://github.com/3F
+echo.
+echo Based on hMSBuild and includes GetNuTool core: https://github.com/3F
 echo.
 @echo.
 @echo Usage: DllExport [args to DllExport] [args to GetNuTool core]
@@ -125,7 +149,8 @@ echo  -dxp-target {path} - Relative path to entrypoint wrapper of the main core.
 echo  -dxp-version {num} - Specific version of DllExport. Where {num}:
 echo       * Versions: 1.6.0 ...
 echo       * Keywords: 
-echo         `actual` to use unspecified local version or to get latest available;
+echo         `actual` - Unspecified local/latest remote version; 
+echo                    ( Only if you know what you are doing )
 echo.
 echo  -msb {path}           - Full path to specific msbuild.
 echo  -packages {path}      - A common directory for packages.
@@ -143,6 +168,10 @@ echo  -version              - Displays version for which (together with) it was 
 echo  -build-info           - Displays actual build information from selected DllExport.
 echo  -help                 - Displays this help. Aliases: -help -h
 echo.
+echo ------
+echo Flags:
+echo ------
+echo  __p_call - To use the call-type logic when invoking %~nx0
 echo. 
 echo -------- 
 echo Samples:
@@ -164,152 +193,164 @@ echo  DllExport -pe-exp-list bin\Debug\regXwild.dll
 goto endpoint
 
 :: - - -
-:: Handler of user commands
-
+:: Logic for user arguments
 :commands
 
-if not defined args (
-    if defined wAction goto action
-    goto usage
-)
+set /a idx=0
 
-set "key=" & set "kset="
-for %%v in (!esc!) do (
-    
-    if not defined kset set key=%%v
-    
-    if [!key!]==[-action] ( if defined kset (
-        
-        set wAction=%%v
+:loopargs
+set key=!arg[%idx%]!
 
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-sln-dir] ( if defined kset (
-        
-        set wSlnDir=%%v
+    :: The help command
 
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-sln-file] ( if defined kset (
-        
-        set wSlnFile=%%v
+    if [!key!]==[-help] ( goto usage ) else if [!key!]==[-h] ( goto usage ) else if [!key!]==[-?] ( goto usage )
 
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-metalib] ( if defined kset (
-        
-        set wMetaLib=%%v
+    :: Available keys
 
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-dxp-target] ( if defined kset (
-        
-        set wDxpTarget=%%v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-dxp-version] ( if defined kset (
-        
-        set dxpVersion=%%v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-msb] ( if defined kset (
-        
-        set gMsbPath=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-packages] ( if defined kset (
-        
-        rem dequote %%v
-        set dxpPackages=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-server] ( if defined kset (
-        
-        set pkgSrv=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-proxy] ( if defined kset (
-        
-        set proxy=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-pkg-link] ( if defined kset (
-        
-        set pkgLink=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [%%v]==[-force] (
-
-        set kForce=1
-
-    ) else if [%%v]==[-mgr-up] (
-
-        set mgrUp=1
-
-    ) else if [!key!]==[-wz-target] ( if defined kset (
-        
-        set tWizard=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [!key!]==[-pe-exp-list] ( if defined kset (
-        
-        set peExpList=%%~v
-
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else if [%%v]==[-eng] (
-
-        chcp 437 >nul
-
-    ) else if [%%v]==[-GetNuTool] (
-
-        call :dbgprint "accessing to GetNuTool ..."
-        call :gntpoint !args!
-
-        set /a EXIT_CODE=%ERRORLEVEL%
-        goto endpoint
-
-    ) else if [%%v]==[-debug] (
+    if [!key!]==[-debug] ( 
 
         set dxpDebug=1
 
-    ) else if [%%v]==[-version] (
+        goto continue
+    ) else if [!key!]==[-action] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set wAction=!v!
+        for %%g in (Restore, Configure, Update, Export, Recover, Unset, Upgrade, Default) do (
+            if "!v!"=="%%g" goto continue
+        )
+
+        echo Unknown -action !v!
+        exit /B %ERROR_FAILED%
+        
+    ) else if [!key!]==[-sln-dir] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set wSlnDir=!v!
+
+        goto continue
+    ) else if [!key!]==[-sln-file] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set wSlnFile=!v!
+
+        goto continue
+    ) else if [!key!]==[-metalib] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set wMetaLib=!v!
+
+        goto continue
+    ) else if [!key!]==[-dxp-target] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set wDxpTarget=!v!
+
+        goto continue
+    ) else if [!key!]==[-dxp-version] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set dxpVersion=!v!
+
+        goto continue
+    ) else if [!key!]==[-msb] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set gMsbPath=!v!
+
+        goto continue
+    ) else if [!key!]==[-packages] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set dxpPackages=!v!
+
+        goto continue
+    ) else if [!key!]==[-server] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set pkgSrv=!v!
+
+        goto continue
+    ) else if [!key!]==[-proxy] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set proxy=!v!
+
+        goto continue
+    ) else if [!key!]==[-pkg-link] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set pkgLink=!v!
+
+        goto continue
+    ) else if [!key!]==[-force] ( 
+
+        set kForce=1
+
+        goto continue
+    ) else if [!key!]==[-mgr-up] ( 
+
+        set mgrUp=1
+
+        goto continue
+    ) else if [!key!]==[-wz-target] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set tWizard=!v!
+
+        goto continue
+    ) else if [!key!]==[-pe-exp-list] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set peExpList=!v!
+
+        goto continue
+    ) else if [!key!]==[-eng] ( 
+
+        chcp 437 >nul
+
+        goto continue
+    ) else if [!key!]==[-GetNuTool] ( 
+
+        call :dbgprint "accessing to GetNuTool ..."
+        
+        REM :: gnt's requirements (1.6.2 and less)
+        REM set "escg=!args:&=%%E_CARET%%&!"
+
+        :: invoke GetNuTool with arguments from right side
+        for /L %%p IN (0,1,8181) DO (
+            if "!escg:~%%p,10!"=="-GetNuTool" (
+
+                set found=!escg:~%%p!
+                call :gntpoint !found:~10!
+
+                set /a EXIT_CODE=%ERRORLEVEL%
+                goto endpoint
+            )
+        )
+
+        call :dbgprint "!key! is corrupted: !escg!" 
+        set /a EXIT_CODE=%ERROR_FAILED%
+        goto endpoint
+        
+    ) else if [!key!]==[-version] ( 
 
         @echo $-version-$
         goto endpoint
 
-    ) else if [%%v]==[-build-info] (
+    ) else if [!key!]==[-build-info] ( 
 
         set buildInfo=1
 
-    ) else if [!key!]==[-tests] ( if defined kset (
+        goto continue
+    ) else if [!key!]==[-tests] ( set /a "idx+=1" & call :eval arg[!idx!] v
         
-        set xmgrtest=%%~v
+        set xmgrtest=!v!
 
-        rem - -
-        set "key=" & set "kset=" ) else set kset=1
-    ) else (
-        echo Incorrect key: %%v
+        goto continue
+    ) else ( 
+        echo Incorrect key: !key!
         set /a EXIT_CODE=%ERROR_FAILED%
         goto endpoint
     )
-    
-)
+
+:continue
+set /a "idx+=1" & if %idx% LSS !amax! goto loopargs
+
 
 :: - - -
 :: Main 
 :action
 
-call :dbgprint "dxpName = '%dxpName%'"
-call :dbgprint "dxpVersion = '%dxpVersion%'"
+call :dbgprint "dxpName = " dxpName
+call :dbgprint "dxpVersion = " dxpVersion
 call :dbgprint "-sln-dir = " wSlnDir
 call :dbgprint "-sln-file = " wSlnFile
 call :dbgprint "-metalib = " wMetaLib
@@ -371,7 +412,7 @@ if not exist !wzTarget! (
         if "!wPkgPath::=!"=="!wPkgPath!" ( 
             set "_rlp=../" 
         )
-        set "_remoteUrl=:!_rlp!!wPkgPath!"
+        set "_remoteUrl=:!_rlp!!wPkgPath!|"
     )
 
     :: https://github.com/3F/DllExport/issues/74
@@ -382,8 +423,8 @@ if not exist !wzTarget! (
     set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
     call :dbgprint "GetNuTool call: " _gntC
 
-    :: gnt's requirements
-    set "_gntC=!_gntC:&=%%E_CARET%%&!"
+    REM :: gnt's requirements (1.6.2 and less)
+    REM set "_gntC=!_gntC:&=%%E_CARET%%&!"
 
     if defined dxpDebug (
         call :gntpoint !_gntC!
@@ -400,7 +441,7 @@ if defined peExpList (
 )
 
 if defined buildInfo (
-    call :dbgprint "buildInfo = '!wPkgPath!\\!buildInfoFile!'"
+    call :dbgprint "buildInfo = " wPkgPath buildInfoFile
 
     if not exist "!wPkgPath!\\!buildInfoFile!" (
         echo information about build is not available.
@@ -425,17 +466,16 @@ call :dbgprint "wAction = " wAction
 call :dbgprint "wMgrArgs = " wMgrArgs
 
 if defined gMsbPath (
-    call :dbgprint "Use specific MSBuild tools " gMsbPath
+    call :dbgprint "Use specific MSBuild tools: " gMsbPath
 
-    set msbuildPath=!gMsbPath!
+    set xMSBuild="!gMsbPath!"
     goto rundxp
 )
 
-:: defines msbuildPath automatically
-call :msbnetf
+call :msbnetf _msb & set xMSBuild="!_msb!"
 if "!ERRORLEVEL!"=="0" goto rundxp
 
-echo MSBuild tools was not found. Try with `-msb` key. `-help` for details.
+echo MSBuild tools was not found. Try with `-msb` key.
 set /a EXIT_CODE=%ERROR_FILE_NOT_FOUND%
 goto endpoint
 
@@ -444,14 +484,12 @@ goto endpoint
 :: Wizard
 :rundxp
 
-if not defined msbuildPath (
+if not defined xMSBuild (
     echo Something went wrong. Use `-debug` key for details.
 
     set /a EXIT_CODE=%ERROR_FILE_NOT_FOUND%
     goto endpoint
 )
-
-set xMSBuild="!msbuildPath!"
 
 if not defined xmgrtest (
     call :dbgprint "Target: " xMSBuild wzTarget
@@ -463,9 +501,11 @@ if not defined xmgrtest (
 :: Post-actions
 :endpoint
 
-if defined xmgrtest (
+if defined xmgrtest ( 
     echo Running Tests ... "!xmgrtest!"
-    !xMSBuild! /nologo /v:m /m:4 "!xmgrtest!"
+
+    call :msbnetf _tool
+    "!_tool!" /nologo /v:m /m:4 "!xmgrtest!"
     exit /B 0
 )
 
@@ -482,40 +522,41 @@ exit /B !EXIT_CODE!
 
 :: - - -
 :: Tools from .NET Framework - .net 4.0, ...
-:msbnetf
-
+:msbnetf {out:toolset}
+:: Usage: 1 - Found toolset
 call :dbgprint "trying via MSBuild tools from .NET Framework - .net 4.0, ..."
 
 for %%v in (4.0, 3.5, 2.0) do (
-    call :rtools %%v Y & if [!Y!]==[1] exit /B 0
+    call :rtools %%v Y & if defined Y ( 
+        set %1=!Y!
+        exit /B 0 
+    )
 )
 call :dbgprint "msbnetf: unfortunately we didn't find anything."
 exit /B %ERROR_FILE_NOT_FOUND%
 :: :msbnetf
 
-:rtools
+:rtools {in:version} {out:found}
 call :dbgprint "checking of version: %1"
     
 for /F "usebackq tokens=2* skip=2" %%a in (
     `reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\%1" /v MSBuildToolsPath 2^> nul`
 ) do if exist %%b (
-    call :dbgprint "found: %%b"
-        
-    set msbuildPath=%%b
-    call :msbfound
-    set /a %2=1
+    call :dbgprint "found: %%~b"
+    
+    call :msbfound "%%~b" _msbuild
+    set %2=!_msbuild!
     exit /B 0
 )
-set /a %2=0
 exit /B 0
 :: :rtools
 
-:msbfound
-set msbuildPath=!msbuildPath!\MSBuild.exe
+:msbfound {in:path} {out:fullpath}
+set %2=%~1\MSBuild.exe
 exit /B 0
 :: :msbfound
 
-:dbgprint
+:dbgprint {in:str} [{in:uneval1}, [{in:uneval2}]]
 if defined dxpDebug (
     set msgfmt=%1
     set msgfmt=!msgfmt:~0,-1! 
@@ -525,26 +566,23 @@ if defined dxpDebug (
 exit /B 0
 :: :dbgprint
 
-:trim
-:: Usage: 1: in/out
+:trim {in/out:str}
 call :rtrim %1
 call :ltrim %1
 exit /B 0
 :: :trim
 
-:rtrim
-:: Usage: 1: in/out
+:rtrim {in/out:str}
 call :_trim %1 "-=1"
 exit /B 0
 :: :rtrim
 
-:ltrim
-:: Usage: 1: in/out
+:ltrim {in/out:str}
 call :_trim %1 "+=1"
 exit /B 0
 :: :ltrim
 
-:_trim
+:_trim {in/out:str} {in:type}
 :: Algo-v2 avoids problems with special symbols.
 :: Usage: 1: in/out; 2: "-=1" or "+=1"
 :: 
@@ -576,6 +614,31 @@ if defined _rt (
 exit /B 0
 :: :_trim
 
+:initargs {in:vname} {in:arguments} {out:index}
+:: Usage: 1- the name for variable; 2- input arguments; 3- max index
+
+set "vname=%~1"
+set /a idx=-1
+
+:_initargs
+:: - 
+set /a idx+=1
+set %vname%[!idx!]=%~2
+:: - 
+shift & if not "%~3"=="" goto _initargs
+set /a idx-=1
+
+set %1=!idx!
+exit /B 0
+:: :initargs
+
+:eval {in:unevaluated} {out:evaluated}
+:: Usage: 1- input; 2- evaluated output
+
+set %2=!%1!
+
+exit /B 0
+:: :eval
 
 :gntpoint
 setlocal disableDelayedExpansion 
