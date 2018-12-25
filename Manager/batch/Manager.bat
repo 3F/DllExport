@@ -523,8 +523,7 @@ exit /B !EXIT_CODE!
 :: - - -
 :: Tools from .NET Framework - .net 4.0, ...
 :msbnetf {out:toolset}
-:: Usage: 1 - Found toolset
-call :dbgprint "trying via MSBuild tools from .NET Framework - .net 4.0, ..."
+call :dbgprint "Searching from .NET Framework - .NET 4.0, ..."
 
 for %%v in (4.0, 3.5, 2.0) do (
     call :rtools %%v Y & if defined Y ( 
@@ -532,27 +531,34 @@ for %%v in (4.0, 3.5, 2.0) do (
         exit /B 0 
     )
 )
-call :dbgprint "msbnetf: unfortunately we didn't find anything."
+
+call :dbgprint "msb -netfx: not found"
+set "%1="
 exit /B %ERROR_FILE_NOT_FOUND%
 :: :msbnetf
 
 :rtools {in:version} {out:found}
-call :dbgprint "checking of version: %1"
+call :dbgprint "check %1"
     
 for /F "usebackq tokens=2* skip=2" %%a in (
     `reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\%1" /v MSBuildToolsPath 2^> nul`
 ) do if exist %%b (
-    call :dbgprint "found: %%~b"
     
-    call :msbfound "%%~b" _msbuild
+    set _msbp=%%~b
+    call :dbgprint ":msbfound " _msbp
+
+    call :msbfound _msbp _msbuild
+
     set %2=!_msbuild!
     exit /B 0
 )
+
+set "%2="
 exit /B 0
 :: :rtools
 
 :msbfound {in:path} {out:fullpath}
-set %2=%~1\MSBuild.exe
+set %2=!%~1!\MSBuild.exe
 exit /B 0
 :: :msbfound
 

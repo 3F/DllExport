@@ -673,7 +673,7 @@
         "Handler": "cmd.exe /C",
         "Newline": "&",
         "Wrapper": "",
-        "Command": "echo Build hMSBuild ... \necho. \necho. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") \necho. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")\necho. \ncd hMSBuild \ncall build \n(copy /Y/B \"$(hMSBuildRawDir)hMSBuild_minified.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild_minified.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")",
+        "Command": "echo Build hMSBuild ... \necho. \necho. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") \necho. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")\necho. \ncd hMSBuild \ncall build \n(copy /Y/B \"$(hMSBuildRawDir)hMSBuild.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")",
         "Command__": [
           "echo Build hMSBuild ... ",
           "echo. ",
@@ -682,7 +682,7 @@
           "echo. ",
           "cd hMSBuild ",
           "call build ",
-          "(copy /Y/B \"$(hMSBuildRawDir)hMSBuild_minified.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild_minified.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")"
+          "(copy /Y/B \"$(hMSBuildRawDir)hMSBuild.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")"
         ]
       }
     },
