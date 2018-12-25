@@ -71,7 +71,7 @@
             this.linkOurILAsm.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkOurILAsm.AutoSize = true;
             this.linkOurILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.linkOurILAsm.Location = new System.Drawing.Point(291, 57);
+            this.linkOurILAsm.Location = new System.Drawing.Point(291, 55);
             this.linkOurILAsm.Name = "linkOurILAsm";
             this.linkOurILAsm.Size = new System.Drawing.Size(13, 13);
             this.linkOurILAsm.TabIndex = 7;
@@ -82,10 +82,11 @@
             // chkOurILAsm
             // 
             this.chkOurILAsm.AutoSize = true;
+            this.chkOurILAsm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkOurILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkOurILAsm.Location = new System.Drawing.Point(10, 61);
+            this.chkOurILAsm.Location = new System.Drawing.Point(10, 59);
             this.chkOurILAsm.Name = "chkOurILAsm";
-            this.chkOurILAsm.Size = new System.Drawing.Size(279, 17);
+            this.chkOurILAsm.Size = new System.Drawing.Size(276, 17);
             this.chkOurILAsm.TabIndex = 6;
             this.chkOurILAsm.Text = "Use our IL Assembler. Try to fix 0x13 / 0x11 opcodes.";
             this.chkOurILAsm.UseVisualStyleBackColor = true;
@@ -96,7 +97,7 @@
             this.linkExpLib.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkExpLib.AutoSize = true;
             this.linkExpLib.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkExpLib.Location = new System.Drawing.Point(247, 37);
+            this.linkExpLib.Location = new System.Drawing.Point(247, 35);
             this.linkExpLib.Name = "linkExpLib";
             this.linkExpLib.Size = new System.Drawing.Size(13, 13);
             this.linkExpLib.TabIndex = 5;
@@ -120,10 +121,11 @@
             // chkGenExpLib
             // 
             this.chkGenExpLib.AutoSize = true;
+            this.chkGenExpLib.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkGenExpLib.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkGenExpLib.Location = new System.Drawing.Point(10, 41);
+            this.chkGenExpLib.Location = new System.Drawing.Point(10, 39);
             this.chkGenExpLib.Name = "chkGenExpLib";
-            this.chkGenExpLib.Size = new System.Drawing.Size(236, 17);
+            this.chkGenExpLib.Size = new System.Drawing.Size(233, 17);
             this.chkGenExpLib.TabIndex = 3;
             this.chkGenExpLib.Text = "Generate .exp + .lib via MS Library Manager.";
             this.chkGenExpLib.UseVisualStyleBackColor = true;
@@ -155,10 +157,11 @@
             // rbPlatformAnyCPU
             // 
             this.rbPlatformAnyCPU.AutoSize = true;
+            this.rbPlatformAnyCPU.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformAnyCPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbPlatformAnyCPU.Location = new System.Drawing.Point(66, 25);
             this.rbPlatformAnyCPU.Name = "rbPlatformAnyCPU";
-            this.rbPlatformAnyCPU.Size = new System.Drawing.Size(14, 13);
+            this.rbPlatformAnyCPU.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformAnyCPU.TabIndex = 2;
             this.toolTip.SetToolTip(this.rbPlatformAnyCPU, "(86+64) - Export for both platforms: x86 + x64.");
             this.rbPlatformAnyCPU.UseVisualStyleBackColor = true;
@@ -166,10 +169,11 @@
             // rbPlatformX64
             // 
             this.rbPlatformX64.AutoSize = true;
+            this.rbPlatformX64.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbPlatformX64.Location = new System.Drawing.Point(34, 25);
             this.rbPlatformX64.Name = "rbPlatformX64";
-            this.rbPlatformX64.Size = new System.Drawing.Size(14, 13);
+            this.rbPlatformX64.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformX64.TabIndex = 1;
             this.toolTip.SetToolTip(this.rbPlatformX64, "x64 - Export for platform: x64.");
             this.rbPlatformX64.UseVisualStyleBackColor = true;
@@ -199,7 +203,7 @@
             this.textBoxCustomILAsm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textBoxCustomILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
-            this.textBoxCustomILAsm.Location = new System.Drawing.Point(103, 79);
+            this.textBoxCustomILAsm.Location = new System.Drawing.Point(103, 77);
             this.textBoxCustomILAsm.Name = "textBoxCustomILAsm";
             this.textBoxCustomILAsm.Size = new System.Drawing.Size(204, 20);
             this.textBoxCustomILAsm.TabIndex = 9;
@@ -207,10 +211,11 @@
             // chkIntermediateFiles
             // 
             this.chkIntermediateFiles.AutoSize = true;
+            this.chkIntermediateFiles.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkIntermediateFiles.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkIntermediateFiles.Location = new System.Drawing.Point(10, 101);
+            this.chkIntermediateFiles.Location = new System.Drawing.Point(10, 99);
             this.chkIntermediateFiles.Name = "chkIntermediateFiles";
-            this.chkIntermediateFiles.Size = new System.Drawing.Size(254, 17);
+            this.chkIntermediateFiles.Size = new System.Drawing.Size(251, 17);
             this.chkIntermediateFiles.TabIndex = 11;
             this.chkIntermediateFiles.Text = "Keep Intermediate Files (IL Code, Resources, ...)";
             this.chkIntermediateFiles.UseVisualStyleBackColor = true;
@@ -218,10 +223,11 @@
             // chkCustomILAsm
             // 
             this.chkCustomILAsm.AutoSize = true;
+            this.chkCustomILAsm.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkCustomILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkCustomILAsm.Location = new System.Drawing.Point(10, 81);
+            this.chkCustomILAsm.Location = new System.Drawing.Point(10, 79);
             this.chkCustomILAsm.Name = "chkCustomILAsm";
-            this.chkCustomILAsm.Size = new System.Drawing.Size(96, 17);
+            this.chkCustomILAsm.Size = new System.Drawing.Size(93, 17);
             this.chkCustomILAsm.TabIndex = 8;
             this.chkCustomILAsm.Text = "Custom ILAsm:";
             this.chkCustomILAsm.UseVisualStyleBackColor = true;
@@ -230,10 +236,11 @@
             // rbPlatformX86
             // 
             this.rbPlatformX86.AutoSize = true;
+            this.rbPlatformX86.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbPlatformX86.Location = new System.Drawing.Point(7, 25);
             this.rbPlatformX86.Name = "rbPlatformX86";
-            this.rbPlatformX86.Size = new System.Drawing.Size(14, 13);
+            this.rbPlatformX86.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformX86.TabIndex = 0;
             this.toolTip.SetToolTip(this.rbPlatformX86, "x86 - Export for platform: x86.");
             this.rbPlatformX86.UseVisualStyleBackColor = true;
@@ -255,10 +262,11 @@
             // 
             this.rbPlatformAuto.AutoSize = true;
             this.rbPlatformAuto.Checked = true;
+            this.rbPlatformAuto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.rbPlatformAuto.Location = new System.Drawing.Point(99, 25);
             this.rbPlatformAuto.Name = "rbPlatformAuto";
-            this.rbPlatformAuto.Size = new System.Drawing.Size(14, 13);
+            this.rbPlatformAuto.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformAuto.TabIndex = 6;
             this.rbPlatformAuto.TabStop = true;
             this.toolTip.SetToolTip(this.rbPlatformAuto, "auto - Automatic configuring platform from user settings.");
@@ -280,10 +288,11 @@
             // 
             this.rbCecil.AutoSize = true;
             this.rbCecil.Checked = true;
+            this.rbCecil.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbCecil.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbCecil.Location = new System.Drawing.Point(384, 7);
             this.rbCecil.Name = "rbCecil";
-            this.rbCecil.Size = new System.Drawing.Size(48, 17);
+            this.rbCecil.Size = new System.Drawing.Size(47, 17);
             this.rbCecil.TabIndex = 4;
             this.rbCecil.TabStop = true;
             this.rbCecil.Text = "Cecil";
@@ -292,10 +301,11 @@
             // rbDirect
             // 
             this.rbDirect.AutoSize = true;
+            this.rbDirect.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbDirect.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbDirect.Location = new System.Drawing.Point(297, 7);
             this.rbDirect.Name = "rbDirect";
-            this.rbDirect.Size = new System.Drawing.Size(85, 17);
+            this.rbDirect.Size = new System.Drawing.Size(84, 17);
             this.rbDirect.TabIndex = 5;
             this.rbDirect.Text = "Direct-Mod /";
             this.rbDirect.UseVisualStyleBackColor = true;
@@ -388,10 +398,11 @@
             // chkPECheckIl
             // 
             this.chkPECheckIl.AutoSize = true;
+            this.chkPECheckIl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkPECheckIl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkPECheckIl.Location = new System.Drawing.Point(5, 61);
             this.chkPECheckIl.Name = "chkPECheckIl";
-            this.chkPECheckIl.Size = new System.Drawing.Size(113, 17);
+            this.chkPECheckIl.Size = new System.Drawing.Size(110, 17);
             this.chkPECheckIl.TabIndex = 13;
             this.chkPECheckIl.Text = "PE Check IL code";
             this.toolTip.SetToolTip(this.chkPECheckIl, "Will check existence of all planned exports (IL code) in actual PE32/PE32+ module" +
@@ -401,10 +412,11 @@
             // chkPECheck1to1
             // 
             this.chkPECheck1to1.AutoSize = true;
+            this.chkPECheck1to1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkPECheck1to1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkPECheck1to1.Location = new System.Drawing.Point(5, 40);
             this.chkPECheck1to1.Name = "chkPECheck1to1";
-            this.chkPECheck1to1.Size = new System.Drawing.Size(92, 17);
+            this.chkPECheck1to1.Size = new System.Drawing.Size(89, 17);
             this.chkPECheck1to1.TabIndex = 12;
             this.chkPECheck1to1.Text = "PE Check 1:1";
             this.toolTip.SetToolTip(this.chkPECheck1to1, "Will check count of all planned exports from final PE32/PE32+ module.");
@@ -461,10 +473,11 @@
             // 
             this.chkInstalled.AutoSize = true;
             this.chkInstalled.ContextMenuStrip = this.menuForInstalled;
+            this.chkInstalled.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkInstalled.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.chkInstalled.Location = new System.Drawing.Point(5, 14);
             this.chkInstalled.Name = "chkInstalled";
-            this.chkInstalled.Size = new System.Drawing.Size(68, 17);
+            this.chkInstalled.Size = new System.Drawing.Size(65, 17);
             this.chkInstalled.TabIndex = 0;
             this.chkInstalled.Text = "Installed:";
             this.chkInstalled.UseVisualStyleBackColor = true;

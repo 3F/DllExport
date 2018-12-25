@@ -58,7 +58,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Kit
                 return projects;
             }
 
-            return projects.Where(p => p.ProjectPath.IndexOf(filter.path, StringComparison.OrdinalIgnoreCase) != -1);
+            return projects?.Where(p => p.ProjectPath.IndexOf(filter.path, StringComparison.OrdinalIgnoreCase) != -1);
         }
 
         /// <summary>
