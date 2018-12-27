@@ -1,6 +1,35 @@
-DllExport - https://github.com/3F/DllExport
-- - - - - - - - - - - - - - - - - - - - - - 
+.NET DllExport - https://github.com/3F/DllExport
+- - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.6.2] 2018.12.27
+
+    * NEW: Added option 'auto' into panel of platforms as an automatic configuring platform from user settings.
+           An easy configuring between different configurations, like from BasicExport example: 
+           https://github.com/3F/Examples/tree/master/DllExport/BasicExport
+      
+    * FIXED: MSB3073 for paths with `%` and `;`.
+    * FIXED: Inactive `-packages` key. (broken in 1.6.1)
+    * FIXED: Problems with relative paths for `-pkg-link`. (incomplete logic from 1.6.0)
+    * FIXED: Fixed problems with special symbols in path. Related Issue #88.
+            ```
+             ' &!~`@#$^(+)_=%-;[.]{,}
+            ```
+            
+    * FIXED: Fixes possible Null Exception for empty project collection when applying filter.
+    * FIXED: Build problem when project is configured from arguments ending with `"` (double quote mark).
+             For example: `-action Configure -sln-dir "path"`
+             
+    * CHANGED: Removed obsolete Configurator (old PowerShell way) from NuGet package.
+    * CHANGED: Updated hMSBuild 2.0 & GetNuTool 1.7.
+               Release notes:
+                * https://github.com/3F/GetNuTool/releases/tag/v1.7
+                * https://github.com/3F/hMSBuild/releases/tag/v2.0
+            
+    * NOTE: To upgrade configured version on v1.6.2: 
+            ```
+                DllExport -action Upgrade -dxp-version 1.6.2
+            ```
+    
 [v1.6.1] 2018.08.05
 
     * FIXED: Fixed bug when some methods cannot be exported. Issue #59.

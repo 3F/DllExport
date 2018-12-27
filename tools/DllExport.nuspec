@@ -30,9 +30,8 @@
         https://3F.github.io/DllExport/releases/latest/manager/
         
         
-        Documentation for manager:
+        About manager:
         * https://github.com/3F/DllExport/wiki/DllExport-Manager
-        * Its Q/A: https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A
         
         
         Quick start:
@@ -61,7 +60,7 @@
         
     </description>
     <summary>.NET DllExport</summary>
-    <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions reverse-pinvoke export-directive Conari pinvoke net-c-func tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln</tags>
+    <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions reverse-pinvoke Conari pinvoke net-c-func tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln hMSBuild</tags>
     <releaseNotes></releaseNotes>
     <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2018  Denis Kuzmin [entry.reg@gmail.com] </copyright>
   </metadata>

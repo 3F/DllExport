@@ -21,7 +21,9 @@ set "tmapFile=%mgrFile%.map.targets"
 setlocal
 set __p_call=1
 set app=%mgrFile% -tests "tests.targets"
-set appl=%app% -pkg-link "..\..\DllExport.1.6.1.nupkg"
+
+:: TODO: update number via vssbe scripts etc
+set appl=%app% -pkg-link "..\..\DllExport.1.6.2.nupkg"
 
     setlocal 
         echo Test case 1: -action flag & set "%flagName%=1"
