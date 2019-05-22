@@ -1,6 +1,6 @@
 @echo off & echo Incomplete script. Compile it first via 'build.bat' - github.com/3F/DllExport 1>&2 & exit /B 1
 
-:: Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com ]
+:: Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ]
 :: https://github.com/3F/DllExport
 
 
@@ -120,7 +120,7 @@ goto commands
 echo.
 @echo DllExport - $-version-$
 @echo Copyright (c) 2009-2015  Robert Giesecke
-@echo Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com ] :: github.com/3F
+@echo Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ] GitHub/3F
 echo.
 echo Distributed under the MIT license
 @echo https://github.com/3F/DllExport

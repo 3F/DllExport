@@ -4,40 +4,42 @@
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
-Copyright (c) 2016-2018  Denis Kuzmin <entry.reg@gmail.com> :: github.com/3F
+Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 ```
 
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
-[![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) 
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
-[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![Cecil](https://img.shields.io/badge/Cecil-0.9.6.4-1182C3.svg)](https://github.com/jbevain/cecil)
 [![MvsSln](https://img.shields.io/badge/MvsSln-v2.1.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
+
+[![Build history](https://buildstats.info/appveyor/chart/3Fs/dllexport?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/dllexport/history)
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
-> 1:[ ***[Quick start](https://github.com/3F/DllExport/wiki/Quick-start)*** ] 2:[ [Basic examples for C++ and C#](https://www.youtube.com/watch?v=9Hyg3_WE9Ks) ] 3:[ [Complex types and Strings](https://www.youtube.com/watch?v=QXMj9-8XJnY) ]
+> [ ***[Quick start](https://github.com/3F/DllExport/wiki/Quick-start)*** ] [ [Examples: C++, C#, Java](https://github.com/3F/DllExport/wiki/Examples) ] 
 > -> { **[Wiki](https://github.com/3F/DllExport/wiki)** }
 
 ~ ~ ~ --- ~ ~ ~
 
 ```csharp
 [DllExport]
-public static int entrypoint(IntPtr l)
+public static int entrypoint(IntPtr L)
 {
     // ... it will be called from Lua script
 
-    lua_pushcclosure(l, onProc, 0);
-    lua_setglobal(l, "onKeyDown");
+    lua_pushcclosure(L, onProc, 0);
+    lua_setglobal(L, "onKeyDown");
 
     return 0;
 }
 ```
 
-* **For work with Unmanaged code/libraries (binding between .NET and unmanaged native C/C++ etc.), see [Conari](https://github.com/3F/Conari)**
-* If you need convenient work with Lua (5.1, 5.2, 5.3, ...), see [LunaRoad](https://github.com/3F/LunaRoad)
+* For work with **Unmanaged** code/libraries (binding between .NET and unmanaged native C/C++ etc.), see [Conari](https://github.com/3F/Conari)
+* If you need convenient work with Lua (5.4, 5.3, 5.2, 5.1, ...), see [LuNari](https://github.com/3F/LuNari)
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -134,7 +136,7 @@ v1.6+ have no official support of NuGet clients. [[?](https://github.com/3F/DllE
 * [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
     * **Wiki.** [Quick start](https://github.com/3F/DllExport/wiki/Quick-start)
 
-Get our manager from any place. [GHR](https://github.com/3F/DllExport/releases/latest) is recommended, but you can also get it from packages via NuGet server ([how to](https://youtu.be/okPThdWDZMM?t=1m1s)) etc.
+Get our manager from any place. [GHR](https://github.com/3F/DllExport/releases/latest) is recommended, but you can also get it from packages via NuGet server [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) ([optional](https://youtu.be/okPThdWDZMM?t=1m1s)), etc.
 
 *DllExport.bat was based on [GetNuTool core](https://github.com/3F/GetNuTool) that's Cross-Platform Embeddable Package Manager that requires only MSBuild. Finally it just aggregates calling to Wizard that was based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A#is-this-cross-platform-solution-)]*
 
@@ -149,9 +151,8 @@ Other way:
     * [GetNuTool](https://github.com/3F/GetNuTool): `msbuild gnt.core /p:ngpackages="DllExport"` or [`gnt`](https://3F.github.io/GetNuTool/releases/latest/gnt/)` /p:ngpackages="DllExport"`
 * (deprecated) NuGet PM: `Install-Package DllExport`
 * (deprecated) NuGet Commandline: `nuget install DllExport`
-* [/releases](https://github.com/3F/DllExport/releases) [ [latest stable](https://github.com/3F/DllExport/releases/latest) ]
-* [Nightly builds](https://ci.appveyor.com/project/3Fs/dllexport/history) (`/artifacts` page). *It can be unstable or not work at all. Use this for tests of latest changes.*
-  * Artifacts [older than 6 months](https://www.appveyor.com/docs/packaging-artifacts/#artifacts-retention-policy) you can also find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/DllExport/releases) page.
+* GHR Stable: [/releases](https://github.com/3F/DllExport/releases) [ [latest stable](https://github.com/3F/DllExport/releases/latest) ]
+* CI builds: [`/artifacts` page](https://ci.appveyor.com/project/3Fs/dllexport/history) or find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/DllExport/releases) page.
 
 ### How to Build
 
@@ -242,6 +243,6 @@ build_coreclr_x86_x64.cmd
 
 Please note again, the [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit its page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
 
-But this repository **does not related** to Robert and generally **still** being developed by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something is helpful for you from this, donations are welcome, and thanks !
+But this repository **does not related** to Robert and generally **still** being developed by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something is helpful for you from this, donations are welcomed, and thanks !
 
-[![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donate_SM.gif) ☕](https://3F.github.io/Donation/)  ( github.com/3F )
+[ [ ☕ Donate ](https://3F.github.com/Donation/) ]

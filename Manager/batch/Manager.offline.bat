@@ -1,6 +1,6 @@
 @echo off
 
-:: Copyright (c) 2016-2018  Denis Kuzmin [ entry.reg@gmail.com ] :: github.com/3F
+:: Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ] GitHub/3F
 :: Distributed under the DllExport project:
 :: https://github.com/3F/DllExport
 :: ---

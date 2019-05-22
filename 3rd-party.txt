@@ -27,11 +27,6 @@ DllExport  [ github.com/3F/DllExport ]
               
             * https://github.com/3F/GetNuTool
             * https://github.com/3F/hMSBuild
-
-        ### SDK reference assemblies for PowerShell version 5
-
-              For previous Configurator (obsolete today).
-            * https://github.com/PowerShell/
         
     ## Maintaining of this project also includes the following tools:
 
