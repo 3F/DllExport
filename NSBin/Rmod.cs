@@ -71,8 +71,8 @@ namespace net.r_eg.DllExport.NSBin
                 return true;
             }
 
-            return Regex.IsMatch(name, "^[a-z_][a-z_0-9.]*$", RegexOptions.IgnoreCase)
-                    && !Regex.IsMatch(name, @"(?:\.(\s*\.)+|\.\s*$)"); //  left. ...  .right.
+            return Regex.IsMatch(name, @"^[^0-9\W][.\w]*$")
+                && !Regex.IsMatch(name, @"(?:\.(\s*\.)+|\.\s*$)"); //  left. ...  .right.
         }
 
         public void setNamespace(string name, bool viaCecil, bool preparing)
