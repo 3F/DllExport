@@ -71,7 +71,7 @@ set "esc=!esc:&=%%E_CARET%%&!"
 :: Settings by default
 
 set "dxpVersion=$-pkg-version-$"
-set "wAction="
+set "wAction=Configure"
 
 :: - - - 
 

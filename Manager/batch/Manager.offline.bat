@@ -9,7 +9,7 @@
 :: - :: - - - - - - - - - - - - - - -
 
 :: the command when no arguments at all
-set "defaultCommand=-build-info"
+set "defaultCommand=-action Configure"
 
 :: common directory with offline packages
 set "pkgsDir=packages.offline"
