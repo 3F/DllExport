@@ -57,7 +57,7 @@ namespace net.r_eg.DllExport.NSBin
         public const string DEFAULT_NS  = "System.Runtime.InteropServices";
         public const int NS_BUF_MAX     = 0x01F4;
 
-        private string dll;
+        private readonly string dll;
         private Ripper ripper;
 
         public ISender Log
@@ -109,21 +109,17 @@ namespace net.r_eg.DllExport.NSBin
 
         protected void makeViaCecil(string ns)
         {
-            AssemblyDefinition asmdef = AssemblyDefinition.ReadAssembly(
+            AssemblyDefinition asmdef = AssemblyDefinition.ReadAssembly
+            (
                 ripper.BaseStream,
-                new ReaderParameters(ReadingMode.Immediate)
+                new ReaderParameters(ReadingMode.Immediate) { InMemory = true, ReadWrite = true }
             );
 
-            foreach(TypeDefinition t in asmdef.MainModule.Types)
-            {
-                if(t.Namespace.StartsWith(IDNS, StringComparison.InvariantCulture)) {
-                    t.Namespace = ns;
-                    Log.send(this, $"cecil: NS property has been updated for {t.Name}.");
-                }
-            }
+            update(asmdef, ns);
 
-            ripper.BaseStream.SetLength(0);
-            asmdef.Write(ripper.BaseStream);
+            //ripper.BaseStream.SetLength(0); // 0.9.x
+            asmdef.Write(ripper.BaseStream); // https://github.com/3F/DllExport/pull/97#issuecomment-496319449
+            asmdef.Dispose(); // 0.10.x
 
             using(var m = new Marker(_postfixToUpdated(dll)))
             {
@@ -134,6 +130,20 @@ namespace net.r_eg.DllExport.NSBin
             }
 
             msgSuccess(ns);
+        }
+
+        protected void update(AssemblyDefinition asmdef, string ns)
+        {
+            foreach(TypeDefinition t in asmdef.MainModule.Types)
+            {
+                if(t.Namespace.StartsWith(IDNS, StringComparison.InvariantCulture))
+                {
+                    t.Namespace = ns;
+                    return;
+                }
+            }
+
+            throw new FileNotFoundException("IDNS sequence was not found.");
         }
 
         protected void make(string ns)
