@@ -1,51 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<package xmlns="http://schemas.microsoft.com/packaging/2011/08/nuspec.xsd">
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata>
     <id>DllExport</id>
     <version>$-version-$</version>
     <title>.NET DllExport</title>
     <authors>github.com/3F/DllExport</authors>
+    <license type="file">License.txt</license>
     <owners>reg</owners>
-    <licenseUrl>https://github.com/3F/DllExport/blob/master/LICENSE</licenseUrl>
+    <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
     <projectUrl>https://github.com/3F/DllExport</projectUrl>
+    <repository type="git" url="https://github.com/3F/DllExport" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
     
         Open source project .NET DllExport 
         https://github.com/3F/DllExport
         
-        All versions including Nightly builds: 
+        All versions including an Offline and Nightly builds:
         https://github.com/3F/DllExport/releases
-        
-        
-        To configure projects via current package:
-        ==================================================
-        DllExport -action Configure -dxp-version $-version-$
-        ==================================================
-        
-        To upgrade configured version on v$-version-$:
+
+
+
+        To upgrade configured version to v$-version-$:
         ==================================================
         DllExport -action Upgrade -dxp-version $-version-$
         ==================================================
         https://3F.github.io/DllExport/releases/latest/manager/
-        
-        
-        About manager:
-        * https://github.com/3F/DllExport/wiki/DllExport-Manager
-        
+
+
+
         
         Quick start:
-        * https://youtu.be/sBWt-KdQtoc
+        https://github.com/3F/DllExport/wiki/Quick-start
         
-        Basic examples for C++ and C#:
-        * https://youtu.be/9Hyg3_WE9Ks
+        Basic examples. C++ and C#:
+        https://youtu.be/9Hyg3_WE9Ks
         
-        Complex types and Strings:
-        * https://youtu.be/QXMj9-8XJnY
+        Complex types and Strings. C++ / C# / Java:
+        https://youtu.be/QXMj9-8XJnY
         
+        Wiki and Complete Examples:
+        https://github.com/3F/DllExport/wiki
         
-        Issue tracker: https://github.com/3F/DllExport/issues
+        Issue tracker:
+        https://github.com/3F/DllExport/issues
         
+
 
 
         ~~~~~~~~
@@ -54,14 +54,16 @@
         gnt /p:ngpackages="DllExport/$-version-$"
         =======================================
         * https://github.com/3F/GetNuTool   
-        
+
+
+
         Build info:  
 {build_info}
         
     </description>
     <summary>.NET DllExport</summary>
     <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions reverse-pinvoke Conari pinvoke net-c-func tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln hMSBuild</tags>
-    <releaseNotes></releaseNotes>
+    <releaseNotes> changelog: https://github.com/3F/DllExport/blob/master/changelog.txt </releaseNotes>
     <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2019  Denis Kuzmin [entry.reg@gmail.com] GitHub/3F </copyright>
   </metadata>
 </package>

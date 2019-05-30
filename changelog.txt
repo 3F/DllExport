@@ -1,6 +1,26 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.6.3] 2019.05.30
+
+    * NEW: Support of unicode characters in namespaces. Issue #80
+    
+    * NEW: Integrated `-action Configure` command by default. Issue #96
+           Configure everything in one click.
+           https://github.com/3F/DllExport/wiki/Quick-start
+    
+    * CHANGED: Updated Mono.Cecil 0.10.3
+               https://github.com/jbevain/cecil/commits/0.10.3
+               
+    * CHANGED: Updated MvsSln 2.2
+               Release notes:
+               https://github.com/3F/MvsSln/releases/tag/v2.2
+               
+    * NOTE: To upgrade configured version to v1.6.3: 
+            ```
+                DllExport -action Upgrade -dxp-version 1.6.3
+            ```
+    
 [v1.6.2] 2018.12.27
 
     * NEW: Added option 'auto' into panel of platforms as an automatic configuring platform from user settings.
