@@ -46,17 +46,25 @@ namespace RGiesecke.DllExport
 
         public AssemblyExports ExtractExports(AssemblyDefinition assemblyDefinition)
         {
-            return this.ExtractExports(assemblyDefinition, new ExtractExportHandler(this.TryExtractExport));
+            return ExtractExports(assemblyDefinition, new ExtractExportHandler(TryExtractExport));
         }
 
         public AssemblyExports ExtractExports()
         {
-            return this.ExtractExports(this.LoadAssembly(this.InputValues.InputFileName));
+            return ExtractExports(InputValues.InputFileName);
         }
 
         public AssemblyExports ExtractExports(string fileName)
         {
-            return this.ExtractExports(this.LoadAssembly(fileName));
+            AssemblyDefinition def = LoadAssembly(fileName);
+            try
+            {
+                return ExtractExports(def);
+            }
+            finally
+            {
+                def.Dispose(); // 0.10.x
+            }
         }
 
         private IList<TypeDefinition> TraverseNestedTypes(ICollection<TypeDefinition> types)
@@ -114,59 +122,77 @@ namespace RGiesecke.DllExport
 
         public AssemblyExports ExtractExports(string fileName, ExtractExportHandler exportFilter)
         {
+            AssemblyDefinition def  = null;
             string currentDirectory = Directory.GetCurrentDirectory();
+
             try
             {
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(fileName));
-                return this.ExtractExports(this.LoadAssembly(fileName), exportFilter);
+
+                def = LoadAssembly(fileName);
+                return ExtractExports(def, exportFilter);
             }
             finally
             {
                 Directory.SetCurrentDirectory(currentDirectory);
+                def.Dispose(); // 0.10.x
             }
         }
 
         public AssemblyBinaryProperties GetAssemblyBinaryProperties(string assemblyFileName)
         {
-            AssemblyBinaryProperties binaryProperties;
-            if(!File.Exists(assemblyFileName))
-            {
-                binaryProperties = AssemblyBinaryProperties.GetEmpty();
+            if(!File.Exists(assemblyFileName)) {
+                return AssemblyBinaryProperties.GetEmpty();
             }
-            else
-            {
-                AssemblyDefinition assemblyDefinition = this.LoadAssembly(assemblyFileName);
-                ModuleDefinition mainModule = assemblyDefinition.MainModule;
-                string keyFileName = (string)null;
-                string keyContainer = (string)null;
-                foreach(CustomAttribute customAttribute in assemblyDefinition.CustomAttributes)
-                {
-                    switch(customAttribute.Constructor.DeclaringType.FullName)
-                    {
-                        case "System.Reflection.AssemblyKeyFileAttribute":
-                        keyFileName = Convert.ToString((object)customAttribute.ConstructorArguments[0], (IFormatProvider)CultureInfo.InvariantCulture);
-                        break;
 
-                        case "System.Reflection.AssemblyKeyNameAttribute":
-                        keyContainer = Convert.ToString((object)customAttribute.ConstructorArguments[0], (IFormatProvider)CultureInfo.InvariantCulture);
-                        break;
-                    }
-                    if(!string.IsNullOrEmpty(keyFileName))
-                    {
-                        if(!string.IsNullOrEmpty(keyContainer))
-                        {
-                            break;
-                        }
-                    }
+            AssemblyDefinition assemblyDefinition = LoadAssembly(assemblyFileName);
+            ModuleDefinition mainModule = assemblyDefinition.MainModule;
+
+            string keyFileName  = null;
+            string keyContainer = null;
+
+            foreach(CustomAttribute customAttribute in assemblyDefinition.CustomAttributes)
+            {
+                switch(customAttribute.Constructor.DeclaringType.FullName)
+                {
+                    case "System.Reflection.AssemblyKeyFileAttribute":
+                    keyFileName = Convert.ToString(customAttribute.ConstructorArguments[0], CultureInfo.InvariantCulture);
+                    break;
+
+                    case "System.Reflection.AssemblyKeyNameAttribute":
+                    keyContainer = Convert.ToString(customAttribute.ConstructorArguments[0], CultureInfo.InvariantCulture);
+                    break;
                 }
-                binaryProperties = new AssemblyBinaryProperties(mainModule.Attributes, mainModule.Architecture, assemblyDefinition.Name.HasPublicKey, keyFileName, keyContainer);
+
+                if(!string.IsNullOrEmpty(keyFileName) && !string.IsNullOrEmpty(keyContainer)) {
+                    break;
+                }
             }
-            return binaryProperties;
+
+            try
+            {
+                return new AssemblyBinaryProperties
+                (
+                    mainModule.Attributes, 
+                    mainModule.Architecture, 
+                    assemblyDefinition.Name.HasPublicKey, 
+                    keyFileName, 
+                    keyContainer
+                );
+            }
+            finally
+            {
+                assemblyDefinition.Dispose(); // 0.10.x
+            }
         }
 
         public AssemblyDefinition LoadAssembly(string fileName)
         {
-            return AssemblyDefinition.ReadAssembly(fileName);
+            return AssemblyDefinition.ReadAssembly
+            (
+                fileName, 
+                new ReaderParameters(ReadingMode.Immediate) { InMemory = true, ReadWrite = true }
+            );
         }
 
         public bool SafeExtractExports(string fileName, Stream stream)
