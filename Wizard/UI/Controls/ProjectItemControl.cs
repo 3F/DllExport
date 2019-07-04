@@ -300,11 +300,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             e.Handled = true;
         }
 
-        private void linkDDNS_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/2");
-        }
-
         private void linkOrdinals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");

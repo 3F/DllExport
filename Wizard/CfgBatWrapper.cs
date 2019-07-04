@@ -58,26 +58,16 @@ namespace net.r_eg.DllExport.Wizard
             var dxp     = Path.Combine(config.PkgPath, fname);
             var dest    = Path.Combine(config.SlnDir, fname);
 
-            try
-            {
-                if(!File.Exists(dest)) {
-                    File.Copy(dxp, dest, false);
-                    return dest;
-                }
-
-                if(dest.SHA1HashFromFile() != dxp.SHA1HashFromFile()) {
-                    dest = dest.AddFileNamePostfix($"_{Project.METALIB_PK_TOKEN}");
-                }
-                File.Copy(dxp, dest, true);
+            if(!File.Exists(dest)) {
+                File.Copy(dxp, dest, false);
                 return dest;
             }
-            finally
-            {
-                File.WriteAllText(
-                    dest.AddFileNamePostfix("_Configure"),
-                    "DllExport -action Configure %*"
-                );
+
+            if(dest.SHA1HashFromFile() != dxp.SHA1HashFromFile()) {
+                dest = dest.AddFileNamePostfix($"_{Project.METALIB_PK_TOKEN}");
             }
+            File.Copy(dxp, dest, true);
+            return dest;
         }
     }
 }

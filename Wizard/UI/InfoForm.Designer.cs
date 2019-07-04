@@ -30,13 +30,13 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(InfoForm));
             this.linkLocalDxp = new System.Windows.Forms.LinkLabel();
             this.linkRemoteDxp = new System.Windows.Forms.LinkLabel();
-            this.labelDllExportBatch = new System.Windows.Forms.Label();
             this.panelInfo = new System.Windows.Forms.Panel();
             this.textBoxInfo = new System.Windows.Forms.TextBox();
             this.picVideo = new System.Windows.Forms.PictureBox();
             this.panelWarn = new System.Windows.Forms.Panel();
             this.labelWarn = new System.Windows.Forms.Label();
             this.linkManagerWiki = new System.Windows.Forms.LinkLabel();
+            this.linkQuickStart = new System.Windows.Forms.LinkLabel();
             this.panelInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picVideo)).BeginInit();
             this.panelWarn.SuspendLayout();
@@ -61,21 +61,11 @@
             this.linkRemoteDxp.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.linkRemoteDxp.Location = new System.Drawing.Point(41, 224);
             this.linkRemoteDxp.Name = "linkRemoteDxp";
-            this.linkRemoteDxp.Size = new System.Drawing.Size(164, 13);
+            this.linkRemoteDxp.Size = new System.Drawing.Size(174, 13);
             this.linkRemoteDxp.TabIndex = 3;
             this.linkRemoteDxp.TabStop = true;
-            this.linkRemoteDxp.Text = "Latest version from GitHub server";
+            this.linkRemoteDxp.Text = "Latest version from GitHub releases";
             this.linkRemoteDxp.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkRemoteDxp_LinkClicked);
-            // 
-            // labelDllExportBatch
-            // 
-            this.labelDllExportBatch.AutoSize = true;
-            this.labelDllExportBatch.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelDllExportBatch.Location = new System.Drawing.Point(12, 178);
-            this.labelDllExportBatch.Name = "labelDllExportBatch";
-            this.labelDllExportBatch.Size = new System.Drawing.Size(120, 13);
-            this.labelDllExportBatch.TabIndex = 4;
-            this.labelDllExportBatch.Text = "DllExport.bat ( ~ 20 Kb )";
             // 
             // panelInfo
             // 
@@ -99,9 +89,9 @@
             this.textBoxInfo.ReadOnly = true;
             this.textBoxInfo.Size = new System.Drawing.Size(447, 71);
             this.textBoxInfo.TabIndex = 1;
-            this.textBoxInfo.Text = "\r\n To continue, you should use our embeddable manager [ after removing this packa" +
-    "ge ].\r\n \r\n Find it inside your solution directory, or receive latest version fro" +
-    "m other place.\r\n";
+            this.textBoxInfo.Text = "\r\n Just one step via DllExport manager:\r\n - Find it inside this solution director" +
+    "y. OR receive latest version from other place.\r\n \r\n [!] You need to UNINSTALL th" +
+    "is package before continue.";
             // 
             // picVideo
             // 
@@ -137,31 +127,43 @@
             this.labelWarn.Name = "labelWarn";
             this.labelWarn.Size = new System.Drawing.Size(447, 15);
             this.labelWarn.TabIndex = 0;
-            this.labelWarn.Text = ".NET DllExport v1.6+ have no official support of NuGet clients";
+            this.labelWarn.Text = "Please do NOT Install this! DEPRECATED and valid only for old clients!";
             this.labelWarn.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // linkManagerWiki
             // 
             this.linkManagerWiki.AutoSize = true;
             this.linkManagerWiki.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkManagerWiki.Location = new System.Drawing.Point(3, 140);
+            this.linkManagerWiki.Location = new System.Drawing.Point(3, 175);
             this.linkManagerWiki.Name = "linkManagerWiki";
-            this.linkManagerWiki.Size = new System.Drawing.Size(110, 13);
+            this.linkManagerWiki.Size = new System.Drawing.Size(120, 13);
             this.linkManagerWiki.TabIndex = 8;
             this.linkManagerWiki.TabStop = true;
-            this.linkManagerWiki.Text = "About Manager (Wiki)";
+            this.linkManagerWiki.Text = "DllExport.bat ( ~ 20 Kb )";
             this.linkManagerWiki.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkManagerWiki_LinkClicked);
+            // 
+            // linkQuickStart
+            // 
+            this.linkQuickStart.AutoSize = true;
+            this.linkQuickStart.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkQuickStart.Location = new System.Drawing.Point(3, 127);
+            this.linkQuickStart.Name = "linkQuickStart";
+            this.linkQuickStart.Size = new System.Drawing.Size(58, 13);
+            this.linkQuickStart.TabIndex = 9;
+            this.linkQuickStart.TabStop = true;
+            this.linkQuickStart.Text = "Quick start";
+            this.linkQuickStart.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkQuickStart_LinkClicked);
             // 
             // InfoForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(453, 268);
+            this.Controls.Add(this.linkQuickStart);
             this.Controls.Add(this.linkManagerWiki);
             this.Controls.Add(this.panelWarn);
             this.Controls.Add(this.picVideo);
             this.Controls.Add(this.panelInfo);
-            this.Controls.Add(this.labelDllExportBatch);
             this.Controls.Add(this.linkRemoteDxp);
             this.Controls.Add(this.linkLocalDxp);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
@@ -170,7 +172,7 @@
             this.Name = "InfoForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = ".NET DllExport :: Attention please !";
+            this.Text = "[!] .NET DllExport doesn\'t support NuGet clients anymore [!]";
             this.TopMost = true;
             this.panelInfo.ResumeLayout(false);
             this.panelInfo.PerformLayout();
@@ -184,12 +186,12 @@
         #endregion
         private System.Windows.Forms.LinkLabel linkLocalDxp;
         private System.Windows.Forms.LinkLabel linkRemoteDxp;
-        private System.Windows.Forms.Label labelDllExportBatch;
         private System.Windows.Forms.Panel panelInfo;
         private System.Windows.Forms.TextBox textBoxInfo;
         private System.Windows.Forms.PictureBox picVideo;
         private System.Windows.Forms.Panel panelWarn;
         private System.Windows.Forms.Label labelWarn;
         private System.Windows.Forms.LinkLabel linkManagerWiki;
+        private System.Windows.Forms.LinkLabel linkQuickStart;
     }
 }

@@ -38,7 +38,6 @@
             this.panelNScombo = new System.Windows.Forms.Panel();
             this.comboNS = new System.Windows.Forms.ComboBox();
             this.labelBackgroundNS = new System.Windows.Forms.Label();
-            this.linkDDNS = new System.Windows.Forms.LinkLabel();
             this.groupNS = new System.Windows.Forms.GroupBox();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.numTimeout = new System.Windows.Forms.NumericUpDown();
@@ -344,22 +343,9 @@
             this.labelBackgroundNS.TabIndex = 6;
             this.labelBackgroundNS.Text = "Namespace for DllExport:";
             // 
-            // linkDDNS
-            // 
-            this.linkDDNS.AutoSize = true;
-            this.linkDDNS.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkDDNS.Location = new System.Drawing.Point(150, 9);
-            this.linkDDNS.Name = "linkDDNS";
-            this.linkDDNS.Size = new System.Drawing.Size(99, 13);
-            this.linkDDNS.TabIndex = 2;
-            this.linkDDNS.TabStop = true;
-            this.linkDDNS.Text = "? More about ddNS";
-            this.linkDDNS.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkDDNS_LinkClicked);
-            // 
             // groupNS
             // 
             this.groupNS.Controls.Add(this.panelNScombo);
-            this.groupNS.Controls.Add(this.linkDDNS);
             this.groupNS.Controls.Add(this.labelBackgroundNS);
             this.groupNS.Controls.Add(this.rbCecil);
             this.groupNS.Controls.Add(this.rbDirect);
@@ -589,7 +575,6 @@
         private System.Windows.Forms.Panel panelNScombo;
         private System.Windows.Forms.ComboBox comboNS;
         private System.Windows.Forms.ToolTip toolTip;
-        private System.Windows.Forms.LinkLabel linkDDNS;
         private System.Windows.Forms.GroupBox groupNS;
         private System.Windows.Forms.GroupBox gbProject;
         private System.Windows.Forms.Button btnBrowse;

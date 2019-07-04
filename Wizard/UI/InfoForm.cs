@@ -59,5 +59,10 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             "https://github.com/3F/DllExport/wiki/DllExport-Manager".OpenUrl();
         }
+
+        private void linkQuickStart_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            "https://github.com/3F/DllExport/wiki/Quick-start".OpenUrl();
+        }
     }
 }
