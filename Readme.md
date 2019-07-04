@@ -11,8 +11,8 @@ Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
-[![Cecil](https://img.shields.io/badge/Cecil-0.10.3-1182C3.svg)](https://github.com/jbevain/cecil)
-[![MvsSln](https://img.shields.io/badge/MvsSln-v2.1.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![Cecil](https://img.shields.io/badge/Cecil-0.10.4-1182C3.svg)](https://github.com/jbevain/cecil)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v2.3.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
@@ -43,7 +43,7 @@ public static int entrypoint(IntPtr L)
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
-// __cdecl is the default calling convention for our library as and for C and C++ programs
+// __cdecl is the default calling convention for our library
 [DllExport(CallingConvention.StdCall)]
 [DllExport("MyFunc")]
 [DllExport]
@@ -52,7 +52,7 @@ public static int entrypoint(IntPtr L)
 Support of Modules: Library (**.dll**) and Executable (**.exe**) [[?](https://github.com/3F/DllExport/issues/18)]
 
 
-Where to look ? v1.2+ provides dynamic definitions of namespaces (ddNS feature), thus you can use what you need - details **[here](https://github.com/3F/DllExport/issues/2)**
+v1.2+ provides dynamic definitions of namespaces ([ddNS feature](https://github.com/3F/DllExport/issues/2)):
 
 ```cpp
     Via Cecil or direct modification:
@@ -142,7 +142,7 @@ Get our manager from any place. [GHR](https://github.com/3F/DllExport/releases/l
 
 **Please note**: You do not need to call manually DllExport.bat after initial configuration. It will be **automatically** restored by any Build operation for your configured projects.
 
-[ [Please read the documentation.](https://github.com/3F/DllExport/wiki/DllExport-Manager) ]
+[ [DllExport Manager Documentation](https://github.com/3F/DllExport/wiki/DllExport-Manager) ]
 
 
 Other way:
@@ -241,8 +241,10 @@ build_coreclr_x86_x64.cmd
 
 ### Donation
 
-Please note again, the [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit its page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
+Please note again, the [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit his page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
 
-But this repository **does not related** to Robert and generally **still** being developed by [github.com/3F](https://github.com/3F) developer (Follow: [[GitHub](https://github.com/3F)]; [[G+](https://plus.google.com/+DenisKuzmin3F)]). **So** if you think that our improvements, fixes, other changes, support, information, I don't know... if something is helpful for you from this, donations are welcomed, and thanks !
+But this repository **does not related** to Robert and generally still being developed by [GitHub/3F](https://github.com/3F) developer (Follow: [ [GitHub](https://github.com/3F) ]; [ [twitter](https://twitter.com/GitHub3F) ]). 
+
+If something is helpful from *3F/DllExport,* donations are welcomed, and thanks !
 
 [ [ ☕ Donate ](https://3F.github.com/Donation/) ]

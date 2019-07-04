@@ -122,7 +122,7 @@ echo.
 @echo Copyright (c) 2009-2015  Robert Giesecke
 @echo Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ] GitHub/3F
 echo.
-echo Distributed under the MIT license
+echo Licensed under the MIT license
 @echo https://github.com/3F/DllExport
 echo.
 echo Based on hMSBuild and includes GetNuTool core: https://github.com/3F

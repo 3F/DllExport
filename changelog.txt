@@ -1,6 +1,23 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.6.4] 2019.07.04
+
+    * FIXED: Possible "The process cannot access the file because it is being used by another process"
+             Issue #106
+    
+    * CHANGED: Updated Mono.Cecil 0.10.4
+               https://github.com/jbevain/cecil/commits/0.10.4
+               
+    * CHANGED: Updated MvsSln 2.3
+               Release notes:
+               https://github.com/3F/MvsSln/releases/tag/v2.3
+               
+    * NOTE: To upgrade configured version to v1.6.4: 
+            ```
+                DllExport -action Upgrade -dxp-version 1.6.4
+            ```    
+
 [v1.6.3] 2019.05.30
 
     * NEW: Support of unicode characters in namespaces. Issue #80
