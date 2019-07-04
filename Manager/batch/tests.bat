@@ -22,8 +22,8 @@ setlocal
 set __p_call=1
 set app=%mgrFile% -tests "tests.targets"
 
-:: TODO: update number via vssbe scripts etc
-set appl=%app% -pkg-link "..\..\DllExport.1.6.2.nupkg"
+:: NOTE: $version$ managed via vssbe scripts
+set appl=%app% -pkg-link "..\..\DllExport.$version$.nupkg"
 
     setlocal 
         echo Test case 1: -action flag & set "%flagName%=1"
@@ -148,7 +148,7 @@ set appl=%app% -pkg-link "..\..\DllExport.1.6.2.nupkg"
 
         rem 1.6.1 uses this hack https://github.com/3F/GetNuTool/issues/6
         ::   that does not allow ';' symbols in paths.
-        ::   i.e. while -packages will accept correct data the gnt.core 1.6.2 will parse this incorrectly like: Could not find a part of the path ...
+        ::   i.e. while -packages will accept correct data the gnt.core $version$ will parse this incorrectly like: Could not find a part of the path ...
 
         set _arg="crazy' dir&name!356~`@#$^(+)_=-;[.]{,}"
         

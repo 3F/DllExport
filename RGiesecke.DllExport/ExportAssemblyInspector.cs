@@ -135,7 +135,7 @@ namespace RGiesecke.DllExport
             finally
             {
                 Directory.SetCurrentDirectory(currentDirectory);
-                def.Dispose(); // 0.10.x
+                def?.Dispose(); // 0.10.x
             }
         }
 

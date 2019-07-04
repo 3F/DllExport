@@ -170,7 +170,7 @@
       }
     },
     {
-      "Enabled": true,
+      "Enabled": false,
       "Name": "CBuild",
       "Caption": "Custom build for dependencies ...",
       "SupportMSBuild": false,
@@ -621,7 +621,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "\n#[$(mgrTests = \"$(dbin)/tests/mgr/\")]\n\n#[IO copy.file(\n            {\n                \"$(dbin)*.bat\",\n                \"$(dbin)*.map\",\n                \"$(dbin)*.targets\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]\n\n\n#[IO copy.file(\n            {\n                \"$(mbatch)tests.*\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]",
+        "Command": "\n#[$(mgrTests = \"$(dbin)/tests/mgr/\")]\n\n#[IO copy.file(\n            {\n                \"$(dbin)*.bat\",\n                \"$(dbin)*.map\",\n                \"$(dbin)*.targets\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]\n\n\n#[IO copy.file(\n            {\n                \"$(mbatch)tests.bat\",\n                \"$(mbatch)tests.targets\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]\n\n#[File replace(\"$(mgrTests)tests.bat\", \"$version$\", \"$(pVer)\")]",
         "Command__": [
           "",
           "#[$(mgrTests = \"$(dbin)/tests/mgr/\")]",
@@ -639,11 +639,14 @@
           "",
           "#[IO copy.file(",
           "            {",
-          "                \"$(mbatch)tests.*\"",
+          "                \"$(mbatch)tests.bat\",",
+          "                \"$(mbatch)tests.targets\"",
           "            }, ",
           "            \"$(mgrTests)/\", ",
           "            true",
-          ")]"
+          ")]",
+          "",
+          "#[File replace(\"$(mgrTests)tests.bat\", \"$version$\", \"$(pVer)\")]"
         ]
       }
     },
