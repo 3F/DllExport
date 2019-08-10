@@ -467,6 +467,40 @@
     },
     {
       "Enabled": true,
+      "Name": "XmlMetadata",
+      "Caption": "Prepare XML metadata of the library",
+      "SupportMSBuild": true,
+      "SupportSBEScripts": true,
+      "IgnoreIfBuildFailed": true,
+      "BuildType": "Common",
+      "Confirmation": false,
+      "ToConfiguration": [],
+      "ExecutionOrder": {
+        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
+        "$values": []
+      },
+      "Process": {
+        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
+        "Waiting": true,
+        "Hidden": true,
+        "TimeLimit": 30
+      },
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command": "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/DllExport.xml\", \n               \"$(odir)/tools/raw/lib/net20/\", true)]\n               \n#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]",
+        "Command__": [
+          "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]",
+          "",
+          "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/DllExport.xml\", ",
+          "               \"$(odir)/tools/raw/lib/net20/\", true)]",
+          "               ",
+          "#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]"
+        ]
+      }
+    },
+    {
+      "Enabled": true,
       "Name": "ActILAsm",
       "Caption": "Provide our ILAsm & ILDasm",
       "SupportMSBuild": true,

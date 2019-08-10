@@ -58,6 +58,7 @@ namespace net.r_eg.DllExport.NSBin
         public const int NS_BUF_MAX     = 0x01F4;
 
         private readonly string dll;
+        private readonly string xml;
         private Ripper ripper;
 
         public ISender Log
@@ -105,6 +106,7 @@ namespace net.r_eg.DllExport.NSBin
         {
             this.dll    = dll;
             ripper      = new Ripper(dll, enc);
+            xml         = DDNS.GetMetaXml(dll);
         }
 
         protected void makeViaCecil(string ns)
@@ -129,6 +131,7 @@ namespace net.r_eg.DllExport.NSBin
                 });
             }
 
+            tryUpdateXmlMeta(xml, ns);
             msgSuccess(ns);
         }
 
@@ -194,6 +197,7 @@ namespace net.r_eg.DllExport.NSBin
                     m.write(new MarkerData() { nsPosition = lpos, nsBuffer = buffer, nsName = ns });
                 }
 
+                tryUpdateXmlMeta(xml, ns);
                 msgSuccess(ns);
             }
         }
@@ -224,6 +228,39 @@ namespace net.r_eg.DllExport.NSBin
             return DEFAULT_NS;
         }
 
+        protected bool tryUpdateXmlMeta(string xml, string ns)
+        {
+            if(xml == null || ns == null || !File.Exists(xml)) {
+                return false;
+            }
+
+            try {
+                updateXmlMeta(xml, ns);
+                return true;
+            }
+            catch(Exception ex) {
+                Log.send(this, $"Xml metadata cannot be updated: {ex.Message}");
+                return false;
+            }
+        }
+
+        protected void updateXmlMeta(string xml, string ns)
+        {
+            var cxml = Path.ChangeExtension(xml, ".xtmp~");
+            File.Copy(xml, cxml, true);
+
+            using(var reader = new StreamReader(cxml, Encoding.UTF8, true))
+            using(var writer = new StreamWriter(xml, false, reader.CurrentEncoding))
+            {
+                string line;
+                while((line = reader.ReadLine()) != null) {
+                    writer.WriteLine(line.Replace(IDNS, ns));
+                }
+            }
+
+            File.Delete(cxml);
+        }
+
         protected void prepareLib(string dll)
         {
             string raw = $"{dll}.raw";
@@ -251,7 +288,6 @@ namespace net.r_eg.DllExport.NSBin
 
         #region IDisposable
 
-        // To detect redundant calls
         private bool disposed = false;
 
         public void Dispose()

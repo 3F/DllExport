@@ -61,7 +61,10 @@ namespace
 
 {
     /// <summary>
-    /// Please note: this will be used via Cecil to get meta-information by IL-instructions and main definitions of used arguments in user-code.
+    /// To export this as __cdecl C-exported function. Named as current method where is used attribute.
+    /// [.NET DllExport]
+    /// 
+    /// About our meta-information in user-code:
     /// https://github.com/3F/DllExport/issues/16
     /// </summary>
     [Serializable]
@@ -69,8 +72,10 @@ namespace
     public sealed class DllExportAttribute: Attribute
     {
         /// <summary>
-        /// __cdecl is the default calling convention for C and C++ programs
-        /// and __stdCall mostly used with winapi. Thus, we also use Cdecl by default.
+        /// Specified calling convention.
+        /// 
+        /// __cdecl is the default convention in .NET DllExport like for other C/C++ programs (Microsoft Specific).
+        /// __stdCall mostly used with winapi.
         /// 
         /// https://msdn.microsoft.com/en-us/library/zkwh89ks.aspx
         /// https://msdn.microsoft.com/en-us/library/56h2zst2.aspx
@@ -82,6 +87,9 @@ namespace
             set;
         } = CallingConvention.Cdecl;
 
+        /// <summary>
+        /// Optional name for C-exported function.
+        /// </summary>
         public string ExportName
         {
             get;
@@ -90,12 +98,19 @@ namespace
 
         /* Available signatures */
 
+        /// <param name="function">Optional name for C-exported function.</param>
+        /// <param name="convention">Specified calling convention. __cdecl is the default convention in .NET DllExport.</param>
         public DllExportAttribute(string function, CallingConvention convention) { }
 
+        /// <param name="function">Optional name for C-exported function.</param>
         public DllExportAttribute(string function) { }
 
+        /// <param name="convention">Specified calling convention. __cdecl is the default convention in .NET DllExport.</param>
         public DllExportAttribute(CallingConvention convention) { }
 
+        /// <summary>
+        /// To export this as __cdecl C-exported function. Named as current method where is used attribute.
+        /// </summary>
         public DllExportAttribute() { }
     }
 }

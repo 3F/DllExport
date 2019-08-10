@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
@@ -373,7 +374,7 @@ namespace net.r_eg.DllExport.Wizard
         protected void CfgDDNS()
         {
             Config.DDNS.setNamespace(
-                CopyFile(
+                CopyLib(
                     Path.Combine(Config.Wizard.PkgPath, Config.Wizard.MetaLib), 
                     MetaLib(true)
                 ), 
@@ -721,14 +722,22 @@ namespace net.r_eg.DllExport.Wizard
             SetProperty(name, val.ToString());
         }
 
-        private string CopyFile(string src, string dest, bool overwrite = true)
+        private string CopyLib(string src, string dest)
         {
             var dir = Path.GetDirectoryName(dest);
             if(!Directory.Exists(dir)) {
                 Directory.CreateDirectory(dir);
             }
 
-            File.Copy(src, dest, overwrite);
+            File.Copy(src, dest, true);
+
+            try {
+                File.Copy(DDNS.GetMetaXml(src), DDNS.GetMetaXml(dest), true);
+            }
+            catch(Exception ex) {
+                Log.send(this, $"Xml metadata is not found: {ex.Message}", Message.Level.Debug);
+            }
+
             return dest;
         }
     }

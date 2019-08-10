@@ -22,6 +22,7 @@
  * THE SOFTWARE.
 */
 
+using System.IO;
 using System.Text;
 using net.r_eg.Conari.Log;
 
@@ -59,6 +60,16 @@ namespace net.r_eg.DllExport.NSBin
         public static bool IsValidNS(string name)
         {
             return Rmod.IsValidNS(name);
+        }
+
+        /// <summary>
+        /// Returns path to XML metadata of the library.
+        /// </summary>
+        /// <param name="lib">Path to library.</param>
+        /// <returns></returns>
+        public static string GetMetaXml(string lib)
+        {
+            return Path.ChangeExtension(lib, ".xml");
         }
 
         /// <summary>
