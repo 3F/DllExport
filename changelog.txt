@@ -1,6 +1,22 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.6.5] 2019.08.10
+
+    * FIXED: Possible "The format ... of configuration is not supported." 
+             Issue #114.
+    
+    * FIXED: XML meta comments for DllExport Metadata.
+    
+    * CHANGED: Updated MvsSln 2.4
+               Release notes:
+               https://github.com/3F/MvsSln/releases/tag/v2.4
+               
+    * NOTE: To upgrade configured version to v1.6.5: 
+            ```
+                DllExport -action Upgrade -dxp-version 1.6.5
+            ```  
+
 [v1.6.4] 2019.07.04
 
     * FIXED: Possible "The process cannot access the file because it is being used by another process"

@@ -12,7 +12,7 @@ Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
 [![Cecil](https://img.shields.io/badge/Cecil-0.10.4-1182C3.svg)](https://github.com/jbevain/cecil)
-[![MvsSln](https://img.shields.io/badge/MvsSln-v2.3.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v2.4.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
 [![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
 
