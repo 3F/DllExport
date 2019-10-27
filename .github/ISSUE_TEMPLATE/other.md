@@ -1,6 +1,6 @@
 ---
 name: Other
-about: '…'
+about: 'Something else like a suggestion, or request, or …'
 ---
 
 . . . 
