@@ -28,9 +28,16 @@ DllExport  [ github.com/3F/DllExport ]
             * https://github.com/3F/GetNuTool
             * https://github.com/3F/hMSBuild
         
-    ## Maintaining of this project also includes the following tools:
-
-        * vsSolutionBuildEvent /+ CI.MSBuild [ github.com/3F/vsSolutionBuildEvent ]
-        * GetNuTool [ github.com/3F/GetNuTool ]
-        * hMSBuild [ github.com/3F/hMSBuild ]
-
+    ## Dev Dependencies includes the following tools for src:
+        
+        * vsSolutionBuildEvent
+            https://github.com/3F/vsSolutionBuildEvent
+            
+        * MSTest Framework
+            https://github.com/microsoft/testfx
+            
+        * hMSBuild
+            https://github.com/3F/hMSBuild
+            
+        * GetNuTool
+            https://github.com/3F/GetNuTool

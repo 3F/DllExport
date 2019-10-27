@@ -23,7 +23,7 @@
       "Enabled": true
     },
     {
-      "ClassName": "OWPComponent",
+      "ClassName": "OwpComponent",
       "Enabled": true
     },
     {
@@ -39,7 +39,7 @@
       "Enabled": true
     },
     {
-      "ClassName": "DTEComponent",
+      "ClassName": "DteComponent",
       "Enabled": true
     },
     {
@@ -59,7 +59,7 @@
       "Enabled": true
     },
     {
-      "ClassName": "MSBuildComponent",
+      "ClassName": "EvMSBuildComponent",
       "Enabled": true
     },
     {
@@ -147,24 +147,36 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]\n\n#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )\n{ \n    ##[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]\n    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]\n}\nelse{\n    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]\n}]\n\n#[\" Packages \"]\n\n#[( !(#[IO exists.directory(\"packages\")]) || !(#[IO exists.directory(\"$(pMvsSln)/packages\")]) )\n{\n    #[File call(\"packages_restore.cmd\", \"\", 2000)]\n}]",
+        "Command": "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive GetNuTool\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(pMvsSln)/MvsSln.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive MvsSln\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(phMSBuild)/hMSBuild.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive hMSBuild\", 1000)]\n}]\n\nTODO: option for expensive coreclr\n\n\n#[\" Packages \"]\n\n#[( !(#[IO exists.file(\"packages/__checked\")]) )\n{\n    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]\n        \n    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config\\\" /nologo /v:m /m:4\")]\n    \n    #[IO copy.directory(\"\", \"packages/\", true)]\n    #[File write(\"packages/__checked\"): ]\n}]",
         "Command__": [
-          "#[$(moduleGetNuTool = \"GetNuTool/gnt.sln\")]",
-          "",
-          "#[( #[IO exists.file(\"$(moduleGetNuTool)\")] )",
-          "{ ",
-          "    ##[File scall(\"submodules.bat\", \"$(moduleGetNuTool)\", 400)]",
-          "    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]",
-          "}",
-          "else{",
-          "    #[File call(\"submodules.bat\", \"$(moduleGetNuTool)\", 2000)]",
+          "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )",
+          "{",
+          "    #[File call(\"git\", \"submodule update --init --recursive GetNuTool\", 1000)]",
           "}]",
+          "",
+          "#[( !(#[IO exists.file(\"$(pMvsSln)/MvsSln.sln\")]) )",
+          "{",
+          "    #[File call(\"git\", \"submodule update --init --recursive MvsSln\", 1000)]",
+          "}]",
+          "",
+          "#[( !(#[IO exists.file(\"$(phMSBuild)/hMSBuild.sln\")]) )",
+          "{",
+          "    #[File call(\"git\", \"submodule update --init --recursive hMSBuild\", 1000)]",
+          "}]",
+          "",
+          "TODO: option for expensive coreclr",
+          "",
           "",
           "#[\" Packages \"]",
           "",
-          "#[( !(#[IO exists.directory(\"packages\")]) || !(#[IO exists.directory(\"$(pMvsSln)/packages\")]) )",
+          "#[( !(#[IO exists.file(\"packages/__checked\")]) )",
           "{",
-          "    #[File call(\"packages_restore.cmd\", \"\", 2000)]",
+          "    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]",
+          "        ",
+          "    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config\\\" /nologo /v:m /m:4\")]",
+          "    ",
+          "    #[IO copy.directory(\"\", \"packages/\", true)]",
+          "    #[File write(\"packages/__checked\"): ]",
           "}]"
         ]
       }
