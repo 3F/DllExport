@@ -108,8 +108,13 @@ namespace RGiesecke.DllExport.Parsing
                 while(File.Exists(str1));
                 File.Move(this.InputValues.InputFileName, str1);
             }
-            try
-            {
+
+            // https://github.com/3F/coreclr/blob/05afa4f81fdf671429b54467c64d65cde6b5fadc/src/debug/ildbsymlib/symwrite.cpp#L308
+            // Due to possible incorrect ISymUnmanagedWriter when exists initial pdb data for non-modified asm.
+            // \- Part of https://github.com/3F/DllExport/issues/90
+            File.Delete(Path.ChangeExtension(InputValues.InputFileName, ".pdb"));
+
+            try {
                 return this.RunCore(cpu, outputFile, ressourceParam, ilSuffix);
             }
             finally

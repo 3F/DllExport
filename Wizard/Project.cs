@@ -186,21 +186,26 @@ namespace net.r_eg.DllExport.Wizard
         /// Returns fullpath to meta library for current project.
         /// </summary>
         /// <param name="evaluate">Will return unevaluated value if false.</param>
+        /// <param name="corlib">netfx-based or netcore-based meta lib.</param>
         /// <returns></returns>
-        public virtual string MetaLib(bool evaluate)
+        public virtual string MetaLib(bool evaluate, bool corlib = false)
         {
+            string mdll = GetMetaDll(corlib);
+
             return Path.GetFullPath
             (
                 Path.Combine
                 (
                     Config.Wizard.PkgPath,
                     "gcache",
-                    "metalib",
+                    evaluate ? corlib ? "metacor" : "metalib" 
+                                    : "$(DllExportMetaXBase)",
+
                     (evaluate && Config?.Namespace != null) ? 
                         Config.Namespace : "$(DllExportNamespace)",
 
-                    (evaluate && Config?.Wizard?.MetaLib != null) ? 
-                        Path.GetFileName(Config.Wizard.MetaLib) : "$(DllExportMetaLibName)"
+                    (evaluate && mdll != null) ? 
+                        Path.GetFileName(mdll) : "$(DllExportMetaLibName)"
                 )
             );
         }
@@ -373,10 +378,16 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void CfgDDNS()
         {
+            CfgDDNS(false);
+            CfgDDNS(true);
+        }
+
+        protected void CfgDDNS(bool corlib)
+        {
             Config.DDNS.setNamespace(
                 CopyLib(
-                    Path.Combine(Config.Wizard.PkgPath, Config.Wizard.MetaLib), 
-                    MetaLib(true)
+                    Path.Combine(Config.Wizard.PkgPath, GetMetaDll(corlib)), 
+                    MetaLib(true, corlib)
                 ), 
                 Config.Namespace, 
                 Config.UseCecil,
@@ -739,6 +750,16 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             return dest;
+        }
+
+        private string GetMetaDll(bool corlib)
+        {
+            IWizardConfig cfg = Config?.Wizard;
+            if(cfg == null) {
+                return null;
+            }
+
+            return corlib ? cfg.MetaCor : cfg.MetaLib;
         }
     }
 }

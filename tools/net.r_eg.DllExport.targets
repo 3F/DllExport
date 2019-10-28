@@ -1,19 +1,34 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- https://github.com/3F/DllExport -->
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
   <PropertyGroup>
     <DllExportModImported>true</DllExportModImported>
   </PropertyGroup>
-  
+
+  <PropertyGroup>
+    <DllExportDirMetaCore Condition="$(DllExportDirMetaCore) == ''">metacor</DllExportDirMetaCore>
+    <DllExportDirMetaFX Condition="$(DllExportDirMetaFX) == ''">metalib</DllExportDirMetaFX>
+  </PropertyGroup>
+
+  <!-- TODO: metalib / metacor  -->
+  <PropertyGroup>
+    <IsNetCoreBased Condition="$(TargetFramework.StartsWith('netc')) Or $(TargetFramework.StartsWith('nets'))">true</IsNetCoreBased>
+    <DllExportMetaXBase Condition="$(IsNetCoreBased) == 'true'">$(DllExportDirMetaCore)</DllExportMetaXBase>
+    <DllExportMetaXBase Condition="$(IsNetCoreBased) != 'true'">$(DllExportDirMetaFX)</DllExportMetaXBase>
+    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\$(DllExportMetaXBase)\$(DllExportNamespace)\</DllExportLibPath>
+  </PropertyGroup>
+
   <PropertyGroup>
     <DllExportRootPkg Condition="'$(DllExportRootPkg)' == ''">$(MSBuildThisFileDirectory)..\</DllExportRootPkg>
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == '' And '$(VsInstallRoot)' != ''">$(VsInstallRoot)\</DllExportVSRoot>
     <DllExportVSRoot Condition="'$(DllExportVSRoot)' == ''">$(DevEnvDir)\..\..\</DllExportVSRoot>
     <DllExportVSBin Condition="'$(DllExportVSBin)' == ''">$(DllExportVSRoot)Common7\IDE\</DllExportVSBin>
 
-    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\metalib\$(DllExportNamespace)\</DllExportLibPath>
+    <DllExportMetaXBase Condition="'$(DllExportMetaXBase)' == ''">metalib</DllExportMetaXBase>
+    <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\$(DllExportMetaXBase)\$(DllExportNamespace)\</DllExportLibPath>
     <DllExportToolsPath Condition="'$(DllExportToolsPath)' == ''">tools\</DllExportToolsPath>
-    
+
     <DllExportNamespace Condition="'$(DllExportNamespace)' == ''"></DllExportNamespace>
     <DllExportLibFullPath Condition="'$(DllExportLibFullPath)' == ''">$(DllExportRootPkg)$(DllExportLibPath)</DllExportLibFullPath>
     <DllExportMetaLibAttr Condition="'$(DllExportMetaLibAttr)' == ''">DllExportAttribute</DllExportMetaLibAttr>
@@ -56,7 +71,7 @@
       <DllExportPeCheck Condition="'$(DllExportPeCheck)' == ''"></DllExportPeCheck>
     </PropertyGroup>
 
-    <DllExportAppDomainIsolatedTask 
+    <DllExportAppDomainIsolatedTask
           Platform="$(DllExportPlatform)"
           CpuType="$(DllExportCpuType)"
           DllExportAttributeFullName="$(DllExportAttributeFullName)"
@@ -79,13 +94,23 @@
           GenExpLib="$(DllExportGenExpLib)"
           OurILAsmPath="$(DllExportOurILAsmPath)"
           MetaLib="$(DllExportMetaLibFullPath)"
-          PeCheckRaw="$(DllExportPeCheck)" 
+          PeCheckRaw="$(DllExportPeCheck)"
          />
-    
+
     <PropertyGroup>
       <DllExportModExecuted>true</DllExportModExecuted>
     </PropertyGroup>
   </Target>
   <UsingTask TaskName="RGiesecke.DllExport.MSBuild.DllExportAppDomainIsolatedTask" AssemblyFile="RGiesecke.DllExport.MSBuild.dll" />
-  
+
+  <!-- To support multi-targeting in SDK-Based projects: netstandard2.0;net40;... -->
+  <Target Name="DllExportMetaXBaseTarget" BeforeTargets="GenerateTargetFrameworkMonikerAttribute">
+    <PropertyGroup>
+      <IsNetCoreBased Condition="$(TargetFramework.StartsWith('netc')) Or $(TargetFramework.StartsWith('nets'))">true</IsNetCoreBased>
+      <DllExportMetaXBase Condition="$(IsNetCoreBased) == 'true'">$(DllExportDirMetaCore)</DllExportMetaXBase>
+      <DllExportMetaXBase Condition="$(IsNetCoreBased) != 'true'">$(DllExportDirMetaFX)</DllExportMetaXBase>
+      <DllExportLibPath Condition="'$(DllExportLibPath)' == ''">gcache\$(DllExportMetaXBase)\$(DllExportNamespace)\</DllExportLibPath>
+    </PropertyGroup>
+  </Target>
+
 </Project>

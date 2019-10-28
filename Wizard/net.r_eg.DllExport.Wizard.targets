@@ -12,6 +12,7 @@
       <wSlnDir Condition="'$(wSlnDir)' == ''">.\</wSlnDir>
       <wPkgPath Condition="'$(wPkgPath)' == ''">packages\DllExport</wPkgPath>
       <wMetaLib Condition="'$(wMetaLib)' == ''">tools\raw\lib\net20\DllExport.dll</wMetaLib>
+      <wMetaCor Condition="'$(wMetaCor)' == ''">tools\raw\lib\netstd\DllExport.dll</wMetaCor>
       <wDxpTarget Condition="'$(wDxpTarget)' == ''">tools\net.r_eg.DllExport.targets</wDxpTarget>
       <wAction Condition="'$(wAction)' == ''">Restore</wAction> <!-- Action by default. enum `ActionType`. -->
     </PropertyGroup>
@@ -41,7 +42,8 @@
         SlnDir="$(wSlnDir)" 
         SlnFile="$(wSlnFile)" 
         PkgPath="$(wPkgPath)" 
-        MetaLib="$(wMetaLib)" 
+        MetaLib="$(wMetaLib)"
+        MetaCor="$(wMetaCor)" 
         MgrArgs="$(wMgrArgs)" 
         DxpTarget="$(wDxpTarget)" 
         StoragePath="$(wStoragePath)" 

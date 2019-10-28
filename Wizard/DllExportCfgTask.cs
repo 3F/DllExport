@@ -82,7 +82,7 @@ namespace net.r_eg.DllExport.Wizard
         private string _pkgPath;
 
         /// <summary>
-        /// Relative path from PkgPath to DllExport meta library.
+        /// Relative path to meta library.
         /// </summary>
         [Required]
         public string MetaLib
@@ -91,6 +91,17 @@ namespace net.r_eg.DllExport.Wizard
             set => _metaLib = value.FilePathFormat();
         }
         private string _metaLib;
+
+        /// <summary>
+        /// Relative path to meta core library.
+        /// </summary>
+        [Required]
+        public string MetaCor
+        {
+            get => _metacor;
+            set => _metacor = value.FilePathFormat();
+        }
+        private string _metacor;
 
         /// <summary>
         /// Path to .targets file of the DllExport.
@@ -286,6 +297,7 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"SlnFile: '{SlnFile}'", level);
             LSender.Send(this, $"PkgPath: '{PkgPath}'", level);
             LSender.Send(this, $"MetaLib: '{MetaLib}'", level);
+            LSender.Send(this, $"MetaCor: '{MetaCor}'", level);
             LSender.Send(this, $"MgrArgs: '{MgrArgs}'", level);
             LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
             LSender.Send(this, $"RootPath: '{RootPath}'", level);

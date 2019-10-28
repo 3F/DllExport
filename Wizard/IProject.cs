@@ -91,8 +91,9 @@ namespace net.r_eg.DllExport.Wizard
         /// Returns fullpath to meta library for current project.
         /// </summary>
         /// <param name="evaluate">Will return unevaluated value if false.</param>
+        /// <param name="corlib">netfx-based or netcore-based meta lib.</param>
         /// <returns></returns>
-        string MetaLib(bool evaluate);
+        string MetaLib(bool evaluate, bool corlib = false);
 
         /// <summary>
         /// To recover references with project file.

@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.26430.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metadata", "Metadata\Metadata.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataFx", "MetadataFx\MetadataFx.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild", "RGiesecke.DllExport.MSBuild\RGiesecke.DllExport.MSBuild.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
 EndProject
@@ -73,9 +73,9 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "Wizard\Wizard.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeViewer", "PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSln", "MvsSln\MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSln", "MvsSln\MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvsSlnTest", "MvsSln\MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSlnTest", "MvsSln\MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
 	EndProjectSection
@@ -121,6 +121,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "batch", "batch", "{603C7C21
 		Manager\batch\tests.bat = Manager\batch\tests.bat
 		Manager\batch\tests.targets = Manager\batch\tests.targets
 	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetadataCore", "MetadataCore\MetadataCore.csproj", "{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -183,6 +185,12 @@ Global
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
