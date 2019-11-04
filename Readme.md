@@ -10,7 +10,7 @@ Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 [![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
-[![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
+[![coreclr_ILAsm](https://img.shields.io/badge/coreclr.ILAsm-4.700.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
 [![Cecil](https://img.shields.io/badge/Cecil-0.10.4-1182C3.svg)](https://github.com/jbevain/cecil)
 [![MvsSln](https://img.shields.io/badge/MvsSln-v2.4.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
@@ -131,6 +131,8 @@ Read also my explanations from here: [about mscoree](https://github.com/3F/DllEx
 
 ### How to get DllExport
 
+[**`tl;dr`: put this inside solution folder, then click it there.**](https://3f.github.io/DllExport/releases/latest/manager/)
+
 v1.6+ have no official support of NuGet clients. [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A)]
 
 * [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
@@ -154,15 +156,15 @@ Other way:
 * GHR Stable: [/releases](https://github.com/3F/DllExport/releases) [ [latest stable](https://github.com/3F/DllExport/releases/latest) ]
 * CI builds: [`/artifacts` page](https://ci.appveyor.com/project/3Fs/dllexport/history) or find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/DllExport/releases) page.
 
-### How to Build
+### How to Build .NET DllExport
 
 Just use build.bat if you need final binaries (NuGet package as `DllExport.<version>.nupkg`, Manager, zip-archives, and others).
 
-```bash
-> build
+```batch
+.\build
 ```
 
-Part of this build scripts works via vssbe ([?](https://github.com/3F/DllExport/issues/31#issuecomment-294231378)) and for build via console (including CI etc.) uses [CIM](https://www.nuget.org/packages/vsSBE.CI.MSBuild/) version of this. So you do not need anything else, just type `build`.
+Part of this build scripts works via vssbe ([?](https://github.com/3F/DllExport/issues/31#issuecomment-294231378)) and for build via console (including CI etc.) uses [CIM](https://www.nuget.org/packages/vsSolutionBuildEvent/) version of this. You do not need anything else, just type `build`.
 
 For Visual Studio use this [vsix version for IDE](https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/)
 
@@ -206,13 +208,13 @@ use additional `Diagnostic` key to msbuild if you need more details:
 
 Now you can debug at runtime.
 
-### coreclr - ILAsm / ILDasm
+### coreclr ILAsm / ILDasm
 
-We use **our custom versions on coreclr**, special for DllExport project - https://github.com/3F/coreclr
+We're using **our custom versions on coreclr** specially for our .NET DllExport project - https://github.com/3F/coreclr
 
 This helps to avoid some problems ([like this](https://github.com/3F/DllExport/issues/17)) and more...
 
-*To build minimal version (means that it does not include all components as for original coreclr repo):*
+*To build minimal version (it will not include all components as for original coreclr repo):*
 
 * Restore git submodule or use repo: https://github.com/3F/coreclr.git
 
@@ -223,27 +225,24 @@ git submodule update --init --recursive
 *Make sure that you have installed [CMake](https://cmake.org/download/), then build simply:*
 
 ```bash
-build_s all x86 x64 Release
-build_s x86 Release
+build-s -all -x86 -x64 Release
 ```
 
 or use
 ```bash
-build_coreclr_x86.cmd
-build_coreclr_x86_x64.cmd
+build-coreclr-ilasm-x64.cmd
+build-coreclr-ilasm-x86+x64.cmd
 ```
 
-*You can also use our binaries of coreclr separately if needed:*
+*You can also use already compiled versions:*
 
 * [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
-* Look also [here](https://github.com/3F/coreclr/issues/1)
-
 
 ### Donation
 
-Please note again, the [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You should [visit his page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports) if you need.
+Please note again, the [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You need [visit his page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports).
 
-But this repository **does not related** to Robert and generally still being developed by [GitHub/3F](https://github.com/3F) developer (Follow: [ [GitHub](https://github.com/3F) ]; [ [twitter](https://twitter.com/GitHub3F) ]). 
+But this repository [**does not related**](https://github.com/3F/DllExport/issues/87#issuecomment-438576100) to Robert and generally still being developed by [GitHub/3F](https://github.com/3F) developer (Follow: [ [GitHub](https://github.com/3F) ]; [ [twitter](https://twitter.com/GitHub3F) ]). 
 
 If something is helpful from *3F/DllExport,* donations are welcomed, and thanks !
 
