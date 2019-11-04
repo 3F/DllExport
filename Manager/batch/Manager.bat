@@ -499,6 +499,10 @@ if not defined xMSBuild (
 )
 
 if not defined xmgrtest (
+
+    REM :: Possible incorrect Sdk-based project types, https://github.com/3F/DllExport/pull/123
+    if not defined gMsbPath if defined wPkgPath set xMSBuild="!wPkgPath!\\hMSBuild"
+
     call :dbgprint "Target: " xMSBuild wzTarget
     !xMSBuild! /nologo /v:m /m:4 !wzTarget!
 )

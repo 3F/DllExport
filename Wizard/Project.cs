@@ -650,7 +650,7 @@ namespace net.r_eg.DllExport.Wizard
             foreach(string name in names)
             {
                 if(!String.IsNullOrWhiteSpace(name)) {
-                    Log.send(this, $"'{ProjectPath}' Remove old properties: '{name}'", Message.Level.Trace);
+                    // Log.send(this, $"'{ProjectPath}' Remove old properties: '{name}'", Message.Level.Trace);
                     while(XProject.RemoveProperty(name, true)) { }
                 }
             }

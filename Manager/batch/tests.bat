@@ -128,11 +128,11 @@ set appl=%app% -pkg-link "..\..\DllExport.$version$.nupkg"
     endlocal
 
     setlocal 
-        echo Test case 13: special symbols for -sln-file, -metalib, -dxp-target & set "%flagName%=13"
+        echo Test case 13: special symbols for -sln-file, -metacor, -metalib, -dxp-target & set "%flagName%=13"
 
         set _arg="crazy' dir&name!356~`@#$^(+)_=-;[.]{,}"
         
-        call %appl% -action Configure -sln-file %_arg% -metalib %_arg% -dxp-target %_arg%
+        call %appl% -action Configure -sln-file %_arg% -metacor %_arg% -metalib %_arg% -dxp-target %_arg%
 
     endlocal
 
@@ -159,8 +159,8 @@ set appl=%app% -pkg-link "..\..\DllExport.$version$.nupkg"
     setlocal 
         echo Test case 16: checking for -dxp-version, -server, -proxy  & set "%flagName%=16"
         
-        call %mgrFile% -action Default -dxp-version 1.6.0
-        call %app% -action Default -dxp-version 1.6.0 -server "https://127.0.0.1:8082/" -proxy "guest:1234@127.0.0.1:7428" 
+        call %mgrFile% -action Default -dxp-version 1.6.5
+        call %app% -action Default -dxp-version 1.6.5 -server "https://127.0.0.1:8082/" -proxy "guest:1234@127.0.0.1:7428" 
         :: -pe-exp-list "bin\Debug\regXwild.dll"
 
     endlocal
