@@ -1,6 +1,49 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7-beta] 2019.11.04
+
+    * NEW: Basic support for the netcore-based projects. 
+           Issues: #90, #67
+           PR: #123
+           
+    * CHANGED: Updated CoreCLR 3.0 IL Assembler 4.700.1
+               https://github.com/3F/coreclr
+    
+    * CHANGED: Updated Mono Cecil 0.11
+    
+    * CHANGED: Updated MvsSln 2.5
+    
+    * NOTE: You also need an updated manager to avoid problem  
+            when "Possible incorrect Sdk-based project types": PR #123
+            https://github.com/3F/MvsSln/issues/23
+            
+            Use it from official 1.7-beta release:
+            https://github.com/3F/DllExport/releases/tag/v1.7-beta
+            https://www.nuget.org/packages/DllExport/1.7.0-beta
+            
+            Otherwise you need provide manually msbuild instance 
+            that can process modern Sdk-types due to modern VS/dotnet sdk 
+            dependencies for netcore-based projects.
+            
+            For example, through hMSBuild https://github.com/3F/hMSBuild
+            ```
+            DllExport ... -msb hMSBuild
+            ```            
+            
+    * NOTE: To upgrade configured version to 1.7 beta:
+            ```
+                DllExport -action Upgrade -dxp-version 1.7.0-beta
+            ``` 
+            
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+    
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+
+
 [v1.6.5] 2019.08.10
 
     * FIXED: Possible "The format ... of configuration is not supported." 

@@ -8,8 +8,8 @@ namespace net.r_eg.DllExport.Wizard
     {
         public static readonly Version number = new Version(S_NUM_REV);
 
-        public const string S_NUM = "1.6.5";
-        public const string S_REV = "4036";
+        public const string S_NUM = "1.7.0";
+        public const string S_REV = "0";
         public const string S_REL = "";
 
         public const string S_NUM_REV = S_NUM + "." + S_REV;
