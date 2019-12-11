@@ -30,10 +30,15 @@ using net.r_eg.MvsSln.Log;
 namespace net.r_eg.DllExport.Wizard
 {
     /// <summary>
-    /// https://github.com/3F/DllExport/issues/56
+    /// Isolates problems like this: https://github.com/3F/DllExport/issues/56
     /// TODO: MvsSln core
+    /// 
+    /// About possible incorrect Sdk-based project types:
+    /// https://github.com/3F/DllExport/pull/123
+    /// Planned to drop msbuild support in v3:
+    /// https://github.com/3F/MvsSln/issues/23
     /// </summary>
-    public class DxpIsolatedEnv: IsolatedEnv, IEnvironment, IDisposable
+    public class DxpIsolatedEnv: IsolatedEnv, IEnvironment
     {
         public const string ERR_MSG = "DXPInternalErrorMsg";
 
@@ -57,11 +62,6 @@ namespace net.r_eg.DllExport.Wizard
                 prj.SetProperty(ERR_MSG, ex.Message);
                 return prj;
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            base.Dispose(disposing);
         }
     }
 }

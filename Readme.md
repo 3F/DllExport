@@ -7,16 +7,16 @@ Copyright (c) 2009-2015  Robert Giesecke
 Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 ```
 
-[![Build status](https://ci.appveyor.com/api/projects/status/yh1pnuhaqk8h334h/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport/branch/master)
+[![Build status](https://ci.appveyor.com/api/projects/status/hh2oxibqoi6wrdnc/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/branch/master)
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr.ILAsm-4.700.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
-[![Cecil](https://img.shields.io/badge/Cecil-0.10.4-1182C3.svg)](https://github.com/jbevain/cecil)
-[![MvsSln](https://img.shields.io/badge/MvsSln-v2.4.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![Cecil](https://img.shields.io/badge/Cecil-0.11.1-1182C3.svg)](https://github.com/jbevain/cecil)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v2.5.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
-[![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
+[![Conari](https://img.shields.io/badge/Conari-v1.4.0-8AA875.svg)](https://github.com/3F/Conari)
 
-[![Build history](https://buildstats.info/appveyor/chart/3Fs/dllexport?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/dllexport/history)
+[![Build history](https://buildstats.info/appveyor/chart/3Fs/dllexport-ix27o?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/history)
 
 [`DllExport`](https://3f.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
 
@@ -154,7 +154,7 @@ Other way:
 * (deprecated) NuGet PM: `Install-Package DllExport`
 * (deprecated) NuGet Commandline: `nuget install DllExport`
 * GHR Stable: [/releases](https://github.com/3F/DllExport/releases) [ [latest stable](https://github.com/3F/DllExport/releases/latest) ]
-* CI builds: [`/artifacts` page](https://ci.appveyor.com/project/3Fs/dllexport/history) or find as `Pre-release` with mark `🎲 Nightly build` on [GitHub Releases](https://github.com/3F/DllExport/releases) page.
+* CI builds: [`/artifacts` page](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/history) ( [old CI](https://ci.appveyor.com/project/3Fs/dllexport/history) ) or find `🎲 CI build` on [GitHub Releases](https://github.com/3F/Dllexport/releases) page.
 
 ### How to Build .NET DllExport
 

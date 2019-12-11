@@ -23,10 +23,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1}"
 	ProjectSection(SolutionItems) = preProject
-		tools\build.targets = tools\build.targets
 		tools\DllExport.nuspec = tools\DllExport.nuspec
 		tools\gnt.bat = tools\gnt.bat
 		tools\hMSBuild.bat = tools\hMSBuild.bat
+		tools\init.ps1 = tools\init.ps1
 		tools\net.r_eg.DllExport.targets = tools\net.r_eg.DllExport.targets
 	EndProjectSection
 EndProject

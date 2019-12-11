@@ -165,8 +165,7 @@ namespace net.r_eg.DllExport.Wizard
                         break;
                 }
                 case ActionType.Info: {
-                        (new CfgBatWrapper(Config, Log)).TryPrepare();
-                        UI.App.RunSTA(new UI.InfoForm(this));
+                        "https://github.com/3F/DllExport/wiki/Quick-start".OpenUrl();
                         break;
                 }
                 case ActionType.Default: {

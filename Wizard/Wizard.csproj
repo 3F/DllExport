@@ -60,7 +60,6 @@
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="IConfigInitializer.cs" />
-    <Compile Include="CfgBatWrapper.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="CompilerCfg.cs" />
     <Compile Include="MSBuildProperties.cs" />
@@ -100,12 +99,6 @@
       <DependentUpon>ProjectItemsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\App.cs" />
-    <Compile Include="UI\InfoForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\InfoForm.Designer.cs">
-      <DependentUpon>InfoForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\MsgForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -173,9 +166,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Controls\ProjectItemsControl.resx">
       <DependentUpon>ProjectItemsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\InfoForm.resx">
-      <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\MsgForm.resx">
       <DependentUpon>MsgForm.cs</DependentUpon>

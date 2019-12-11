@@ -82,14 +82,17 @@ namespace net.r_eg.DllExport.Wizard.UI
             Text = ".NET DllExport";
 
 #if PUBLIC_RELEASE
-            Text += " - v" + WizardVersion.S_INFO;
+            Text += " " + WizardVersion.S_INFO;
 #else
-            Text += $" - Based on v{WizardVersion.S_NUM} {WizardVersion.S_REL} [{WizardVersion.BRANCH_SHA1}]";
+            Text += $" - Based on {WizardVersion.S_NUM}";
 #endif
+            if(WizardVersion.S_REL.Length > 0) {
+                Text += $" [{WizardVersion.S_REL}]";
+            }
 #if DEBUG
-            Text += " [ Debug ]";
+            Text += " [Debug]";
 #endif
-            Text += " github.com/3F/DllExport";
+            Text += " //github.com/3F/DllExport";
 
             projectItems.Browse  =
             projectItems.OpenUrl = OpenUrl;
