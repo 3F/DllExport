@@ -45,7 +45,8 @@ namespace net.r_eg.DllExport.Wizard.UI
         private CfgStorage storage;
         private FileDialog fdialog;
         private int prevSlnItemIndex = 0;
-        private object sync = new object();
+        private volatile bool _suspendPrjItems;
+        private readonly object sync = new object();
 
         /// <summary>
         /// To apply filter for rendered projects.
@@ -188,23 +189,30 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             toolTipMain.SetToolTip(comboBoxSln, sln);
 
-            GetProjects(sln).ForEach(prj => projectItems.Add(prj));
+            RenderProjects(() => GetProjects(sln).ForEach(prj => projectItems.Add(prj)));
         }
 
         private void RenderProjects(string sln, ProjectFilter filter)
         {
-            lock(sync)
+            RenderProjects(() => 
             {
-                projectItems.RenderedItemsSizeChanged -= projectItems_RenderedItemsSizeChanged;
-                projectItems.Reset(false);
-
                 projectItems.Pause();
-
                 extcfg.Value.FilterProjects(filter, GetProjects(sln))
                                 .ForEach(prj => projectItems.Add(prj));
 
                 projectItems.Resume();
-                projectItems.RenderedItemsSizeChanged += projectItems_RenderedItemsSizeChanged;
+            });
+        }
+
+        private void RenderProjects(Action act)
+        {
+            lock(sync)
+            {
+                _suspendPrjItems = true;
+                projectItems.Reset(false);
+
+                act();
+                _suspendPrjItems = false;
             }
         }
 
@@ -294,6 +302,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void projectItems_RenderedItemsSizeChanged(object sender, EventArgs e)
         {
+            if(_suspendPrjItems) { return; }
             ResizeHeight();
         }
     }
