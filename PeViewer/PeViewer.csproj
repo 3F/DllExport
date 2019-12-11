@@ -37,9 +37,10 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Conari, Version=1.3.0.39650, Culture=neutral, PublicKeyToken=4bbd2ef743db151e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Conari.1.3.0\lib\net40\Conari.dll</HintPath>
+    <Reference Include="Conari, Version=1.4.0.0, Culture=neutral, PublicKeyToken=4bbd2ef743db151e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Conari.1.4.0\lib\net40\Conari.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
   </ItemGroup>
