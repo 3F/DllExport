@@ -423,6 +423,7 @@ namespace net.r_eg.DllExport.Wizard
                 }
             }
 
+            RemoveProperties(MSBuildProperties.PRJ_PLATFORM);
             SetProperty(MSBuildProperties.PRJ_PLATFORM, platform);
             Log.send(this, $"Export has been configured for platform: {platformS ?? platform}");
         }
