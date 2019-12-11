@@ -403,17 +403,8 @@ namespace RGiesecke.DllExport.Parsing
                 keyFile = "\"/Key=" + keyFile + '"';
             }
 
-            string cvtres;
-            if(!String.IsNullOrWhiteSpace(InputValues.OurILAsmPath)) {
-                // https://github.com/3F/coreclr/issues/2
-                // Only our new ILAsm 4.5.1+ may detect cvtres.exe automatically if the path is not presented at all. However, we can also provide CVR key
-                cvtres = String.IsNullOrWhiteSpace(InputValues.FrameworkPath) ? "" : $"/CVRES=\"{InputValues.FrameworkPath}/\"";
-            }
-            else {
-                cvtres = String.Empty; // original coreclr \ ILAsm does not support /CVRES
-            }
-
-            return String.Format(
+            return string.Format
+            (
                 CultureInfo.InvariantCulture, 
                 "/nologo \"/out:{0}\" \"{1}.il\" {2} {3} {4} {5} {6} {7}", 
                 fileName, 
@@ -423,8 +414,35 @@ namespace RGiesecke.DllExport.Parsing
                 InputValues.EmitDebugSymbols ? "/debug" : "/optimize", 
                 cpu == CpuPlatform.X86 ? "" : (" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")),
                 keyFile,
-                cvtres
+                GetKeysToCustomILAsm()
              );
+        }
+
+        /// <returns>
+        /// Keys to modified coreclr \ ILAsm 
+        /// </returns>
+        private string GetKeysToCustomILAsm()
+        {
+            if(string.IsNullOrWhiteSpace(InputValues.OurILAsmPath))
+            {
+                return string.Empty;
+            }
+
+            var sb = new StringBuilder();
+
+            // https://github.com/3F/coreclr/issues/2
+            // Our custom ILAsm 4.5.1+ may automatically detect cvtres if the path is not presented at all
+            if(!string.IsNullOrWhiteSpace(InputValues.FrameworkPath)) 
+            {
+                sb.Append($" /CVRES=\"{InputValues.FrameworkPath}/\"");
+            }
+
+            if(InputValues.SysObjRebase)
+            {
+                sb.Append(" /REBASE");
+            }
+
+            return sb.ToString();
         }
     }
 }
