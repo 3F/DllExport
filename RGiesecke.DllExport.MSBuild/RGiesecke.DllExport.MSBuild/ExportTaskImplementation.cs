@@ -258,6 +258,12 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public bool SysObjRebase
+        {
+            get => _Values.SysObjRebase;
+            set => _Values.SysObjRebase = value;
+        }
+
         public string MetaLib
         {
             get {

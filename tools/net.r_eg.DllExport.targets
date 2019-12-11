@@ -63,6 +63,7 @@
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)' == ''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
       <DllExportDDNSCecil Condition="'$(DllExportDDNSCecil)' == ''">true</DllExportDDNSCecil>
       <DllExportOurILAsm Condition="'$(DllExportOurILAsm)' == ''">false</DllExportOurILAsm>
+      <DllExportSysObjRebase Condition="'$(DllExportSysObjRebase)' == ''">false</DllExportSysObjRebase>
       <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)' == ''">1</DllExportOrdinalsBase>
       <DllExportGenExpLib Condition="'$(DllExportGenExpLib)' == ''">false</DllExportGenExpLib>
       <DllExportOurILAsmPath Condition="'$(DllExportOurILAsm)' != 'true'"></DllExportOurILAsmPath>
@@ -95,6 +96,7 @@
           OurILAsmPath="$(DllExportOurILAsmPath)"
           MetaLib="$(DllExportMetaLibFullPath)"
           PeCheckRaw="$(DllExportPeCheck)"
+          SysObjRebase="$(DllExportSysObjRebase)"
          />
 
     <PropertyGroup>

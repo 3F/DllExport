@@ -324,6 +324,12 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public bool SysObjRebase
+        {
+            get => _ExportTaskImplementation.SysObjRebase;
+            set => _ExportTaskImplementation.SysObjRebase = value;
+        }
+
         public string MetaLib
         {
             get {
