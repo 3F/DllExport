@@ -16,6 +16,7 @@
             if(disposing && (components != null)) {
                 components.Dispose();
             }
+            fdialog?.Dispose();
             base.Dispose(disposing);
         }
 
