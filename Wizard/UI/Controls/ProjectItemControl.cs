@@ -114,6 +114,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 genExpLib           = chkGenExpLib.Checked,
                 ourILAsm            = chkOurILAsm.Checked,
                 customILAsm         = chkCustomILAsm.Checked ? textBoxCustomILAsm.Text : null,
+                rSysObj             = chkRebaseSysObj.Checked,
                 intermediateFiles   = chkIntermediateFiles.Checked,
                 timeout             = (int)numTimeout.Value,
                 peCheck             = GetPeCheckType()
@@ -123,6 +124,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 numOrdinal.Value        = value.ordinalsBase;
                 chkGenExpLib.Checked    = value.genExpLib;
                 chkOurILAsm.Checked     = value.ourILAsm;
+                chkRebaseSysObj.Checked = value.rSysObj;
                 numTimeout.Value        = value.timeout;
 
                 if(String.IsNullOrWhiteSpace(value.customILAsm)) {
@@ -187,6 +189,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             textBoxIdent.ForeColor = Color.DimGray;
 
             InstalledStatus(false);
+            UpdateRebaseChk();
         }
 
         private Platform GetPlatform()
@@ -265,6 +268,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
         }
 
+        private void UpdateRebaseChk() => chkRebaseSysObj.Enabled = chkOurILAsm.Checked || chkCustomILAsm.Checked;
+
         private void btnBrowse_Click(object sender, EventArgs e)
         {
             var path = Project.XProject?.ProjectItem.project.fullPath;
@@ -295,20 +300,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             e.Handled = true;
         }
 
-        private void linkOrdinals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");
-        }
+        private void linkOrdinals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");
 
-        private void linkExpLib_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/9#issuecomment-246189220");
-        }
+        private void linkExpLib_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/9#issuecomment-246189220");
 
-        private void linkOurILAsm_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/17");
-        }
+        private void linkOurILAsm_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/17");
+
+        private void linkSysObjRebase_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/125#issuecomment-561245575");
 
         private void comboNS_TextUpdate(object sender, EventArgs e)
         {
@@ -338,6 +336,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             else {
                 textBoxCustomILAsm.ForeColor = Color.DarkGray;
             }
+
+            UpdateRebaseChk();
         }
 
         private void chkOurILAsm_CheckedChanged(object sender, EventArgs e)
@@ -345,6 +345,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(chkOurILAsm.Checked) {
                 chkCustomILAsm.Checked = false;
             }
+
+            UpdateRebaseChk();
         }
 
         private void menuItemLimitPKT_Click(object sender, EventArgs e)
@@ -358,7 +360,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         #region disposing
 
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if(disposing && (components != null)) {

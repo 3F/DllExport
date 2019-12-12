@@ -26,6 +26,8 @@
             this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
+            this.linkSysObjRebase = new System.Windows.Forms.LinkLabel();
+            this.chkRebaseSysObj = new System.Windows.Forms.CheckBox();
             this.textBoxCustomILAsm = new System.Windows.Forms.TextBox();
             this.chkIntermediateFiles = new System.Windows.Forms.CheckBox();
             this.chkCustomILAsm = new System.Windows.Forms.CheckBox();
@@ -158,7 +160,7 @@
             this.rbPlatformAnyCPU.AutoSize = true;
             this.rbPlatformAnyCPU.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformAnyCPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rbPlatformAnyCPU.Location = new System.Drawing.Point(66, 25);
+            this.rbPlatformAnyCPU.Location = new System.Drawing.Point(66, 29);
             this.rbPlatformAnyCPU.Name = "rbPlatformAnyCPU";
             this.rbPlatformAnyCPU.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformAnyCPU.TabIndex = 2;
@@ -170,7 +172,7 @@
             this.rbPlatformX64.AutoSize = true;
             this.rbPlatformX64.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rbPlatformX64.Location = new System.Drawing.Point(34, 25);
+            this.rbPlatformX64.Location = new System.Drawing.Point(34, 29);
             this.rbPlatformX64.Name = "rbPlatformX64";
             this.rbPlatformX64.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformX64.TabIndex = 1;
@@ -179,6 +181,8 @@
             // 
             // groupCompiler
             // 
+            this.groupCompiler.Controls.Add(this.linkSysObjRebase);
+            this.groupCompiler.Controls.Add(this.chkRebaseSysObj);
             this.groupCompiler.Controls.Add(this.textBoxCustomILAsm);
             this.groupCompiler.Controls.Add(this.chkIntermediateFiles);
             this.groupCompiler.Controls.Add(this.chkCustomILAsm);
@@ -192,10 +196,34 @@
             this.groupCompiler.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupCompiler.Location = new System.Drawing.Point(130, 82);
             this.groupCompiler.Name = "groupCompiler";
-            this.groupCompiler.Size = new System.Drawing.Size(313, 120);
+            this.groupCompiler.Size = new System.Drawing.Size(313, 142);
             this.groupCompiler.TabIndex = 9;
             this.groupCompiler.TabStop = false;
             this.groupCompiler.Text = "Compiler settings";
+            // 
+            // linkSysObjRebase
+            // 
+            this.linkSysObjRebase.AutoSize = true;
+            this.linkSysObjRebase.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.linkSysObjRebase.Location = new System.Drawing.Point(287, 117);
+            this.linkSysObjRebase.Name = "linkSysObjRebase";
+            this.linkSysObjRebase.Size = new System.Drawing.Size(13, 13);
+            this.linkSysObjRebase.TabIndex = 13;
+            this.linkSysObjRebase.TabStop = true;
+            this.linkSysObjRebase.Text = "?";
+            this.linkSysObjRebase.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkSysObjRebase_LinkClicked);
+            // 
+            // chkSysObjRebase
+            // 
+            this.chkRebaseSysObj.AutoSize = true;
+            this.chkRebaseSysObj.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkRebaseSysObj.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkRebaseSysObj.Location = new System.Drawing.Point(10, 119);
+            this.chkRebaseSysObj.Name = "chkSysObjRebase";
+            this.chkRebaseSysObj.Size = new System.Drawing.Size(263, 17);
+            this.chkRebaseSysObj.TabIndex = 12;
+            this.chkRebaseSysObj.Text = "Rebase System Object: System.Runtime > mscorlib";
+            this.chkRebaseSysObj.UseVisualStyleBackColor = true;
             // 
             // textBoxCustomILAsm
             // 
@@ -237,7 +265,7 @@
             this.rbPlatformX86.AutoSize = true;
             this.rbPlatformX86.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rbPlatformX86.Location = new System.Drawing.Point(7, 25);
+            this.rbPlatformX86.Location = new System.Drawing.Point(7, 29);
             this.rbPlatformX86.Name = "rbPlatformX86";
             this.rbPlatformX86.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformX86.TabIndex = 0;
@@ -253,7 +281,7 @@
             this.groupPlatform.Controls.Add(this.labelPlatform);
             this.groupPlatform.Location = new System.Drawing.Point(5, 82);
             this.groupPlatform.Name = "groupPlatform";
-            this.groupPlatform.Size = new System.Drawing.Size(122, 43);
+            this.groupPlatform.Size = new System.Drawing.Size(122, 49);
             this.groupPlatform.TabIndex = 8;
             this.groupPlatform.TabStop = false;
             // 
@@ -263,7 +291,7 @@
             this.rbPlatformAuto.Checked = true;
             this.rbPlatformAuto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.rbPlatformAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.rbPlatformAuto.Location = new System.Drawing.Point(99, 25);
+            this.rbPlatformAuto.Location = new System.Drawing.Point(99, 29);
             this.rbPlatformAuto.Name = "rbPlatformAuto";
             this.rbPlatformAuto.Size = new System.Drawing.Size(13, 12);
             this.rbPlatformAuto.TabIndex = 6;
@@ -276,7 +304,7 @@
             this.labelPlatform.AutoSize = true;
             this.labelPlatform.BackColor = System.Drawing.Color.Transparent;
             this.labelPlatform.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelPlatform.Location = new System.Drawing.Point(1, 9);
+            this.labelPlatform.Location = new System.Drawing.Point(1, 11);
             this.labelPlatform.Name = "labelPlatform";
             this.labelPlatform.Size = new System.Drawing.Size(116, 12);
             this.labelPlatform.TabIndex = 3;
@@ -364,14 +392,14 @@
             0,
             0,
             0});
-            this.numTimeout.Location = new System.Drawing.Point(5, 13);
+            this.numTimeout.Location = new System.Drawing.Point(8, 74);
             this.numTimeout.Maximum = new decimal(new int[] {
             10000000,
             0,
             0,
             0});
             this.numTimeout.Name = "numTimeout";
-            this.numTimeout.Size = new System.Drawing.Size(64, 20);
+            this.numTimeout.Size = new System.Drawing.Size(76, 20);
             this.numTimeout.TabIndex = 10;
             this.numTimeout.ThousandsSeparator = true;
             this.toolTip.SetToolTip(this.numTimeout, "Timeout in Milliseconds");
@@ -386,7 +414,7 @@
             this.chkPECheckIl.AutoSize = true;
             this.chkPECheckIl.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkPECheckIl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkPECheckIl.Location = new System.Drawing.Point(5, 61);
+            this.chkPECheckIl.Location = new System.Drawing.Point(5, 31);
             this.chkPECheckIl.Name = "chkPECheckIl";
             this.chkPECheckIl.Size = new System.Drawing.Size(110, 17);
             this.chkPECheckIl.TabIndex = 13;
@@ -400,7 +428,7 @@
             this.chkPECheck1to1.AutoSize = true;
             this.chkPECheck1to1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkPECheck1to1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkPECheck1to1.Location = new System.Drawing.Point(5, 40);
+            this.chkPECheck1to1.Location = new System.Drawing.Point(5, 11);
             this.chkPECheck1to1.Name = "chkPECheck1to1";
             this.chkPECheck1to1.Size = new System.Drawing.Size(89, 17);
             this.chkPECheck1to1.TabIndex = 12;
@@ -489,7 +517,7 @@
             // 
             this.panelBottomLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.panelBottomLine.BackColor = System.Drawing.Color.Gray;
-            this.panelBottomLine.Location = new System.Drawing.Point(6, 202);
+            this.panelBottomLine.Location = new System.Drawing.Point(6, 224);
             this.panelBottomLine.Margin = new System.Windows.Forms.Padding(0);
             this.panelBottomLine.Name = "panelBottomLine";
             this.panelBottomLine.Size = new System.Drawing.Size(438, 2);
@@ -500,7 +528,7 @@
             this.panelStatus.BackColor = System.Drawing.Color.DarkRed;
             this.panelStatus.Location = new System.Drawing.Point(0, 2);
             this.panelStatus.Name = "panelStatus";
-            this.panelStatus.Size = new System.Drawing.Size(4, 200);
+            this.panelStatus.Size = new System.Drawing.Size(4, 223);
             this.panelStatus.TabIndex = 0;
             // 
             // groupTimeout
@@ -509,9 +537,9 @@
             this.groupTimeout.Controls.Add(this.chkPECheck1to1);
             this.groupTimeout.Controls.Add(this.labelTimeout);
             this.groupTimeout.Controls.Add(this.numTimeout);
-            this.groupTimeout.Location = new System.Drawing.Point(5, 120);
+            this.groupTimeout.Location = new System.Drawing.Point(5, 126);
             this.groupTimeout.Name = "groupTimeout";
-            this.groupTimeout.Size = new System.Drawing.Size(122, 82);
+            this.groupTimeout.Size = new System.Drawing.Size(122, 98);
             this.groupTimeout.TabIndex = 9;
             this.groupTimeout.TabStop = false;
             // 
@@ -520,11 +548,11 @@
             this.labelTimeout.AutoSize = true;
             this.labelTimeout.BackColor = System.Drawing.Color.Transparent;
             this.labelTimeout.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelTimeout.Location = new System.Drawing.Point(71, 16);
+            this.labelTimeout.Location = new System.Drawing.Point(5, 56);
             this.labelTimeout.Name = "labelTimeout";
-            this.labelTimeout.Size = new System.Drawing.Size(45, 13);
+            this.labelTimeout.Size = new System.Drawing.Size(105, 13);
             this.labelTimeout.TabIndex = 11;
-            this.labelTimeout.Text = "Timeout";
+            this.labelTimeout.Text = "Processing Limit (ms)";
             // 
             // ProjectItemControl
             // 
@@ -538,7 +566,7 @@
             this.Controls.Add(this.gbProject);
             this.Controls.Add(this.groupNS);
             this.Name = "ProjectItemControl";
-            this.Size = new System.Drawing.Size(444, 204);
+            this.Size = new System.Drawing.Size(444, 226);
             ((System.ComponentModel.ISupportInitialize)(this.numOrdinal)).EndInit();
             this.groupCompiler.ResumeLayout(false);
             this.groupCompiler.PerformLayout();
@@ -596,5 +624,7 @@
         private System.Windows.Forms.ContextMenuStrip menuForInstalled;
         private System.Windows.Forms.ToolStripMenuItem menuItemLimitPKT;
         private System.Windows.Forms.RadioButton rbPlatformAuto;
+        private System.Windows.Forms.LinkLabel linkSysObjRebase;
+        private System.Windows.Forms.CheckBox chkRebaseSysObj;
     }
 }

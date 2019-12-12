@@ -34,6 +34,7 @@ using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
+using net.r_eg.DllExport.Wizard.UI.Kit;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 
@@ -80,7 +81,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             this.exec = exec ?? throw new ArgumentNullException(nameof(exec));
 
-            extcfg = new Lazy<IExtCfg>(() => new Kit.FilterLineControl(this, exec));
+            extcfg = new Lazy<IExtCfg>(() => new FilterLineControl(this, exec));
 
             InitializeComponent();
 
@@ -138,13 +139,13 @@ namespace net.r_eg.DllExport.Wizard.UI
         private void ShowFilterPanel()
         {
             if(extcfg.IsValueCreated) {
-                ((Kit.FilterLineControl)extcfg.Value).Show();
+                ((FilterLineControl)extcfg.Value).Show();
                 return;
             }
 
-            LSender.Send(this, $"Create {nameof(Kit.FilterLineControl)} panel");
+            LSender.Send(this, $"Create {nameof(FilterLineControl)} panel");
 
-            var panel = (Kit.FilterLineControl)extcfg.Value;
+            var panel = (FilterLineControl)extcfg.Value;
 
             panel.Left      = 0;
             panel.Top       = 0;
@@ -313,6 +314,8 @@ namespace net.r_eg.DllExport.Wizard.UI
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(_suspendCbSln) { return; }
+
+            ((FilterLineControl)extcfg.Value).FilterText = string.Empty;
 
             if(sender is ComboBox) {
                 RenderProjects((ComboBox)sender);

@@ -41,6 +41,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Kit
         private DateTime prevPress;
         private bool block = false;
 
+        public string FilterText
+        {
+            get => textBoxFilter.Text;
+            set => textBoxFilter.Text = value;
+        }
+
         /// <summary>
         /// To get new project list after applying filter.
         /// TODO: ProjectFilter
@@ -132,7 +138,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Kit
 
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
-            ApplyDelayedFilter();
+            ApplyDelayedFilter(550);
         }
     }
 }

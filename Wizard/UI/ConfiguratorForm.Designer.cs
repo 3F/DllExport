@@ -31,15 +31,21 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelTop = new System.Windows.Forms.Panel();
+            this.progressLine = new net.r_eg.DllExport.Wizard.UI.Controls.ProgressLineControl();
             this.btnApply = new System.Windows.Forms.Button();
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.comboBoxStorage = new System.Windows.Forms.ComboBox();
             this.splitCon = new System.Windows.Forms.SplitContainer();
             this.panelPrjs = new System.Windows.Forms.Panel();
+            this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
+            this.gcInstalled = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gcType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gcPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panelFilter = new System.Windows.Forms.Panel();
             this.tabCtrl = new System.Windows.Forms.TabControl();
             this.tabCfgDxp = new System.Windows.Forms.TabPage();
+            this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
             this.tabCfgOpt = new System.Windows.Forms.TabPage();
             this.linkIlasm = new System.Windows.Forms.LinkLabel();
             this.lnkSrc = new System.Windows.Forms.LinkLabel();
@@ -47,22 +53,16 @@
             this.labelSrc = new System.Windows.Forms.Label();
             this.txtBuildInfo = new System.Windows.Forms.TextBox();
             this.labelStorage = new System.Windows.Forms.Label();
-            this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
-            this.gcInstalled = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gcType = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gcPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
-            this.progressLine = new net.r_eg.DllExport.Wizard.UI.Controls.ProgressLineControl();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).BeginInit();
             this.splitCon.Panel1.SuspendLayout();
             this.splitCon.Panel2.SuspendLayout();
             this.splitCon.SuspendLayout();
             this.panelPrjs.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).BeginInit();
             this.tabCtrl.SuspendLayout();
             this.tabCfgDxp.SuspendLayout();
             this.tabCfgOpt.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).BeginInit();
             this.SuspendLayout();
             // 
             // panelTop
@@ -76,6 +76,15 @@
             this.panelTop.Name = "panelTop";
             this.panelTop.Size = new System.Drawing.Size(446, 29);
             this.panelTop.TabIndex = 0;
+            // 
+            // progressLine
+            // 
+            this.progressLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.progressLine.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.progressLine.Location = new System.Drawing.Point(0, 21);
+            this.progressLine.Name = "progressLine";
+            this.progressLine.Size = new System.Drawing.Size(275, 5);
+            this.progressLine.TabIndex = 8;
             // 
             // btnApply
             // 
@@ -138,8 +147,8 @@
             // splitCon.Panel2
             // 
             this.splitCon.Panel2.Controls.Add(this.tabCtrl);
-            this.splitCon.Size = new System.Drawing.Size(446, 316);
-            this.splitCon.SplitterDistance = 79;
+            this.splitCon.Size = new System.Drawing.Size(446, 340);
+            this.splitCon.SplitterDistance = 84;
             this.splitCon.TabIndex = 2;
             // 
             // panelPrjs
@@ -149,126 +158,8 @@
             this.panelPrjs.Location = new System.Drawing.Point(0, 26);
             this.panelPrjs.Margin = new System.Windows.Forms.Padding(0);
             this.panelPrjs.Name = "panelPrjs";
-            this.panelPrjs.Size = new System.Drawing.Size(446, 53);
+            this.panelPrjs.Size = new System.Drawing.Size(446, 58);
             this.panelPrjs.TabIndex = 2;
-            // 
-            // panelFilter
-            // 
-            this.panelFilter.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panelFilter.Location = new System.Drawing.Point(0, 0);
-            this.panelFilter.Margin = new System.Windows.Forms.Padding(0);
-            this.panelFilter.Name = "panelFilter";
-            this.panelFilter.Size = new System.Drawing.Size(446, 26);
-            this.panelFilter.TabIndex = 1;
-            // 
-            // tabCtrl
-            // 
-            this.tabCtrl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
-            this.tabCtrl.Controls.Add(this.tabCfgDxp);
-            this.tabCtrl.Controls.Add(this.tabCfgOpt);
-            this.tabCtrl.Location = new System.Drawing.Point(-4, 0);
-            this.tabCtrl.Margin = new System.Windows.Forms.Padding(0);
-            this.tabCtrl.Name = "tabCtrl";
-            this.tabCtrl.SelectedIndex = 0;
-            this.tabCtrl.Size = new System.Drawing.Size(450, 233);
-            this.tabCtrl.TabIndex = 0;
-            // 
-            // tabCfgDxp
-            // 
-            this.tabCfgDxp.Controls.Add(this.projectItems);
-            this.tabCfgDxp.Location = new System.Drawing.Point(4, 25);
-            this.tabCfgDxp.Name = "tabCfgDxp";
-            this.tabCfgDxp.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCfgDxp.Size = new System.Drawing.Size(442, 204);
-            this.tabCfgDxp.TabIndex = 0;
-            this.tabCfgDxp.Text = "Use";
-            this.tabCfgDxp.UseVisualStyleBackColor = true;
-            // 
-            // tabCfgOpt
-            // 
-            this.tabCfgOpt.BackColor = System.Drawing.SystemColors.Control;
-            this.tabCfgOpt.Controls.Add(this.linkIlasm);
-            this.tabCfgOpt.Controls.Add(this.lnkSrc);
-            this.tabCfgOpt.Controls.Add(this.lnk3F);
-            this.tabCfgOpt.Controls.Add(this.labelSrc);
-            this.tabCfgOpt.Controls.Add(this.txtBuildInfo);
-            this.tabCfgOpt.Controls.Add(this.labelStorage);
-            this.tabCfgOpt.Controls.Add(this.comboBoxStorage);
-            this.tabCfgOpt.Location = new System.Drawing.Point(4, 25);
-            this.tabCfgOpt.Name = "tabCfgOpt";
-            this.tabCfgOpt.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCfgOpt.Size = new System.Drawing.Size(442, 204);
-            this.tabCfgOpt.TabIndex = 1;
-            this.tabCfgOpt.Text = "  { }";
-            // 
-            // linkIlasm
-            // 
-            this.linkIlasm.AutoSize = true;
-            this.linkIlasm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkIlasm.Location = new System.Drawing.Point(280, 48);
-            this.linkIlasm.Name = "linkIlasm";
-            this.linkIlasm.Size = new System.Drawing.Size(149, 13);
-            this.linkIlasm.TabIndex = 20;
-            this.linkIlasm.TabStop = true;
-            this.linkIlasm.Text = "https://github.com/3F/coreclr";
-            this.linkIlasm.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkIlasm_LinkClicked);
-            // 
-            // lnkSrc
-            // 
-            this.lnkSrc.AutoSize = true;
-            this.lnkSrc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lnkSrc.Location = new System.Drawing.Point(280, 27);
-            this.lnkSrc.Name = "lnkSrc";
-            this.lnkSrc.Size = new System.Drawing.Size(159, 13);
-            this.lnkSrc.TabIndex = 16;
-            this.lnkSrc.TabStop = true;
-            this.lnkSrc.Text = "https://github.com/3F/DllExport";
-            this.lnkSrc.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkSrc_LinkClicked);
-            // 
-            // lnk3F
-            // 
-            this.lnk3F.AutoSize = true;
-            this.lnk3F.Location = new System.Drawing.Point(360, 186);
-            this.lnk3F.Name = "lnk3F";
-            this.lnk3F.Size = new System.Drawing.Size(57, 13);
-            this.lnk3F.TabIndex = 14;
-            this.lnk3F.TabStop = true;
-            this.lnk3F.Text = "GitHub/3F";
-            this.lnk3F.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk3F_LinkClicked);
-            // 
-            // labelSrc
-            // 
-            this.labelSrc.AutoSize = true;
-            this.labelSrc.Location = new System.Drawing.Point(280, 7);
-            this.labelSrc.Name = "labelSrc";
-            this.labelSrc.Size = new System.Drawing.Size(111, 13);
-            this.labelSrc.TabIndex = 13;
-            this.labelSrc.Text = "Open source projects:";
-            // 
-            // txtBuildInfo
-            // 
-            this.txtBuildInfo.BackColor = System.Drawing.SystemColors.Control;
-            this.txtBuildInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtBuildInfo.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBuildInfo.Location = new System.Drawing.Point(3, 67);
-            this.txtBuildInfo.Multiline = true;
-            this.txtBuildInfo.Name = "txtBuildInfo";
-            this.txtBuildInfo.ReadOnly = true;
-            this.txtBuildInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBuildInfo.Size = new System.Drawing.Size(436, 137);
-            this.txtBuildInfo.TabIndex = 12;
-            // 
-            // labelStorage
-            // 
-            this.labelStorage.AutoSize = true;
-            this.labelStorage.Location = new System.Drawing.Point(6, 7);
-            this.labelStorage.Name = "labelStorage";
-            this.labelStorage.Size = new System.Drawing.Size(67, 13);
-            this.labelStorage.TabIndex = 11;
-            this.labelStorage.Text = "Use storage:";
             // 
             // dgvFilter
             // 
@@ -306,7 +197,7 @@
             this.dgvFilter.RowTemplate.Height = 17;
             this.dgvFilter.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvFilter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFilter.Size = new System.Drawing.Size(446, 53);
+            this.dgvFilter.Size = new System.Drawing.Size(446, 58);
             this.dgvFilter.TabIndex = 0;
             this.dgvFilter.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFilter_RowEnter);
             this.dgvFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvFilter_KeyDown);
@@ -337,6 +228,41 @@
             this.gcPath.ReadOnly = true;
             this.gcPath.ToolTipText = "Path to project file";
             // 
+            // panelFilter
+            // 
+            this.panelFilter.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelFilter.Location = new System.Drawing.Point(0, 0);
+            this.panelFilter.Margin = new System.Windows.Forms.Padding(0);
+            this.panelFilter.Name = "panelFilter";
+            this.panelFilter.Size = new System.Drawing.Size(446, 26);
+            this.panelFilter.TabIndex = 1;
+            // 
+            // tabCtrl
+            // 
+            this.tabCtrl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
+            this.tabCtrl.Controls.Add(this.tabCfgDxp);
+            this.tabCtrl.Controls.Add(this.tabCfgOpt);
+            this.tabCtrl.Location = new System.Drawing.Point(-4, 0);
+            this.tabCtrl.Margin = new System.Windows.Forms.Padding(0);
+            this.tabCtrl.Name = "tabCtrl";
+            this.tabCtrl.SelectedIndex = 0;
+            this.tabCtrl.Size = new System.Drawing.Size(450, 252);
+            this.tabCtrl.TabIndex = 0;
+            // 
+            // tabCfgDxp
+            // 
+            this.tabCfgDxp.Controls.Add(this.projectItems);
+            this.tabCfgDxp.Location = new System.Drawing.Point(4, 25);
+            this.tabCfgDxp.Name = "tabCfgDxp";
+            this.tabCfgDxp.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCfgDxp.Size = new System.Drawing.Size(442, 223);
+            this.tabCfgDxp.TabIndex = 0;
+            this.tabCfgDxp.Text = "Options";
+            this.tabCfgDxp.UseVisualStyleBackColor = true;
+            // 
             // projectItems
             // 
             this.projectItems.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -349,23 +275,101 @@
             this.projectItems.Name = "projectItems";
             this.projectItems.NamespaceValidate = null;
             this.projectItems.OpenUrl = null;
-            this.projectItems.Size = new System.Drawing.Size(448, 210);
+            this.projectItems.Size = new System.Drawing.Size(448, 229);
             this.projectItems.TabIndex = 2;
             // 
-            // progressLine
+            // tabCfgOpt
             // 
-            this.progressLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.progressLine.BackColor = System.Drawing.Color.DeepSkyBlue;
-            this.progressLine.Location = new System.Drawing.Point(0, 21);
-            this.progressLine.Name = "progressLine";
-            this.progressLine.Size = new System.Drawing.Size(275, 5);
-            this.progressLine.TabIndex = 8;
+            this.tabCfgOpt.BackColor = System.Drawing.SystemColors.Control;
+            this.tabCfgOpt.Controls.Add(this.linkIlasm);
+            this.tabCfgOpt.Controls.Add(this.lnkSrc);
+            this.tabCfgOpt.Controls.Add(this.lnk3F);
+            this.tabCfgOpt.Controls.Add(this.labelSrc);
+            this.tabCfgOpt.Controls.Add(this.txtBuildInfo);
+            this.tabCfgOpt.Controls.Add(this.labelStorage);
+            this.tabCfgOpt.Controls.Add(this.comboBoxStorage);
+            this.tabCfgOpt.Location = new System.Drawing.Point(4, 25);
+            this.tabCfgOpt.Name = "tabCfgOpt";
+            this.tabCfgOpt.Padding = new System.Windows.Forms.Padding(3);
+            this.tabCfgOpt.Size = new System.Drawing.Size(442, 223);
+            this.tabCfgOpt.TabIndex = 1;
+            this.tabCfgOpt.Text = "   +";
+            // 
+            // linkIlasm
+            // 
+            this.linkIlasm.AutoSize = true;
+            this.linkIlasm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkIlasm.Location = new System.Drawing.Point(280, 48);
+            this.linkIlasm.Name = "linkIlasm";
+            this.linkIlasm.Size = new System.Drawing.Size(149, 13);
+            this.linkIlasm.TabIndex = 20;
+            this.linkIlasm.TabStop = true;
+            this.linkIlasm.Text = "https://github.com/3F/coreclr";
+            this.linkIlasm.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkIlasm_LinkClicked);
+            // 
+            // lnkSrc
+            // 
+            this.lnkSrc.AutoSize = true;
+            this.lnkSrc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkSrc.Location = new System.Drawing.Point(280, 27);
+            this.lnkSrc.Name = "lnkSrc";
+            this.lnkSrc.Size = new System.Drawing.Size(159, 13);
+            this.lnkSrc.TabIndex = 16;
+            this.lnkSrc.TabStop = true;
+            this.lnkSrc.Text = "https://github.com/3F/DllExport";
+            this.lnkSrc.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkSrc_LinkClicked);
+            // 
+            // lnk3F
+            // 
+            this.lnk3F.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lnk3F.AutoSize = true;
+            this.lnk3F.Location = new System.Drawing.Point(360, 205);
+            this.lnk3F.Name = "lnk3F";
+            this.lnk3F.Size = new System.Drawing.Size(57, 13);
+            this.lnk3F.TabIndex = 14;
+            this.lnk3F.TabStop = true;
+            this.lnk3F.Text = "GitHub/3F";
+            this.lnk3F.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk3F_LinkClicked);
+            // 
+            // labelSrc
+            // 
+            this.labelSrc.AutoSize = true;
+            this.labelSrc.Location = new System.Drawing.Point(280, 7);
+            this.labelSrc.Name = "labelSrc";
+            this.labelSrc.Size = new System.Drawing.Size(76, 13);
+            this.labelSrc.TabIndex = 13;
+            this.labelSrc.Text = "Open sources:";
+            // 
+            // txtBuildInfo
+            // 
+            this.txtBuildInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBuildInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.txtBuildInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtBuildInfo.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBuildInfo.Location = new System.Drawing.Point(3, 67);
+            this.txtBuildInfo.Multiline = true;
+            this.txtBuildInfo.Name = "txtBuildInfo";
+            this.txtBuildInfo.ReadOnly = true;
+            this.txtBuildInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtBuildInfo.Size = new System.Drawing.Size(436, 156);
+            this.txtBuildInfo.TabIndex = 12;
+            // 
+            // labelStorage
+            // 
+            this.labelStorage.AutoSize = true;
+            this.labelStorage.Location = new System.Drawing.Point(6, 7);
+            this.labelStorage.Name = "labelStorage";
+            this.labelStorage.Size = new System.Drawing.Size(67, 13);
+            this.labelStorage.TabIndex = 11;
+            this.labelStorage.Text = "Use storage:";
             // 
             // ConfiguratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(446, 345);
+            this.ClientSize = new System.Drawing.Size(446, 369);
             this.Controls.Add(this.splitCon);
             this.Controls.Add(this.panelTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -382,11 +386,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).EndInit();
             this.splitCon.ResumeLayout(false);
             this.panelPrjs.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).EndInit();
             this.tabCtrl.ResumeLayout(false);
             this.tabCfgDxp.ResumeLayout(false);
             this.tabCfgOpt.ResumeLayout(false);
             this.tabCfgOpt.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).EndInit();
             this.ResumeLayout(false);
 
         }

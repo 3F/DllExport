@@ -452,15 +452,20 @@ namespace net.r_eg.DllExport.Wizard
             SetProperty(MSBuildProperties.DXP_OUR_ILASM, Config.Compiler.ourILAsm);
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
 
-            if(Config.Compiler.customILAsm != null) {
+            if(Config.Compiler.customILAsm != null) 
+            {
                 SetProperty(MSBuildProperties.DXP_CUSTOM_ILASM, Config.Compiler.customILAsm);
                 Log.send(this, $"Set path to custom ILAsm: {Config.Compiler.customILAsm}");
             }
 
+            SetProperty(MSBuildProperties.DXP_SYSOBJ_REBASE, Config.Compiler.rSysObj);
+            Log.send(this, $"Rebase System Object: {Config.Compiler.rSysObj}");
+
             SetProperty(MSBuildProperties.DXP_INTERMEDIATE_FILES, Config.Compiler.intermediateFiles);
             Log.send(this, $"Flag to keep intermediate Files (IL Code, Resources, ...): {Config.Compiler.intermediateFiles}");
 
-            if(Config.Compiler.timeout >= 0) {
+            if(Config.Compiler.timeout >= 0) 
+            {
                 SetProperty(MSBuildProperties.DXP_TIMEOUT, Config.Compiler.timeout);
                 Log.send(this, $"Timeout of execution in milliseconds: {Config.Compiler.timeout}");
             }
