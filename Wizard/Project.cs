@@ -38,6 +38,8 @@ namespace net.r_eg.DllExport.Wizard
 {
     public class Project: IProject
     {
+        public const string DXP_INVALID = "EEE00000-0000-0000-0000-000000000000";
+
         /// <summary>
         /// PublicKeyToken of the meta library.
         /// </summary>

@@ -34,8 +34,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     internal sealed partial class ProjectItemControl: UserControl, IDisposable
     {
-        private readonly int EX_HEIGHT;
-
         public IProject Project
         {
             get;
@@ -184,7 +182,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             Project = project ?? throw  new ArgumentNullException(nameof(project));
 
             InitializeComponent();
-            EX_HEIGHT = Height;
 
             textBoxIdent.BackColor = SystemColors.Control;
             textBoxIdent.ForeColor = Color.DimGray;
@@ -262,11 +259,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             if(status) {
                 panelStatus.BackColor = Color.FromArgb(111, 145, 6);
-                Height = EX_HEIGHT;
             }
             else {
                 panelStatus.BackColor = Color.FromArgb(168, 47, 17);
-                Height = gbProject.Location.Y + gbProject.Height;
             }
         }
 

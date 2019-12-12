@@ -20,7 +20,6 @@
             // 
             // panelMain
             // 
-            this.panelMain.AutoScroll = true;
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
             this.panelMain.Margin = new System.Windows.Forms.Padding(0);
