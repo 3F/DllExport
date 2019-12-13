@@ -1,6 +1,47 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7-beta2] 2019.12.14
+
+    * FIXED: Fixed possible "Invalid memory access" (JNA/Java). Issue #125.
+             For C/C++ such as "Unhandled exception at ... (KernelBase)"
+             
+             https://twitter.com/GitHub3F/status/1201904821093187585
+    
+    * FIXED: Fixed 'Failed to resolve assembly...' when .NET Standard. Issue #127.
+    
+    * FIXED: Fixed error when switching between .sln in UI. Wizard.
+    
+    * FIXED: Fixed possible duplication of `PlatformTarget` during setup.
+    
+    * NEW: Implemented "Rebase System Object" option for our assembler.
+    
+    * CHANGED: New installation behavior through official NuGet.
+    
+    * CHANGED: New wizard layout for 1.7.
+    
+    * CHANGED: Updated CoreCLR 3.1.0 RTM \ IL Assembler 4.700.2.
+               https://github.com/3F/coreclr/releases/tag/ILAsm.4.700.2
+               
+               Includes an implemented `/REBASE` feature for related issue #125.
+               
+    * CHANGED: Updated Mono Cecil 0.11.1
+               https://github.com/jbevain/cecil/releases/tag/0.11.1
+    
+    * CHANGED: Updated Conari 1.4
+               https://github.com/3F/Conari/releases/tag/1.4
+               
+    * KNOWN: Possible syntax error at token 'inf'. Issue #128.
+             https://github.com/3F/DllExport/issues/128
+             
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+             
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+    
+
 [v1.7-beta] 2019.11.04
 
     * NEW: Basic support for the netcore-based projects. 
