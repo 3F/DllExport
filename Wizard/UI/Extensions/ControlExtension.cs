@@ -23,29 +23,27 @@
 */
 
 using System;
-using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using net.r_eg.Conari.Accessors.WinAPI;
 
 namespace net.r_eg.DllExport.Wizard.UI.Extensions
 {
     public static class ControlExtension
     {
-        internal static class NativeMethods
-        {
-            public const uint WM_SETREDRAW = 0x000B;
-
-            [DllImport("user32.dll")]
-            public static extern IntPtr SendMessage(IntPtr hWnd, uint wMsg, IntPtr wParam, IntPtr lParam);
-        }
+        internal const uint WM_SETREDRAW = 0x000B;
 
         public static void SuspendDraw(this Control ctrl)
         {
-            NativeMethods.SendMessage(ctrl.Handle, NativeMethods.WM_SETREDRAW, new IntPtr(0), new IntPtr(0));
+            using(dynamic l = new User32()) {
+                l.SendMessageW(ctrl.Handle, WM_SETREDRAW, 0, 0);
+            }
         }
 
         public static void ResumeDraw(this Control ctrl)
         {
-            NativeMethods.SendMessage(ctrl.Handle, NativeMethods.WM_SETREDRAW, new IntPtr(1), new IntPtr(0));
+            using(dynamic l = new User32()) {
+                l.SendMessageW(ctrl.Handle, WM_SETREDRAW, 1, 0);
+            }
             ctrl.Refresh();
         }
 

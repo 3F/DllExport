@@ -37,6 +37,9 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Conari, Version=1.4.0.0, Culture=neutral, PublicKeyToken=4bbd2ef743db151e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Conari.1.4.0\lib\net40\Conari.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build">
       <Private>True</Private>
     </Reference>
@@ -46,6 +49,7 @@
     <Reference Include="Microsoft.Build.Utilities.v4.0">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -132,6 +136,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MvsSln\MvsSln\MvsSln.csproj">

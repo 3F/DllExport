@@ -148,7 +148,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive GetNuTool\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(pMvsSln)/MvsSln.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive MvsSln\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(phMSBuild)/hMSBuild.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive hMSBuild\", 1000)]\n}]\n\nTODO: option for expensive coreclr\n\n\n#[\" Packages \"]\n\n#[( !(#[IO exists.file(\"packages/__checked\")]) )\n{\n    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]\n        \n    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config\\\" /nologo /v:m /m:4\")]\n    \n    #[IO copy.directory(\"\", \"packages/\", true)]\n    #[File write(\"packages/__checked\"): ]\n}]",
+        "Command": "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive GetNuTool\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(pMvsSln)/MvsSln.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive MvsSln\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(phMSBuild)/hMSBuild.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive hMSBuild\", 1000)]\n}]\n\nTODO: option for expensive coreclr\n\n\n#[\" Packages \"]\n\n#[( !(#[IO exists.file(\"packages/__checked\")]) )\n{\n    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]\n        \n    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config;Wizard/packages.config\\\" /nologo /v:m /m:4\")]\n    \n    #[IO copy.directory(\"\", \"packages/\", true)]\n    #[File write(\"packages/__checked\"): ]\n}]",
         "Command__": [
           "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )",
           "{",
@@ -174,7 +174,7 @@
           "{",
           "    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]",
           "        ",
-          "    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config\\\" /nologo /v:m /m:4\")]",
+          "    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config;Wizard/packages.config\\\" /nologo /v:m /m:4\")]",
           "    ",
           "    #[IO copy.directory(\"\", \"packages/\", true)]",
           "    #[File write(\"packages/__checked\"): ]",
