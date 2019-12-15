@@ -341,6 +341,17 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public PatchesType Patches
+        {
+            get => _ExportTaskImplementation.Patches;
+            set => _ExportTaskImplementation.Patches = value;
+        }
+
+        public long PatchesRaw
+        {
+            set => Patches = (PatchesType)value;
+        }
+
         public PeCheckType PeCheck
         {
             get => _ExportTaskImplementation.PeCheck;

@@ -286,6 +286,7 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_INTERMEDIATE_FILES,
                 MSBuildProperties.DXP_TIMEOUT,
                 MSBuildProperties.DXP_PE_CHECK,
+                MSBuildProperties.DXP_PATCHES,
                 MSBuildProperties.DXP_PLATFORM
             );
 
@@ -364,7 +365,8 @@ namespace net.r_eg.DllExport.Wizard
                 Compiler = new CompilerCfg() {
                     ordinalsBase    = 1,
                     timeout         = CompilerCfg.TIMEOUT_EXEC,
-                    peCheck         = PeCheckType.PeIl
+                    peCheck         = PeCheckType.PeIl,
+                    patches         = PatchesType.None,
                 },
             };
         }
@@ -473,6 +475,9 @@ namespace net.r_eg.DllExport.Wizard
 
             SetProperty(MSBuildProperties.DXP_PE_CHECK, (int)Config.Compiler.peCheck);
             Log.send(this, $"Type of checking PE32/PE32+ module: {Config.Compiler.peCheck}");
+
+            SetProperty(MSBuildProperties.DXP_PATCHES, (long)Config.Compiler.patches);
+            Log.send(this, $"Applied Patches: {Config.Compiler.patches}");
         }
 
         protected void CfgCommonData()
@@ -732,15 +737,11 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        private void SetProperty(string name, bool val)
-        {
-            SetProperty(name, val.ToString().ToLower());
-        }
+        private void SetProperty(string name, bool val) => SetProperty(name, val.ToString().ToLower());
 
-        private void SetProperty(string name, int val)
-        {
-            SetProperty(name, val.ToString());
-        }
+        private void SetProperty(string name, int val) => SetProperty(name, val.ToString());
+
+        private void SetProperty(string name, long val) => SetProperty(name, val.ToString());
 
         private string CopyLib(string src, string dest)
         {

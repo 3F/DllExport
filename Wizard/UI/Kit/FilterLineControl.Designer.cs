@@ -1,4 +1,6 @@
-﻿namespace net.r_eg.DllExport.Wizard.UI.Kit
+﻿using net.r_eg.DllExport.Wizard.UI.Components;
+
+namespace net.r_eg.DllExport.Wizard.UI.Kit
 {
     partial class FilterLineControl
     {
@@ -16,7 +18,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.textBoxFilter = new System.Windows.Forms.TextBox();
+            this.textBoxFilter = new TextBoxExt();
             this.panelFBorder = new System.Windows.Forms.Panel();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelFBorder.SuspendLayout();
@@ -24,15 +26,16 @@
             // 
             // textBoxFilter
             // 
+            this.textBoxFilter.BackgroundCaption = "Filter by project path ...";
+            this.textBoxFilter.BackgroundCaptionAlpha = 70;
             this.textBoxFilter.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.textBoxFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.textBoxFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.textBoxFilter.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.textBoxFilter.Location = new System.Drawing.Point(1, 1);
             this.textBoxFilter.Margin = new System.Windows.Forms.Padding(0);
             this.textBoxFilter.Name = "textBoxFilter";
             this.textBoxFilter.Size = new System.Drawing.Size(464, 16);
             this.textBoxFilter.TabIndex = 0;
-            this.toolTip.SetToolTip(this.textBoxFilter, "Filter by project path");
             this.textBoxFilter.TextChanged += new System.EventHandler(this.textBoxFilter_TextChanged);
             // 
             // panelFBorder
@@ -63,9 +66,8 @@
         }
 
         #endregion
-
-        private System.Windows.Forms.TextBox textBoxFilter;
         private System.Windows.Forms.Panel panelFBorder;
         private System.Windows.Forms.ToolTip toolTip;
+        private TextBoxExt textBoxFilter;
     }
 }

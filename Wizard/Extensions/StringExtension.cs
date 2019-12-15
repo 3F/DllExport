@@ -75,6 +75,20 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         }
 
         /// <summary>
+        /// To get long integer value from string.
+        /// </summary>
+        /// <param name="value">Any compatible value.</param>
+        /// <returns></returns>
+        public static long ToLongInteger(this string value)
+        {
+            if(String.IsNullOrWhiteSpace(value)) {
+                return 0;
+            }
+
+            return Int64.Parse(value);
+        }
+
+        /// <summary>
         /// Open url through default application.
         /// </summary>
         /// <param name="url"></param>

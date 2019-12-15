@@ -89,6 +89,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_PE_CHECK = "DllExportPeCheck";
 
         /// <summary>
+        /// Optional patches.
+        /// </summary>
+        public const string DXP_PATCHES = "DllExportPatches";
+
+        /// <summary>
         /// Platform Target for binaries.
         /// </summary>
         public const string PRJ_PLATFORM = "PlatformTarget";

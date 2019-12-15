@@ -106,7 +106,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.comboBoxSln.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBoxSln.DropDownWidth = 500;
-            this.comboBoxSln.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.comboBoxSln.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.comboBoxSln.FormattingEnabled = true;
             this.comboBoxSln.Location = new System.Drawing.Point(1, 2);
             this.comboBoxSln.Margin = new System.Windows.Forms.Padding(1);
@@ -147,8 +147,8 @@
             // splitCon.Panel2
             // 
             this.splitCon.Panel2.Controls.Add(this.tabCtrl);
-            this.splitCon.Size = new System.Drawing.Size(446, 340);
-            this.splitCon.SplitterDistance = 84;
+            this.splitCon.Size = new System.Drawing.Size(446, 341);
+            this.splitCon.SplitterDistance = 78;
             this.splitCon.TabIndex = 2;
             // 
             // panelPrjs
@@ -158,7 +158,7 @@
             this.panelPrjs.Location = new System.Drawing.Point(0, 26);
             this.panelPrjs.Margin = new System.Windows.Forms.Padding(0);
             this.panelPrjs.Name = "panelPrjs";
-            this.panelPrjs.Size = new System.Drawing.Size(446, 58);
+            this.panelPrjs.Size = new System.Drawing.Size(446, 52);
             this.panelPrjs.TabIndex = 2;
             // 
             // dgvFilter
@@ -178,7 +178,7 @@
             this.gcPath});
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(238)))), ((int)(((byte)(239)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -197,7 +197,7 @@
             this.dgvFilter.RowTemplate.Height = 17;
             this.dgvFilter.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvFilter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFilter.Size = new System.Drawing.Size(446, 58);
+            this.dgvFilter.Size = new System.Drawing.Size(446, 52);
             this.dgvFilter.TabIndex = 0;
             this.dgvFilter.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFilter_RowEnter);
             this.dgvFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvFilter_KeyDown);
@@ -245,11 +245,12 @@
             this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabCtrl.Controls.Add(this.tabCfgDxp);
             this.tabCtrl.Controls.Add(this.tabCfgOpt);
+            this.tabCtrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabCtrl.Location = new System.Drawing.Point(-4, 0);
             this.tabCtrl.Margin = new System.Windows.Forms.Padding(0);
             this.tabCtrl.Name = "tabCtrl";
             this.tabCtrl.SelectedIndex = 0;
-            this.tabCtrl.Size = new System.Drawing.Size(450, 252);
+            this.tabCtrl.Size = new System.Drawing.Size(450, 259);
             this.tabCtrl.TabIndex = 0;
             // 
             // tabCfgDxp
@@ -258,7 +259,7 @@
             this.tabCfgDxp.Location = new System.Drawing.Point(4, 25);
             this.tabCfgDxp.Name = "tabCfgDxp";
             this.tabCfgDxp.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCfgDxp.Size = new System.Drawing.Size(442, 223);
+            this.tabCfgDxp.Size = new System.Drawing.Size(442, 230);
             this.tabCfgDxp.TabIndex = 0;
             this.tabCfgDxp.Text = "Options";
             this.tabCfgDxp.UseVisualStyleBackColor = true;
@@ -275,7 +276,7 @@
             this.projectItems.Name = "projectItems";
             this.projectItems.NamespaceValidate = null;
             this.projectItems.OpenUrl = null;
-            this.projectItems.Size = new System.Drawing.Size(448, 229);
+            this.projectItems.Size = new System.Drawing.Size(448, 247);
             this.projectItems.TabIndex = 2;
             // 
             // tabCfgOpt
@@ -291,7 +292,7 @@
             this.tabCfgOpt.Location = new System.Drawing.Point(4, 25);
             this.tabCfgOpt.Name = "tabCfgOpt";
             this.tabCfgOpt.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCfgOpt.Size = new System.Drawing.Size(442, 223);
+            this.tabCfgOpt.Size = new System.Drawing.Size(442, 230);
             this.tabCfgOpt.TabIndex = 1;
             this.tabCfgOpt.Text = "   +";
             // 
@@ -323,7 +324,7 @@
             // 
             this.lnk3F.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lnk3F.AutoSize = true;
-            this.lnk3F.Location = new System.Drawing.Point(360, 205);
+            this.lnk3F.Location = new System.Drawing.Point(360, 207);
             this.lnk3F.Name = "lnk3F";
             this.lnk3F.Size = new System.Drawing.Size(57, 13);
             this.lnk3F.TabIndex = 14;
@@ -353,7 +354,7 @@
             this.txtBuildInfo.Name = "txtBuildInfo";
             this.txtBuildInfo.ReadOnly = true;
             this.txtBuildInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBuildInfo.Size = new System.Drawing.Size(436, 156);
+            this.txtBuildInfo.Size = new System.Drawing.Size(436, 158);
             this.txtBuildInfo.TabIndex = 12;
             // 
             // labelStorage
@@ -369,7 +370,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(446, 369);
+            this.ClientSize = new System.Drawing.Size(446, 370);
             this.Controls.Add(this.splitCon);
             this.Controls.Add(this.panelTop);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;

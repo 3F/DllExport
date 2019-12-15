@@ -79,6 +79,9 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Components\TextBoxExt.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI\Components\DataGridViewExt.cs">
       <SubType>Component</SubType>
     </Compile>

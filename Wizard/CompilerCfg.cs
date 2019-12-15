@@ -71,5 +71,10 @@ namespace net.r_eg.DllExport.Wizard
         /// Type of checking PE32/PE32+ module.
         /// </summary>
         public PeCheckType peCheck;
+
+        /// <summary>
+        /// Optional patches.
+        /// </summary>
+        public PatchesType patches;
     }
 }

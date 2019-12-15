@@ -182,7 +182,8 @@ namespace net.r_eg.DllExport.Wizard
                 rSysObj             = GetValue(MSBuildProperties.DXP_SYSOBJ_REBASE, xp).ToBoolean(),
                 intermediateFiles   = GetValue(MSBuildProperties.DXP_INTERMEDIATE_FILES, xp).ToBoolean(),
                 timeout             = String.IsNullOrWhiteSpace(rawTimeout) ? CompilerCfg.TIMEOUT_EXEC : rawTimeout.ToInteger(),
-                peCheck             = (PeCheckType)GetValue(MSBuildProperties.DXP_PE_CHECK, xp).ToInteger()
+                peCheck             = (PeCheckType)GetValue(MSBuildProperties.DXP_PE_CHECK, xp).ToInteger(),
+                patches             = (PatchesType)GetValue(MSBuildProperties.DXP_PATCHES, xp).ToLongInteger()
             };
         }
 
