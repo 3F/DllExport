@@ -1,6 +1,26 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7-beta3] 2019.12.15
+
+    * FIXED: Mismatch of the name of the exported function with the specified value. 
+             Issue #129.
+    
+    * FIXED: Unchangeable cdecl convention. Part of Issue #129.
+    
+    * FIXED: Fixed possible duplication of `DllExportSysObjRebase` during setup.
+    
+    * NEW: Implemented "Single + Double Inf/-Inf token patching" option. 
+           Related Issue #128.
+           
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+           
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+    
+
 [v1.7-beta2] 2019.12.14
 
     * FIXED: Fixed possible "Invalid memory access" (JNA/Java). Issue #125.
