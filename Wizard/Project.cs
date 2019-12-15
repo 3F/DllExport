@@ -280,6 +280,7 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_SKIP_ANYCPU,
                 MSBuildProperties.DXP_DDNS_CECIL,
                 MSBuildProperties.DXP_GEN_EXP_LIB,
+                MSBuildProperties.DXP_SYSOBJ_REBASE,
                 MSBuildProperties.DXP_OUR_ILASM,
                 MSBuildProperties.DXP_CUSTOM_ILASM,
                 MSBuildProperties.DXP_INTERMEDIATE_FILES,
