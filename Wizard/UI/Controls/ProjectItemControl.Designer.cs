@@ -598,6 +598,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.Controls.Add(this.panelStatus);
             this.Controls.Add(this.gbProject);
             this.Controls.Add(this.groupNS);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.Name = "ProjectItemControl";
             this.Size = new System.Drawing.Size(444, 231);
             ((System.ComponentModel.ISupportInitialize)(this.numOrdinal)).EndInit();

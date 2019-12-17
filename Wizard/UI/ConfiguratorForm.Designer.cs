@@ -373,6 +373,7 @@
             this.ClientSize = new System.Drawing.Size(446, 370);
             this.Controls.Add(this.splitCon);
             this.Controls.Add(this.panelTop);
+            this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
