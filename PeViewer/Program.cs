@@ -1,7 +1,7 @@
 ﻿/*
  * The MIT License (MIT)
  * 
- * Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
+ * Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
@@ -63,7 +63,7 @@ namespace net.r_eg.DllExport.PeViewer
                 Msg("Under the Conari license.");
                 Msg($"Conari: v{Conari.ConariVersion.S_NUM_REV} [{Conari.ConariVersion.BRANCH_SHA1}]");
                 Msg("Src: github.com/3F ");
-                Msg("     entry.reg@gmail.com ");
+                Msg("     x-3F@outlook.com ");
                 return;
             }
 

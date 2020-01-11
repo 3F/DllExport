@@ -64,6 +64,6 @@
     <summary>.NET DllExport</summary>
     <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions reverse-pinvoke Conari pinvoke net-c-func tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln hMSBuild</tags>
     <releaseNotes> changelog: https://github.com/3F/DllExport/blob/master/changelog.txt </releaseNotes>
-    <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2019  Denis Kuzmin [entry.reg@gmail.com] GitHub/3F </copyright>
+    <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2020  Denis Kuzmin &lt; x-3F@outlook.com &gt; GitHub/3F </copyright>
   </metadata>
 </package>

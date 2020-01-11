@@ -1,7 +1,7 @@
 @echo off
 
-:: Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ] GitHub/3F
-:: Distributed under the DllExport project:
+:: Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ] GitHub/3F
+:: Licensed under the MIT license
 :: https://github.com/3F/DllExport
 :: ---
 :: Offline version - wrapper
