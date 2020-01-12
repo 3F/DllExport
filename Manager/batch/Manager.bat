@@ -493,7 +493,7 @@ if not defined xMSBuild (
 
 if not defined xmgrtest (
     call :dbgprint "Target: " xMSBuild wzTarget
-    !xMSBuild! /nologo /v:m /m:4 !wzTarget!
+    call !xMSBuild! /nologo /v:m /m:4 !wzTarget!
 )
 
 
