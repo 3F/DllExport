@@ -420,7 +420,7 @@ if not exist !wzTarget! (
         set gntmsb=-msbuild "!gMsbPath!"
     )
 
-    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
+    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy! "
     call :dbgprint "GetNuTool call: " _gntC
 
     REM :: gnt's requirements (1.6.2 and less)
