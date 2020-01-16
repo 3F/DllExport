@@ -11,10 +11,10 @@ Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr_ILAsm-v4.5.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
-[![Cecil](https://img.shields.io/badge/Cecil-0.10.4-1182C3.svg)](https://github.com/jbevain/cecil)
-[![MvsSln](https://img.shields.io/badge/MvsSln-v2.4.0-865FC5.svg)](https://github.com/3F/MvsSln)
-[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
-[![Conari](https://img.shields.io/badge/Conari-v1.3.0-8AA875.svg)](https://github.com/3F/Conari)
+[![Cecil](https://img.shields.io/badge/Cecil-0.11.1-1182C3.svg)](https://github.com/jbevain/cecil)
+[![MvsSln](https://img.shields.io/badge/MvsSln-v2.5.0-865FC5.svg)](https://github.com/3F/MvsSln)
+[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.8-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![Conari](https://img.shields.io/badge/Conari-v1.4.0-8AA875.svg)](https://github.com/3F/Conari)
 
 [![Build history](https://buildstats.info/appveyor/chart/3Fs/dllexport?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/dllexport/history)
 
@@ -70,7 +70,7 @@ Our Wizard and embeddable manager:
 
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
-[![youtube.com/watch?v=sBWt-KdQtoc](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=sBWt-KdQtoc)
+[![youtube.com/watch?v=sBWt-KdQtoc](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_screen.jpg)](https://www.youtube.com/watch?v=sBWt-KdQtoc)
 [![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://github.com/3F/DllExport/issues/55)
 
 ----

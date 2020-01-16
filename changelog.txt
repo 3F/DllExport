@@ -1,6 +1,141 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.6.6] 2020.01.16
+
+    * NOTE: Please don't forget to test latest 1.7 BETA releases (not for production)
+            with .NET Core support!
+            https://github.com/3F/DllExport
+            
+    * FIXED: Fixed possible duplication of `PlatformTarget` during setup.
+    
+    * FIXED: Fixed error when switching between .sln in UI. Wizard.
+    
+    * FIXED: DllExport crashing with proxy authentication error. Issue #133.
+    
+    * FIXED: Fixed actions for `-mgr-up` key.
+             Including `-action Upgrade` ( Update + mgr-up + force keys )
+             
+    * FIXED: Fixes possible MSB1006 for proxycfg property.
+             "MSB1006: Property is not valid. Switch: proxycfg"
+
+    * CHANGED: Updated MvsSln 2.5
+               https://github.com/3F/MvsSln/releases/tag/2.5
+    
+    * CHANGED: Updated Mono Cecil 0.11.1
+               https://github.com/jbevain/cecil/releases/tag/0.11.1
+               
+    * CHANGED: Updated GetNuTool 1.8
+               https://github.com/3F/GetNuTool/releases/tag/1.8
+    
+    * CHANGED: Updated Conari 1.4
+               https://github.com/3F/Conari/releases/tag/1.4
+               
+               
+[v1.7-beta3] 2019.12.15
+
+    * FIXED: Mismatch of the name of the exported function with the specified value. 
+             Issue #129.
+    
+    * FIXED: Unchangeable cdecl convention. Part of Issue #129.
+    
+    * FIXED: Fixed possible duplication of `DllExportSysObjRebase` during setup.
+    
+    * NEW: Implemented "Single + Double Inf/-Inf token patching" option. 
+           Related Issue #128.
+           
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+           
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+    
+
+[v1.7-beta2] 2019.12.14
+
+    * FIXED: Fixed possible "Invalid memory access" (JNA/Java). Issue #125.
+             For C/C++ such as "Unhandled exception at ... (KernelBase)"
+             
+             https://twitter.com/GitHub3F/status/1201904821093187585
+    
+    * FIXED: Fixed 'Failed to resolve assembly...' when .NET Standard. Issue #127.
+    
+    * FIXED: Fixed error when switching between .sln in UI. Wizard.
+    
+    * FIXED: Fixed possible duplication of `PlatformTarget` during setup.
+    
+    * NEW: Implemented "Rebase System Object" option for our assembler.
+    
+    * CHANGED: New installation behavior through official NuGet.
+    
+    * CHANGED: New wizard layout for 1.7.
+    
+    * CHANGED: Updated CoreCLR 3.1.0 RTM \ IL Assembler 4.700.2.
+               https://github.com/3F/coreclr/releases/tag/ILAsm.4.700.2
+               
+               Includes an implemented `/REBASE` feature for related issue #125.
+               
+    * CHANGED: Updated Mono Cecil 0.11.1
+               https://github.com/jbevain/cecil/releases/tag/0.11.1
+    
+    * CHANGED: Updated Conari 1.4
+               https://github.com/3F/Conari/releases/tag/1.4
+               
+    * KNOWN: Possible syntax error at token 'inf'. Issue #128.
+             https://github.com/3F/DllExport/issues/128
+             
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+             
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+    
+
+[v1.7-beta] 2019.11.04
+
+    * NEW: Basic support for the netcore-based projects. 
+           Issues: #90, #67
+           PR: #123
+           
+    * CHANGED: Updated CoreCLR 3.0 IL Assembler 4.700.1
+               https://github.com/3F/coreclr
+    
+    * CHANGED: Updated Mono Cecil 0.11
+    
+    * CHANGED: Updated MvsSln 2.5
+    
+    * NOTE: You also need an updated manager to avoid problem  
+            when "Possible incorrect Sdk-based project types": PR #123
+            https://github.com/3F/MvsSln/issues/23
+            
+            Use it from official 1.7-beta release:
+            https://github.com/3F/DllExport/releases/tag/v1.7-beta
+            https://www.nuget.org/packages/DllExport/1.7.0-beta
+            
+            Otherwise you need provide manually msbuild instance 
+            that can process modern Sdk-types due to modern VS/dotnet sdk 
+            dependencies for netcore-based projects.
+            
+            For example, through hMSBuild https://github.com/3F/hMSBuild
+            ```
+            DllExport ... -msb hMSBuild
+            ```            
+            
+    * NOTE: To upgrade configured version to 1.7 beta:
+            ```
+                DllExport -action Upgrade -dxp-version 1.7.0-beta
+            ``` 
+            
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+    
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+
+
 [v1.6.5] 2019.08.10
 
     * FIXED: Possible "The format ... of configuration is not supported." 
