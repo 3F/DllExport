@@ -1,6 +1,6 @@
 @echo off & echo Incomplete script. Compile it first via 'build.bat' - github.com/3F/DllExport 1>&2 & exit /B 1
 
-:: Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ]
+:: Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ]
 :: https://github.com/3F/DllExport
 
 
@@ -118,9 +118,9 @@ goto commands
 :usage
 
 echo.
-@echo DllExport - $-version-$
+@echo .NET DllExport $-version-$
 @echo Copyright (c) 2009-2015  Robert Giesecke
-@echo Copyright (c) 2016-2019  Denis Kuzmin [ entry.reg@gmail.com ] GitHub/3F
+@echo Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ] GitHub/3F
 echo.
 echo Licensed under the MIT license
 @echo https://github.com/3F/DllExport
@@ -427,7 +427,7 @@ if not exist !wzTarget! (
         set gntmsb=-msbuild "!gMsbPath!"
     )
 
-    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
+    set _gntC=!gntmsb! /p:ngserver="!pkgSrv!" /p:ngpackages="!_remoteUrl!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy! "
     call :dbgprint "GetNuTool call: " _gntC
 
     REM :: gnt's requirements (1.6.2 and less)
@@ -504,7 +504,7 @@ if not defined xmgrtest (
     if not defined gMsbPath if defined wPkgPath set xMSBuild="!wPkgPath!\\hMSBuild"
 
     call :dbgprint "Target: " xMSBuild wzTarget
-    !xMSBuild! /nologo /v:m /m:4 !wzTarget!
+    call !xMSBuild! /nologo /v:m /m:4 !wzTarget!
 )
 
 

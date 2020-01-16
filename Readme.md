@@ -4,7 +4,7 @@
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
-Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
+Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 ```
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hh2oxibqoi6wrdnc/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/branch/master)
@@ -13,7 +13,7 @@ Copyright (c) 2016-2019  Denis Kuzmin < entry.reg@gmail.com > GitHub/3F
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr.ILAsm-4.700.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
 [![Cecil](https://img.shields.io/badge/Cecil-0.11.1-1182C3.svg)](https://github.com/jbevain/cecil)
 [![MvsSln](https://img.shields.io/badge/MvsSln-v2.5.0-865FC5.svg)](https://github.com/3F/MvsSln)
-[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.7-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.8-93C10B.svg)](https://github.com/3F/GetNuTool)
 [![Conari](https://img.shields.io/badge/Conari-v1.4.0-8AA875.svg)](https://github.com/3F/Conari)
 
 [![Build history](https://buildstats.info/appveyor/chart/3Fs/dllexport-ix27o?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/history)
@@ -70,7 +70,7 @@ Our Wizard and embeddable manager:
 
 [![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
 
-[![youtube.com/watch?v=sBWt-KdQtoc](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_youtube.jpg)](https://www.youtube.com/watch?v=sBWt-KdQtoc)
+[![youtube.com/watch?v=sBWt-KdQtoc](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_screen.jpg)](https://www.youtube.com/watch?v=sBWt-KdQtoc)
 [![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://github.com/3F/DllExport/issues/55)
 
 ----

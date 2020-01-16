@@ -1,11 +1,7 @@
 ﻿{
   "Header": {
     "_": [
-      " This requires vsSolutionBuildEvent engine.",
-      " Free plugin for Visual Studio or MSBuild Tools:",
-      "  * https://github.com/3F/vsSolutionBuildEvent",
-      "  * https://visualstudiogallery.msdn.microsoft.com/0d1dbfd7-ed8a-40af-ae39-281bfeca2334/",
-      " Feedback: github.com/3F  or entry.reg@gmail.com"
+      "https://github.com/3F/vsSolutionBuildEvent"
     ],
     "Compatibility": "0.9"
   },
@@ -581,13 +577,13 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]\n\n#[var frontend = $(pManager)\\\\batch\\\\Manager.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVerRel)\")]\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[$(wzPrintVer = \"$(pVer)$(partRelV)\")]\n    #[( $(Configuration) ~= \"Debug\" )\n    {\n        #[$(wzPrintVer += \" [ Debug ]\")]\n    }]    \n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(wzPrintVer)\")]\n}\nelse\n{\n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n}]\n\n#[\" \n    .compressor\n\"]\n#[IO writeLine(STDOUT): Generate minified version of the Wizard's manager ...]\n#[$(mbatch = \"$(SolutionDir)$(pManager)/batch/\")]\n#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(mbatch).compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /p:maptpl=\\\"$(mbatch)map.tpl.targets\\\" /nologo /v:m /m:4 \", 400)]]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ).full.bat\", true)]\n#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]\n#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]\n\n\n#[\" \n    quick commands\n\"]\n\n##[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]\n",
+        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]\n\n#[var frontend = $(pManager)\\\\batch\\\\Manager.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\executables\\\\batch\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVerRel)\")]\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[$(wzPrintVer = \"$(pVer)$(partRelV)\")]\n    #[( $(Configuration) ~= \"Debug\" )\n    {\n        #[$(wzPrintVer += \" [ Debug ]\")]\n    }]    \n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(wzPrintVer)\")]\n}\nelse\n{\n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n}]\n\n#[\" \n    .compressor\n\"]\n#[IO writeLine(STDOUT): Generate minified version of the Wizard's manager ...]\n#[$(mbatch = \"$(SolutionDir)$(pManager)/batch/\")]\n#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(mbatch).compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /p:maptpl=\\\"$(mbatch)map.tpl.targets\\\" /nologo /v:m /m:4 \", 400)]]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ).full.bat\", true)]\n#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]\n#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]\n\n\n#[\" \n    quick commands\n\"]\n\n##[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]\n",
         "Command__": [
           "#[IO writeLine(STDOUT): Build GetNuTool ...]",
           "#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]",
           "",
           "#[var frontend = $(pManager)\\\\batch\\\\Manager.bat]",
-          "#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\versions\\\\01. executable\\\\gnt.bat\"]",
+          "#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\executables\\\\batch\\\\gnt.bat\"]",
           "#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]",
           "",
           "#[try",

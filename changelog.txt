@@ -1,6 +1,37 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.6.6] 2020.01.16
+
+    * NOTE: Please don't forget to test latest 1.7 BETA releases (not for production)
+            with .NET Core support!
+            https://github.com/3F/DllExport
+            
+    * FIXED: Fixed possible duplication of `PlatformTarget` during setup.
+    
+    * FIXED: Fixed error when switching between .sln in UI. Wizard.
+    
+    * FIXED: DllExport crashing with proxy authentication error. Issue #133.
+    
+    * FIXED: Fixed actions for `-mgr-up` key.
+             Including `-action Upgrade` ( Update + mgr-up + force keys )
+             
+    * FIXED: Fixes possible MSB1006 for proxycfg property.
+             "MSB1006: Property is not valid. Switch: proxycfg"
+
+    * CHANGED: Updated MvsSln 2.5
+               https://github.com/3F/MvsSln/releases/tag/2.5
+    
+    * CHANGED: Updated Mono Cecil 0.11.1
+               https://github.com/jbevain/cecil/releases/tag/0.11.1
+               
+    * CHANGED: Updated GetNuTool 1.8
+               https://github.com/3F/GetNuTool/releases/tag/1.8
+    
+    * CHANGED: Updated Conari 1.4
+               https://github.com/3F/Conari/releases/tag/1.4
+               
+               
 [v1.7-beta3] 2019.12.15
 
     * FIXED: Mismatch of the name of the exported function with the specified value. 
