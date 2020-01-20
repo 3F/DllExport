@@ -17,6 +17,7 @@
                 components.Dispose();
             }
             fdialog?.Dispose();
+            icons?.Dispose();
             base.Dispose(disposing);
         }
 
@@ -40,7 +41,7 @@
             this.panelPrjs = new System.Windows.Forms.Panel();
             this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
             this.gcInstalled = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.gcType = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.gcType = new System.Windows.Forms.DataGridViewImageColumn();
             this.gcPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.panelFilter = new System.Windows.Forms.Panel();
             this.tabCtrl = new System.Windows.Forms.TabControl();
@@ -214,10 +215,12 @@
             // gcType
             // 
             this.gcType.HeaderText = "Type";
+            this.gcType.MinimumWidth = 16;
             this.gcType.Name = "gcType";
             this.gcType.ReadOnly = true;
+            this.gcType.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.gcType.ToolTipText = "Project Type";
-            this.gcType.Width = 50;
+            this.gcType.Width = 32;
             // 
             // gcPath
             // 
@@ -414,7 +417,7 @@
         private System.Windows.Forms.Panel panelFilter;
         private System.Windows.Forms.Panel panelPrjs;
         private System.Windows.Forms.DataGridViewTextBoxColumn gcInstalled;
-        private System.Windows.Forms.DataGridViewTextBoxColumn gcType;
+        private System.Windows.Forms.DataGridViewImageColumn gcType;
         private System.Windows.Forms.DataGridViewTextBoxColumn gcPath;
         private System.Windows.Forms.TextBox txtBuildInfo;
         private System.Windows.Forms.Label labelStorage;

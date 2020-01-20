@@ -85,6 +85,12 @@
     <Compile Include="UI\Components\DataGridViewExt.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Include="UI\IconResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IconResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Icons.cs" />
     <Compile Include="UI\Kit\FilterLineControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -156,7 +162,6 @@
       <Name>RGiesecke.DllExport</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -164,6 +169,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ConfiguratorForm.resx">
       <DependentUpon>ConfiguratorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\IconResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IconResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Kit\FilterLineControl.resx">

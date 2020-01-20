@@ -37,12 +37,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
 
         protected void DrawString(string str, int alpha)
         {
-            Graphics g = CreateGraphics();
-
-            g.DrawString(str, Font, new SolidBrush(Color.FromArgb(alpha, ForeColor)), ClientRectangle, new StringFormat
+            using(Graphics g = CreateGraphics())
             {
-                Alignment = StringAlignment.Near
-            });
+                g.DrawString(str, Font, new SolidBrush(Color.FromArgb(alpha, ForeColor)), ClientRectangle, new StringFormat
+                {
+                    Alignment = StringAlignment.Near
+                });
+            }
         }
 
         protected override void WndProc(ref Message m)

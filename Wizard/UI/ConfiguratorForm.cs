@@ -35,7 +35,6 @@ using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Kit;
-using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard.UI
@@ -50,6 +49,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private CfgStorage storage;
         private FileDialog fdialog;
+        private readonly Icons icons = new Icons();
         private int prevSlnItemIndex = 0;
         private volatile bool _suspendCbSln;
         private readonly object sync = new object();
@@ -257,11 +257,12 @@ namespace net.r_eg.DllExport.Wizard.UI
             {
                 int n = dgvFilter.Rows.Add
                 (
-                    prj.Installed ? CL_TRUE : CL_FALSE, 
-                    prj.XProject.ProjectItem.project.EpType, 
+                    prj.Installed ? CL_TRUE : CL_FALSE,
+                    icons.GetIcon(prj.XProject.ProjectItem.project.EpType),
                     prj.ProjectPath
                 );
 
+                dgvFilter.Rows[n].Cells[1].ToolTipText = prj.XProject.ProjectItem.project.EpType.ToString();
                 dgvFilter.Rows[n].Cells[0].Style.BackColor = (prj.Installed)? Color.FromArgb(111, 145, 6) 
                                                                             : Color.FromArgb(168, 47, 17);
             });
