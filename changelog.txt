@@ -1,6 +1,44 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7-beta4] 2020.01.21
+
+    * NEW: Allowed .NET Standard 1.1 and above targeting.
+
+    * FIXED: Fixed "Sdk.WindowsDesktop" problem for .NET Core / SDK-based projects.
+             Details in PR #123.
+
+    * FIXED: Fixed beta3 incorrect layout (Thanks @Genteure, PR #131).
+    
+             Related problem with `Inf/-Inf token patching` option:
+             https://github.com/3F/DllExport/issues/128#issuecomment-566360606
+             
+    * FIXED: DllExport crashing with proxy authentication error. Issue #133.
+    
+    * FIXED: Fixed actions for `-mgr-up` key.
+             Including `-action Upgrade` ( Update + mgr-up + force keys )
+             
+    * FIXED: Fixes possible MSB1006 for proxycfg property.
+             "MSB1006: Property is not valid. Switch: proxycfg"
+             
+    * CHANGED: UI. VS project icons under Visual Studio 2017 Image Library EULA.RTF license.
+    
+    * CHANGED: init.ps1 adds optional copying of package data for our manager.
+               Part of the "new installation behavior through official NuGet." (beta2)
+               
+               Please note: This is not nuget support! 
+                            It just replaces known info-form that was in 1.6.x.
+    
+    * CHANGED: Local scope when invoking .\DllExport manager in project files.
+             
+    * CHANGED: Updated GetNuTool 1.8
+               https://github.com/3F/GetNuTool/releases/tag/1.8
+               
+    * NOTE: Please don't use beta releases in production!
+    
+    * NOTE: Please report about something here: https://github.com/3F/DllExport/issues
+
+
 [v1.6.6] 2020.01.16
 
     * NOTE: Please don't forget to test latest 1.7 BETA releases (not for production)
