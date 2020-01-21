@@ -39,12 +39,13 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public const string NS_DEFAULT_VALUE = "System.Runtime.InteropServices";
 
-        internal const string MGR_FILE = "DllExport.bat"; //TODO: 
-
         /// <summary>
         /// Default meta library.
         /// </summary>
         public const string METALIB_NAME = "DllExport.dll";
+
+        internal const string MGR_FILE = "DllExport.bat"; //TODO: 
+        internal const string PKG_ID = "DllExport"; //TODO:
 
         /// <summary>
         /// Flag of installation.

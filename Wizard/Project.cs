@@ -61,6 +61,8 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         protected const string DXP_TARGET_R_DYN = "DllExportRPkgDynamicImport";
 
+        private const string WZ_ID = "Wz";
+
         /// <summary>
         /// Access to found project.
         /// </summary>
@@ -536,6 +538,17 @@ namespace net.r_eg.DllExport.Wizard
                 false
             );
 
+            if(!string.IsNullOrWhiteSpace(Config.Wizard.PkgVer) 
+                && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
+            {
+                XProject.AddPackageReference
+                (
+                    UserConfig.PKG_ID, 
+                    Config.Wizard.PkgVer, 
+                    new Dictionary<string, string>() {{ "Visible", "false" }, { WZ_ID, "1" }} // VS2010 etc
+                );
+            }
+
             AddRestoreDxp(
                 DXP_TARGET_PKG_R, 
                 $"'$(DllExportModImported)' != 'true' Or !Exists('{dxpTarget}')",
@@ -615,6 +628,14 @@ namespace net.r_eg.DllExport.Wizard
                 if(!PublicKeyTokenLimit && refer.evaluatedInclude == "DllExport") {
                     Log.send(this, $"Remove old reference no-pk:'{refer.evaluatedInclude}'", Message.Level.Info);
                     XProject.RemoveItem(refer);
+                }
+            }
+
+            Log.send(this, $"Trying to remove {WZ_ID} PackageReference records", Message.Level.Info);
+            foreach(var item in XProject.GetItems("PackageReference", UserConfig.PKG_ID).ToArray()) 
+            {
+                if(item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1") {
+                    XProject.RemoveItem(item);
                 }
             }
 

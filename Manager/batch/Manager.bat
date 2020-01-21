@@ -369,6 +369,7 @@ if defined dxpVersion (
         set "dxpVersion="
     )
 )
+set wPkgVer=!dxpVersion!
 
 if z%wAction%==zUpgrade (
     call :dbgprint "Upgrade is on"

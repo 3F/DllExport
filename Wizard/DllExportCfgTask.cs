@@ -126,6 +126,15 @@ namespace net.r_eg.DllExport.Wizard
         public string _mgrArgs;
 
         /// <summary>
+        /// Version of the package that invokes target.
+        /// </summary>
+        public string PkgVer
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Path to external storage if used.
         /// </summary>
         public string StoragePath
@@ -299,6 +308,7 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"MetaLib: '{MetaLib}'", level);
             LSender.Send(this, $"MetaCor: '{MetaCor}'", level);
             LSender.Send(this, $"MgrArgs: '{MgrArgs}'", level);
+            LSender.Send(this, $"PkgVer:  '{PkgVer}'", level);
             LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
             LSender.Send(this, $"RootPath: '{RootPath}'", level);
             LSender.Send(this, $"Storage: '{CfgStorage}'", level);
@@ -328,8 +338,6 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         #region IDisposable
-
-        // To detect redundant calls
         private bool disposed = false;
 
         // To correctly implement the disposable pattern.
@@ -338,7 +346,7 @@ namespace net.r_eg.DllExport.Wizard
             Dispose(true);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool _)
         {
             if(disposed) {
                 return;

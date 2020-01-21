@@ -62,6 +62,11 @@ namespace net.r_eg.DllExport.Wizard
         string MgrArgs { get; }
 
         /// <summary>
+        /// Version of the package that invokes target.
+        /// </summary>
+        string PkgVer { get; }
+
+        /// <summary>
         /// Path to external storage if used.
         /// </summary>
         string StoragePath { get; }
