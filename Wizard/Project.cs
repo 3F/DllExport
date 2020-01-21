@@ -583,7 +583,7 @@ namespace net.r_eg.DllExport.Wizard
             else {
                 args = String.Empty;
             }
-            taskExec.SetParameter("Command", $"{manager} {args} -action Restore");
+            taskExec.SetParameter("Command", $".\\{manager} {args} -action Restore");
             taskExec.SetParameter("WorkingDirectory", "$(SolutionDir)");
         }
 
