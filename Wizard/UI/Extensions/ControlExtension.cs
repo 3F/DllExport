@@ -78,13 +78,51 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
         /// <param name="control"></param>
         /// <param name="method"></param>
         public static void UIAction(this Control control, Action method)
+            => UIAction(control, (x) => method());
+
+        /// <summary>
+        /// Executes an Action through BeginInvoke if it's required.
+        /// </summary>
+        /// <param name="control"></param>
+        /// <param name="method"></param>
+        public static void UIAction(this Control control, Action<Control> method)
+            => UIAction<Control>(control, (x) => method(x));
+
+        /// <summary>
+        /// Executes an Action through BeginInvoke if it's required.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ctrl"></param>
+        /// <param name="method"></param>
+        public static void UIAction<T>(this T ctrl, Action<T> method) where T: Control
         {
-            if(control.InvokeRequired) {
-                control.BeginInvoke((MethodInvoker)delegate { method(); });
+            if(ctrl.InvokeRequired) {
+                ctrl.BeginInvoke((MethodInvoker)delegate { method(ctrl); });
             }
             else {
-                method();
+                method(ctrl);
             }
+        }
+
+        internal static void SetData(this TextBox control, string text, bool newline = true)
+        {
+            if(newline) {
+                text += Environment.NewLine;
+            }
+
+            control.SelectionStart = 0;
+            control.Text = text;
+        }
+
+        internal static void AppendData(this TextBox control, string text, bool newline = true)
+        {
+            if(newline) {
+                text += Environment.NewLine;
+            }
+            control.AppendText(text);
+
+            control.SelectionStart = control.Text.Length;
+            control.ScrollToCaret();
         }
     }
 }

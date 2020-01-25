@@ -67,6 +67,11 @@ namespace net.r_eg.DllExport.Wizard
         string PkgVer { get; }
 
         /// <summary>
+        /// Proxy configuration if presented in `-proxy` key.
+        /// </summary>
+        string Proxy { get; }
+
+        /// <summary>
         /// Path to external storage if used.
         /// </summary>
         string StoragePath { get; }

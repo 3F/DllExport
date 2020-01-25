@@ -24,12 +24,14 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -50,9 +52,14 @@ namespace net.r_eg.DllExport.Wizard.UI
         private CfgStorage storage;
         private FileDialog fdialog;
         private readonly Icons icons = new Icons();
+        private readonly Caller caller;
+        private readonly PackageInfo pkgVer;
         private int prevSlnItemIndex = 0;
         private volatile bool _suspendCbSln;
         private readonly object sync = new object();
+
+        private string UpdToVersion => cbPackages.Text.Trim();
+        private string CmdUpdate => $".\\{UserConfig.MGR_NAME} -action Upgrade -dxp-version ";
 
         /// <summary>
         /// To apply filter for rendered projects.
@@ -63,10 +70,6 @@ namespace net.r_eg.DllExport.Wizard.UI
             RenderProjects(exec.ActiveSlnFile, filter);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="enabled"></param>
         public void ShowProgressLine(bool enabled)
         {
             if(enabled) {
@@ -82,6 +85,8 @@ namespace net.r_eg.DllExport.Wizard.UI
             this.exec = exec ?? throw new ArgumentNullException(nameof(exec));
 
             extcfg = new Lazy<IExtCfg>(() => new FilterLineControl(this, exec));
+            caller = new Caller(exec.Config.SlnDir);
+            pkgVer = new PackageInfo(exec);
 
             InitializeComponent();
 
@@ -95,19 +100,43 @@ namespace net.r_eg.DllExport.Wizard.UI
             ShowFilterPanel();
             txtBuildInfo.Text = GetBuildInfo();
 
-            progressLine.StartTrainEffect(panelTop.Width);
-            {
-                RenderSlnFiles();
-                comboBoxSln.SelectedIndex = 0;
+            RenderSlnFiles();
+            comboBoxSln.SelectedIndex = 0;
 
-                storage = new CfgStorage(exec, comboBoxStorage);
-                storage.UpdateItem();
-            }
-            progressLine.StopAll();
-
-            Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
+            storage = new CfgStorage(exec, comboBoxStorage);
+            storage.UpdateItem();
 
             projectItems.Set(null); // TODO: this only when no projects in solution and only when initial start
+        }
+
+        private void ConfiguratorForm_Load(object sender, EventArgs e)
+        {
+            TopMost = false; TopMost = true;
+
+            UpdateListOfPackages(); 
+            txtLogUpd.SetData($"{CmdUpdate} ...");
+        }
+
+        private void UpdateListOfPackages()
+        {
+            cbPackages.Items.Clear();
+
+            Task.Factory
+            .StartNew(() => pkgVer.GetFromGitHubAsync())
+            .ContinueWith(t => 
+            {
+                var rctask = t.Result;
+                cbPackages.Items.AddRange(rctask.Result.ToArray());
+
+                int pos = cbPackages.FindString(pkgVer.Activated);
+                if(pos == -1) {
+                    cbPackages.Text = pkgVer.Activated;
+                }
+                else {
+                    cbPackages.SelectedIndex = pos;
+                }
+            }, 
+            TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         private string GetVersionInfo(bool urlinfo = true)
@@ -206,6 +235,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                 || !file.TrimEnd().EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
             {
                 DoSilentAction(() => box.SelectedIndex = prevSlnItemIndex);
+                EnableTabsWhenNoSln(false);
                 return;
             }
 
@@ -267,9 +297,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                                                                             : Color.FromArgb(168, 47, 17);
             });
 
-            if(dgvFilter.Rows.Count < 1) { // RowEnter will not be triggered for this case
-                tabCtrl.Enabled = false;
-            }
+            EnableTabsWhenNoSln(dgvFilter.Rows.Count > 0);
         }
 
         private IEnumerable<IProject> GetProjects(string sln)
@@ -288,6 +316,8 @@ namespace net.r_eg.DllExport.Wizard.UI
                 _suspendCbSln = false;
             }
         }
+
+        private void EnableTabsWhenNoSln(bool status) => ((Control)tabCfgDxp).Enabled = status;
 
         private string GetBuildInfo()
         {
@@ -318,8 +348,11 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             ((FilterLineControl)extcfg.Value).FilterText = string.Empty;
 
-            if(sender is ComboBox) {
+            if(sender is ComboBox) 
+            {
+                progressLine.StartTrainEffect(panelTop.Width);
                 RenderProjects((ComboBox)sender);
+                progressLine.StopAll();
             }
             prevSlnItemIndex = comboBoxSln.SelectedIndex;
         }
@@ -342,9 +375,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         }
 
         private void lnkSrc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport".OpenUrl();
-
         private void linkIlasm_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/coreclr".OpenUrl();
-
         private void lnk3F_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F".OpenUrl();
 
         private void dgvFilter_RowEnter(object sender, DataGridViewCellEventArgs e)
@@ -352,7 +383,6 @@ namespace net.r_eg.DllExport.Wizard.UI
             if(e.RowIndex == -1 || e.RowIndex >= dgvFilter.RowCount) {
                 return;
             }
-            tabCtrl.Enabled = true;
 
             string path = dgvFilter.Rows[e.RowIndex].Cells[gcPath.Name].Value.ToString();
 
@@ -374,5 +404,52 @@ namespace net.r_eg.DllExport.Wizard.UI
                 }
             }
         }
+
+        private void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            if(string.IsNullOrEmpty(UpdToVersion)) {
+                txtLogUpd.AppendData($"You need specify version for command.");
+                return;
+            }
+
+            if(pkgVer.Activated == UpdToVersion) {
+                txtLogUpd.AppendData($"You're already using {pkgVer.Activated}");
+                return;
+            }
+
+            panelUpdVerTop.Enabled = false;
+            txtLogUpd.SetData($"Updating to {UpdToVersion} is starting ...");
+
+            var cmd = CmdUpdate + UpdToVersion;
+            txtLogUpd.AppendData(">" + cmd);
+
+            void std(object _, DataReceivedEventArgs _e)
+            {
+                if(!string.IsNullOrEmpty(_e.Data)) {
+                    txtLogUpd.UIAction(x => x.AppendData(_e.Data));
+                }
+            }
+
+            Task.Factory.StartNew(() => caller.Shell
+            (
+                cmd,
+                Caller.WAIT_INF,
+                (p) => 
+                {
+                    if(p.ExitCode != 0) 
+                    {
+                        txtLogUpd.UIAction(x => x.AppendData("Failed Task."));
+                        panelUpdVerTop.UIAction(x => x.Enabled = true);
+                        return;
+                    }
+
+                    caller.Shell($".\\{UserConfig.MGR_NAME} -action Configure");
+                    Close();
+                },
+                std, std
+            ));
+        }
+
+        private void BtnUpdListOfPkg_Click(object sender, EventArgs e) => UpdateListOfPackages();
     }
 }

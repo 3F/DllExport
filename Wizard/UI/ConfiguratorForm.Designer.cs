@@ -37,6 +37,7 @@
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.comboBoxStorage = new System.Windows.Forms.ComboBox();
+            this.btnUpdListOfPkg = new System.Windows.Forms.Button();
             this.splitCon = new System.Windows.Forms.SplitContainer();
             this.panelPrjs = new System.Windows.Forms.Panel();
             this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
@@ -54,6 +55,11 @@
             this.labelSrc = new System.Windows.Forms.Label();
             this.txtBuildInfo = new System.Windows.Forms.TextBox();
             this.labelStorage = new System.Windows.Forms.Label();
+            this.tabUpdating = new System.Windows.Forms.TabPage();
+            this.txtLogUpd = new System.Windows.Forms.TextBox();
+            this.panelUpdVerTop = new System.Windows.Forms.Panel();
+            this.cbPackages = new System.Windows.Forms.ComboBox();
+            this.btnUpdate = new System.Windows.Forms.Button();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).BeginInit();
             this.splitCon.Panel1.SuspendLayout();
@@ -64,6 +70,8 @@
             this.tabCtrl.SuspendLayout();
             this.tabCfgDxp.SuspendLayout();
             this.tabCfgOpt.SuspendLayout();
+            this.tabUpdating.SuspendLayout();
+            this.panelUpdVerTop.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTop
@@ -82,6 +90,7 @@
             // 
             this.progressLine.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.progressLine.BackColor = System.Drawing.Color.DeepSkyBlue;
+            this.progressLine.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.progressLine.Location = new System.Drawing.Point(0, 21);
             this.progressLine.Name = "progressLine";
             this.progressLine.Size = new System.Drawing.Size(275, 5);
@@ -131,6 +140,18 @@
             this.comboBoxStorage.TabIndex = 7;
             this.toolTipMain.SetToolTip(this.comboBoxStorage, "Storage");
             // 
+            // btnUpdListOfPkg
+            // 
+            this.btnUpdListOfPkg.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.btnUpdListOfPkg.Location = new System.Drawing.Point(287, 4);
+            this.btnUpdListOfPkg.Name = "btnUpdListOfPkg";
+            this.btnUpdListOfPkg.Size = new System.Drawing.Size(38, 23);
+            this.btnUpdListOfPkg.TabIndex = 2;
+            this.btnUpdListOfPkg.Text = "( @ )";
+            this.toolTipMain.SetToolTip(this.btnUpdListOfPkg, "<< Receive new list");
+            this.btnUpdListOfPkg.UseVisualStyleBackColor = true;
+            this.btnUpdListOfPkg.Click += new System.EventHandler(this.BtnUpdListOfPkg_Click);
+            // 
             // splitCon
             // 
             this.splitCon.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -179,7 +200,7 @@
             this.gcPath});
             dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
             dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.Window;
-            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             dataGridViewCellStyle1.ForeColor = System.Drawing.SystemColors.ControlText;
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(228)))), ((int)(((byte)(238)))), ((int)(((byte)(239)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
@@ -189,6 +210,7 @@
             this.dgvFilter.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvFilter.Location = new System.Drawing.Point(0, 0);
             this.dgvFilter.Margin = new System.Windows.Forms.Padding(0);
+            this.dgvFilter.MultiSelect = false;
             this.dgvFilter.Name = "dgvFilter";
             this.dgvFilter.NumberingForRowsHeader = false;
             this.dgvFilter.ReadOnly = true;
@@ -248,6 +270,7 @@
             this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabCtrl.Controls.Add(this.tabCfgDxp);
             this.tabCtrl.Controls.Add(this.tabCfgOpt);
+            this.tabCtrl.Controls.Add(this.tabUpdating);
             this.tabCtrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabCtrl.Location = new System.Drawing.Point(-4, 0);
             this.tabCtrl.Margin = new System.Windows.Forms.Padding(0);
@@ -274,6 +297,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.projectItems.BackColor = System.Drawing.SystemColors.Control;
             this.projectItems.Browse = null;
+            this.projectItems.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.projectItems.Location = new System.Drawing.Point(0, 0);
             this.projectItems.Margin = new System.Windows.Forms.Padding(0);
             this.projectItems.Name = "projectItems";
@@ -369,6 +393,64 @@
             this.labelStorage.TabIndex = 11;
             this.labelStorage.Text = "Use storage:";
             // 
+            // tabUpdating
+            // 
+            this.tabUpdating.Controls.Add(this.txtLogUpd);
+            this.tabUpdating.Controls.Add(this.panelUpdVerTop);
+            this.tabUpdating.Location = new System.Drawing.Point(4, 25);
+            this.tabUpdating.Name = "tabUpdating";
+            this.tabUpdating.Padding = new System.Windows.Forms.Padding(3);
+            this.tabUpdating.Size = new System.Drawing.Size(442, 230);
+            this.tabUpdating.TabIndex = 2;
+            this.tabUpdating.Text = "Updating Version";
+            this.tabUpdating.UseVisualStyleBackColor = true;
+            // 
+            // txtLogUpd
+            // 
+            this.txtLogUpd.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtLogUpd.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(12)))), ((int)(((byte)(12)))));
+            this.txtLogUpd.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.txtLogUpd.Font = new System.Drawing.Font("Consolas", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLogUpd.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(203)))), ((int)(((byte)(203)))), ((int)(((byte)(203)))));
+            this.txtLogUpd.Location = new System.Drawing.Point(0, 33);
+            this.txtLogUpd.Multiline = true;
+            this.txtLogUpd.Name = "txtLogUpd";
+            this.txtLogUpd.ReadOnly = true;
+            this.txtLogUpd.ScrollBars = System.Windows.Forms.ScrollBars.Both;
+            this.txtLogUpd.Size = new System.Drawing.Size(446, 201);
+            this.txtLogUpd.TabIndex = 13;
+            this.txtLogUpd.WordWrap = false;
+            // 
+            // panelUpdVerTop
+            // 
+            this.panelUpdVerTop.Controls.Add(this.btnUpdListOfPkg);
+            this.panelUpdVerTop.Controls.Add(this.cbPackages);
+            this.panelUpdVerTop.Controls.Add(this.btnUpdate);
+            this.panelUpdVerTop.Location = new System.Drawing.Point(39, 0);
+            this.panelUpdVerTop.Name = "panelUpdVerTop";
+            this.panelUpdVerTop.Size = new System.Drawing.Size(342, 34);
+            this.panelUpdVerTop.TabIndex = 14;
+            // 
+            // cbPackages
+            // 
+            this.cbPackages.FormattingEnabled = true;
+            this.cbPackages.Location = new System.Drawing.Point(121, 6);
+            this.cbPackages.Name = "cbPackages";
+            this.cbPackages.Size = new System.Drawing.Size(160, 21);
+            this.cbPackages.TabIndex = 1;
+            // 
+            // btnUpdate
+            // 
+            this.btnUpdate.Location = new System.Drawing.Point(11, 4);
+            this.btnUpdate.Name = "btnUpdate";
+            this.btnUpdate.Size = new System.Drawing.Size(104, 23);
+            this.btnUpdate.TabIndex = 0;
+            this.btnUpdate.Text = "Update to";
+            this.btnUpdate.UseVisualStyleBackColor = true;
+            this.btnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
+            // 
             // ConfiguratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -385,6 +467,7 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DllExport";
             this.TopMost = true;
+            this.Load += new System.EventHandler(this.ConfiguratorForm_Load);
             this.panelTop.ResumeLayout(false);
             this.splitCon.Panel1.ResumeLayout(false);
             this.splitCon.Panel2.ResumeLayout(false);
@@ -396,6 +479,9 @@
             this.tabCfgDxp.ResumeLayout(false);
             this.tabCfgOpt.ResumeLayout(false);
             this.tabCfgOpt.PerformLayout();
+            this.tabUpdating.ResumeLayout(false);
+            this.tabUpdating.PerformLayout();
+            this.panelUpdVerTop.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -425,5 +511,11 @@
         private System.Windows.Forms.LinkLabel lnk3F;
         private System.Windows.Forms.LinkLabel lnkSrc;
         private System.Windows.Forms.LinkLabel linkIlasm;
+        private System.Windows.Forms.TabPage tabUpdating;
+        private System.Windows.Forms.ComboBox cbPackages;
+        private System.Windows.Forms.Button btnUpdate;
+        private System.Windows.Forms.TextBox txtLogUpd;
+        private System.Windows.Forms.Panel panelUpdVerTop;
+        private System.Windows.Forms.Button btnUpdListOfPkg;
     }
 }

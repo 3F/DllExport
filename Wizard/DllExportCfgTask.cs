@@ -130,6 +130,16 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public string PkgVer
         {
+            get => _pkgVer;
+            set => _pkgVer = value.Trim();
+        }
+        private string _pkgVer;
+
+        /// <summary>
+        /// Proxy configuration if presented in `-proxy` key.
+        /// </summary>
+        public string Proxy
+        {
             get;
             set;
         }
@@ -309,6 +319,7 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"MetaCor: '{MetaCor}'", level);
             LSender.Send(this, $"MgrArgs: '{MgrArgs}'", level);
             LSender.Send(this, $"PkgVer:  '{PkgVer}'", level);
+            LSender.Send(this, $"Proxy:   '{Proxy}'", level);
             LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
             LSender.Send(this, $"RootPath: '{RootPath}'", level);
             LSender.Send(this, $"Storage: '{CfgStorage}'", level);

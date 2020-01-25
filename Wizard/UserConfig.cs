@@ -44,8 +44,10 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public const string METALIB_NAME = "DllExport.dll";
 
-        internal const string MGR_FILE = "DllExport.bat"; //TODO: 
-        internal const string PKG_ID = "DllExport"; //TODO:
+        //TODO: 
+        internal const string MGR_NAME = "DllExport";
+        internal const string MGR_FILE = MGR_NAME + ".bat";
+        internal const string PKG_ID = "DllExport";
 
         /// <summary>
         /// Flag of installation.
