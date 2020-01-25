@@ -125,10 +125,10 @@ echo.
 echo Licensed under the MIT license
 @echo https://github.com/3F/DllExport
 echo.
-echo Based on hMSBuild and includes GetNuTool core: https://github.com/3F
+echo Based on hMSBuild, MvsSln, +GetNuTool: https://github.com/3F
 echo.
 @echo.
-@echo Usage: DllExport [args to DllExport] [args to GetNuTool core]
+@echo Usage: DllExport [args to DllExport] [args to GetNuTool]
 echo ------
 echo.
 echo Arguments:

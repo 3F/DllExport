@@ -25,28 +25,7 @@ set "mgrFile=DllExport.bat"
 setlocal enableDelayedExpansion
 
 set args=%*
+if not defined args set args=%defaultCommand%
 
-call :isEmptyOrWhitespace args _is
-if [!_is!]==[1] (
-    set args=%defaultCommand%
-)
-
-call .\%pkgsDir%\%unpackedPkg%\%mgrFile% -packages %pkgsDir% -dxp-version actual !args!
-
+call ".\\%pkgsDir%\\%unpackedPkg%\\%mgrFile%" -packages %pkgsDir% -dxp-version actual !args!
 exit /B %ERRORLEVEL%
-
-
-
-:isEmptyOrWhitespace
-:: Usage: call :isEmptyOrWhitespace input output(1/0)
-setlocal enableDelayedExpansion
-set "_v=!%1!"
-
-if not defined _v endlocal & set /a %2=1 & exit /B 0
- 
-set _v=%_v: =%
-set "_v= %_v%"
-if [^%_v:~1,1%]==[] endlocal & set /a %2=1 & exit /B 0
- 
-endlocal & set /a %2=0
-exit /B 0
