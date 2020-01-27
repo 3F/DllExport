@@ -5,7 +5,7 @@ VisualStudioVersion = 16.0.29519.87
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Metadata", "Metadata\Metadata.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataFx", "MetadataFx\MetadataFx.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild", "RGiesecke.DllExport.MSBuild\RGiesecke.DllExport.MSBuild.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
 EndProject
@@ -122,6 +122,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "batch", "batch", "{603C7C21
 		Manager\batch\tests.targets = Manager\batch\tests.targets
 	EndProjectSection
 EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetadataCore", "MetadataCore\MetadataCore.csproj", "{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -183,6 +185,12 @@ Global
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EC0CA220-39EC-41E5-B9D6-88D8F860F979}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

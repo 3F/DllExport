@@ -87,7 +87,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"Metadata\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pWizard       = \"Wizard\")\n$(pManager      = \"Manager\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(phMSBuild     = \"hMSBuild\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
+        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"MetadataFx\")\n$(pMetaCore     = \"MetadataCore\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pWizard       = \"Wizard\")\n$(pManager      = \"Manager\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(phMSBuild     = \"hMSBuild\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -104,7 +104,8 @@
           "$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]",
           "",
           "$(pDllExport    = \"RGiesecke.DllExport\")",
-          "$(pMeta         = \"Metadata\")",
+          "$(pMeta         = \"MetadataFx\")",
+          "$(pMetaCore     = \"MetadataCore\")",
           "$(pNSBin        = \"NSBin\")",
           "$(pMvsSln       = \"MvsSln\")",
           "$(pWizard       = \"Wizard\")",
@@ -231,7 +232,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n#[$(dxpPrintVersion = \"v$(pVer)\")]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n\n#[var pReleaseVersion   = #[File get(\".release.version\")]]\n#[$(pReleaseVersion     = $(pReleaseVersion.Trim()))]\n\n#[( $(pReleaseVersion) == \"\" ) {\n    #[$(partRelV = \"\")]\n    #[$(pVerRel  = \"$(pVer)\")]\n} else {\n    #[$(partRelV = \"-$(pReleaseVersion)\")]\n    #[$(pVerRel  = \"$(pVer)-$(pReleaseVersion)\")]\n}]\n\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_REL\\s=).+?\\\";\", \"$1 \\\"$(pReleaseVersion)\\\";\")]\n}]",
+        "Command": "#[var pVer = #[File get(\".version\")]]\n#[$(dxpPrintVersion = \"v$(pVer)\")]\n\n#[\" TODO: how about tpl ?  \"]\n\n#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]\n#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]\n#[IO replace.Regex(\"$(pMetaCore)/$(pMetaCore).csproj\", \"<Version>.+?</Version>\", \"<Version>$(pVer)</Version>\")]\n\n#[var pReleaseVersion   = #[File get(\".release.version\")]]\n#[$(pReleaseVersion     = $(pReleaseVersion.Trim()))]\n\n#[( $(pReleaseVersion) == \"\" ) {\n    #[$(partRelV = \"\")]\n    #[$(pVerRel  = \"$(pVer)\")]\n} else {\n    #[$(partRelV = \"-$(pReleaseVersion)\")]\n    #[$(pVerRel  = \"$(pVer)-$(pReleaseVersion)\")]\n}]\n\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n    #[IO replace.Regex(\"$(pWizard)/WizardVersion.cs\", \"(\\sS_REL\\s=).+?\\\";\", \"$1 \\\"$(pReleaseVersion)\\\";\")]\n}]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "#[$(dxpPrintVersion = \"v$(pVer)\")]",
@@ -241,6 +242,7 @@
           "#[IO replace.Regex(\"$(pDllExport)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
           "#[IO replace.Regex(\"$(pMSBuild)/DllExportVersion.cs\", \"Version =.+?\\\";\", \"Version = \\\"$(pVer)\\\";\")]",
           "#[IO replace.Regex(\"$(pMeta)/AssemblyInfo.cs\", \"AssemblyVersion\\(.+?\\)\", \"AssemblyVersion(\\\"$(pVer).*\\\")\")]",
+          "#[IO replace.Regex(\"$(pMetaCore)/$(pMetaCore).csproj\", \"<Version>.+?</Version>\", \"<Version>$(pVer)</Version>\")]",
           "",
           "#[var pReleaseVersion   = #[File get(\".release.version\")]]",
           "#[$(pReleaseVersion     = $(pReleaseVersion.Trim()))]",
@@ -401,7 +403,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n#[IO replace(\"$(odir)/DllExport.nuspec\", \"$-version-$\", \"$(pVerRel)\")]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pWizard)/$(OutDir:$(pWizard))/*.*\",\n                \"$(pPeViewer)/$(OutDir:$(pPeViewer))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n#[\" https://github.com/3F/DllExport/issues/36 \"]\n#[IO copy.directory(\"\", \"$(odir)/lib/net20/\", true)]\n#[IO write(\"$(odir)/lib/net20/_._\"):]\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \n               \"$(odir)/tools/raw/lib/net20/\", true)]\n               \n#[IO copy.file(\"tools/build.targets\", \"$(odir)/build/net20/DllExport.targets\", true)]\n\n#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]\n#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]\n\n#[var buildInfo =  $([System.String]::Concat(\"  \"))\n    S_NUM:              #[$(pVer)]\n    \n    S_REV:              #[$(revBuild)]\n    \n    S_NUM_REV:          #[$(pVer)].#[$(revBuild)]\n    \n    S_REL:              #[$(pReleaseVersion)]\n    \n    bSha1:              #[$(bSha1)]\n    \n    bName:              #[$(bName)]\n    \n    bRevc:              #[$(bRevc)]\n    \n    Wizard .NET:        #[$(TargetFrameworkVersion:$(pWizard))]\n    \n    Configuration:      #[$(Configuration)]\n    \n    Platform:           #[$(Platform)]\n    \n    cfgname:            #[$(cfgname)]\n    \n    revDeltaBase:       #[$(revDeltaBase)]\n    \n    revDeltaMin:        #[$(revDeltaMin)]\n    \n    revDeltaMax:        #[$(revDeltaMax)]\n    \n    \n                    :: generated by a vsSolutionBuildEvent v#[$(vsSolutionBuildEvent)]\n]\n\n#[IO writeLine(\"$(odir)/build_info.txt\"):#[var buildInfo]]\n\n\n#[IO replace(\"$(odir)/DllExport.nuspec\", \"{build_info}\", \"$(buildInfo)\")]",
+        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n#[IO replace(\"$(odir)/DllExport.nuspec\", \"$-version-$\", \"$(pVerRel)\")]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pWizard)/$(OutDir:$(pWizard))/*.*\",\n                \"$(pPeViewer)/$(OutDir:$(pPeViewer))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n#[\" https://github.com/3F/DllExport/issues/36 \"]\n#[IO copy.directory(\"\", \"$(odir)/lib/net20/\", true)]\n#[IO write(\"$(odir)/lib/net20/_._\"):]\n\n#[IO copy.directory(\"\", \"$(odir)/lib/netstandard2.0/\", true)]\n#[IO write(\"$(odir)/lib/netstandard2.0/_._\"):]\n\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \"$(odir)/tools/raw/lib/net20/\", true)]\n#[IO copy.file(\"$(pMetaCore)/$(OutputPath:$(pMetaCore))*.dll\", \"$(odir)/tools/raw/lib/netstd/\", true)]\n\n#[IO copy.file(\"tools/build.targets\", \"$(odir)/build/net20/DllExport.targets\", true)]\n\n#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]\n#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]\n\n#[var buildInfo =  $([System.String]::Concat(\"  \"))\n    S_NUM:              #[$(pVer)]\n    \n    S_REV:              #[$(revBuild)]\n    \n    S_NUM_REV:          #[$(pVer)].#[$(revBuild)]\n    \n    S_REL:              #[$(pReleaseVersion)]\n    \n    bSha1:              #[$(bSha1)]\n    \n    bName:              #[$(bName)]\n    \n    bRevc:              #[$(bRevc)]\n    \n    Wizard .NET:        #[$(TargetFrameworkVersion:$(pWizard))]\n    \n    Configuration:      #[$(Configuration)]\n    \n    Platform:           #[$(Platform)]\n    \n    cfgname:            #[$(cfgname)]\n    \n    revDeltaBase:       #[$(revDeltaBase)]\n    \n    revDeltaMin:        #[$(revDeltaMin)]\n    \n    revDeltaMax:        #[$(revDeltaMax)]\n    \n    \n                    :: generated by a vsSolutionBuildEvent v#[$(vsSolutionBuildEvent)]\n]\n\n#[IO writeLine(\"$(odir)/build_info.txt\"):#[var buildInfo]]\n\n\n#[IO replace(\"$(odir)/DllExport.nuspec\", \"{build_info}\", \"$(buildInfo)\")]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -425,9 +427,13 @@
           "#[IO copy.directory(\"\", \"$(odir)/lib/net20/\", true)]",
           "#[IO write(\"$(odir)/lib/net20/_._\"):]",
           "",
-          "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", ",
-          "               \"$(odir)/tools/raw/lib/net20/\", true)]",
-          "               ",
+          "#[IO copy.directory(\"\", \"$(odir)/lib/netstandard2.0/\", true)]",
+          "#[IO write(\"$(odir)/lib/netstandard2.0/_._\"):]",
+          "",
+          "",
+          "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \"$(odir)/tools/raw/lib/net20/\", true)]",
+          "#[IO copy.file(\"$(pMetaCore)/$(OutputPath:$(pMetaCore))*.dll\", \"$(odir)/tools/raw/lib/netstd/\", true)]",
+          "",
           "#[IO copy.file(\"tools/build.targets\", \"$(odir)/build/net20/DllExport.targets\", true)]",
           "",
           "#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\" }, \"$(odir)/\", true)]",
@@ -496,14 +502,20 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/DllExport.xml\", \n               \"$(odir)/tools/raw/lib/net20/\", true)]\n               \n#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]",
+        "Command": "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/DllExport.xml\", \n               \"$(odir)/tools/raw/lib/net20/\", true)]\n\n#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]\n\n\n#[IO copy.file(\"$(pMetaCore)/$(DocumentationFile:$(pMetaCore))\", \n               \"$(odir)/tools/raw/lib/netstd/\", true)]\n\n#[IO replace.Regex(\"$(odir)/tools/raw/lib/netstd/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]",
         "Command__": [
           "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]",
           "",
           "#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/DllExport.xml\", ",
           "               \"$(odir)/tools/raw/lib/net20/\", true)]",
-          "               ",
-          "#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]"
+          "",
+          "#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]",
+          "",
+          "",
+          "#[IO copy.file(\"$(pMetaCore)/$(DocumentationFile:$(pMetaCore))\", ",
+          "               \"$(odir)/tools/raw/lib/netstd/\", true)]",
+          "",
+          "#[IO replace.Regex(\"$(odir)/tools/raw/lib/netstd/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]"
         ]
       }
     },
@@ -828,7 +840,7 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[\" v1.5 and 1.6 contains bug if used 1.2.3-alpha, 1.2.3-beta-2, 1.2.3-rc ... \"] \n##[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")] \n#[IO cmd(\"tools\\\\gnt.bat /t:pack /p:ngin=\\\"$(SolutionDir)$(odir)\\\" /p:ngout=\\\"$(SolutionDir)$(dbin)\\\"\", 400)]\n\n#[( $(cfgname) != \"Debug\" )\n{\n    #[($(revBuild) == \"\" || $(revBuild) ~= \"*\") {\n        #[$(zipname = \"DllExport_v$(pVer)$(partRelV).zip\")]\n    }\n    else {\n        #[$(zipname = \"DllExport_v$(pVer).$(revBuild)$(partRelV)_$(bSha1).zip\")]\n    }]\n    \n    #[7z pack.files({ \n            \"$(odir)\\\\lib\\\\net20\\\\*.*\",\n            \"$(odir)\\\\tools\\\\*.*\",\n            \"$(odir)\\\\tools\\\\coreclr\\\\*.*\",\n            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\net20\\\\*.*\",\n            \"$(odir)\\\\*.*\"\n        }, \n        \"$(dbin)\\\\$(zipname)\", \n        { \"$(odir)\\\\*.nuspec\" })]\n        \n    \n    \n    #[\" \n        Offline version\n    \"]\n    \n    #[7z pack.directory(\n        \"$(dbin)raw.offline\", \n        \"$(dbin)offline.$(zipname)\",\n        Zip,\n        Deflate,\n        1\n    )]\n    \n}]\n",
+        "Command": "#[\" v1.5 and 1.6 contains bug if used 1.2.3-alpha, 1.2.3-beta-2, 1.2.3-rc ... \"] \n##[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")] \n#[IO cmd(\"tools\\\\gnt.bat /t:pack /p:ngin=\\\"$(SolutionDir)$(odir)\\\" /p:ngout=\\\"$(SolutionDir)$(dbin)\\\"\", 400)]\n\n#[( $(cfgname) != \"Debug\" )\n{\n    #[($(revBuild) == \"\" || $(revBuild) ~= \"*\") {\n        #[$(zipname = \"DllExport_v$(pVer)$(partRelV).zip\")]\n    }\n    else {\n        #[$(zipname = \"DllExport_v$(pVer).$(revBuild)$(partRelV)_$(bSha1).zip\")]\n    }]\n    \n    #[7z pack.files({ \n            \"$(odir)\\\\lib\\\\net20\\\\*.*\",\n            \"$(odir)\\\\lib\\\\netstandard2.0\\\\*.*\",\n            \"$(odir)\\\\tools\\\\*.*\",\n            \"$(odir)\\\\tools\\\\coreclr\\\\*.*\",\n            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\net20\\\\*.*\",\n            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\netstd\\\\*.*\",\n            \"$(odir)\\\\*.*\"\n        }, \n        \"$(dbin)\\\\$(zipname)\", \n        { \"$(odir)\\\\*.nuspec\" })]\n        \n    \n    \n    #[\" \n        Offline version\n    \"]\n    \n    #[7z pack.directory(\n        \"$(dbin)raw.offline\", \n        \"$(dbin)offline.$(zipname)\",\n        Zip,\n        Deflate,\n        1\n    )]\n    \n}]\n",
         "Command__": [
           "#[\" v1.5 and 1.6 contains bug if used 1.2.3-alpha, 1.2.3-beta-2, 1.2.3-rc ... \"] ",
           "##[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")] ",
@@ -845,9 +857,11 @@
           "    ",
           "    #[7z pack.files({ ",
           "            \"$(odir)\\\\lib\\\\net20\\\\*.*\",",
+          "            \"$(odir)\\\\lib\\\\netstandard2.0\\\\*.*\",",
           "            \"$(odir)\\\\tools\\\\*.*\",",
           "            \"$(odir)\\\\tools\\\\coreclr\\\\*.*\",",
           "            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\net20\\\\*.*\",",
+          "            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\netstd\\\\*.*\",",
           "            \"$(odir)\\\\*.*\"",
           "        }, ",
           "        \"$(dbin)\\\\$(zipname)\", ",

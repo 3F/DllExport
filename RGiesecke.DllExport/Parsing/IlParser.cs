@@ -237,6 +237,9 @@ namespace RGiesecke.DllExport.Parsing
                         }
                     }
                 }
+
+                EmitMSCorlib(stringList2, state);
+
                 stopwatch1.Stop();
                 this.GetNotifier().Notify(-2, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, (object)stringList1.Count, (object)stopwatch1.ElapsedMilliseconds);
                 if(this.ProfileActions)
@@ -246,13 +249,58 @@ namespace RGiesecke.DllExport.Parsing
                         this.GetNotifier().Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, (object)keyValuePair.Key, (object)keyValuePair.Value.Milliseconds);
                     }
                 }
-                return (IEnumerable<string>)stringList2;
+
+                return stringList2;
             }
         }
 
         internal IDllExportNotifier GetNotifier()
         {
             return this.ServiceProvider.GetService<IDllExportNotifier>();
+        }
+
+        /// <summary>
+        /// Read my note in https://github.com/3F/DllExport/issues/90
+        /// 
+        /// .assembly extern 'netstandard'
+        /// ...               ^^^^^^^^^^^
+        /// 
+        /// .class public auto ansi beforefieldinit ...
+        ///     extends[mscorlib] System.Object
+        ///             ^^^^^^^^
+        ///     ...
+        ///     call instance void [mscorlib]System.Object::.ctor()
+        ///                         ^^^^^^^^
+        /// </summary>
+        /// <param name="il"></param>
+        /// <param name="state"></param>
+        /// <returns></returns>
+        private bool EmitMSCorlib(List<string> il, ParserStateValues state)
+        {
+            if(state.ExternalAssemlyDeclarations.Count < 1) {
+                return false;
+            }
+
+            const string _EASM = "mscorlib";
+
+            if(state.ExternalAssemlyDeclarations.Any(x => x.AssemblyName == _EASM)) {
+                return false;
+            }
+
+            il.InsertRange
+            (
+                state.ExternalAssemlyDeclarations[0].InputLineIndex, 
+                new []
+                {
+                    $".assembly extern '{_EASM}'",
+                    "{",
+                    "  .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) ",
+                    "  .ver 4:0:0:0",
+                    "}"
+                }
+            );
+
+            return true;
         }
 
         private HashSet<string> GetMethodAttributes()

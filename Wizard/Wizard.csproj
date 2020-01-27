@@ -141,6 +141,7 @@
     <ProjectReference Include="..\MvsSln\MvsSln\MvsSln.csproj">
       <Project>{f905dfb2-2e67-4ff7-9001-924f6f2d645d}</Project>
       <Name>MvsSln</Name>
+      <AdditionalProperties>TargetFramework=net40</AdditionalProperties>
     </ProjectReference>
     <ProjectReference Include="..\NSBin\NSBin.csproj">
       <Project>{311706a5-5ed2-4006-b794-055009d8a256}</Project>

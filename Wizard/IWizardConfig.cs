@@ -42,9 +42,14 @@ namespace net.r_eg.DllExport.Wizard
         string PkgPath { get; }
 
         /// <summary>
-        /// Relative path from PkgPath to DllExport meta library.
+        /// Relative path to meta library.
         /// </summary>
         string MetaLib { get; }
+
+        /// <summary>
+        /// Relative path to meta core library.
+        /// </summary>
+        string MetaCor { get; }
 
         /// <summary>
         /// Path to .targets file of the DllExport.

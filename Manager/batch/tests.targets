@@ -96,6 +96,9 @@
     <Error Text="wMetaLib: $(wMetaLib) == $(DataSpecSymbols)" Condition="'$(wMetaLib)' != '$(DataSpecSymbols)'" />
     <Message Text="wMetaLib: $(wMetaLib) == $(DataSpecSymbols)" Importance="High" />
 
+    <Error Text="wMetaCor: $(wMetaCor) == $(DataSpecSymbols)" Condition="'$(wMetaCor)' != '$(DataSpecSymbols)'" />
+    <Message Text="wMetaCor: $(wMetaCor) == $(DataSpecSymbols)" Importance="High" />
+
     <Error Text="wDxpTarget: $(wDxpTarget) == $(DataSpecSymbols)" Condition="'$(wDxpTarget)' != '$(DataSpecSymbols)'" />
     <Message Text="wDxpTarget: $(wDxpTarget) == $(DataSpecSymbols)" Importance="High" />
 
@@ -116,8 +119,8 @@
   </Target>
 
   <Target Name="testCase16">
-    <Error Text="dxpVersion: $(dxpVersion) == 1.6.0" Condition="'$(dxpVersion)' != '1.6.0'" />
-    <Message Text="dxpVersion: $(dxpVersion) == 1.6.0" Importance="High" />
+    <Error Text="dxpVersion: $(dxpVersion) == 1.6.5" Condition="'$(dxpVersion)' != '1.6.5'" />
+    <Message Text="dxpVersion: $(dxpVersion) == 1.6.5" Importance="High" />
 
     <Error Text="pkgSrv: $(pkgSrv) == $(DataDefSrv)" Condition="'$(pkgSrv)' != '$(DataDefSrv)'" />
     <Message Text="pkgSrv: $(pkgSrv) == $(DataDefSrv)" Importance="High" />
