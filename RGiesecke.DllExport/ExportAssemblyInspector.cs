@@ -191,7 +191,12 @@ namespace RGiesecke.DllExport
             return AssemblyDefinition.ReadAssembly
             (
                 fileName, 
-                new ReaderParameters(ReadingMode.Immediate) { InMemory = true, ReadWrite = true }
+                new ReaderParameters(ReadingMode.Immediate) 
+                { 
+                    InMemory = true, 
+                    ReadWrite = true, 
+                    AssemblyResolver = new DisabledAssemblyResolver() 
+                }
             );
         }
 

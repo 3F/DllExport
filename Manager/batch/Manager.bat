@@ -144,7 +144,8 @@ echo       * Upgrade   - Aggregates an Update action with additions for upgradin
 echo.
 echo  -sln-dir {path}    - Path to directory with .sln files to be processed.
 echo  -sln-file {path}   - Optional predefined .sln file to be processed.
-echo  -metalib {path}    - Relative path from PkgPath to DllExport meta library.
+echo  -metalib {path}    - Relative path to meta library.
+echo  -metacor {path}    - Relative path to meta core library.
 echo  -dxp-target {path} - Relative path to entrypoint wrapper of the main core.
 echo  -dxp-version {num} - Specific version of DllExport. Where {num}:
 echo       * Versions: 1.6.0 ...
@@ -235,6 +236,11 @@ set key=!arg[%idx%]!
     ) else if [!key!]==[-metalib] ( set /a "idx+=1" & call :eval arg[!idx!] v
         
         set wMetaLib=!v!
+
+        goto continue
+    ) else if [!key!]==[-metacor] ( set /a "idx+=1" & call :eval arg[!idx!] v
+        
+        set wMetaCor=!v!
 
         goto continue
     ) else if [!key!]==[-dxp-target] ( set /a "idx+=1" & call :eval arg[!idx!] v
@@ -354,6 +360,7 @@ call :dbgprint "dxpVersion = " dxpVersion
 call :dbgprint "-sln-dir = " wSlnDir
 call :dbgprint "-sln-file = " wSlnFile
 call :dbgprint "-metalib = " wMetaLib
+call :dbgprint "-metacor = " wMetaCor
 call :dbgprint "-dxp-target = " wDxpTarget
 call :dbgprint "-wz-target = " tWizard
 
@@ -492,6 +499,10 @@ if not defined xMSBuild (
 )
 
 if not defined xmgrtest (
+
+    REM :: Possible incorrect Sdk-based project types, https://github.com/3F/DllExport/pull/123
+    if not defined gMsbPath if defined wPkgPath set xMSBuild="!wPkgPath!\\hMSBuild"
+
     call :dbgprint "Target: " xMSBuild wzTarget
     call !xMSBuild! /nologo /v:m /m:4 !wzTarget!
 )

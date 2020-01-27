@@ -92,6 +92,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        bool SysObjRebase
+        {
+            get;
+            set;
+        }
+
         string MetaLib
         {
             get;

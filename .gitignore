@@ -1,5 +1,6 @@
 ## Specific
 
+/MetadataCore/DllExport.xml
 /Configurator/ConfVersion.cs
 
 ## Ignore Visual Studio temporary files, build results, and
