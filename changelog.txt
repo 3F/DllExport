@@ -1,6 +1,24 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7-RC] 2020.01.27
+
+    * NOTE: Release Candidate includes all actual fixes from 
+            [ 1.7 beta-1 to beta-4 ] releases. And also adds the following:
+    
+    * NEW: Implemented updater for wizard. Issue #109.
+    
+    * NEW: Textual export of affected data to diag.
+    
+    * CHANGED: Updated logic for an offline versions 
+                with optional converting to online if needed.
+                
+    * CHANGED: `.gitattributes` now will be distributed with packages. 
+               Use this to avoid related problems: 
+               `a7, a8, a9 - is not recognized as an internal or external command`
+               https://github.com/3F/hMSBuild/issues/2
+
+
 [v1.7-beta4] 2020.01.21
 
     * NEW: Allowed .NET Standard 1.1 and above targeting.

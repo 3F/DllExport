@@ -10,7 +10,7 @@ Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 [![Build status](https://ci.appveyor.com/api/projects/status/hh2oxibqoi6wrdnc/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/branch/master)
 [![Latest-Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE)
-[![coreclr_ILAsm](https://img.shields.io/badge/coreclr.ILAsm-4.700.1-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
+[![coreclr_ILAsm](https://img.shields.io/badge/coreclr.ILAsm-4.700.2-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
 [![Cecil](https://img.shields.io/badge/Cecil-0.11.1-1182C3.svg)](https://github.com/jbevain/cecil)
 [![MvsSln](https://img.shields.io/badge/MvsSln-v2.5.0-865FC5.svg)](https://github.com/3F/MvsSln)
 [![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.8-93C10B.svg)](https://github.com/3F/GetNuTool)
