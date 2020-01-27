@@ -104,6 +104,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        PatchesType Patches
+        {
+            get;
+            set;
+        }
+
         PeCheckType PeCheck
         {
             get;

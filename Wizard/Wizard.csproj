@@ -37,6 +37,9 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Conari, Version=1.4.0.0, Culture=neutral, PublicKeyToken=4bbd2ef743db151e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Conari.1.4.0\lib\net40\Conari.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Build">
       <Private>True</Private>
     </Reference>
@@ -46,12 +49,15 @@
     <Reference Include="Microsoft.Build.Utilities.v4.0">
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PackageInfo.cs" />
+    <Compile Include="Caller.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="CfgStorageType.cs" />
     <Compile Include="ActionType.cs" />
@@ -60,7 +66,6 @@
     <Compile Include="Extensions\CollectionExtension.cs" />
     <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="IConfigInitializer.cs" />
-    <Compile Include="CfgBatWrapper.cs" />
     <Compile Include="IExecutor.cs" />
     <Compile Include="CompilerCfg.cs" />
     <Compile Include="MSBuildProperties.cs" />
@@ -76,6 +81,19 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <Compile Include="UI\Components\TextBoxExt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Components\DataGridViewExt.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\IConfFormater.cs" />
+    <Compile Include="UI\IconResources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>IconResources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Icons.cs" />
     <Compile Include="UI\Kit\FilterLineControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -91,6 +109,7 @@
     </Compile>
     <Compile Include="UI\IRender.cs" />
     <Compile Include="UI\IExtCfg.cs" />
+    <Compile Include="UI\SimpleConfFormater.cs" />
     <Compile Include="UI\ProjectFilter.cs" />
     <Compile Include="UI\Storage.cs" />
     <Compile Include="UI\Controls\ProjectItemsControl.cs">
@@ -100,12 +119,6 @@
       <DependentUpon>ProjectItemsControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\App.cs" />
-    <Compile Include="UI\InfoForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="UI\InfoForm.Designer.cs">
-      <DependentUpon>InfoForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="UI\MsgForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -136,6 +149,7 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </None>
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MvsSln\MvsSln\MvsSln.csproj">
@@ -152,7 +166,6 @@
       <Name>RGiesecke.DllExport</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
@@ -160,6 +173,11 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\ConfiguratorForm.resx">
       <DependentUpon>ConfiguratorForm.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\IconResources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>IconResources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Kit\FilterLineControl.resx">
@@ -173,9 +191,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Controls\ProjectItemsControl.resx">
       <DependentUpon>ProjectItemsControl.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="UI\InfoForm.resx">
-      <DependentUpon>InfoForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\MsgForm.resx">
       <DependentUpon>MsgForm.cs</DependentUpon>

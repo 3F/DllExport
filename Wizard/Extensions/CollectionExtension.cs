@@ -37,12 +37,24 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <param name="act">The action that should be executed for each item.</param>
         public static void ForEach<T>(this IEnumerable<T> items, Action<T> act)
         {
+            items?.ForEach((x, i) => act(x));
+        }
+
+        /// <summary>
+        /// Foreach in Linq manner.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="items"></param>
+        /// <param name="act">The action that should be executed for each item.</param>
+        public static void ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
+        {
             if(items == null) {
                 return;
             }
 
+            long n = 0;
             foreach(var item in items) {
-                act(item);
+                act(item, n++);
             }
         }
 

@@ -24,6 +24,8 @@
       <wStoragePath Condition="'$(wStoragePath)' == ''"></wStoragePath> <!-- Optional path to external storage if used. -->
       <wStorage Condition="'$(wStorage)' == ''">Default</wStorage> <!-- Where to store configuration data. enum `CfgStorageType`. -->
       <wMgrArgs Condition="'$(wMgrArgs)' == ''"></wMgrArgs>
+      <wPkgVer Condition="'$(wPkgVer)' == ''"></wPkgVer> <!-- Version of the package that invokes target -->
+      <wProxy Condition="'$(wProxy)' == ''"></wProxy>
     </PropertyGroup>
 
     <PropertyGroup Label="Debug">
@@ -49,6 +51,8 @@
         StoragePath="$(wStoragePath)" 
         Storage="$(wStorage)" 
         Action="$(wAction)" 
+        PkgVer="$(wPkgVer)" 
+        Proxy="$(wProxy)" 
         MsgGuiLevel="$(MsgGuiLevel)" 
     />
 

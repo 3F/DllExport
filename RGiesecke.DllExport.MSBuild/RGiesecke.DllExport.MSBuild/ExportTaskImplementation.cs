@@ -275,6 +275,12 @@ namespace RGiesecke.DllExport.MSBuild
             }
         }
 
+        public PatchesType Patches
+        {
+            get => _Values.Patches;
+            set => _Values.Patches = value;
+        }
+
         public PeCheckType PeCheck
         {
             get => _Values.PeCheck;

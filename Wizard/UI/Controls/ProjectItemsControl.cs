@@ -27,17 +27,15 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     internal sealed partial class ProjectItemsControl: UserControl, IDisposable
     {
-        private List<UProject> items = new List<UProject>();
+        private readonly List<UProject> items = new List<UProject>();
 
-        /// <summary>
-        /// When the size of rendered items has been changed.
-        /// </summary>
-        public event EventHandler RenderedItemsSizeChanged = delegate(object sender, EventArgs e) { };
+        private readonly Lazy<ProjectItemControl> empty;
 
         private sealed class UProject
         {
@@ -55,96 +53,48 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// Includes non-rendered items.
         /// </summary>
         public IEnumerable<IProject> Data
-        {
-            get => items.Select(i => ConfigureProject(i.project, i.control));
-        }
+            => items.Select(i => ConfigureProject(i.project, i.control));
 
         /// <summary>
         /// Count of rendered items.
         /// </summary>
-        public int CountRendered
-        {
-            get => RenderedItems.Count();
-        }
-
-        public int MaxItemHeight
-        {
-            get => GetMaxItemsHeight(1);
-        }
-
-        public int MaxItemsHeight
-        {
-            get => GetMaxItemsHeight(CountRendered);
-        }
+        public int CountRendered => RenderedItems.Count();
 
         /// <summary>
         /// Function of the browse button.
         /// </summary>
         [Browsable(false)]
-        public Action<string> Browse
-        {
-            get;
-            set;
-        }
+        public Action<string> Browse { get; set; }
 
         /// <summary>
         /// Function to validate namespace after update, or null if not used.
         /// </summary>
         [Browsable(false)]
-        public Func<string, bool> NamespaceValidate
-        {
-            get;
-            set;
-        }
+        public Func<string, bool> NamespaceValidate { get; set; }
 
         /// <summary>
         /// Function to open url.
         /// </summary>
         [Browsable(false)]
-        public Action<string> OpenUrl
-        {
-            get;
-            set;
-        }
+        public Action<string> OpenUrl { get; set; }
 
-        private IEnumerable<UProject> RenderedItems
-        {
-            get => items.Where(i => i.rendered);
-        }
+        private IEnumerable<UProject> RenderedItems => items.Where(i => i.rendered);
 
         /// <summary>
-        /// To add IProject for panel.
-        /// Will also add an item into collection if it's still not presented there.
+        /// Sets a single IProject for panel.
         /// </summary>
         /// <param name="project"></param>
-        public void Add(IProject project)
+        public void Set(IProject project)
         {
-            if(project == null) {
-                throw new ArgumentNullException(nameof(project));
-            }
-
-            var prj = items.Where(i => i.control.Project.DxpIdent == project.DxpIdent)
-                            .FirstOrDefault();
-
-            var control     = prj?.control ?? new ProjectItemControl(project);
-            control.Order   = CountRendered;
-            control.Top     = MaxItemsHeight;
-
-            if(prj?.control == null)
+            Reset(false);
+            if(project == null)
             {
-                control.SizeChanged += ControlSizeChanged;
-                ConfigureControl(control, project);
-
-                items.Add(new UProject() {
-                    control = control,
-                    project = project
-                });
+                UseStub();
             }
-            else {
-                prj.rendered = true;
+            else
+            {
+                Add(project);
             }
-
-            panelMain.Controls.Add(control);
         }
 
         /// <summary>
@@ -164,22 +114,61 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             items.Clear();
         }
 
-        public int GetMaxItemsHeight(int count)
-        {
-            return (CountRendered < 1) ? 
-                        0 : RenderedItems
-                                .OrderByDescending(i => i.control.Height)
-                                .Take(count)
-                                .Sum(i => i.control.Height);
-        }
-
         public ProjectItemsControl()
         {
             InitializeComponent();
+
+            empty = new Lazy<ProjectItemControl>(() => 
+            {
+                var item = new ProjectItemControl(new Project(new XProject()));
+                ConfigureControl(item, item.Project);
+                return item;
+            });
         }
+
+        /// <summary>
+        /// To add IProject for panel.
+        /// Will also add an item into collection if it's still not presented there.
+        /// </summary>
+        /// <param name="project"></param>
+        private void Add(IProject project)
+        {
+            if(project == null) {
+                throw new ArgumentNullException(nameof(project));
+            }
+
+            var prj = items.FirstOrDefault(i => i.control.Project.DxpIdent == project.DxpIdent);
+
+            var control     = prj?.control ?? new ProjectItemControl(project);
+            control.Order   = CountRendered;
+
+            if(prj?.control == null)
+            {
+                ConfigureControl(control, project);
+
+                items.Add(new UProject() {
+                    control = control,
+                    project = project
+                });
+            }
+            else {
+                prj.rendered = true;
+            }
+
+            panelMain.Controls.Add(control);
+        }
+
+        private void UseStub() => panelMain.Controls.Add(empty.Value);
 
         private void ConfigureControl(ProjectItemControl control, IProject project)
         {
+            if(project?.ProjectPath == null || project.Config == null) 
+            {
+                control.Identifier = Project.DXP_INVALID;
+                control.ProjectPath = "<<<>>>";
+                return;
+            }
+
             control.Installed       = project.Installed;
             control.ProjectPath     = project.ProjectPath;
             control.Identifier      = project.DxpIdent;
@@ -217,22 +206,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             return project;
         }
 
-        private void ControlSizeChanged(object sender, EventArgs e)
-        {
-            if(sender is ProjectItemControl control)
-            {
-                int xprev = control.Top + control.Height;
-                foreach(var item in RenderedItems.Skip(control.Order + 1)) {
-                    item.control.Top = xprev;
-                    xprev += item.control.Height;
-                }
-            }
-            RenderedItemsSizeChanged(this, EventArgs.Empty);
-        }
-
         #region disposing
 
-        /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
             if(disposing && (components != null)) {
@@ -240,6 +215,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
 
             Reset(true);
+            empty.Value?.Dispose();
+
             base.Dispose(disposing);
         }
 

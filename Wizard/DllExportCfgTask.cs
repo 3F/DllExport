@@ -24,6 +24,7 @@
 
 using System;
 using System.Globalization;
+using System.Reflection;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -40,7 +41,7 @@ namespace net.r_eg.DllExport.Wizard
 
         /// <summary>
         /// Optional root path of user paths. 
-        /// Affects on wSlnFile, wSlnDir, wPkgPath.
+        /// Affects on SlnFile, SlnDir, PkgPath.
         /// </summary>
         public string RootPath
         {
@@ -124,6 +125,25 @@ namespace net.r_eg.DllExport.Wizard
             set => _mgrArgs = value.OpenDoubleQuotes();
         }
         public string _mgrArgs;
+
+        /// <summary>
+        /// Version of the package that invokes target.
+        /// </summary>
+        public string PkgVer
+        {
+            get => _pkgVer;
+            set => _pkgVer = value.Trim();
+        }
+        private string _pkgVer;
+
+        /// <summary>
+        /// Proxy configuration if presented in `-proxy` key.
+        /// </summary>
+        public string Proxy
+        {
+            get;
+            set;
+        }
 
         /// <summary>
         /// Path to external storage if used.
@@ -293,12 +313,15 @@ namespace net.r_eg.DllExport.Wizard
 
         private void PrintKeys(Message.Level level)
         {
+            LSender.Send(this, $"Instance: '{Assembly.GetEntryAssembly().Location}'", level);
             LSender.Send(this, $"SlnDir: '{SlnDir}'", level);
             LSender.Send(this, $"SlnFile: '{SlnFile}'", level);
             LSender.Send(this, $"PkgPath: '{PkgPath}'", level);
             LSender.Send(this, $"MetaLib: '{MetaLib}'", level);
             LSender.Send(this, $"MetaCor: '{MetaCor}'", level);
             LSender.Send(this, $"MgrArgs: '{MgrArgs}'", level);
+            LSender.Send(this, $"PkgVer:  '{PkgVer}'", level);
+            LSender.Send(this, $"Proxy:   '{Proxy}'", level);
             LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
             LSender.Send(this, $"RootPath: '{RootPath}'", level);
             LSender.Send(this, $"Storage: '{CfgStorage}'", level);
@@ -328,8 +351,6 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         #region IDisposable
-
-        // To detect redundant calls
         private bool disposed = false;
 
         // To correctly implement the disposable pattern.
@@ -338,7 +359,7 @@ namespace net.r_eg.DllExport.Wizard
             Dispose(true);
         }
 
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool _)
         {
             if(disposed) {
                 return;

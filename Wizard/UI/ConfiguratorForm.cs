@@ -24,29 +24,43 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
+using System.IO;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
+using net.r_eg.DllExport.Wizard.UI.Kit;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard.UI
 {
     internal sealed partial class ConfiguratorForm: Form, IRender
     {
-        public const int MAX_VIEW_ITEMS = 2;
+        private const string CL_TRUE  = " ";
+        private const string CL_FALSE = "";
 
-        private IExecutor exec;
-        private Lazy<IExtCfg> extcfg;
+        private readonly IExecutor exec;
+        private readonly Lazy<IExtCfg> extcfg;
 
         private CfgStorage storage;
         private FileDialog fdialog;
+        private readonly Icons icons = new Icons();
+        private readonly Caller caller;
+        private readonly PackageInfo pkgVer;
+        private readonly IConfFormater confFormater;
         private int prevSlnItemIndex = 0;
-        private volatile bool _suspendPrjItems;
+        private volatile bool _suspendCbSln;
         private readonly object sync = new object();
+
+        private string UpdToVersion => cbPackages.Text.Trim();
+        private string CmdUpdate => $".\\{UserConfig.MGR_NAME} -action Upgrade -dxp-version ";
 
         /// <summary>
         /// To apply filter for rendered projects.
@@ -57,10 +71,6 @@ namespace net.r_eg.DllExport.Wizard.UI
             RenderProjects(exec.ActiveSlnFile, filter);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="enabled"></param>
         public void ShowProgressLine(bool enabled)
         {
             if(enabled) {
@@ -73,47 +83,126 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         public ConfiguratorForm(IExecutor exec)
         {
-            this.exec = exec ?? throw new ArgumentNullException(nameof(exec));
+            this.exec       = exec ?? throw new ArgumentNullException(nameof(exec));
 
-            extcfg = new Lazy<IExtCfg>(() => new Kit.FilterLineControl(this, exec));
+            extcfg          = new Lazy<IExtCfg>(() => new FilterLineControl(this, exec));
+            caller          = new Caller(exec.Config.SlnDir);
+            pkgVer          = new PackageInfo(exec);
+            confFormater    = new SimpleConfFormater(exec);
 
             InitializeComponent();
 
-            Text = ".NET DllExport";
-
-#if PUBLIC_RELEASE
-            Text += " - v" + WizardVersion.S_INFO;
-#else
-            Text += $" - Based on v{WizardVersion.S_NUM} {WizardVersion.S_REL} [{WizardVersion.BRANCH_SHA1}]";
-#endif
-#if DEBUG
-            Text += " [ Debug ]";
-#endif
-            Text += " github.com/3F/DllExport";
+            Text = GetVersionInfo();
 
             projectItems.Browse  =
-            projectItems.OpenUrl = OpenUrl;
+            projectItems.OpenUrl = (string url) => url.OpenUrl();
 
-            projectItems.NamespaceValidate = (string ns) => {
-                return DDNS.IsValidNS(ns?.Trim());
-            };
+            projectItems.NamespaceValidate = (string ns) => DDNS.IsValidNS(ns?.Trim());
 
-            progressLine.StartTrainEffect(panelTop.Width);
-            {
-                RenderSlnFiles();
-                comboBoxSln.SelectedIndex = 0;
+            ShowFilterPanel();
+            txtBuildInfo.Text = GetBuildInfo();
 
-                storage = new CfgStorage(exec, comboBoxStorage);
-                storage.UpdateItem();
-            }
-            progressLine.StopAll();
+            RenderSlnFiles();
+            comboBoxSln.SelectedIndex = 0;
 
-            Load += (object sender, EventArgs e) => { TopMost = false; TopMost = true; };
+            storage = new CfgStorage(exec, comboBoxStorage);
+            storage.UpdateItem();
+
+            projectItems.Set(null); // TODO: this only when no projects in solution and only when initial start
         }
 
-        private void OpenUrl(string url)
+        private void ConfiguratorForm_Load(object sender, EventArgs e)
         {
-            url.OpenUrl();
+            TopMost = false; TopMost = true;
+
+            if(!string.IsNullOrEmpty(pkgVer.Activated))
+            {
+                UpdateListOfPackages();
+                txtLogUpd.SetData($"{CmdUpdate} ...");
+            }
+            else
+            {
+                panelUpdVerTop.Enabled = false;
+                btnToOnline.Visible = true;
+                txtLogUpd.SetData("You're using an offline version or such `-dxp-version actual`.");
+            }
+        }
+
+        private void UpdateListOfPackages()
+        {
+            cbPackages.Items.Clear();
+
+            Task.Factory
+            .StartNew(() => pkgVer.GetFromGitHubAsync())
+            .ContinueWith(t =>
+            {
+                var rctask      = t.Result;
+                var releases    = rctask.Result.ToArray();
+
+                cbPackages.UIAction(x => x.Items.AddRange(releases));
+
+                int pos = cbPackages.FindString(pkgVer.Activated);
+                cbPackages.UIAction(x =>
+                {
+                    if(pos == -1) {
+                        x.Text = pkgVer.Activated;
+                    }
+                    else {
+                        x.SelectedIndex = pos;
+                    }
+                });
+            });
+        }
+
+        private string GetVersionInfo(bool urlinfo = true)
+        {
+            var sb = new StringBuilder();
+
+            sb.Append(".NET DllExport");
+
+#if PUBLIC_RELEASE
+            sb.Append(" " + WizardVersion.S_INFO);
+#else
+            sb.Append($" - Based on {WizardVersion.S_NUM}");
+#endif
+            if(WizardVersion.S_REL.Length > 0)
+            {
+                sb.Append($" [{WizardVersion.S_REL}]");
+            }
+#if DEBUG
+            sb.Append(" [Debug]");
+#endif
+            if(urlinfo)
+            {
+                sb.Append(" //github.com/3F/DllExport");
+            }
+
+            return sb.ToString();
+        }
+
+        private void ShowFilterPanel()
+        {
+            if(extcfg.IsValueCreated) {
+                ((FilterLineControl)extcfg.Value).Show();
+                return;
+            }
+
+            LSender.Send(this, $"Create {nameof(FilterLineControl)} panel");
+
+            var panel = (FilterLineControl)extcfg.Value;
+
+            panel.Left      = 0;
+            panel.Top       = 0;
+            panel.Width     = panelFilter.Width;
+            panel.Height    = panelFilter.Height;
+
+            panelFilter.Controls.Add(panel);
+            panel.Dock = DockStyle.Fill;
+
+            panel.BringToFront();
+            progressLine.BringToFront();
+
+            panel.Show();
         }
 
         private void RenderSlnFiles()
@@ -161,6 +250,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                 || !file.TrimEnd().EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
             {
                 DoSilentAction(() => box.SelectedIndex = prevSlnItemIndex);
+                EnableTabsWhenNoSln(false);
                 return;
             }
 
@@ -180,7 +270,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void RenderProjects(string sln)
         {
-            if(String.IsNullOrWhiteSpace(sln)) {
+            if(string.IsNullOrWhiteSpace(sln)) {
                 return;
             }
 
@@ -189,31 +279,40 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             toolTipMain.SetToolTip(comboBoxSln, sln);
 
-            RenderProjects(() => GetProjects(sln).ForEach(prj => projectItems.Add(prj)));
+            RenderListOfProjects(GetProjects(sln));
         }
 
         private void RenderProjects(string sln, ProjectFilter filter)
         {
-            RenderProjects(() => 
-            {
-                projectItems.Pause();
-                extcfg.Value.FilterProjects(filter, GetProjects(sln))
-                                .ForEach(prj => projectItems.Add(prj));
+            projectItems.Pause();
+            dgvFilter.Pause();
 
-                projectItems.Resume();
-            });
+            RenderListOfProjects(
+                extcfg.Value.FilterProjects(filter, GetProjects(sln))
+            );
+
+            dgvFilter.Resume();
+            projectItems.Resume();
         }
 
-        private void RenderProjects(Action act)
+        private void RenderListOfProjects(IEnumerable<IProject> projects)
         {
-            lock(sync)
+            dgvFilter.Rows.Clear();
+            projects.ForEach(prj => 
             {
-                _suspendPrjItems = true;
-                projectItems.Reset(false);
+                int n = dgvFilter.Rows.Add
+                (
+                    prj.Installed ? CL_TRUE : CL_FALSE,
+                    icons.GetIcon(prj.XProject.ProjectItem.project.EpType),
+                    prj.ProjectPath
+                );
 
-                act();
-                _suspendPrjItems = false;
-            }
+                dgvFilter.Rows[n].Cells[1].ToolTipText = prj.XProject.ProjectItem.project.EpType.ToString();
+                dgvFilter.Rows[n].Cells[0].Style.BackColor = (prj.Installed)? Color.FromArgb(111, 145, 6) 
+                                                                            : Color.FromArgb(168, 47, 17);
+            });
+
+            EnableTabsWhenNoSln(dgvFilter.Rows.Count > 0);
         }
 
         private IEnumerable<IProject> GetProjects(string sln)
@@ -223,39 +322,83 @@ namespace net.r_eg.DllExport.Wizard.UI
                             .OrderByDescending(p => p.InternalError == null);
         }
 
-        private void DoSilentAction(Action act, ComboBox box, EventHandler handler)
+        private void DoSilentAction(Action act)
         {
             lock(sync)
             {
-                box.SelectedIndexChanged -= handler;
+                _suspendCbSln = true;
                 act();
-                box.SelectedIndexChanged += handler;
+                _suspendCbSln = false;
             }
         }
 
-        private void DoSilentAction(Action act)
+        private void Execute(string cmd, Action success, Action<int> failed)
         {
-            DoSilentAction(act, comboBoxSln, comboBoxSln_SelectedIndexChanged);
+            txtLogUpd.AppendData(">" + cmd);
+
+            void std(object _, DataReceivedEventArgs _e)
+            {
+                if(!string.IsNullOrEmpty(_e.Data)) {
+                    txtLogUpd.UIAction(x => x.AppendData(_e.Data));
+                }
+            }
+
+            Task.Factory.StartNew(() => caller.Shell
+            (
+                cmd,
+                Caller.WAIT_INF,
+                (p) => 
+                {
+                    if(p.ExitCode != 0) 
+                    {
+                        failed(p.ExitCode);
+                        return;
+                    }
+
+                    success();
+                },
+                std, std
+            ));
         }
 
-        private void ResizeHeight()
-        {
-            int actual = Math.Max(
-                projectItems.MaxItemHeight,
-                Math.Min(projectItems.MaxItemsHeight, projectItems.GetMaxItemsHeight(MAX_VIEW_ITEMS))
-            );
+        private void EnableTabsWhenNoSln(bool status) => ((Control)tabCfgDxp).Enabled = status;
 
-            ClientSize = new Size(ClientSize.Width, panelTop.Height + actual);
+        private string GetBuildInfo()
+        {
+            var sb = new StringBuilder();
+
+            sb.AppendLine(GetVersionInfo(false));
+
+            var info = Path.Combine(exec.Config.PkgPath, "build_info.txt");
+            if(!File.Exists(info))
+            {
+                sb.Append("Detailed information about build was not found. :(");
+            }
+            else
+            {
+                File.ReadAllLines(info).ForEach(s =>
+                {
+                    sb.Append(Regex.Replace(s, @":(\s\s*)(?!generated)", (Match m) => $": {m.Groups[1].Value.Replace(' ', '.')} "));
+                    sb.AppendLine();
+                });
+            }
+
+            return sb.ToString();
         }
 
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(sender is ComboBox) {
+            if(_suspendCbSln) { return; }
+
+            ((FilterLineControl)extcfg.Value).FilterText = string.Empty;
+
+            if(sender is ComboBox) 
+            {
+                progressLine.StartTrainEffect(panelTop.Width);
                 RenderProjects((ComboBox)sender);
+                progressLine.StopAll();
             }
             prevSlnItemIndex = comboBoxSln.SelectedIndex;
-
-            ResizeHeight();
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -275,35 +418,101 @@ namespace net.r_eg.DllExport.Wizard.UI
             Close();
         }
 
-        private void btnExt_Click(object sender, EventArgs e)
+        private void lnkSrc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport".OpenUrl();
+        private void linkIlasm_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/coreclr".OpenUrl();
+        private void lnk3F_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F".OpenUrl();
+
+        private void dgvFilter_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if(extcfg.IsValueCreated) {
-                ((Kit.FilterLineControl)extcfg.Value).Show();
+            if(e.RowIndex == -1 || e.RowIndex >= dgvFilter.RowCount) {
                 return;
             }
 
-            LSender.Send(this, $"Create {nameof(Kit.FilterLineControl)} panel");
+            string path     = dgvFilter.Rows[e.RowIndex].Cells[gcPath.Name].Value.ToString();
+            IProject prj    = GetProjects(exec.ActiveSlnFile).FirstOrDefault(p => p.ProjectPath == path);
 
-            var panel = ((Kit.FilterLineControl)extcfg.Value);
-
-            panel.Left      = 0;
-            panel.Top       = 0;
-            panel.Width     = panelTop.Width;
-            panel.Height    = panelTop.Height/* - progressLine.Height*/;
-
-            panelTop.Controls.Add(panel);
-            panel.Dock = DockStyle.Fill;
-
-            panel.BringToFront();
-            progressLine.BringToFront();
-
-            panel.Show();
+            projectItems.Pause();
+            projectItems.Set(prj);
+            projectItems.Resume();
+            
+            txtCfgData.Text = confFormater.Parse(prj);
         }
 
-        private void projectItems_RenderedItemsSizeChanged(object sender, EventArgs e)
+        private void dgvFilter_KeyDown(object sender, KeyEventArgs e)
         {
-            if(_suspendPrjItems) { return; }
-            ResizeHeight();
+            switch(e.KeyCode)
+            {
+                case Keys.F2:
+                case Keys.Enter:
+                {
+                    e.SuppressKeyPress = true;
+                    e.Handled = true;
+                    return;
+                }
+            }
+        }
+
+        private void BtnUpdate_Click(object sender, EventArgs e)
+        {
+            if(string.IsNullOrEmpty(UpdToVersion)) {
+                txtLogUpd.AppendData($"You need specify version for command.");
+                return;
+            }
+
+            if(pkgVer.Activated == UpdToVersion) {
+                txtLogUpd.AppendData($"You're already using {pkgVer.Activated}");
+                return;
+            }
+
+            panelUpdVerTop.Enabled = false;
+            txtLogUpd.SetData($"Updating to {UpdToVersion} is starting ...");
+
+            Execute
+            (
+                CmdUpdate + UpdToVersion, 
+                () => 
+                {
+                    caller.Shell($".\\{UserConfig.MGR_NAME} -action Configure");
+                    Close();
+                },
+                (code) =>
+                {
+                    txtLogUpd.UIAction(x => x.AppendData("Failed Task."));
+                    panelUpdVerTop.UIAction(x => x.Enabled = true);
+                }
+            );
+        }
+
+        private void BtnUpdListOfPkg_Click(object sender, EventArgs e) => UpdateListOfPackages();
+
+        private void BtnToOnline_Click(object sender, EventArgs e)
+        {
+            const string _FAILED = "Failed Task. You only need to try manually.";
+
+            btnToOnline.Visible = false;
+
+            var src = Path.Combine(exec.Config.PkgPath, UserConfig.MGR_FILE);
+            if(!File.Exists(src)) 
+            {
+                txtLogUpd.AppendData($"{UserConfig.MGR_FILE} was not found in `{exec.Config.PkgPath}`.");
+                txtLogUpd.AppendData(_FAILED);
+                return;
+            }
+            File.Copy(src, Path.Combine(exec.Config.SlnDir, UserConfig.MGR_FILE), true);
+
+            Execute
+            (
+                $".\\{UserConfig.MGR_NAME} -action Update",
+                () => 
+                {
+                    caller.Shell($".\\{UserConfig.MGR_NAME} -action Configure");
+                    Close();
+                },
+                (code) =>
+                {
+                    txtLogUpd.UIAction(x => x.AppendData(_FAILED));
+                }
+            );
         }
     }
 }

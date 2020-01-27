@@ -69,6 +69,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_CUSTOM_ILASM = "DllExportILAsmCustomPath";
 
         /// <summary>
+        /// https://github.com/3F/DllExport/issues/125
+        /// </summary>
+        public const string DXP_SYSOBJ_REBASE = "DllExportSysObjRebase";
+
+        /// <summary>
         /// Flag to keep intermediate Files (IL Code, Resources, ...).
         /// </summary>
         public const string DXP_INTERMEDIATE_FILES = "DllExportLeaveIntermediateFiles";
@@ -82,6 +87,11 @@ namespace net.r_eg.DllExport.Wizard
         /// Type of checking PE32/PE32+ module.
         /// </summary>
         public const string DXP_PE_CHECK = "DllExportPeCheck";
+
+        /// <summary>
+        /// Optional patches.
+        /// </summary>
+        public const string DXP_PATCHES = "DllExportPatches";
 
         /// <summary>
         /// Platform Target for binaries.

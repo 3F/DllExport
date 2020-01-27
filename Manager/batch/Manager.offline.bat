@@ -1,52 +1,40 @@
 @echo off
 
-:: Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ] GitHub/3F
-:: Licensed under the MIT license
 :: https://github.com/3F/DllExport
 :: ---
 :: Offline version - wrapper
 
 :: - :: - - - - - - - - - - - - - - -
 
-:: the command when no arguments at all
+:: Activated version to use
+set "pkgVersion=actual"
+
+:: Use command when no arguments to this wrapper
 set "defaultCommand=-action Configure"
 
-:: common directory with offline packages
-set "pkgsDir=packages.offline"
+:: Where offline packages are stored
+set "pkgsDir=packages"
 
-:: DllExport package
-set "unpackedPkg=DllExport"
 
-:: DllExport Manager
-set "mgrFile=DllExport.bat"
+
+
+
+
+
+
 
 
 :: - - - - - - - - - - - - - - -
 setlocal enableDelayedExpansion
 
 set args=%*
+set "__=DllExport"
+if not defined args set args=%defaultCommand%
 
-call :isEmptyOrWhitespace args _is
-if [!_is!]==[1] (
-    set args=%defaultCommand%
+if "%pkgVersion%"=="actual" (
+    call ".\\%pkgsDir%\\%__%\\%__%" -packages %pkgsDir% -dxp-version actual !args!
+) else (
+    call ".\\%pkgsDir%\\%__%.%pkgVersion%\\%__%" -packages %pkgsDir% !args!
 )
 
-call .\%pkgsDir%\%unpackedPkg%\%mgrFile% -packages %pkgsDir% -dxp-version actual !args!
-
 exit /B %ERRORLEVEL%
-
-
-
-:isEmptyOrWhitespace
-:: Usage: call :isEmptyOrWhitespace input output(1/0)
-setlocal enableDelayedExpansion
-set "_v=!%1!"
-
-if not defined _v endlocal & set /a %2=1 & exit /B 0
- 
-set _v=%_v: =%
-set "_v= %_v%"
-if [^%_v:~1,1%]==[] endlocal & set /a %2=1 & exit /B 0
- 
-endlocal & set /a %2=0
-exit /B 0

@@ -39,6 +39,10 @@
     <AssemblyOriginatorKeyFile>key.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Conari, Version=1.4.0.0, Culture=neutral, PublicKeyToken=4bbd2ef743db151e, processorArchitecture=MSIL">
+      <HintPath>..\packages\Conari.1.4.0\lib\net40\Conari.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CSharp" />
     <Reference Include="Mono.Cecil, Version=0.11.1.0, Culture=neutral, PublicKeyToken=50cebf1cceb9d05e, processorArchitecture=MSIL">
       <HintPath>..\packages\Mono.Cecil.0.11.1\lib\net40\Mono.Cecil.dll</HintPath>
     </Reference>
@@ -49,9 +53,6 @@
     <Compile Include="IDDNS.cs" />
     <Compile Include="DDNS.cs" />
     <Compile Include="Rmod.cs" />
-    <Compile Include="Log\ISender.cs" />
-    <Compile Include="Log\LSender.cs" />
-    <Compile Include="Log\Message.cs" />
     <Compile Include="BinaryData.cs" />
     <Compile Include="Ripper.cs" />
     <Compile Include="MarkerData.cs" />

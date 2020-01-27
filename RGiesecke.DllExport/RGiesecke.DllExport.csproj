@@ -58,6 +58,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisabledAssemblyResolver.cs" />
+    <Compile Include="PatchesType.cs" />
     <Compile Include="PeCheckType.cs" />
     <Compile Include="DllExportLogginCodes.cs" />
     <Compile Include="DllExportServiceProviderExtensions.cs" />

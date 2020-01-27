@@ -22,50 +22,10 @@
  * THE SOFTWARE.
 */
 
-using System;
-
-namespace net.r_eg.Conari.Log
+namespace net.r_eg.DllExport.Wizard.UI
 {
-    [Serializable]
-    public class Message: EventArgs
+    internal interface IConfFormater
     {
-        public DateTime stamp;
-
-        public string content;
-
-        public Exception exception;
-
-        public object data;
-
-        public Level type;
-
-        public enum Level
-        {
-            Trace,
-            Debug,
-            Info,
-            Warn,
-            Error,
-            Fatal
-        }
-
-        public Message(string msg, Level type = Level.Debug)
-        {
-            content     = msg;
-            this.type   = type;
-            stamp       = DateTime.Now;
-        }
-
-        public Message(string msg, Exception ex, Level type = Level.Error)
-            : this(msg, type)
-        {
-            exception = ex;
-        }
-
-        public Message(string msg, object data, Level type = Level.Debug)
-            : this(msg, type)
-        {
-            this.data = data;
-        }
+        string Parse(IProject project);
     }
 }

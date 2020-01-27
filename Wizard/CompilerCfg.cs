@@ -52,6 +52,12 @@ namespace net.r_eg.DllExport.Wizard
         public string customILAsm;
 
         /// <summary>
+        /// Rebase System Object: `netstandard` } `System.Runtime` } `mscorlib`
+        /// https://github.com/3F/DllExport/issues/125#issuecomment-561245575
+        /// </summary>
+        public bool rSysObj;
+
+        /// <summary>
         /// Flag to keep intermediate Files (IL Code, Resources, ...).
         /// </summary>
         public bool intermediateFiles;
@@ -65,5 +71,10 @@ namespace net.r_eg.DllExport.Wizard
         /// Type of checking PE32/PE32+ module.
         /// </summary>
         public PeCheckType peCheck;
+
+        /// <summary>
+        /// Optional patches.
+        /// </summary>
+        public PatchesType patches;
     }
 }

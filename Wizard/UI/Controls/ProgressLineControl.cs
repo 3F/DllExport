@@ -40,16 +40,21 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
             stop = false;
 
+            int direction = 0; // for an complete processing per step
             void animate()
             {
-                if(Width >= lenLimit) {
+                if(Width >= lenLimit) 
+                {
+                    direction = -1;
                     Left += step;
 
                     if(Left >= lenLimit) {
                         ResetTrainEffect();
                     }
                 }
-                else {
+                else 
+                {
+                    direction = 1;
                     Width += step;
                 }
             };
@@ -60,7 +65,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 {
                     this.UIAction(animate);
 
-                    if(stop) {
+                    if(stop && direction < 0) {
                         this.UIAction(ResetTrainEffect);
                         return;
                     }

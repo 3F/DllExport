@@ -38,6 +38,8 @@ namespace net.r_eg.DllExport.Wizard
 {
     public class Project: IProject
     {
+        public const string DXP_INVALID = "EEE00000-0000-0000-0000-000000000000";
+
         /// <summary>
         /// PublicKeyToken of the meta library.
         /// </summary>
@@ -58,6 +60,8 @@ namespace net.r_eg.DllExport.Wizard
         /// https://github.com/3F/DllExport/issues/62
         /// </summary>
         protected const string DXP_TARGET_R_DYN = "DllExportRPkgDynamicImport";
+
+        private const string WZ_ID = "Wz";
 
         /// <summary>
         /// Access to found project.
@@ -278,11 +282,13 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_SKIP_ANYCPU,
                 MSBuildProperties.DXP_DDNS_CECIL,
                 MSBuildProperties.DXP_GEN_EXP_LIB,
+                MSBuildProperties.DXP_SYSOBJ_REBASE,
                 MSBuildProperties.DXP_OUR_ILASM,
                 MSBuildProperties.DXP_CUSTOM_ILASM,
                 MSBuildProperties.DXP_INTERMEDIATE_FILES,
                 MSBuildProperties.DXP_TIMEOUT,
                 MSBuildProperties.DXP_PE_CHECK,
+                MSBuildProperties.DXP_PATCHES,
                 MSBuildProperties.DXP_PLATFORM
             );
 
@@ -361,7 +367,8 @@ namespace net.r_eg.DllExport.Wizard
                 Compiler = new CompilerCfg() {
                     ordinalsBase    = 1,
                     timeout         = CompilerCfg.TIMEOUT_EXEC,
-                    peCheck         = PeCheckType.PeIl
+                    peCheck         = PeCheckType.PeIl,
+                    patches         = PatchesType.None,
                 },
             };
         }
@@ -450,21 +457,29 @@ namespace net.r_eg.DllExport.Wizard
             SetProperty(MSBuildProperties.DXP_OUR_ILASM, Config.Compiler.ourILAsm);
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
 
-            if(Config.Compiler.customILAsm != null) {
+            if(Config.Compiler.customILAsm != null) 
+            {
                 SetProperty(MSBuildProperties.DXP_CUSTOM_ILASM, Config.Compiler.customILAsm);
                 Log.send(this, $"Set path to custom ILAsm: {Config.Compiler.customILAsm}");
             }
 
+            SetProperty(MSBuildProperties.DXP_SYSOBJ_REBASE, Config.Compiler.rSysObj);
+            Log.send(this, $"Rebase System Object: {Config.Compiler.rSysObj}");
+
             SetProperty(MSBuildProperties.DXP_INTERMEDIATE_FILES, Config.Compiler.intermediateFiles);
             Log.send(this, $"Flag to keep intermediate Files (IL Code, Resources, ...): {Config.Compiler.intermediateFiles}");
 
-            if(Config.Compiler.timeout >= 0) {
+            if(Config.Compiler.timeout >= 0) 
+            {
                 SetProperty(MSBuildProperties.DXP_TIMEOUT, Config.Compiler.timeout);
                 Log.send(this, $"Timeout of execution in milliseconds: {Config.Compiler.timeout}");
             }
 
             SetProperty(MSBuildProperties.DXP_PE_CHECK, (int)Config.Compiler.peCheck);
             Log.send(this, $"Type of checking PE32/PE32+ module: {Config.Compiler.peCheck}");
+
+            SetProperty(MSBuildProperties.DXP_PATCHES, (long)Config.Compiler.patches);
+            Log.send(this, $"Applied Patches: {Config.Compiler.patches}");
         }
 
         protected void CfgCommonData()
@@ -523,6 +538,17 @@ namespace net.r_eg.DllExport.Wizard
                 false
             );
 
+            if(!string.IsNullOrWhiteSpace(Config.Wizard.PkgVer) 
+                && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
+            {
+                XProject.AddPackageReference
+                (
+                    UserConfig.PKG_ID, 
+                    Config.Wizard.PkgVer, 
+                    new Dictionary<string, string>() {{ "Visible", "false" }, { WZ_ID, "1" }} // VS2010 etc
+                );
+            }
+
             AddRestoreDxp(
                 DXP_TARGET_PKG_R, 
                 $"'$(DllExportModImported)' != 'true' Or !Exists('{dxpTarget}')",
@@ -557,7 +583,7 @@ namespace net.r_eg.DllExport.Wizard
             else {
                 args = String.Empty;
             }
-            taskExec.SetParameter("Command", $"{manager} {args} -action Restore");
+            taskExec.SetParameter("Command", $".\\{manager} {args} -action Restore");
             taskExec.SetParameter("WorkingDirectory", "$(SolutionDir)");
         }
 
@@ -602,6 +628,14 @@ namespace net.r_eg.DllExport.Wizard
                 if(!PublicKeyTokenLimit && refer.evaluatedInclude == "DllExport") {
                     Log.send(this, $"Remove old reference no-pk:'{refer.evaluatedInclude}'", Message.Level.Info);
                     XProject.RemoveItem(refer);
+                }
+            }
+
+            Log.send(this, $"Trying to remove {WZ_ID} PackageReference records", Message.Level.Info);
+            foreach(var item in XProject.GetItems("PackageReference", UserConfig.PKG_ID).ToArray()) 
+            {
+                if(item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1") {
+                    XProject.RemoveItem(item);
                 }
             }
 
@@ -724,15 +758,11 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        private void SetProperty(string name, bool val)
-        {
-            SetProperty(name, val.ToString().ToLower());
-        }
+        private void SetProperty(string name, bool val) => SetProperty(name, val.ToString().ToLower());
 
-        private void SetProperty(string name, int val)
-        {
-            SetProperty(name, val.ToString());
-        }
+        private void SetProperty(string name, int val) => SetProperty(name, val.ToString());
+
+        private void SetProperty(string name, long val) => SetProperty(name, val.ToString());
 
         private string CopyLib(string src, string dest)
         {

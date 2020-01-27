@@ -67,7 +67,6 @@ namespace
     /// About our meta-information in user-code:
     /// https://github.com/3F/DllExport/issues/16
     /// </summary>
-    [Serializable]
     [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]
     public sealed class DllExportAttribute: Attribute
     {

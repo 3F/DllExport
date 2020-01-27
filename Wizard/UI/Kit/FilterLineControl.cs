@@ -24,14 +24,10 @@
 
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.MvsSln.Log;
 
@@ -44,6 +40,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Kit
 
         private DateTime prevPress;
         private bool block = false;
+
+        public string FilterText
+        {
+            get => textBoxFilter.Text;
+            set => textBoxFilter.Text = value;
+        }
 
         /// <summary>
         /// To get new project list after applying filter.
@@ -134,53 +136,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Kit
             base.Dispose(disposing);
         }
 
-        private void btnClose_Click(object sender, EventArgs e)
-        {
-            Hide();
-        }
-
         private void textBoxFilter_TextChanged(object sender, EventArgs e)
         {
-            ApplyDelayedFilter();
-        }
-
-        private void btnInfo_Click(object sender, EventArgs e)
-        {
-            var sb = new StringBuilder();
-
-#if !PUBLIC_RELEASE
-            sb.Append($"The base: ");
-#endif
-            sb.Append($"{WizardVersion.S_NUM_REV} {WizardVersion.S_REL} [{WizardVersion.BRANCH_SHA1}]");
-#if DEBUG
-            sb.Append("[ Debug ] ");
-#else
-            sb.Append("[ Release ] ");
-#endif
-            sb.AppendLine();
-            sb.AppendLine();
-
-            sb.Append("https://github.com/3F/DllExport");
-            sb.AppendLine();
-
-            var info = Path.Combine(exec.Config.PkgPath, "build_info.txt");
-            if(!File.Exists(info)) {
-                sb.Append("Detailed information about build was not found. :(");
-            }
-            else {
-                File.ReadAllLines(info).ForEach(s => 
-                {
-                    sb.Append(Regex.Replace(s, @":(\s\s*)(?!generated)", (Match m) => $": {m.Groups[1].Value.Replace(' ', '_')} "));
-                    sb.AppendLine();
-                });
-            }
-
-            MessageBox.Show(sb.ToString(), ".NET DllExport");
-        }
-
-        private void btnBug_Click(object sender, EventArgs e)
-        {
-            "https://github.com/3F/DllExport/issues".OpenUrl();
+            ApplyDelayedFilter(550);
         }
     }
 }

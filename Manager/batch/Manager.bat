@@ -125,10 +125,10 @@ echo.
 echo Licensed under the MIT license
 @echo https://github.com/3F/DllExport
 echo.
-echo Based on hMSBuild and includes GetNuTool core: https://github.com/3F
+echo Based on hMSBuild, MvsSln, +GetNuTool: https://github.com/3F
 echo.
 @echo.
-@echo Usage: DllExport [args to DllExport] [args to GetNuTool core]
+@echo Usage: DllExport [args to DllExport] [args to GetNuTool]
 echo ------
 echo.
 echo Arguments:
@@ -271,6 +271,7 @@ set key=!arg[%idx%]!
     ) else if [!key!]==[-proxy] ( set /a "idx+=1" & call :eval arg[!idx!] v
         
         set proxy=!v!
+        set wProxy=!v!
 
         goto continue
     ) else if [!key!]==[-pkg-link] ( set /a "idx+=1" & call :eval arg[!idx!] v
@@ -369,6 +370,7 @@ if defined dxpVersion (
         set "dxpVersion="
     )
 )
+set wPkgVer=!dxpVersion!
 
 if z%wAction%==zUpgrade (
     call :dbgprint "Upgrade is on"
@@ -522,7 +524,7 @@ if defined xmgrtest (
 
 :: keep it as the last one-line command before final exit!
 if defined mgrUp (
-    (copy /B/Y "!wPkgPath!\\DllExport.bat" "!fManager!" > nul) && ( echo Manager has been updated. & exit /B !EXIT_CODE! ) || ( echo -mgr-up failed. & exit /B %ERRORLEVEL% )
+    (copy /B/Y "!wPkgPath!\\DllExport.bat" "!fManager!" > nul) && ( echo Manager has been updated. & exit /B 0 ) || ( (echo -mgr-up failed:!EXIT_CODE! 1>&2) & exit /B 1 )
 )
 
 exit /B !EXIT_CODE!
