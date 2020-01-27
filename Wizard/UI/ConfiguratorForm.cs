@@ -113,8 +113,17 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             TopMost = false; TopMost = true;
 
-            UpdateListOfPackages(); 
-            txtLogUpd.SetData($"{CmdUpdate} ...");
+            if(!string.IsNullOrEmpty(pkgVer.Activated))
+            {
+                UpdateListOfPackages();
+                txtLogUpd.SetData($"{CmdUpdate} ...");
+            }
+            else
+            {
+                panelUpdVerTop.Enabled = false;
+                btnToOnline.Visible = true;
+                txtLogUpd.SetData("You're using an offline version or such `-dxp-version actual`.");
+            }
         }
 
         private void UpdateListOfPackages()
@@ -317,6 +326,35 @@ namespace net.r_eg.DllExport.Wizard.UI
             }
         }
 
+        private void Execute(string cmd, Action success, Action<int> failed)
+        {
+            txtLogUpd.AppendData(">" + cmd);
+
+            void std(object _, DataReceivedEventArgs _e)
+            {
+                if(!string.IsNullOrEmpty(_e.Data)) {
+                    txtLogUpd.UIAction(x => x.AppendData(_e.Data));
+                }
+            }
+
+            Task.Factory.StartNew(() => caller.Shell
+            (
+                cmd,
+                Caller.WAIT_INF,
+                (p) => 
+                {
+                    if(p.ExitCode != 0) 
+                    {
+                        failed(p.ExitCode);
+                        return;
+                    }
+
+                    success();
+                },
+                std, std
+            ));
+        }
+
         private void EnableTabsWhenNoSln(bool status) => ((Control)tabCfgDxp).Enabled = status;
 
         private string GetBuildInfo()
@@ -420,36 +458,52 @@ namespace net.r_eg.DllExport.Wizard.UI
             panelUpdVerTop.Enabled = false;
             txtLogUpd.SetData($"Updating to {UpdToVersion} is starting ...");
 
-            var cmd = CmdUpdate + UpdToVersion;
-            txtLogUpd.AppendData(">" + cmd);
-
-            void std(object _, DataReceivedEventArgs _e)
-            {
-                if(!string.IsNullOrEmpty(_e.Data)) {
-                    txtLogUpd.UIAction(x => x.AppendData(_e.Data));
-                }
-            }
-
-            Task.Factory.StartNew(() => caller.Shell
+            Execute
             (
-                cmd,
-                Caller.WAIT_INF,
-                (p) => 
+                CmdUpdate + UpdToVersion, 
+                () => 
                 {
-                    if(p.ExitCode != 0) 
-                    {
-                        txtLogUpd.UIAction(x => x.AppendData("Failed Task."));
-                        panelUpdVerTop.UIAction(x => x.Enabled = true);
-                        return;
-                    }
-
                     caller.Shell($".\\{UserConfig.MGR_NAME} -action Configure");
                     Close();
                 },
-                std, std
-            ));
+                (code) =>
+                {
+                    txtLogUpd.UIAction(x => x.AppendData("Failed Task."));
+                    panelUpdVerTop.UIAction(x => x.Enabled = true);
+                }
+            );
         }
 
         private void BtnUpdListOfPkg_Click(object sender, EventArgs e) => UpdateListOfPackages();
+
+        private void BtnToOnline_Click(object sender, EventArgs e)
+        {
+            const string _FAILED = "Failed Task. You only need to try manually.";
+
+            btnToOnline.Visible = false;
+
+            var src = Path.Combine(exec.Config.PkgPath, UserConfig.MGR_FILE);
+            if(!File.Exists(src)) 
+            {
+                txtLogUpd.AppendData($"{UserConfig.MGR_FILE} was not found in `{exec.Config.PkgPath}`.");
+                txtLogUpd.AppendData(_FAILED);
+                return;
+            }
+            File.Copy(src, Path.Combine(exec.Config.SlnDir, UserConfig.MGR_FILE), true);
+
+            Execute
+            (
+                $".\\{UserConfig.MGR_NAME} -action Update",
+                () => 
+                {
+                    caller.Shell($".\\{UserConfig.MGR_NAME} -action Configure");
+                    Close();
+                },
+                (code) =>
+                {
+                    txtLogUpd.UIAction(x => x.AppendData(_FAILED));
+                }
+            );
+        }
     }
 }

@@ -38,6 +38,7 @@
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.comboBoxStorage = new System.Windows.Forms.ComboBox();
             this.btnUpdListOfPkg = new System.Windows.Forms.Button();
+            this.btnToOnline = new System.Windows.Forms.Button();
             this.splitCon = new System.Windows.Forms.SplitContainer();
             this.panelPrjs = new System.Windows.Forms.Panel();
             this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
@@ -151,6 +152,18 @@
             this.toolTipMain.SetToolTip(this.btnUpdListOfPkg, "<< Receive new list");
             this.btnUpdListOfPkg.UseVisualStyleBackColor = true;
             this.btnUpdListOfPkg.Click += new System.EventHandler(this.BtnUpdListOfPkg_Click);
+            // 
+            // btnToOnline
+            // 
+            this.btnToOnline.Location = new System.Drawing.Point(6, 73);
+            this.btnToOnline.Name = "btnToOnline";
+            this.btnToOnline.Size = new System.Drawing.Size(148, 23);
+            this.btnToOnline.TabIndex = 15;
+            this.btnToOnline.Text = "Convert to online version";
+            this.toolTipMain.SetToolTip(this.btnToOnline, "It will try to convert to the normal online version");
+            this.btnToOnline.UseVisualStyleBackColor = true;
+            this.btnToOnline.Visible = false;
+            this.btnToOnline.Click += new System.EventHandler(this.BtnToOnline_Click);
             // 
             // splitCon
             // 
@@ -395,6 +408,7 @@
             // 
             // tabUpdating
             // 
+            this.tabUpdating.Controls.Add(this.btnToOnline);
             this.tabUpdating.Controls.Add(this.txtLogUpd);
             this.tabUpdating.Controls.Add(this.panelUpdVerTop);
             this.tabUpdating.Location = new System.Drawing.Point(4, 25);
@@ -517,5 +531,6 @@
         private System.Windows.Forms.TextBox txtLogUpd;
         private System.Windows.Forms.Panel panelUpdVerTop;
         private System.Windows.Forms.Button btnUpdListOfPkg;
+        private System.Windows.Forms.Button btnToOnline;
     }
 }
