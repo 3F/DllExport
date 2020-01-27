@@ -134,20 +134,24 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             Task.Factory
             .StartNew(() => pkgVer.GetFromGitHubAsync())
-            .ContinueWith(t => 
+            .ContinueWith(t =>
             {
-                var rctask = t.Result;
-                cbPackages.Items.AddRange(rctask.Result.ToArray());
+                var rctask      = t.Result;
+                var releases    = rctask.Result.ToArray();
+
+                cbPackages.UIAction(x => x.Items.AddRange(releases));
 
                 int pos = cbPackages.FindString(pkgVer.Activated);
-                if(pos == -1) {
-                    cbPackages.Text = pkgVer.Activated;
-                }
-                else {
-                    cbPackages.SelectedIndex = pos;
-                }
-            }, 
-            TaskScheduler.FromCurrentSynchronizationContext());
+                cbPackages.UIAction(x =>
+                {
+                    if(pos == -1) {
+                        x.Text = pkgVer.Activated;
+                    }
+                    else {
+                        x.SelectedIndex = pos;
+                    }
+                });
+            });
         }
 
         private string GetVersionInfo(bool urlinfo = true)
