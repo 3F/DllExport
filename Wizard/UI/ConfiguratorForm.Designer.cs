@@ -36,9 +36,9 @@
             this.btnApply = new System.Windows.Forms.Button();
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
-            this.comboBoxStorage = new System.Windows.Forms.ComboBox();
             this.btnUpdListOfPkg = new System.Windows.Forms.Button();
             this.btnToOnline = new System.Windows.Forms.Button();
+            this.comboBoxStorage = new System.Windows.Forms.ComboBox();
             this.splitCon = new System.Windows.Forms.SplitContainer();
             this.panelPrjs = new System.Windows.Forms.Panel();
             this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
@@ -49,18 +49,21 @@
             this.tabCtrl = new System.Windows.Forms.TabControl();
             this.tabCfgDxp = new System.Windows.Forms.TabPage();
             this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
-            this.tabCfgOpt = new System.Windows.Forms.TabPage();
-            this.linkIlasm = new System.Windows.Forms.LinkLabel();
-            this.lnkSrc = new System.Windows.Forms.LinkLabel();
-            this.lnk3F = new System.Windows.Forms.LinkLabel();
-            this.labelSrc = new System.Windows.Forms.Label();
-            this.txtBuildInfo = new System.Windows.Forms.TextBox();
+            this.tabData = new System.Windows.Forms.TabPage();
             this.labelStorage = new System.Windows.Forms.Label();
+            this.txtCfgData = new System.Windows.Forms.TextBox();
             this.tabUpdating = new System.Windows.Forms.TabPage();
             this.txtLogUpd = new System.Windows.Forms.TextBox();
             this.panelUpdVerTop = new System.Windows.Forms.Panel();
             this.cbPackages = new System.Windows.Forms.ComboBox();
             this.btnUpdate = new System.Windows.Forms.Button();
+            this.tabBuildInfo = new System.Windows.Forms.TabPage();
+            this.labelSrcMit = new System.Windows.Forms.Label();
+            this.linkIlasm = new System.Windows.Forms.LinkLabel();
+            this.lnkSrc = new System.Windows.Forms.LinkLabel();
+            this.lnk3F = new System.Windows.Forms.LinkLabel();
+            this.labelSrc = new System.Windows.Forms.Label();
+            this.txtBuildInfo = new System.Windows.Forms.TextBox();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).BeginInit();
             this.splitCon.Panel1.SuspendLayout();
@@ -70,9 +73,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).BeginInit();
             this.tabCtrl.SuspendLayout();
             this.tabCfgDxp.SuspendLayout();
-            this.tabCfgOpt.SuspendLayout();
+            this.tabData.SuspendLayout();
             this.tabUpdating.SuspendLayout();
             this.panelUpdVerTop.SuspendLayout();
+            this.tabBuildInfo.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelTop
@@ -127,20 +131,6 @@
             this.toolTipMain.SetToolTip(this.comboBoxSln, "Solution File");
             this.comboBoxSln.SelectedIndexChanged += new System.EventHandler(this.comboBoxSln_SelectedIndexChanged);
             // 
-            // comboBoxStorage
-            // 
-            this.comboBoxStorage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.comboBoxStorage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxStorage.DropDownWidth = 190;
-            this.comboBoxStorage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.comboBoxStorage.FormattingEnabled = true;
-            this.comboBoxStorage.Location = new System.Drawing.Point(10, 27);
-            this.comboBoxStorage.Margin = new System.Windows.Forms.Padding(1);
-            this.comboBoxStorage.Name = "comboBoxStorage";
-            this.comboBoxStorage.Size = new System.Drawing.Size(203, 21);
-            this.comboBoxStorage.TabIndex = 7;
-            this.toolTipMain.SetToolTip(this.comboBoxStorage, "Storage");
-            // 
             // btnUpdListOfPkg
             // 
             this.btnUpdListOfPkg.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
@@ -164,6 +154,20 @@
             this.btnToOnline.UseVisualStyleBackColor = true;
             this.btnToOnline.Visible = false;
             this.btnToOnline.Click += new System.EventHandler(this.BtnToOnline_Click);
+            // 
+            // comboBoxStorage
+            // 
+            this.comboBoxStorage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.comboBoxStorage.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxStorage.DropDownWidth = 190;
+            this.comboBoxStorage.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboBoxStorage.FormattingEnabled = true;
+            this.comboBoxStorage.Location = new System.Drawing.Point(251, 4);
+            this.comboBoxStorage.Margin = new System.Windows.Forms.Padding(1);
+            this.comboBoxStorage.Name = "comboBoxStorage";
+            this.comboBoxStorage.Size = new System.Drawing.Size(170, 21);
+            this.comboBoxStorage.TabIndex = 14;
+            this.toolTipMain.SetToolTip(this.comboBoxStorage, "Storage");
             // 
             // splitCon
             // 
@@ -282,8 +286,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabCtrl.Controls.Add(this.tabCfgDxp);
-            this.tabCtrl.Controls.Add(this.tabCfgOpt);
+            this.tabCtrl.Controls.Add(this.tabData);
             this.tabCtrl.Controls.Add(this.tabUpdating);
+            this.tabCtrl.Controls.Add(this.tabBuildInfo);
             this.tabCtrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.tabCtrl.Location = new System.Drawing.Point(-4, 0);
             this.tabCtrl.Margin = new System.Windows.Forms.Padding(0);
@@ -319,92 +324,42 @@
             this.projectItems.Size = new System.Drawing.Size(448, 247);
             this.projectItems.TabIndex = 2;
             // 
-            // tabCfgOpt
+            // tabData
             // 
-            this.tabCfgOpt.BackColor = System.Drawing.SystemColors.Control;
-            this.tabCfgOpt.Controls.Add(this.linkIlasm);
-            this.tabCfgOpt.Controls.Add(this.lnkSrc);
-            this.tabCfgOpt.Controls.Add(this.lnk3F);
-            this.tabCfgOpt.Controls.Add(this.labelSrc);
-            this.tabCfgOpt.Controls.Add(this.txtBuildInfo);
-            this.tabCfgOpt.Controls.Add(this.labelStorage);
-            this.tabCfgOpt.Controls.Add(this.comboBoxStorage);
-            this.tabCfgOpt.Location = new System.Drawing.Point(4, 25);
-            this.tabCfgOpt.Name = "tabCfgOpt";
-            this.tabCfgOpt.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCfgOpt.Size = new System.Drawing.Size(442, 230);
-            this.tabCfgOpt.TabIndex = 1;
-            this.tabCfgOpt.Text = "   +";
-            // 
-            // linkIlasm
-            // 
-            this.linkIlasm.AutoSize = true;
-            this.linkIlasm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkIlasm.Location = new System.Drawing.Point(280, 48);
-            this.linkIlasm.Name = "linkIlasm";
-            this.linkIlasm.Size = new System.Drawing.Size(149, 13);
-            this.linkIlasm.TabIndex = 20;
-            this.linkIlasm.TabStop = true;
-            this.linkIlasm.Text = "https://github.com/3F/coreclr";
-            this.linkIlasm.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkIlasm_LinkClicked);
-            // 
-            // lnkSrc
-            // 
-            this.lnkSrc.AutoSize = true;
-            this.lnkSrc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lnkSrc.Location = new System.Drawing.Point(280, 27);
-            this.lnkSrc.Name = "lnkSrc";
-            this.lnkSrc.Size = new System.Drawing.Size(159, 13);
-            this.lnkSrc.TabIndex = 16;
-            this.lnkSrc.TabStop = true;
-            this.lnkSrc.Text = "https://github.com/3F/DllExport";
-            this.lnkSrc.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkSrc_LinkClicked);
-            // 
-            // lnk3F
-            // 
-            this.lnk3F.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.lnk3F.AutoSize = true;
-            this.lnk3F.Location = new System.Drawing.Point(360, 207);
-            this.lnk3F.Name = "lnk3F";
-            this.lnk3F.Size = new System.Drawing.Size(57, 13);
-            this.lnk3F.TabIndex = 14;
-            this.lnk3F.TabStop = true;
-            this.lnk3F.Text = "GitHub/3F";
-            this.lnk3F.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk3F_LinkClicked);
-            // 
-            // labelSrc
-            // 
-            this.labelSrc.AutoSize = true;
-            this.labelSrc.Location = new System.Drawing.Point(280, 7);
-            this.labelSrc.Name = "labelSrc";
-            this.labelSrc.Size = new System.Drawing.Size(76, 13);
-            this.labelSrc.TabIndex = 13;
-            this.labelSrc.Text = "Open sources:";
-            // 
-            // txtBuildInfo
-            // 
-            this.txtBuildInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtBuildInfo.BackColor = System.Drawing.SystemColors.Control;
-            this.txtBuildInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtBuildInfo.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtBuildInfo.Location = new System.Drawing.Point(3, 67);
-            this.txtBuildInfo.Multiline = true;
-            this.txtBuildInfo.Name = "txtBuildInfo";
-            this.txtBuildInfo.ReadOnly = true;
-            this.txtBuildInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtBuildInfo.Size = new System.Drawing.Size(436, 158);
-            this.txtBuildInfo.TabIndex = 12;
+            this.tabData.Controls.Add(this.labelStorage);
+            this.tabData.Controls.Add(this.comboBoxStorage);
+            this.tabData.Controls.Add(this.txtCfgData);
+            this.tabData.Location = new System.Drawing.Point(4, 25);
+            this.tabData.Name = "tabData";
+            this.tabData.Size = new System.Drawing.Size(442, 230);
+            this.tabData.TabIndex = 3;
+            this.tabData.Text = "Data";
+            this.tabData.UseVisualStyleBackColor = true;
             // 
             // labelStorage
             // 
             this.labelStorage.AutoSize = true;
-            this.labelStorage.Location = new System.Drawing.Point(6, 7);
+            this.labelStorage.Location = new System.Drawing.Point(180, 7);
             this.labelStorage.Name = "labelStorage";
             this.labelStorage.Size = new System.Drawing.Size(67, 13);
-            this.labelStorage.TabIndex = 11;
+            this.labelStorage.TabIndex = 15;
             this.labelStorage.Text = "Use storage:";
+            // 
+            // txtCfgData
+            // 
+            this.txtCfgData.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtCfgData.BackColor = System.Drawing.SystemColors.Window;
+            this.txtCfgData.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCfgData.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCfgData.Location = new System.Drawing.Point(3, 29);
+            this.txtCfgData.Multiline = true;
+            this.txtCfgData.Name = "txtCfgData";
+            this.txtCfgData.ReadOnly = true;
+            this.txtCfgData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtCfgData.Size = new System.Drawing.Size(436, 198);
+            this.txtCfgData.TabIndex = 13;
             // 
             // tabUpdating
             // 
@@ -416,7 +371,7 @@
             this.tabUpdating.Padding = new System.Windows.Forms.Padding(3);
             this.tabUpdating.Size = new System.Drawing.Size(442, 230);
             this.tabUpdating.TabIndex = 2;
-            this.tabUpdating.Text = "Updating Version";
+            this.tabUpdating.Text = "^ Updater";
             this.tabUpdating.UseVisualStyleBackColor = true;
             // 
             // txtLogUpd
@@ -465,6 +420,92 @@
             this.btnUpdate.UseVisualStyleBackColor = true;
             this.btnUpdate.Click += new System.EventHandler(this.BtnUpdate_Click);
             // 
+            // tabBuildInfo
+            // 
+            this.tabBuildInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.tabBuildInfo.Controls.Add(this.labelSrcMit);
+            this.tabBuildInfo.Controls.Add(this.linkIlasm);
+            this.tabBuildInfo.Controls.Add(this.lnkSrc);
+            this.tabBuildInfo.Controls.Add(this.lnk3F);
+            this.tabBuildInfo.Controls.Add(this.labelSrc);
+            this.tabBuildInfo.Controls.Add(this.txtBuildInfo);
+            this.tabBuildInfo.Location = new System.Drawing.Point(4, 25);
+            this.tabBuildInfo.Name = "tabBuildInfo";
+            this.tabBuildInfo.Padding = new System.Windows.Forms.Padding(3);
+            this.tabBuildInfo.Size = new System.Drawing.Size(442, 230);
+            this.tabBuildInfo.TabIndex = 1;
+            this.tabBuildInfo.Text = "Build info";
+            // 
+            // labelSrcMit
+            // 
+            this.labelSrcMit.AutoSize = true;
+            this.labelSrcMit.Location = new System.Drawing.Point(41, 23);
+            this.labelSrcMit.Name = "labelSrcMit";
+            this.labelSrcMit.Size = new System.Drawing.Size(38, 13);
+            this.labelSrcMit.TabIndex = 21;
+            this.labelSrcMit.Text = "( MIT )";
+            // 
+            // linkIlasm
+            // 
+            this.linkIlasm.AutoSize = true;
+            this.linkIlasm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkIlasm.Location = new System.Drawing.Point(108, 23);
+            this.linkIlasm.Name = "linkIlasm";
+            this.linkIlasm.Size = new System.Drawing.Size(149, 13);
+            this.linkIlasm.TabIndex = 20;
+            this.linkIlasm.TabStop = true;
+            this.linkIlasm.Text = "https://github.com/3F/coreclr";
+            this.linkIlasm.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkIlasm_LinkClicked);
+            // 
+            // lnkSrc
+            // 
+            this.lnkSrc.AutoSize = true;
+            this.lnkSrc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lnkSrc.Location = new System.Drawing.Point(108, 3);
+            this.lnkSrc.Name = "lnkSrc";
+            this.lnkSrc.Size = new System.Drawing.Size(159, 13);
+            this.lnkSrc.TabIndex = 16;
+            this.lnkSrc.TabStop = true;
+            this.lnkSrc.Text = "https://github.com/3F/DllExport";
+            this.lnkSrc.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnkSrc_LinkClicked);
+            // 
+            // lnk3F
+            // 
+            this.lnk3F.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.lnk3F.AutoSize = true;
+            this.lnk3F.Location = new System.Drawing.Point(377, 23);
+            this.lnk3F.Name = "lnk3F";
+            this.lnk3F.Size = new System.Drawing.Size(57, 13);
+            this.lnk3F.TabIndex = 14;
+            this.lnk3F.TabStop = true;
+            this.lnk3F.Text = "GitHub/3F";
+            this.lnk3F.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk3F_LinkClicked);
+            // 
+            // labelSrc
+            // 
+            this.labelSrc.AutoSize = true;
+            this.labelSrc.Location = new System.Drawing.Point(21, 3);
+            this.labelSrc.Name = "labelSrc";
+            this.labelSrc.Size = new System.Drawing.Size(68, 13);
+            this.labelSrc.TabIndex = 13;
+            this.labelSrc.Text = "Open source";
+            // 
+            // txtBuildInfo
+            // 
+            this.txtBuildInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.txtBuildInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.txtBuildInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtBuildInfo.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtBuildInfo.Location = new System.Drawing.Point(3, 41);
+            this.txtBuildInfo.Multiline = true;
+            this.txtBuildInfo.Name = "txtBuildInfo";
+            this.txtBuildInfo.ReadOnly = true;
+            this.txtBuildInfo.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtBuildInfo.Size = new System.Drawing.Size(436, 184);
+            this.txtBuildInfo.TabIndex = 12;
+            // 
             // ConfiguratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -491,11 +532,13 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).EndInit();
             this.tabCtrl.ResumeLayout(false);
             this.tabCfgDxp.ResumeLayout(false);
-            this.tabCfgOpt.ResumeLayout(false);
-            this.tabCfgOpt.PerformLayout();
+            this.tabData.ResumeLayout(false);
+            this.tabData.PerformLayout();
             this.tabUpdating.ResumeLayout(false);
             this.tabUpdating.PerformLayout();
             this.panelUpdVerTop.ResumeLayout(false);
+            this.tabBuildInfo.ResumeLayout(false);
+            this.tabBuildInfo.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -506,13 +549,12 @@
         private System.Windows.Forms.Button btnApply;
         private System.Windows.Forms.ComboBox comboBoxSln;
         private System.Windows.Forms.ToolTip toolTipMain;
-        private System.Windows.Forms.ComboBox comboBoxStorage;
         private Controls.ProgressLineControl progressLine;
         private System.Windows.Forms.SplitContainer splitCon;
         private System.Windows.Forms.TabControl tabCtrl;
         private System.Windows.Forms.TabPage tabCfgDxp;
         private Controls.ProjectItemsControl projectItems;
-        private System.Windows.Forms.TabPage tabCfgOpt;
+        private System.Windows.Forms.TabPage tabBuildInfo;
         private vsSBE.UI.WForms.Components.DataGridViewExt dgvFilter;
         private System.Windows.Forms.Panel panelFilter;
         private System.Windows.Forms.Panel panelPrjs;
@@ -520,7 +562,6 @@
         private System.Windows.Forms.DataGridViewImageColumn gcType;
         private System.Windows.Forms.DataGridViewTextBoxColumn gcPath;
         private System.Windows.Forms.TextBox txtBuildInfo;
-        private System.Windows.Forms.Label labelStorage;
         private System.Windows.Forms.Label labelSrc;
         private System.Windows.Forms.LinkLabel lnk3F;
         private System.Windows.Forms.LinkLabel lnkSrc;
@@ -532,5 +573,10 @@
         private System.Windows.Forms.Panel panelUpdVerTop;
         private System.Windows.Forms.Button btnUpdListOfPkg;
         private System.Windows.Forms.Button btnToOnline;
+        private System.Windows.Forms.TabPage tabData;
+        private System.Windows.Forms.Label labelStorage;
+        private System.Windows.Forms.ComboBox comboBoxStorage;
+        private System.Windows.Forms.TextBox txtCfgData;
+        private System.Windows.Forms.Label labelSrcMit;
     }
 }

@@ -24,6 +24,7 @@
 
 using System;
 using System.Globalization;
+using System.Reflection;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -40,7 +41,7 @@ namespace net.r_eg.DllExport.Wizard
 
         /// <summary>
         /// Optional root path of user paths. 
-        /// Affects on wSlnFile, wSlnDir, wPkgPath.
+        /// Affects on SlnFile, SlnDir, PkgPath.
         /// </summary>
         public string RootPath
         {
@@ -312,6 +313,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private void PrintKeys(Message.Level level)
         {
+            LSender.Send(this, $"Instance: '{Assembly.GetEntryAssembly().Location}'", level);
             LSender.Send(this, $"SlnDir: '{SlnDir}'", level);
             LSender.Send(this, $"SlnFile: '{SlnFile}'", level);
             LSender.Send(this, $"PkgPath: '{PkgPath}'", level);

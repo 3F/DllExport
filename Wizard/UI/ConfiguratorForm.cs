@@ -54,6 +54,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         private readonly Icons icons = new Icons();
         private readonly Caller caller;
         private readonly PackageInfo pkgVer;
+        private readonly IConfFormater confFormater;
         private int prevSlnItemIndex = 0;
         private volatile bool _suspendCbSln;
         private readonly object sync = new object();
@@ -82,11 +83,12 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         public ConfiguratorForm(IExecutor exec)
         {
-            this.exec = exec ?? throw new ArgumentNullException(nameof(exec));
+            this.exec       = exec ?? throw new ArgumentNullException(nameof(exec));
 
-            extcfg = new Lazy<IExtCfg>(() => new FilterLineControl(this, exec));
-            caller = new Caller(exec.Config.SlnDir);
-            pkgVer = new PackageInfo(exec);
+            extcfg          = new Lazy<IExtCfg>(() => new FilterLineControl(this, exec));
+            caller          = new Caller(exec.Config.SlnDir);
+            pkgVer          = new PackageInfo(exec);
+            confFormater    = new SimpleConfFormater(exec);
 
             InitializeComponent();
 
@@ -422,11 +424,14 @@ namespace net.r_eg.DllExport.Wizard.UI
                 return;
             }
 
-            string path = dgvFilter.Rows[e.RowIndex].Cells[gcPath.Name].Value.ToString();
+            string path     = dgvFilter.Rows[e.RowIndex].Cells[gcPath.Name].Value.ToString();
+            IProject prj    = GetProjects(exec.ActiveSlnFile).FirstOrDefault(p => p.ProjectPath == path);
 
             projectItems.Pause();
-            projectItems.Set(GetProjects(exec.ActiveSlnFile).FirstOrDefault(p => p.ProjectPath == path));
+            projectItems.Set(prj);
             projectItems.Resume();
+            
+            txtCfgData.Text = confFormater.Parse(prj);
         }
 
         private void dgvFilter_KeyDown(object sender, KeyEventArgs e)

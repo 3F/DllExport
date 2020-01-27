@@ -27,6 +27,12 @@ namespace net.r_eg.DllExport.Wizard
     public interface IWizardConfig
     {
         /// <summary>
+        /// Optional root path of user paths. 
+        /// Affects on SlnFile, SlnDir, PkgPath.
+        /// </summary>
+        string RootPath { get; }
+
+        /// <summary>
         /// Path to directory with .sln files to be processed.
         /// </summary>
         string SlnDir { get; }
@@ -85,5 +91,14 @@ namespace net.r_eg.DllExport.Wizard
         /// The evaluated type of operation.
         /// </summary>
         ActionType Type { get; }
+
+        /// <summary>
+        /// To show messages via GUI dlg for selected level (any positive number) and above.
+        /// Levels: 0 - 5 (see Message.Level)
+        /// '4' = means 4 (Error) + 5 (Fatal) levels.
+        /// Any negative number disables this.
+        /// It affects only for messages to GUI.
+        /// </summary>
+        int MsgGuiLevel { get; }
     }
 }
