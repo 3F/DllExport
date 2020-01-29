@@ -13,7 +13,8 @@ Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
 [![coreclr_ILAsm](https://img.shields.io/badge/coreclr.ILAsm-4.700.2-C8597A.svg)](https://www.nuget.org/packages/ILAsm/)
 [![Cecil](https://img.shields.io/badge/Cecil-0.11.1-1182C3.svg)](https://github.com/jbevain/cecil)
 [![MvsSln](https://img.shields.io/badge/MvsSln-v2.5.0-865FC5.svg)](https://github.com/3F/MvsSln)
-[![GetNuTool core](https://img.shields.io/badge/GetNuTool-v1.8-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![GetNuTool](https://img.shields.io/badge/GetNuTool-v1.8-93C10B.svg)](https://github.com/3F/GetNuTool)
+[![hMSBuild](https://img.shields.io/badge/hMSBuild-v2.3.0-7F7F7F.svg)](https://github.com/3F/hMSBuild)
 [![Conari](https://img.shields.io/badge/Conari-v1.4.0-8AA875.svg)](https://github.com/3F/Conari)
 
 [![Build history](https://buildstats.info/appveyor/chart/3Fs/dllexport-ix27o?buildCount=20&includeBuildsFromPullRequest=true&showStats=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/history)
@@ -38,8 +39,8 @@ public static int entrypoint(IntPtr L)
 }
 ```
 
-* For work with **Unmanaged** code/libraries (binding between .NET and unmanaged native C/C++ etc.), see [Conari](https://github.com/3F/Conari)
-* If you need convenient work with Lua (5.4, 5.3, 5.2, 5.1, ...), see [LuNari](https://github.com/3F/LuNari)
+* For work with **Unmanaged** memory including native or binary data from the heap and binding between .NET and unmanaged native C/C++ etc, use [Conari](https://github.com/3F/Conari)
+* For related work with Lua (5.4, 5.3, 5.2, 5.1, ...), use [LuNari](https://github.com/3F/LuNari)
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -49,10 +50,10 @@ public static int entrypoint(IntPtr L)
 [DllExport]
 ```
 
-Support of Modules: Library (**.dll**) and Executable (**.exe**) [[?](https://github.com/3F/DllExport/issues/18)]
+We're supporting the following PE modules: Library (**.dll**) and Executable (**.exe**) [[?](https://github.com/3F/DllExport/issues/18)]
 
 
-v1.2+ provides dynamic definitions of namespaces ([ddNS feature](https://github.com/3F/DllExport/issues/2)):
+v1.2+ provides dynamic definitions of namespaces ([ddNS feature](https://github.com/3F/DllExport/wiki/Quick-start#namespaces)):
 
 ```cpp
     Via Cecil or direct modification:
@@ -63,15 +64,9 @@ v1.2+ provides dynamic definitions of namespaces ([ddNS feature](https://github.
     000005E0  74 6F 2E 66 6C 79 00 00 00 00 00 00 00 00 00 00  to.fly..........  <<<-
 ```
 
-[![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport.png)](#)
-[![](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_ordinals.png)](https://github.com/3F/DllExport/issues/11#issuecomment-250907940)
+[![](./Resources/img/DllExport.png)](https://3f.github.io/DllExport/releases/latest/manager/)
+[![](https://raw.githubusercontent.com/3F/Conari/master/Conari/Resources/screencast_Complex_types.jpg)](https://www.youtube.com/watch?v=QXMj9-8XJnY)
 
-Our Wizard and embeddable manager:
-
-[![DllExport.bat](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_manager.png)](https://3f.github.io/DllExport/releases/latest/manager/)
-
-[![youtube.com/watch?v=sBWt-KdQtoc](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_Wizard_overview_screen.jpg)](https://www.youtube.com/watch?v=sBWt-KdQtoc)
-[![PeViewer](https://raw.githubusercontent.com/3F/DllExport/master/Resources/img/DllExport_PeViewer.png)](https://github.com/3F/DllExport/issues/55)
 
 ----
 
@@ -86,6 +81,8 @@ Now, we will be more open ! all details [here](https://github.com/3F/DllExport/i
 ## License
 
 The [MIT License (MIT)](https://github.com/3F/DllExport/blob/master/LICENSE)
+
+.NET DllExport contributors: https://github.com/3F/DllExport/graphs/contributors
 
 ## &_
 
@@ -127,25 +124,19 @@ HRESULT Assembler::CreateExportDirectory()
     ~ now we're ready to miracles ~
 ```
 
-Read also my explanations from here: [about mscoree](https://github.com/3F/DllExport/issues/45#issuecomment-317802099); [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109); [DllExport.dll](https://github.com/3F/DllExport/issues/28#issuecomment-281957212); [.exp & .lib](https://github.com/3F/DllExport/issues/9#issuecomment-246189220); [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
+Read also my brief explanations here: [AssemblyRef encoding](https://github.com/3F/DllExport/issues/125#issuecomment-561245575) / [about mscoree](https://github.com/3F/DllExport/issues/45#issuecomment-317802099) / [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109) / [DllExport.dll](https://github.com/3F/DllExport/issues/28#issuecomment-281957212) / [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
 
 ### How to get DllExport
 
 [**`tl;dr`: put this inside solution folder, then click it there.**](https://3f.github.io/DllExport/releases/latest/manager/)
 
-v1.6+ have no official support of NuGet clients. [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A)]
+Since v1.6+ have no official support of NuGet clients ([[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A)]), you need just use [this](https://3f.github.io/DllExport/releases/latest/manager/) inside your solution folder. **Wiki:** [ [Quick start](https://github.com/3F/DllExport/wiki/Quick-start) ]
 
-* [New Wizard and embeddable manager](https://www.youtube.com/watch?v=sBWt-KdQtoc)
-    * **Wiki.** [Quick start](https://github.com/3F/DllExport/wiki/Quick-start)
+Get our manager (~19 Kbytes) from any **trusted** place. Official [GHR](https://github.com/3F/DllExport/releases/latest) is recommended. But you can also get it from official packages via NuGet server [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/), etc.
 
-Get our manager from any place. [GHR](https://github.com/3F/DllExport/releases/latest) is recommended, but you can also get it from packages via NuGet server [![NuGet package](https://img.shields.io/nuget/v/DllExport.svg)](https://www.nuget.org/packages/DllExport/) ([optional](https://youtu.be/okPThdWDZMM?t=1m1s)), etc.
+[ **[Documentation](https://github.com/3F/DllExport/wiki/DllExport-Manager)** ]
 
-*DllExport.bat was based on [GetNuTool core](https://github.com/3F/GetNuTool) that's Cross-Platform Embeddable Package Manager that requires only MSBuild. Finally it just aggregates calling to Wizard that was based on [MvsSln](https://github.com/3F/MvsSln). [[?](https://github.com/3F/DllExport/wiki/DllExport-Manager-Q-A#is-this-cross-platform-solution-)]*
-
-**Please note**: You do not need to call manually DllExport.bat after initial configuration. It will be **automatically** restored by any Build operation for your configured projects.
-
-[ [DllExport Manager Documentation](https://github.com/3F/DllExport/wiki/DllExport-Manager) ]
-
+[![DllExport.bat](./Resources/img/DllExport_manager.png)](https://github.com/3F/DllExport/wiki/DllExport-Manager#console)
 
 Other way:
 
@@ -212,7 +203,7 @@ Now you can debug at runtime.
 
 We're using **our custom versions on coreclr** specially for our .NET DllExport project - https://github.com/3F/coreclr
 
-This helps to avoid some problems ([like this](https://github.com/3F/DllExport/issues/17)) and more...
+This helps to avoid some problems ([like this](https://github.com/3F/DllExport/issues/125#issuecomment-561245575), or [this](https://github.com/3F/DllExport/issues/17)) and more...
 
 *To build minimal version (it will not include all components as for original coreclr repo):*
 
@@ -234,7 +225,7 @@ build-coreclr-ilasm-x64.cmd
 build-coreclr-ilasm-x86+x64.cmd
 ```
 
-*You can also use already compiled versions:*
+*You can also use our compiled versions:*
 
 * [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
 
@@ -242,7 +233,7 @@ build-coreclr-ilasm-x86+x64.cmd
 
 Please note again, the [UnmanagedExports](https://www.nuget.org/packages/UnmanagedExports) was created by Robert Giesecke. You need [visit his page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports).
 
-But this repository [**does not related**](https://github.com/3F/DllExport/issues/87#issuecomment-438576100) to Robert and generally still being developed by [GitHub/3F](https://github.com/3F) developer (Follow: [ [GitHub](https://github.com/3F) ]; [ [twitter](https://twitter.com/GitHub3F) ]). 
+But this repository [**does not related**](https://github.com/3F/DllExport/issues/87#issuecomment-438576100) to Robert and generally still being developed by [GitHub/3F](https://github.com/3F) developer (Follow the news: [ [GitHub](https://github.com/3F) ]; [ [twitter](https://twitter.com/GitHub3F) ]). 
 
 If something is helpful from *3F/DllExport,* donations are welcomed, and thanks !
 
