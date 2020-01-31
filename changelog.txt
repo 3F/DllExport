@@ -1,6 +1,80 @@
+- - - - - - - - - - - - - - - - - - - - - - - - -
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7] 2020.01.31
+
+    * NEW: .NET Core based projects support. 
+           Issues: #90, #67
+           PR: #123
+           
+    * NEW: .NET Standard 1.1 and above targeting support.
+    
+    * NEW: Implemented "Single + Double Inf/-Inf token patching" option. 
+           Related Issue #128.
+           
+    * NEW: Implemented "Rebase System Object" option for our assembler.
+    
+            Helps to avoid possible "Invalid memory access" (JNA/Java). Issue #125.
+            For C/C++ such as "Unhandled exception at ... (KernelBase)"
+            
+            https://twitter.com/GitHub3F/status/1201904821093187585
+            Part of PR #123
+    
+    * NEW: Implemented updater for wizard. Issue #109.
+    
+    * NEW: Textual export of affected data to diag.
+           
+    * CHANGED: Updated CoreCLR 3.1.0 LTS \ IL Assembler 4.700.2.
+               https://github.com/3F/coreclr/releases/tag/ILAsm.4.700.2
+               
+               Includes an implemented `/REBASE` feature for related issue #125.
+               
+    * CHANGED: New installation behavior through official NuGet.    
+               init.ps1 also adds optional copying of package data for our manager.
+               
+               Please note: This is not nuget support! 
+                            It just replaces known info-form that was in 1.6.x.
+    
+    * CHANGED: New wizard layout for 1.7.
+    
+    * CHANGED: Local scope when invoking .\DllExport manager in project files.
+    
+    * CHANGED: Updated logic for an offline versions 
+                with optional converting to online if needed.
+                            
+    * CHANGED: Updated MvsSln 2.5.1
+               https://github.com/3F/MvsSln/releases/tag/2.5.1
+               
+    * CHANGED: Updated hMSBuild 2.3
+               https://github.com/3F/hMSBuild/releases/tag/v2.3
+               
+    * KNOWN: You can finally get another System.Object in modified assembly:
+             https://github.com/3F/DllExport/issues/90#issuecomment-546637702
+             
+    * NOTE: You need an updated/modern manager to avoid problem  
+            when "Possible incorrect Sdk-based project types": PR #123
+            https://github.com/3F/MvsSln/issues/23
+            
+            Use it from official 1.7 release:
+            https://github.com/3F/DllExport/releases/tag/v1.7
+            https://www.nuget.org/packages/DllExport/1.7.0
+            
+            Otherwise you need provide manually msbuild instance 
+            that can process modern Sdk-types due to modern VS/dotnet sdk 
+            dependencies for netcore-based projects.
+            
+            For example, through hMSBuild https://github.com/3F/hMSBuild
+            ```
+            DllExport ... -msb hMSBuild
+            ```
+            
+    * NOTE: For command-line mode, To upgrade configured version to 1.7:
+            ```
+                DllExport -action Upgrade -dxp-version 1.7.0
+            ```
+            
+            
 [v1.7-RC] 2020.01.27
 
     * NOTE: Release Candidate includes all actual fixes from 

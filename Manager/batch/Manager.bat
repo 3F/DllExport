@@ -148,7 +148,7 @@ echo  -metalib {path}    - Relative path to meta library.
 echo  -metacor {path}    - Relative path to meta core library.
 echo  -dxp-target {path} - Relative path to entrypoint wrapper of the main core.
 echo  -dxp-version {num} - Specific version of DllExport. Where {num}:
-echo       * Versions: 1.6.0 ...
+echo       * Versions: 1.6.6 ...
 echo       * Keywords: 
 echo         `actual` - Unspecified local/latest remote version; 
 echo                    ( Only if you know what you are doing )
@@ -180,12 +180,12 @@ echo --------
 echo  DllExport -action Configure
 echo  DllExport -action Restore -sln-file "Conari.sln"
 echo  DllExport -proxy guest:1234@10.0.2.15:7428 -action Configure
-echo  DllExport -action Configure -force -pkg-link http://host/v1.6.1.nupkg
+echo  DllExport -action Configure -force -pkg-link http://host/v1.6.6.nupkg
 echo.
 echo  DllExport -build-info
 echo  DllExport -debug -restore -sln-dir ..\ 
-echo  DllExport -mgr-up -dxp-version 1.6.1
-echo  DllExport -action Upgrade -dxp-version 1.6.1
+echo  DllExport -mgr-up -dxp-version 1.6.6
+echo  DllExport -action Upgrade -dxp-version 1.6.6
 echo.
 echo  DllExport -GetNuTool -unpack
 echo  DllExport -GetNuTool /p:ngpackages="Conari;regXwild"
