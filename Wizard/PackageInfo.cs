@@ -28,6 +28,7 @@ using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -53,6 +54,8 @@ namespace net.r_eg.DllExport.Wizard
         {
             this.exec   = exec ?? throw new ArgumentNullException(nameof(exec));
             proxy       = exec.Config.Proxy?.Trim();
+
+            DefineSecurityProtocol();
         }
 
         /// <summary>
@@ -144,6 +147,20 @@ namespace net.r_eg.DllExport.Wizard
                     (login.Length > 1) ? login[1] : null
                 )
             };
+        }
+
+        private static void DefineSecurityProtocol()
+        {
+            // https://github.com/3F/DllExport/issues/140
+            // Since Tls13 (0x3000) is not available from obsolete assemblies,
+            //    and SecurityProtocolType.SystemDefault (0) is defined only for netfx 4.7+, 4.8;
+            //    We can try to bind this at runtime using the last available environment where this code was executed.
+
+            // NOTE: ServicePointManager.SecurityProtocol = 0 may produce the following problem: An unexpected error occurred on a receive.
+
+            Enum.GetValues(typeof(SecurityProtocolType))
+                .Cast<SecurityProtocolType>()
+                .ForEach(s => ServicePointManager.SecurityProtocol |= s);
         }
     }
 }
