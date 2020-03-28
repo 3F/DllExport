@@ -1,6 +1,6 @@
-# [DllExport](https://github.com/3F/DllExport)
+# [.NET DllExport](https://github.com/3F/DllExport)
 
-*.NET DllExport*
+*.NET DllExport* (aka 3F/DllExport)
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke

@@ -12,57 +12,20 @@
     <repository type="git" url="https://github.com/3F/DllExport" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-    
-        Open source project .NET DllExport 
+        Open source project .NET DllExport (aka 3F/DllExport)
         https://github.com/3F/DllExport
         
-        All versions including an Offline and CI builds:
-        https://github.com/3F/DllExport/releases
+        🚀 Quick start: https://github.com/3F/DllExport/wiki/Quick-start
+        🔖 How to. Unmanaged C++ / C# / Java: https://youtu.be/QXMj9-8XJnY
 
-
-
-        To upgrade configured version to v$-version-$:
-        ==================================================
-        DllExport -action Upgrade -dxp-version $-version-$
-        ==================================================
-        https://3F.github.io/DllExport/releases/latest/manager/
-
-
-
-        
-        Quick start:
-        https://github.com/3F/DllExport/wiki/Quick-start
-        
-        Basic examples. C++ and C#:
-        https://youtu.be/9Hyg3_WE9Ks
-        
-        Complex types and Strings. C++ / C# / Java:
-        https://youtu.be/QXMj9-8XJnY
-        
-        Wiki and Complete Examples:
-        https://github.com/3F/DllExport/wiki
-        
-        Issue tracker:
-        https://github.com/3F/DllExport/issues
-        
-
-
-
-        ~~~~~~~~
-        Get it via GetNuTool:
         =======================================
         gnt /p:ngpackages="DllExport/$-version-$"
-        =======================================
-        * https://github.com/3F/GetNuTool   
+        ================== https://github.com/3F/GetNuTool
 
-
-
-        Build info:  
-{build_info}
-        
-    </description>
+Build info:
+{build_info}</description>
     <summary>.NET DllExport</summary>
-    <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions reverse-pinvoke Conari pinvoke net-c-func tools pe32 pe32-plus dotnet-DllExport unmanaged-export GetNuTool MvsSln hMSBuild</tags>
+    <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions dotnetcore Conari pinvoke net-c-func native tools dotnet-DllExport unmanaged-export GetNuTool MvsSln</tags>
     <releaseNotes> changelog: https://github.com/3F/DllExport/blob/master/changelog.txt </releaseNotes>
     <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2020  Denis Kuzmin &lt; x-3F@outlook.com &gt; GitHub/3F </copyright>
   </metadata>

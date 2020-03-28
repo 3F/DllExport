@@ -10,7 +10,7 @@
     <RootNamespace>net.r_eg.DllExport</RootNamespace>
     <AssemblyName>DllExport</AssemblyName>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(MetadataFxPath)key.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>..\com.github.3F.DllExport.snk</AssemblyOriginatorKeyFile>
     <DocumentationFile>$(OutputPath)$(AssemblyName).xml</DocumentationFile>
   </PropertyGroup>
 
