@@ -94,6 +94,7 @@ set "kForce="
 set "mgrUp="
 set "proxy="
 set "xmgrtest="
+set "khMSBuild="
 
 
 set /a ERROR_SUCCESS=0
@@ -122,13 +123,12 @@ echo.
 @echo Copyright (c) 2009-2015  Robert Giesecke
 @echo Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ] GitHub/3F
 echo.
-echo Licensed under the MIT license
+echo MIT License
 @echo https://github.com/3F/DllExport
-echo.
 echo Based on hMSBuild, MvsSln, +GetNuTool: https://github.com/3F
 echo.
 @echo.
-@echo Usage: DllExport [args to DllExport] [args to GetNuTool]
+@echo Usage: DllExport [args to DllExport] [args to GetNuTool] [args to hMSBuild]
 echo ------
 echo.
 echo Arguments:
@@ -154,6 +154,7 @@ echo         `actual` - Unspecified local/latest remote version;
 echo                    ( Only if you know what you are doing )
 echo.
 echo  -msb {path}           - Full path to specific msbuild.
+echo  -hMSBuild {args}      - Access to hMSBuild tool (packed) https://github.com/3F/hMSBuild
 echo  -packages {path}      - A common directory for packages.
 echo  -server {url}         - Url for searching remote packages.
 echo  -proxy {cfg}          - To use proxy. The format: [usr[:pwd]@]host[:port]
@@ -163,31 +164,25 @@ echo  -mgr-up               - Updates this manager to version from '-dxp-version
 echo  -wz-target {path}     - Relative path to entrypoint wrapper of the main wizard.
 echo  -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
 echo  -eng                  - Try to use english language for all build messages.
-echo  -GetNuTool {args}     - Access to GetNuTool core. https://github.com/3F/GetNuTool
+echo  -GetNuTool {args}     - Access to GetNuTool (integrated) https://github.com/3F/GetNuTool
 echo  -debug                - To show additional information.
 echo  -version              - Displays version for which (together with) it was compiled.
 echo  -build-info           - Displays actual build information from selected DllExport.
 echo  -help                 - Displays this help. Aliases: -help -h
 echo.
-echo ------
 echo Flags:
 echo ------
 echo  __p_call - To use the call-type logic when invoking %~nx0
-echo. 
-echo -------- 
+echo.
 echo Samples:
-echo -------- 
-echo  DllExport -action Configure
+echo --------
+echo  DllExport -action Configure -force -pkg-link http://host/v1.6.6.nupkg
 echo  DllExport -action Restore -sln-file "Conari.sln"
 echo  DllExport -proxy guest:1234@10.0.2.15:7428 -action Configure
-echo  DllExport -action Configure -force -pkg-link http://host/v1.6.6.nupkg
 echo.
-echo  DllExport -build-info
-echo  DllExport -debug -restore -sln-dir ..\ 
 echo  DllExport -mgr-up -dxp-version 1.6.6
 echo  DllExport -action Upgrade -dxp-version 1.6.6
 echo.
-echo  DllExport -GetNuTool -unpack
 echo  DllExport -GetNuTool /p:ngpackages="Conari;regXwild"
 echo  DllExport -pe-exp-list bin\Debug\regXwild.dll
 
@@ -306,30 +301,17 @@ set key=!arg[%idx%]!
         goto continue
     ) else if [!key!]==[-GetNuTool] ( 
 
-        call :dbgprint "accessing to GetNuTool ..."
-        
-        REM :: gnt's requirements (1.6.2 and less)
-        REM set "escg=!args:&=%%E_CARET%%&!"
+        call :ktoolinit -GetNuTool 10
+        set /a EXIT_CODE=!ERRORLEVEL! & goto endpoint
 
-        :: invoke GetNuTool with arguments from right side
-        for /L %%p IN (0,1,8181) DO (
-            if "!escg:~%%p,10!"=="-GetNuTool" (
+    ) else if [!key!]==[-hMSBuild] (
 
-                set found=!escg:~%%p!
-                call :gntpoint !found:~10!
+        rem :: we'll wait rcv task below
+        set khMSBuild=1 & goto action
 
-                set /a EXIT_CODE=%ERRORLEVEL%
-                goto endpoint
-            )
-        )
-
-        call :dbgprint "!key! is corrupted: !escg!" 
-        set /a EXIT_CODE=%ERROR_FAILED%
-        goto endpoint
-        
     ) else if [!key!]==[-version] ( 
 
-        @echo $-version-$
+        @echo $-version-$  %__dxp_pv%
         goto endpoint
 
     ) else if [!key!]==[-build-info] ( 
@@ -442,6 +424,11 @@ if not exist !wzTarget! (
     )
 )
 
+if defined khMSBuild (
+    call :ktoolinit -hMSBuild 9
+    set /a EXIT_CODE=!ERRORLEVEL! & goto endpoint
+)
+
 if defined peExpList (
     "!wPkgPath!\\tools\\PeViewer.exe" -list -pemodule "!peExpList!"
 
@@ -532,6 +519,42 @@ exit /B !EXIT_CODE!
 
 :: Functions
 :: ::
+
+:: - - -
+:: Initializer of the commands for tools such GetNuTool, hMSBuild, etc.
+:ktoolinit
+:: 1 - requested tool
+:: 2 - length of the key
+:: esq - prepared arguments for tool
+:: wPkgPath - root pkg path
+set key=%~1
+set /a klen=%~2
+
+    call :dbgprint "accessing to !key! ..."
+    
+    :: invoke a tool with arguments from right side
+    for /L %%p IN (0,1,8181) DO (
+        if "!esc:~%%p,%klen%!"=="!key!" (
+
+            set found=!esc:~%%p!
+
+            :: TODO: up compressor for: call !xktool! !found:~%klen%!
+            set kargs=!found:~%klen%!
+            
+            if defined khMSBuild (
+                call "!wPkgPath!\\hMSBuild" !kargs!
+            ) else (
+                call :gntpoint !kargs!
+            )
+            
+            exit /B !ERRORLEVEL!
+        )
+    )
+
+    call :dbgprint "!key! is corrupted: " esc
+
+exit /B %ERROR_FAILED%
+:: :ktoolinit
 
 :: - - -
 :: Tools from .NET Framework - .net 4.0, ...

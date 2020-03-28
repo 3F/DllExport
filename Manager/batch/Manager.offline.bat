@@ -30,6 +30,7 @@ setlocal enableDelayedExpansion
 set args=%*
 set "__=DllExport"
 if not defined args set args=%defaultCommand%
+set __dxp_pv=/Offline
 
 if "%pkgVersion%"=="actual" (
     call ".\\%pkgsDir%\\%__%\\%__%" -packages %pkgsDir% -dxp-version actual !args!
