@@ -464,6 +464,7 @@ call :dbgprint "wMgrArgs = " wMgrArgs
 if defined gMsbPath (
     call :dbgprint "Use specific MSBuild tools: " gMsbPath
 
+    REM :: keep it inside quotes because of removing in :loopargs
     set xMSBuild="!gMsbPath!"
     goto rundxp
 )
@@ -490,7 +491,27 @@ if not defined xMSBuild (
 if not defined xmgrtest (
 
     REM :: Possible incorrect Sdk-based project types, https://github.com/3F/DllExport/pull/123
-    if not defined gMsbPath if defined wPkgPath set xMSBuild="!wPkgPath!\\hMSBuild"
+    if not defined gMsbPath if defined wPkgPath (
+
+        set xMSBuild="!wPkgPath!\\hMSBuild"
+
+        :: Only for 1.7.0+ since it includes hmsbuild 2.3
+        for /f "tokens=*" %%i in ('!xMSBuild! -version') do set hmsbver=%%i
+        call :numver !hmsbver! hmsbver0
+
+        call :dbgprint "hMSBuild -v" hmsbver hmsbver0
+        REM :: {2.3}.0.59567+cf86a84 where added -vsw-as key
+
+        if !hmsbver0! GEQ 230 (
+            call :dbgprint "2.3+"
+
+            REM :: -prerelease  - https://github.com/3F/DllExport/issues/143
+            REM :: -requiresAny - NetCore components will include required Microsoft.Component.MSBuild
+            REM :: Microsoft.NetCore.Component.SDK: 16+ / Microsoft.Net.Core.Component.SDK: 15
+            REM :: For netfx we don't care about other cases since hMSBuild will return any related instance anyway
+            set xMSBuild=!xMSBuild! -vsw-as "-requiresAny -requires Microsoft.NetCore.Component.SDK Microsoft.Net.Core.Component.SDK -products * -latest -prerelease"
+        )
+    )
 
     call :dbgprint "Target: " xMSBuild wzTarget
     call !xMSBuild! /nologo /v:m /m:4 !wzTarget!
@@ -519,6 +540,17 @@ exit /B !EXIT_CODE!
 
 :: Functions
 :: ::
+
+:numver
+:: (1) - input number {major}.{minor} e.g. 4.4.1.39906+2465d90 or 4.3.0-RC
+:: &2  - normalized number 
+set _ver=%~1
+
+    for /f "tokens=1,2 delims=." %%a in ("!_ver!") do (
+        set _=%%b & set /a _*=10 & set /a %2=%%a!_!
+    )
+
+exit /b 0
 
 :: - - -
 :: Initializer of the commands for tools such GetNuTool, hMSBuild, etc.
