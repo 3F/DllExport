@@ -56,6 +56,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="PackageInfo.cs" />
     <Compile Include="Caller.cs" />
     <Compile Include="Guids.cs" />

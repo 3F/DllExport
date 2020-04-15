@@ -159,8 +159,9 @@ namespace net.r_eg.DllExport.Wizard
 
             Namespaces = new List<string>() {
                 NS_DEFAULT_VALUE,
-                "RGiesecke.DllExport",
-                "net.r_eg.DllExport"
+                "net.r_eg.DllExport",
+                "com.github._3F.DllExport",
+                string.Empty, //https://github.com/3F/DllExport/issues/47
             };
         }
 

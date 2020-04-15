@@ -57,6 +57,9 @@ namespace net.r_eg.DllExport.Wizard.UI
         private readonly IConfFormater confFormater;
         private int prevSlnItemIndex = 0;
         private volatile bool _suspendCbSln;
+        private readonly string updaterInitName;
+        private CancellationTokenSource ctsUpdater;
+        private Task tUpdater;
         private readonly object sync = new object();
 
         private string UpdToVersion => cbPackages.Text.Trim();
@@ -92,6 +95,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             InitializeComponent();
 
+            updaterInitName = tabUpdating.Text;
             Text = GetVersionInfo();
 
             projectItems.Browse  =
@@ -130,28 +134,61 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void UpdateListOfPackages()
         {
+            const int _ANI_DELAY = 550; //ms
+
+            if(tUpdater != null && tUpdater.Status != TaskStatus.Running
+                && !(tUpdater.IsCompleted || tUpdater.IsCanceled || tUpdater.IsFaulted)) { return; }
+
+            ctsUpdater = ctsUpdater.CancelAndResetIfRunning(tUpdater, _ANI_DELAY * 2);
+
+            tUpdater?.Dispose();
             cbPackages.Items.Clear();
+            ((Control)tabUpdating).Enabled = false;
 
-            Task.Factory
-            .StartNew(() => pkgVer.GetFromGitHubAsync())
-            .ContinueWith(t =>
-            {
-                var rctask      = t.Result;
-                var releases    = rctask.Result.ToArray();
-
-                cbPackages.UIAction(x => x.Items.AddRange(releases));
-
-                int pos = cbPackages.FindString(pkgVer.Activated);
-                cbPackages.UIAction(x =>
+            tUpdater = Task.Factory
+                .StartNew(() => pkgVer.GetFromGitHubAsync(ctsUpdater.Token), ctsUpdater.Token)
+                .ContinueWith(t =>
                 {
-                    if(pos == -1) {
-                        x.Text = pkgVer.Activated;
+                    var rctask      = t.Result;
+                    var releases    = rctask.Result.ToArray();
+
+                    cbPackages.UIAction(x => x.Items.AddRange(releases));
+
+                    int pos = cbPackages.FindString(pkgVer.Activated);
+                    cbPackages.UIAction(x =>
+                    {
+                        if(pos == -1) {
+                            x.Text = pkgVer.Activated;
+                        }
+                        else {
+                            x.SelectedIndex = pos;
+                        }
+                    });
+                    return releases;
+
+                }, ctsUpdater.Token)
+                .ContinueWith(t => 
+                {
+                    tabUpdating.UIAction(x => x.Enabled = true);
+                    if(!pkgVer.IsNewStableVersionFrom(t.Result, out Version remote)) {
+                        return;
                     }
-                    else {
-                        x.SelectedIndex = pos;
-                    }
-                });
-            });
+
+                    tabUpdating.UIBlinkText
+                    (
+                        _ANI_DELAY,
+                        $" Up to {remote}",
+                        ctsUpdater.Token,
+                        "^....",
+                        ".^...",
+                        "..^..",
+                        "...^.",
+                        "....^",
+                        "..... "
+                    );
+                    tabUpdating.UIAction(x => x.Text = updaterInitName);
+
+                }, ctsUpdater.Token);
         }
 
         private string GetVersionInfo(bool urlinfo = true)

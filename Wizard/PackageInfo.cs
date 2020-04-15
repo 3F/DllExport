@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
@@ -40,15 +41,21 @@ namespace net.r_eg.DllExport.Wizard
 
         public string Activated => exec.Config.PkgVer;
 
-        public Task<IEnumerable<string>> GetFromGitHubAsync()
-            => GetFromRemoteAsync("https://3F.github.io/DllExport/data/pkgrel");
+        public Task<IEnumerable<string>> GetFromGitHubAsync(CancellationToken ct = default)
+            => GetFromRemoteAsync("https://3F.github.io/DllExport/data/pkgrel", ct);
 
-        public Task<IEnumerable<string>> GetFromRemoteAsync(string url)
-            => RcvStringOrActivatedAsync(url)
-            .ContinueWith(r => Detect301(r.Result))
+        public Task<IEnumerable<string>> GetFromRemoteAsync(string url, CancellationToken ct = default)
+            => RcvStringOrActivatedAsync(url, ct)
+            .ContinueWith(r => Detect301(r.Result, ct))
             .ContinueWith(r => Regex.Matches(r.Result, @"^\s*([^#\r\n].+)$", RegexOptions.Multiline)
             .Cast<Match>()
             .Select(x => x.Groups[1].Value));
+
+        internal bool IsNewStableVersionFrom(IEnumerable<string> versions, out Version found)
+        {
+            found = FindStableVersion(versions);
+            return (found != null && found > new Version(Activated));
+        }
 
         public PackageInfo(IExecutor exec)
         {
@@ -58,13 +65,27 @@ namespace net.r_eg.DllExport.Wizard
             DefineSecurityProtocol();
         }
 
+        protected Version FindStableVersion(IEnumerable<string> versions)
+        {
+            foreach(var ver in versions ?? Enumerable.Empty<string>())
+            {
+                // No RC or beta releases
+                if(Version.TryParse(ver, out Version remote))
+                {
+                    return remote;
+                }
+            }
+
+            return null;
+        }
+
         /// <summary>
         /// Emulates an emergency 301 through special command due to unsupported servers like GitHub pages.
         /// Format: `@301=url` EOF
         /// </summary>
         /// <param name="input"></param>
         /// <returns></returns>
-        protected string Detect301(string input)
+        protected string Detect301(string input, CancellationToken ct)
         {
             const string R301 = "@301=";
 
@@ -74,14 +95,14 @@ namespace net.r_eg.DllExport.Wizard
             var url = input.Substring(R301.Length);
 
             LSender.Send(this, $"{R301}{url}", Message.Level.Debug);
-            return RcvStringOrActivatedAsync(url).Result;
+            return RcvStringOrActivatedAsync(url, ct).Result;
         }
 
-        protected Task<string> RcvStringOrActivatedAsync(string target) 
-            => RcvStringAsync(target, (ex) => Activated);
+        protected Task<string> RcvStringOrActivatedAsync(string target, CancellationToken ct) 
+            => RcvStringAsync(target, (ex) => Activated, ct);
 
         // while we're still using .netfx 4.0
-        protected Task<string> RcvStringAsync(string target, Func<Exception, string> failed)
+        protected Task<string> RcvStringAsync(string target, Func<Exception, string> failed, CancellationToken ct)
         {
             var tcs = new TaskCompletionSource<string>();
             var url = new Uri(target);
@@ -119,6 +140,8 @@ namespace net.r_eg.DllExport.Wizard
                 };
 
                 wc.DownloadProgressChanged += (sender, e) => bytesReceived = e.BytesReceived;
+
+                ct.Register(() => wc.CancelAsync());
 
                 LSender.Send(this, $"Get data: {url}", Message.Level.Debug);
                 wc.DownloadStringAsync(url);

@@ -23,6 +23,7 @@
 */
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 using net.r_eg.Conari.Accessors.WinAPI;
 
@@ -123,6 +124,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
 
             control.SelectionStart = control.Text.Length;
             control.ScrollToCaret();
+        }
+
+        internal static void UIBlinkText(this Control ctrl, int delay, string text, CancellationToken ct, params string[] effects)
+        {
+            while(!ct.IsCancellationRequested)
+            {
+                foreach(var ef in effects)
+                {
+                    ctrl.UIAction(x => x.Text = ef + text);
+                    Thread.Sleep(delay);
+
+                    if(ct.IsCancellationRequested) { return; }
+                }
+            }
         }
     }
 }

@@ -18,6 +18,16 @@
             }
             fdialog?.Dispose();
             icons?.Dispose();
+
+            ctsUpdater?.Cancel();
+
+            if(tUpdater != null)
+            {
+                tUpdater.Wait();
+                tUpdater.Dispose();
+            }
+            ctsUpdater?.Dispose();
+
             base.Dispose(disposing);
         }
 
@@ -371,7 +381,7 @@
             this.tabUpdating.Padding = new System.Windows.Forms.Padding(3);
             this.tabUpdating.Size = new System.Drawing.Size(442, 230);
             this.tabUpdating.TabIndex = 2;
-            this.tabUpdating.Text = "^ Updater";
+            this.tabUpdating.Text = "Updater";
             this.tabUpdating.UseVisualStyleBackColor = true;
             // 
             // txtLogUpd
