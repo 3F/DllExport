@@ -184,6 +184,8 @@ namespace net.r_eg.DllExport.Wizard
             Enum.GetValues(typeof(SecurityProtocolType))
                 .Cast<SecurityProtocolType>()
                 .ForEach(s => ServicePointManager.SecurityProtocol |= s);
+
+            ServicePointManager.SecurityProtocol &= ~(SecurityProtocolType)(0x30 | 0xC0 | 0x300); // drop support for ssl3 + tls1.0 + tls1.1
         }
     }
 }
