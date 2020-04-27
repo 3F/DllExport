@@ -27,6 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
+using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
@@ -112,6 +113,15 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
             items.ForEach(i => i.control.Dispose());
             items.Clear();
+        }
+
+        /// <summary>
+        /// Returns an additional installed projects that are not presented in Data property.
+        /// </summary>
+        public IEnumerable<IProject> GetInactiveInstalled(IEnumerable<IProject> projects)
+        {
+            return projects?.Where(p => p.Installed && Data.All(d => d.DxpIdent != p.DxpIdent))
+                            .ForEach(p => p.Config.Install = true); // since we're not using ConfigureProject()
         }
 
         public ProjectItemsControl()

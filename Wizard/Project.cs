@@ -454,7 +454,7 @@ namespace net.r_eg.DllExport.Wizard
             SetProperty(MSBuildProperties.DXP_OUR_ILASM, Config.Compiler.ourILAsm);
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
 
-            if(Config.Compiler.customILAsm != null) 
+            if(!string.IsNullOrEmpty(Config.Compiler.customILAsm))
             {
                 SetProperty(MSBuildProperties.DXP_CUSTOM_ILASM, Config.Compiler.customILAsm);
                 Log.send(this, $"Set path to custom ILAsm: {Config.Compiler.customILAsm}");

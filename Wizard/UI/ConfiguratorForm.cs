@@ -359,6 +359,21 @@ namespace net.r_eg.DllExport.Wizard.UI
                             .OrderByDescending(p => p.InternalError == null);
         }
 
+        private bool SaveProjects(IEnumerable<IProject> projects)
+        {
+            foreach(var prj in projects)
+            {
+                if(!DDNS.IsValidNS(prj.Config.Namespace)) {
+                    MessageBox.Show($"{prj.ProjectPath}\n\n>> Namespace: '{prj.Config.Namespace}'", "Fix data before continue", 0, MessageBoxIcon.Warning);
+                    return false;
+                }
+
+                exec.TargetsFileIfCfg?.Configure(ActionType.Configure, prj);
+                prj.Configure(ActionType.Configure);
+            }
+            return true;
+        }
+
         private void DoSilentAction(Action act)
         {
             lock(sync)
@@ -442,16 +457,11 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             exec.TargetsFileIfCfg?.Reset();
 
-            foreach(var prj in projectItems.Data)
-            {
-                if(!DDNS.IsValidNS(prj.Config.Namespace)) {
-                    MessageBox.Show($"{prj.ProjectPath}\n\n>> Namespace: '{prj.Config.Namespace}'", "Fix data before continue", 0, MessageBoxIcon.Warning);
-                    return;
-                }
-
-                exec.TargetsFileIfCfg?.Configure(ActionType.Configure, prj);
-                prj.Configure(ActionType.Configure);
+            if(!SaveProjects(projectItems.Data)) {
+                return;
             }
+            // updates other installed with which we did not interact in this session
+            SaveProjects(projectItems.GetInactiveInstalled(GetProjects(exec.ActiveSlnFile)));
 
             exec.SaveTStorageOrDelete();
             Close();
