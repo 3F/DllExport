@@ -113,11 +113,17 @@ namespace net.r_eg.DllExport.Wizard
                 string dir      = Path.GetDirectoryName(ActiveSlnFile);
                 string xfile    = Path.Combine(dir, Config.StoragePath);
 
-                _targetsFile = new TargetsFile(xfile, dir, Config.Type);
+                _targetsFile = new TargetsFile(xfile, dir, Config);
                 return _targetsFile;
             }
         }
-        protected ITargetsFile _targetsFile;
+        private ITargetsFile _targetsFile;
+
+        /// <summary>
+        /// Access to used external .targets 
+        /// Only if CfgStorageType.TargetsFile or null.
+        /// </summary>
+        public ITargetsFile TargetsFileIfCfg => (Config?.CfgStorage == CfgStorageType.TargetsFile)? TargetsFile : null;
 
         /// <summary>
         /// List of all found projects with different configurations.

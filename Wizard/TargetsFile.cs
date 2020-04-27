@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using Microsoft.Build.Evaluation;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
@@ -34,24 +35,19 @@ namespace net.r_eg.DllExport.Wizard
     {
         internal const string DEF_CFG_FILE = ".net.dllexport.targets";
 
+        private readonly string rootpath;
+
         /// <summary>
         /// Full path to root solution directory.
         /// </summary>
-        public override string SlnDir
-        {
-            get => _slndir;
-        }
-        private string _slndir;
+        public override string SlnDir => rootpath;
 
         /// <summary>
         /// To configure project via specific action.
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        public override bool Configure(ActionType type)
-        {
-            return Configure(type, null);
-        }
+        public override bool Configure(ActionType type) => Configure(type, null);
 
         /// <summary>
         /// To configure external .targets through parent project.
@@ -65,7 +61,7 @@ namespace net.r_eg.DllExport.Wizard
                 return false;
             }
 
-            Config = parent?.Config ?? throw new ArgumentNullException(nameof(parent));
+            AssignConfig(parent);
             Log.send(this, $"Configuring TargetsFile '{parent.DxpIdent}' -> '{XProject.Project.FullPath}'", Message.Level.Debug);
 
             if(type == ActionType.Update && parent.Installed
@@ -74,7 +70,6 @@ namespace net.r_eg.DllExport.Wizard
                 Configure(parent);
             }
 
-            Save(true);
             return true;
         }
 
@@ -85,7 +80,7 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns></returns>
         public bool Export(IProject parent)
         {
-            Config = parent?.Config ?? throw new ArgumentNullException(nameof(parent));
+            AssignConfig(parent);
             Log.send(this, $"Export data via TargetsFile '{parent.DxpIdent}'", Message.Level.Debug);
 
             if(parent.Installed || Config.Install) {
@@ -94,6 +89,11 @@ namespace net.r_eg.DllExport.Wizard
             }
             return false;
         }
+
+        /// <summary>
+        /// Resets data for external .targets file.
+        /// </summary>
+        public void Reset() => Reset(true);
 
         /// <summary>
         /// Saves data to the file system.
@@ -107,21 +107,22 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        public TargetsFile(string file, string rootpath)
-            : this(file, rootpath, ActionType.Default)
+        public TargetsFile(string file, string rootpath, IWizardConfig cfg)
+            : this(file, rootpath, cfg.Type)
         {
-
+            Config = new UserConfig(cfg);
         }
 
         public TargetsFile(string file, string rootpath, ActionType type)
             : base(type == ActionType.Recover ? new XProject(file) : new XProject())
         {
-            _slndir = rootpath;
-            XProject.Project.FullPath = file;
+            this.rootpath = rootpath;
+            XProject.Project.FullPath = file; // Only for saving. Loading through `Import` section.
         }
 
         protected void Configure(IProject parent)
         {
+            ResetById(parent);
             CfgCommonData();
 
             var projectFile = MakeBasePath(parent.XProject.ProjectFullPath, false);
@@ -131,7 +132,7 @@ namespace net.r_eg.DllExport.Wizard
 
             SetProperties(
                 ConfigProperties, 
-                $"'$({MSBuildProperties.DXP_ID})'=='{parent.DxpIdent}'",
+                MakeCondition(parent),
                 projectFile
             );
             XProject.Reevaluate();
@@ -150,32 +151,37 @@ namespace net.r_eg.DllExport.Wizard
             properties.ForEach(p => group.SetProperty(p.Key, p.Value));
         }
 
-        private void Free()
+        protected void ResetById(IProject prj)
         {
-            if(XProject?.Project != null && XProject.Project.FullPath != null) {
-                Microsoft.Build.Evaluation.ProjectCollection.GlobalProjectCollection?.UnloadProject(XProject.Project);
+            var cond = MakeCondition(prj);
+
+            foreach(var group in XProject.Project.Xml.PropertyGroups)
+            {
+                if(cond.Equals(group.Condition, StringComparison.OrdinalIgnoreCase)) {
+                    group.Parent.RemoveChild(group);
+                }
             }
         }
 
+        private void AssignConfig(IProject prj) => Config = prj?.Config ?? throw new ArgumentNullException(nameof(prj));
+
+        private string MakeCondition(IProject prj) => $"'$({MSBuildProperties.DXP_ID})'=='{prj.DxpIdent}'";
+
         #region IDisposable
 
-        // To detect redundant calls
         private bool disposed = false;
+        public void Dispose() => Dispose(true);
 
-        // To correctly implement the disposable pattern.
-        public void Dispose()
-        {
-            Dispose(true);
-        }
-
-        protected virtual void Dispose(bool disposing)
+        protected virtual void Dispose(bool _)
         {
             if(disposed) {
                 return;
             }
             disposed = true;
 
-            Free();
+            if(XProject?.Project != null && XProject.Project.FullPath != null) {
+                ProjectCollection.GlobalProjectCollection?.UnloadProject(XProject.Project);
+            }
         }
 
         #endregion

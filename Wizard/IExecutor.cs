@@ -59,6 +59,12 @@ namespace net.r_eg.DllExport.Wizard
         ITargetsFile TargetsFile { get; }
 
         /// <summary>
+        /// Access to used external .targets 
+        /// Only if CfgStorageType.TargetsFile or null.
+        /// </summary>
+        ITargetsFile TargetsFileIfCfg { get; }
+
+        /// <summary>
         /// List of all found projects with different configurations.
         /// </summary>
         /// <param name="sln">Full path to .sln</param>

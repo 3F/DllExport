@@ -440,18 +440,20 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void btnApply_Click(object sender, EventArgs e)
         {
+            exec.TargetsFileIfCfg?.Reset();
+
             foreach(var prj in projectItems.Data)
             {
                 if(!DDNS.IsValidNS(prj.Config.Namespace)) {
-                    MessageBox.Show($"Fix incorrect namespace before continue:\n\n'{prj.Config.Namespace}'", "Incorrect data", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show($"{prj.ProjectPath}\n\n>> Namespace: '{prj.Config.Namespace}'", "Fix data before continue", 0, MessageBoxIcon.Warning);
                     return;
                 }
 
-                if(exec.Config.CfgStorage == CfgStorageType.TargetsFile) {
-                    exec.TargetsFile?.Configure(ActionType.Configure, prj);
-                }
+                exec.TargetsFileIfCfg?.Configure(ActionType.Configure, prj);
                 prj.Configure(ActionType.Configure);
             }
+
+            exec.TargetsFileIfCfg?.Save(true);
             Close();
         }
 
