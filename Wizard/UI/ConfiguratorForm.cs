@@ -453,7 +453,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                 prj.Configure(ActionType.Configure);
             }
 
-            exec.TargetsFileIfCfg?.Save(true);
+            exec.SaveTStorageOrDelete();
             Close();
         }
 

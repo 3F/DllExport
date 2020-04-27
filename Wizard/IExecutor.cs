@@ -82,5 +82,11 @@ namespace net.r_eg.DllExport.Wizard
         /// To start process of the required configuration.
         /// </summary>
         void Configure();
+
+        /// <summary>
+        /// Depending on the current CfgStorageType, 
+        /// Either save or delete used TargetsFile.
+        /// </summary>
+        void SaveTStorageOrDelete();
     }
 }
