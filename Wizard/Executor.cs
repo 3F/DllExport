@@ -104,20 +104,22 @@ namespace net.r_eg.DllExport.Wizard
                     return _targetsFile;
                 }
 
-                if(String.IsNullOrWhiteSpace(Config?.StoragePath) 
-                    || String.IsNullOrWhiteSpace(ActiveSlnFile))
-                {
-                    return null;
-                }
-
-                string dir      = Path.GetDirectoryName(ActiveSlnFile);
-                string xfile    = Path.Combine(dir, Config.StoragePath);
-
-                _targetsFile = new TargetsFile(xfile, dir, Config.Type);
+                _targetsFile = new TargetsFile
+                (
+                    GetTStoragePath(out string dir), 
+                    dir, 
+                    Config
+                );
                 return _targetsFile;
             }
         }
-        protected ITargetsFile _targetsFile;
+        private ITargetsFile _targetsFile;
+
+        /// <summary>
+        /// Access to used external .targets 
+        /// Only if CfgStorageType.TargetsFile or null.
+        /// </summary>
+        public ITargetsFile TargetsFileIfCfg => (Config?.CfgStorage == CfgStorageType.TargetsFile)? TargetsFile : null;
 
         /// <summary>
         /// List of all found projects with different configurations.
@@ -175,11 +177,30 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        /// <param name="cfg"></param>
-        public Executor(IWizardConfig cfg)
+        /// <summary>
+        /// Depending on the current CfgStorageType, 
+        /// Either save or delete used TargetsFile.
+        /// </summary>
+        public void SaveTStorageOrDelete()
         {
-            Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
+            if(Config?.CfgStorage == CfgStorageType.TargetsFile)
+            {
+                TargetsFile.Save(true);
+                return;
+            }
+
+            try
+            {
+                File.Delete(GetTStoragePath(out _));
+            }
+            catch(Exception ex)
+            {
+                // optional behavior, we don't care
+                Log.send(this, $"Storage file cannot be deleted due to error: {ex.Message}", Message.Level.Debug);
+            }
         }
+
+        public Executor(IWizardConfig cfg) => Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
 
         /// <summary>
         /// Activates sln by using config.
@@ -285,6 +306,19 @@ namespace net.r_eg.DllExport.Wizard
 
             Config.CfgStorage = CfgStorageType.ProjectFiles;
             return true;
+        }
+
+        protected string GetTStoragePath(out string dir)
+        {
+            if(string.IsNullOrWhiteSpace(Config?.StoragePath) 
+                || string.IsNullOrWhiteSpace(ActiveSlnFile))
+            {
+                dir = null;
+                return null;
+            }
+
+            dir = Path.GetDirectoryName(ActiveSlnFile);
+            return Path.Combine(dir, Config.StoragePath);
         }
 
         protected IProject GetProject(IXProject xp)

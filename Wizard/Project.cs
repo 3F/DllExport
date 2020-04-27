@@ -181,10 +181,7 @@ namespace net.r_eg.DllExport.Wizard
             set;
         } = true;
 
-        protected ISender Log
-        {
-            get => Config?.Log;
-        }
+        protected ISender Log => Config?.Log ?? LSender._;
 
         /// <summary>
         /// Returns fullpath to meta library for current project.
@@ -273,6 +270,12 @@ namespace net.r_eg.DllExport.Wizard
             Config = GetUserConfig(xproject, init);
 
             Config.AddTopNamespace(ProjectNamespace);
+        }
+
+        /// <param name="xproject"></param>
+        public Project(IXProject xproject)
+        {
+            XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
 
             AllocateProperties(
                 MSBuildProperties.DXP_ID,
@@ -293,12 +296,6 @@ namespace net.r_eg.DllExport.Wizard
             );
 
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
-        }
-
-        /// <param name="xproject"></param>
-        public Project(IXProject xproject)
-        {
-            XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
         }
 
         protected void ActionRestore()
@@ -457,7 +454,7 @@ namespace net.r_eg.DllExport.Wizard
             SetProperty(MSBuildProperties.DXP_OUR_ILASM, Config.Compiler.ourILAsm);
             Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
 
-            if(Config.Compiler.customILAsm != null) 
+            if(!string.IsNullOrEmpty(Config.Compiler.customILAsm))
             {
                 SetProperty(MSBuildProperties.DXP_CUSTOM_ILASM, Config.Compiler.customILAsm);
                 Log.send(this, $"Set path to custom ILAsm: {Config.Compiler.customILAsm}");
@@ -634,7 +631,13 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Trying to remove {WZ_ID} PackageReference records", Message.Level.Info);
             foreach(var item in XProject.GetItems("PackageReference", UserConfig.PKG_ID).ToArray()) 
             {
-                if(item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1") {
+                if(item.isImported) {
+                    continue;
+                }
+
+                if(item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1"
+                    || Config?.Wizard.CfgStorage == CfgStorageType.TargetsFile) 
+                {
                     XProject.RemoveItem(item);
                 }
             }
@@ -654,7 +657,8 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Trying to remove X_EXT_STORAGE Import elements: '{Guids.X_EXT_STORAGE}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(null, Guids.X_EXT_STORAGE))) { }
 
-            if(String.IsNullOrWhiteSpace(Config.Wizard.DxpTarget)) {
+            if(string.IsNullOrWhiteSpace(Config?.Wizard.DxpTarget)) {
+                Log.send(this, $"DxpTarget is null or empty", Message.Level.Debug);
                 return;
             }
 

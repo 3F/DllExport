@@ -78,7 +78,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             storage = new List<Elems>() {
                 new Elems(CfgStorageType.ProjectFiles, "Project files (.csproj, ...)"),
-                new Elems(CfgStorageType.TargetsFile, ".targets file")
+                new Elems(CfgStorageType.TargetsFile, TargetsFile.DEF_CFG_FILE)
             };
 
             Populate();

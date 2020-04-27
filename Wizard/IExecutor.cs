@@ -59,6 +59,12 @@ namespace net.r_eg.DllExport.Wizard
         ITargetsFile TargetsFile { get; }
 
         /// <summary>
+        /// Access to used external .targets 
+        /// Only if CfgStorageType.TargetsFile or null.
+        /// </summary>
+        ITargetsFile TargetsFileIfCfg { get; }
+
+        /// <summary>
         /// List of all found projects with different configurations.
         /// </summary>
         /// <param name="sln">Full path to .sln</param>
@@ -76,5 +82,11 @@ namespace net.r_eg.DllExport.Wizard
         /// To start process of the required configuration.
         /// </summary>
         void Configure();
+
+        /// <summary>
+        /// Depending on the current CfgStorageType, 
+        /// Either save or delete used TargetsFile.
+        /// </summary>
+        void SaveTStorageOrDelete();
     }
 }

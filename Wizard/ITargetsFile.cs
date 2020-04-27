@@ -44,6 +44,11 @@ namespace net.r_eg.DllExport.Wizard
         bool Export(IProject parent);
 
         /// <summary>
+        /// Resets data for external .targets file.
+        /// </summary>
+        void Reset();
+
+        /// <summary>
         /// Saves data to the file system.
         /// </summary>
         /// <param name="reevaluate">Try to reevaluate data of project before saving.</param>
