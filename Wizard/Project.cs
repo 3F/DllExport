@@ -634,7 +634,11 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Trying to remove {WZ_ID} PackageReference records", Message.Level.Info);
             foreach(var item in XProject.GetItems("PackageReference", UserConfig.PKG_ID).ToArray()) 
             {
-                if(item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1") {
+                if(item.isImported) {
+                    continue;
+                }
+
+                if (item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1") {
                     XProject.RemoveItem(item);
                 }
             }
