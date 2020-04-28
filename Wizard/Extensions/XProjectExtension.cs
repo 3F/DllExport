@@ -74,5 +74,16 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             )
             .Guid();
         }
+
+        public static void AddPackageIfNotExists(this IXProject xp, string id, string version)
+        {
+            if(xp == null) {
+                throw new ArgumentNullException(nameof(xp)); 
+            }
+
+            if(xp.GetFirstPackageReference(id ?? throw new ArgumentNullException(nameof(id))).parentItem == null) {
+                xp.AddPackageReference(id, version);
+            }
+        }
     }
 }

@@ -37,6 +37,7 @@ using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Kit;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard.UI
@@ -55,7 +56,8 @@ namespace net.r_eg.DllExport.Wizard.UI
         private readonly Caller caller;
         private readonly PackageInfo pkgVer;
         private readonly IConfFormater confFormater;
-        private int prevSlnItemIndex = 0;
+        private volatile int prevSlnItemIndex = 0;
+        private volatile int prevPrjIndex = -1;
         private volatile bool _suspendCbSln;
         private readonly string updaterInitName;
         private CancellationTokenSource ctsUpdater;
@@ -69,10 +71,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         /// To apply filter for rendered projects.
         /// </summary>
         /// <param name="filter"></param>
-        public void ApplyFilter(ProjectFilter filter)
-        {
-            RenderProjects(exec.ActiveSlnFile, filter);
-        }
+        public void ApplyFilter(ProjectFilter filter) => RenderProjects(exec.ActiveSlnFile, filter);
 
         public void ShowProgressLine(bool enabled)
         {
@@ -113,23 +112,6 @@ namespace net.r_eg.DllExport.Wizard.UI
             storage.UpdateItem();
 
             projectItems.Set(null); // TODO: this only when no projects in solution and only when initial start
-        }
-
-        private void ConfiguratorForm_Load(object sender, EventArgs e)
-        {
-            TopMost = false; TopMost = true;
-
-            if(!string.IsNullOrEmpty(pkgVer.Activated))
-            {
-                UpdateListOfPackages();
-                txtLogUpd.SetData($"{CmdUpdate} ...");
-            }
-            else
-            {
-                panelUpdVerTop.Enabled = false;
-                btnToOnline.Visible = true;
-                txtLogUpd.SetData("You're using an offline version or such `-dxp-version actual`.");
-            }
         }
 
         private void UpdateListOfPackages()
@@ -413,6 +395,42 @@ namespace net.r_eg.DllExport.Wizard.UI
             ));
         }
 
+        private void UpdateRefBefore(IProject prj)
+        {
+            preProcControl.Export(prj.Config.PreProc);
+            //TODO: to change processing of projectItems to this way
+        }
+
+        private void UpdateRefAfter(IProject prj)
+        {
+            //TODO: multiple controls are obsolete now because of new layout in 1.7+
+            projectItems.Pause();
+            projectItems.Set(prj);
+            projectItems.Resume();
+
+            preProcControl.Render(prj.Config.PreProc);
+
+            txtCfgData.Text = confFormater.Parse(prj);
+        }
+
+        private IProject GetProject(int index)
+        {
+            if(index == -1 || index >= dgvFilter.RowCount) {
+                return null;
+            }
+
+            string path = dgvFilter.Rows[index].Cells[gcPath.Name].Value.ToString();
+            return GetProjects(exec.ActiveSlnFile).FirstOrDefault(p => p.ProjectPath == path);
+        }
+
+        private void UpdateRefBefore()
+        {
+            IProject prevPrj = GetProject(prevPrjIndex);
+            if(prevPrj != null) {
+                UpdateRefBefore(prevPrj);
+            }
+        }
+
         private void EnableTabsWhenNoSln(bool status) => ((Control)tabCfgDxp).Enabled = status;
 
         private string GetBuildInfo()
@@ -438,6 +456,23 @@ namespace net.r_eg.DllExport.Wizard.UI
             return sb.ToString();
         }
 
+        private void ConfiguratorForm_Load(object sender, EventArgs e)
+        {
+            TopMost = false; TopMost = true;
+
+            if(!string.IsNullOrEmpty(pkgVer.Activated))
+            {
+                UpdateListOfPackages();
+                txtLogUpd.SetData($"{CmdUpdate} ...");
+            }
+            else
+            {
+                panelUpdVerTop.Enabled = false;
+                btnToOnline.Visible = true;
+                txtLogUpd.SetData("You're using an offline version or such `-dxp-version actual`.");
+            }
+        }
+
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)
         {
             if(_suspendCbSln) { return; }
@@ -456,6 +491,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         private void btnApply_Click(object sender, EventArgs e)
         {
             exec.TargetsFileIfCfg?.Reset();
+            UpdateRefBefore();
 
             if(!SaveProjects(projectItems.Data)) {
                 return;
@@ -473,18 +509,14 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void dgvFilter_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
-            if(e.RowIndex == -1 || e.RowIndex >= dgvFilter.RowCount) {
-                return;
+            UpdateRefBefore();
+
+            IProject prj = GetProject(e.RowIndex);
+            if(prj != null) 
+            {
+                UpdateRefAfter(prj);
+                prevPrjIndex = e.RowIndex;
             }
-
-            string path     = dgvFilter.Rows[e.RowIndex].Cells[gcPath.Name].Value.ToString();
-            IProject prj    = GetProjects(exec.ActiveSlnFile).FirstOrDefault(p => p.ProjectPath == path);
-
-            projectItems.Pause();
-            projectItems.Set(prj);
-            projectItems.Resume();
-            
-            txtCfgData.Text = confFormater.Parse(prj);
         }
 
         private void dgvFilter_KeyDown(object sender, KeyEventArgs e)

@@ -24,11 +24,13 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 using RGiesecke.DllExport;
+using static net.r_eg.DllExport.Wizard.PreProc;
 
 namespace net.r_eg.DllExport.Wizard
 {
@@ -140,6 +142,15 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <summary>
+        /// Access to Pre-Processing.
+        /// </summary>
+        public PreProc PreProc
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Adds to top new namespace into Namespaces property.
         /// </summary>
         /// <param name="ns"></param>
@@ -189,6 +200,9 @@ namespace net.r_eg.DllExport.Wizard
                 peCheck             = (PeCheckType)GetValue(MSBuildProperties.DXP_PE_CHECK, xp).ToInteger(),
                 patches             = (PatchesType)GetValue(MSBuildProperties.DXP_PATCHES, xp).ToLongInteger()
             };
+
+            var cmdType = (CmdType)GetValue(MSBuildProperties.DXP_PRE_PROC_TYPE, xp).ToLongInteger();
+            PreProc = new PreProc().Configure(cmdType, GetPreProcCmd(cmdType, xp));
         }
 
         public UserConfig(IConfigInitializer cfg)
@@ -239,6 +253,29 @@ namespace net.r_eg.DllExport.Wizard
 
             LSender.Send(this, $"Incorrect platform target: '{value}'. Use '{nameof(Platform.Default)}'", Message.Level.Warn);
             return Platform.Default;
+        }
+
+        protected string GetPreProcCmd(CmdType type, IXProject xp)
+        {
+            if((type & CmdType.ILMerge) == CmdType.ILMerge)
+            {
+                return GetUnevaluatedValue(MSBuildProperties.DXP_ILMERGE, xp);
+            }
+
+            if((type & CmdType.Exec) == CmdType.Exec)
+            {
+                var tExec = xp?.Project.Xml?.Targets
+                            .FirstOrDefault(t => t.Name == MSBuildTargets.DXP_PRE_PROC && t.Label == Project.METALIB_PK_TOKEN)?
+                            .Tasks
+                            .FirstOrDefault(t => t.Name == "Exec");
+
+                if(tExec != null)
+                {
+                    return tExec.GetParameter("Command");
+                }
+            }
+
+            return null;
         }
 
         private string GetValue(string property, IXProject project)

@@ -57,6 +57,8 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProjectSvc.cs" />
+    <Compile Include="MSBuildTargets.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="PackageInfo.cs" />
     <Compile Include="Caller.cs" />
@@ -72,6 +74,9 @@
     <Compile Include="CompilerCfg.cs" />
     <Compile Include="MSBuildProperties.cs" />
     <Compile Include="DxpIsolatedEnv.cs" />
+    <Compile Include="Gears\IProjectGear.cs" />
+    <Compile Include="Gears\PreProcGear.cs" />
+    <Compile Include="PreProc.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="IProject.cs" />
     <Compile Include="ITargetsFile.cs" />
@@ -88,6 +93,12 @@
     </Compile>
     <Compile Include="UI\Components\DataGridViewExt.cs">
       <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PreProcControl.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="UI\Controls\PreProcControl.Designer.cs">
+      <DependentUpon>PreProcControl.cs</DependentUpon>
     </Compile>
     <Compile Include="UI\IConfFormater.cs" />
     <Compile Include="UI\IconResources.Designer.cs">
@@ -175,6 +186,9 @@
     <EmbeddedResource Include="UI\ConfiguratorForm.resx">
       <DependentUpon>ConfiguratorForm.cs</DependentUpon>
       <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UI\Controls\PreProcControl.resx">
+      <DependentUpon>PreProcControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\IconResources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

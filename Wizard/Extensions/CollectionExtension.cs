@@ -24,10 +24,11 @@
 
 using System;
 using System.Collections.Generic;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.Extensions
 {
-    public static class CollectionExtension
+    internal static class CollectionExtension
     {
         /// <summary>
         /// Foreach in Linq manner.
@@ -35,27 +36,9 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="items"></param>
         /// <param name="act">The action that should be executed for each item.</param>
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T> act)
+        public static IEnumerable<T> Each<T>(this IEnumerable<T> items, Action<T> act)
         {
-            return items?.ForEach((x, i) => act(x));
-        }
-
-        /// <summary>
-        /// Foreach in Linq manner.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
-        /// <param name="act">The action that should be executed for each item.</param>
-        public static IEnumerable<T> ForEach<T>(this IEnumerable<T> items, Action<T, long> act)
-        {
-            if(items == null) {
-                return null;
-            }
-
-            long n = 0;
-            foreach(var item in items) {
-                act(item, n++);
-            }
+            items?.ForEach((x, i) => act(x));
             return items;
         }
 
@@ -69,7 +52,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns></returns>
         public static IEnumerable<string> Combine(this IEnumerable<string> items, string elem, bool before = false)
         {
-            if(before && !String.IsNullOrEmpty(elem)) {
+            if(before && !string.IsNullOrEmpty(elem)) {
                 yield return elem;
             }
 
@@ -77,7 +60,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
                 yield return item;
             }
 
-            if(!before && !String.IsNullOrEmpty(elem)) {
+            if(!before && !string.IsNullOrEmpty(elem)) {
                 yield return elem;
             }
         }

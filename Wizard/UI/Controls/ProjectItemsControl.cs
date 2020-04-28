@@ -121,7 +121,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         public IEnumerable<IProject> GetInactiveInstalled(IEnumerable<IProject> projects)
         {
             return projects?.Where(p => p.Installed && Data.All(d => d.DxpIdent != p.DxpIdent))
-                            .ForEach(p => p.Config.Install = true); // since we're not using ConfigureProject()
+                            .Each(p => p.Config.Install = true); // since we're not using ConfigureProject()
         }
 
         public ProjectItemsControl()

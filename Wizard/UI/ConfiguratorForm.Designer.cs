@@ -19,15 +19,11 @@
             fdialog?.Dispose();
             icons?.Dispose();
 
-            ctsUpdater?.Cancel();
-
-            if(tUpdater != null)
+            if(ctsUpdater != null)
             {
-                tUpdater.Wait();
-                tUpdater.Dispose();
+                ctsUpdater.Cancel();
+                ctsUpdater.Dispose();
             }
-            ctsUpdater?.Dispose();
-
             base.Dispose(disposing);
         }
 
@@ -59,6 +55,8 @@
             this.tabCtrl = new System.Windows.Forms.TabControl();
             this.tabCfgDxp = new System.Windows.Forms.TabPage();
             this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
+            this.tabPreProc = new System.Windows.Forms.TabPage();
+            this.preProcControl = new net.r_eg.DllExport.Wizard.UI.Controls.PreProcControl();
             this.tabData = new System.Windows.Forms.TabPage();
             this.labelStorage = new System.Windows.Forms.Label();
             this.txtCfgData = new System.Windows.Forms.TextBox();
@@ -83,6 +81,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).BeginInit();
             this.tabCtrl.SuspendLayout();
             this.tabCfgDxp.SuspendLayout();
+            this.tabPreProc.SuspendLayout();
             this.tabData.SuspendLayout();
             this.tabUpdating.SuspendLayout();
             this.panelUpdVerTop.SuspendLayout();
@@ -204,10 +203,10 @@
             // 
             this.panelPrjs.Controls.Add(this.dgvFilter);
             this.panelPrjs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelPrjs.Location = new System.Drawing.Point(0, 26);
+            this.panelPrjs.Location = new System.Drawing.Point(0, 19);
             this.panelPrjs.Margin = new System.Windows.Forms.Padding(0);
             this.panelPrjs.Name = "panelPrjs";
-            this.panelPrjs.Size = new System.Drawing.Size(446, 52);
+            this.panelPrjs.Size = new System.Drawing.Size(446, 59);
             this.panelPrjs.TabIndex = 2;
             // 
             // dgvFilter
@@ -247,7 +246,7 @@
             this.dgvFilter.RowTemplate.Height = 17;
             this.dgvFilter.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvFilter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFilter.Size = new System.Drawing.Size(446, 52);
+            this.dgvFilter.Size = new System.Drawing.Size(446, 59);
             this.dgvFilter.TabIndex = 0;
             this.dgvFilter.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFilter_RowEnter);
             this.dgvFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvFilter_KeyDown);
@@ -286,7 +285,7 @@
             this.panelFilter.Location = new System.Drawing.Point(0, 0);
             this.panelFilter.Margin = new System.Windows.Forms.Padding(0);
             this.panelFilter.Name = "panelFilter";
-            this.panelFilter.Size = new System.Drawing.Size(446, 26);
+            this.panelFilter.Size = new System.Drawing.Size(446, 19);
             this.panelFilter.TabIndex = 1;
             // 
             // tabCtrl
@@ -296,6 +295,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabCtrl.Controls.Add(this.tabCfgDxp);
+            this.tabCtrl.Controls.Add(this.tabPreProc);
             this.tabCtrl.Controls.Add(this.tabData);
             this.tabCtrl.Controls.Add(this.tabUpdating);
             this.tabCtrl.Controls.Add(this.tabBuildInfo);
@@ -333,6 +333,24 @@
             this.projectItems.OpenUrl = null;
             this.projectItems.Size = new System.Drawing.Size(448, 247);
             this.projectItems.TabIndex = 2;
+            // 
+            // tabPreProc
+            // 
+            this.tabPreProc.Controls.Add(this.preProcControl);
+            this.tabPreProc.Location = new System.Drawing.Point(4, 25);
+            this.tabPreProc.Name = "tabPreProc";
+            this.tabPreProc.Size = new System.Drawing.Size(442, 230);
+            this.tabPreProc.TabIndex = 4;
+            this.tabPreProc.Text = "Pre-Processing";
+            this.tabPreProc.UseVisualStyleBackColor = true;
+            // 
+            // preProcControl
+            // 
+            this.preProcControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.preProcControl.Location = new System.Drawing.Point(0, 0);
+            this.preProcControl.Name = "preProcControl";
+            this.preProcControl.Size = new System.Drawing.Size(442, 230);
+            this.preProcControl.TabIndex = 0;
             // 
             // tabData
             // 
@@ -542,6 +560,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).EndInit();
             this.tabCtrl.ResumeLayout(false);
             this.tabCfgDxp.ResumeLayout(false);
+            this.tabPreProc.ResumeLayout(false);
             this.tabData.ResumeLayout(false);
             this.tabData.PerformLayout();
             this.tabUpdating.ResumeLayout(false);
@@ -588,5 +607,7 @@
         private System.Windows.Forms.ComboBox comboBoxStorage;
         private System.Windows.Forms.TextBox txtCfgData;
         private System.Windows.Forms.Label labelSrcMit;
+        private System.Windows.Forms.TabPage tabPreProc;
+        private Controls.PreProcControl preProcControl;
     }
 }
