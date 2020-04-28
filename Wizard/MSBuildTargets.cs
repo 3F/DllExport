@@ -22,74 +22,39 @@
  * THE SOFTWARE.
 */
 
-using System.Collections.Generic;
-using net.r_eg.DllExport.NSBin;
-using net.r_eg.MvsSln.Log;
-
 namespace net.r_eg.DllExport.Wizard
 {
-    public interface IUserConfig
+    internal struct MSBuildTargets
     {
         /// <summary>
-        /// Flag of installation.
+        /// The name of target to restore package.
         /// </summary>
-        bool Install { get; set; }
+        internal const string DXP_PKG_R = "DllExportRestorePkg";
 
         /// <summary>
-        /// A selected namespace for ddNS feature.
+        /// Pre-Processing.
         /// </summary>
-        string Namespace { get; set; }
+        internal const string DXP_PRE_PROC = "DllExportPreProc";
 
         /// <summary>
-        /// Allowed buffer size for NS.
+        /// Post-Actions of the main Pre-Processing.
         /// </summary>
-        int NSBuffer { get; set; }
+        internal const string DXP_PRE_PROC_AFTER = "DllExportPreProcAfter";
 
         /// <summary>
-        /// To use Cecil instead of direct modifications.
+        /// To support dynamic `import` section.
+        /// https://github.com/3F/DllExport/issues/62
         /// </summary>
-        bool UseCecil { get; set; }
+        internal const string DXP_R_DYN = "DllExportRPkgDynamicImport";
 
         /// <summary>
-        /// Predefined list of namespaces.
+        /// The entry point of the main task.
         /// </summary>
-        List<string> Namespaces { get; set; }
+        internal const string DXP_MAIN = "DllExportMod";
 
         /// <summary>
-        /// Access to wizard configuration.
+        /// Flag when imported the {DXP_MAIN} target.
         /// </summary>
-        IWizardConfig Wizard { get; set; }
-
-        /// <summary>
-        /// Access to ddNS core.
-        /// </summary>
-        IDDNS DDNS { get; set; }
-
-        /// <summary>
-        /// Specific logger.
-        /// </summary>
-        ISender Log { get; set; }
-
-        /// <summary>
-        /// Platform target for project.
-        /// </summary>
-        Platform Platform { get; set; }
-
-        /// <summary>
-        /// Settings for ILasm etc.
-        /// </summary>
-        CompilerCfg Compiler { get; set; }
-
-        /// <summary>
-        /// Access to Pre-Processing.
-        /// </summary>
-        PreProc PreProc { get; set; }
-
-        /// <summary>
-        /// Adds to top new namespace into Namespaces property.
-        /// </summary>
-        /// <param name="ns"></param>
-        /// <returns>true if added.</returns>
-        bool AddTopNamespace(string ns);
+        internal const string DXP_MAIN_FLAG = "DllExportModImported";
     }
 }

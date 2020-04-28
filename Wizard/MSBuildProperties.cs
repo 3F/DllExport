@@ -117,5 +117,28 @@ namespace net.r_eg.DllExport.Wizard
         /// Platform for DllExport tool.
         /// </summary>
         public const string DXP_PLATFORM = "DllExportPlatform";
+
+        /// <summary>
+        /// Used Pre-Processing type.
+        /// </summary>
+        public const string DXP_PRE_PROC_TYPE = "DllExportPreProcType";
+
+        /// <summary>
+        /// List of modules for ILMerge if used.
+        /// </summary>
+        public const string DXP_ILMERGE = "DllExportILMerge";
+
+        /// <summary>
+        /// Meta library full path to file.
+        /// </summary>
+        public const string DXP_METALIB_FPATH = "DllExportMetaLibFullPath";
+
+        public const string PRJ_TARGET_DIR = "TargetDir";
+
+        public const string PRJ_TARGET_F = "TargetFileName";
+
+        public const string PRJ_DBG_TYPE = "DebugType";
+
+        public const string SLN_DIR = "SolutionDir";
     }
 }
