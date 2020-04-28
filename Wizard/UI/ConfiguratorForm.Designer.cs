@@ -19,15 +19,11 @@
             fdialog?.Dispose();
             icons?.Dispose();
 
-            ctsUpdater?.Cancel();
-
-            if(tUpdater != null)
+            if(ctsUpdater != null)
             {
-                tUpdater.Wait();
-                tUpdater.Dispose();
+                ctsUpdater.Cancel();
+                ctsUpdater.Dispose();
             }
-            ctsUpdater?.Dispose();
-
             base.Dispose(disposing);
         }
 
@@ -207,10 +203,10 @@
             // 
             this.panelPrjs.Controls.Add(this.dgvFilter);
             this.panelPrjs.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelPrjs.Location = new System.Drawing.Point(0, 26);
+            this.panelPrjs.Location = new System.Drawing.Point(0, 19);
             this.panelPrjs.Margin = new System.Windows.Forms.Padding(0);
             this.panelPrjs.Name = "panelPrjs";
-            this.panelPrjs.Size = new System.Drawing.Size(446, 52);
+            this.panelPrjs.Size = new System.Drawing.Size(446, 59);
             this.panelPrjs.TabIndex = 2;
             // 
             // dgvFilter
@@ -250,7 +246,7 @@
             this.dgvFilter.RowTemplate.Height = 17;
             this.dgvFilter.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvFilter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvFilter.Size = new System.Drawing.Size(446, 52);
+            this.dgvFilter.Size = new System.Drawing.Size(446, 59);
             this.dgvFilter.TabIndex = 0;
             this.dgvFilter.RowEnter += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvFilter_RowEnter);
             this.dgvFilter.KeyDown += new System.Windows.Forms.KeyEventHandler(this.dgvFilter_KeyDown);
@@ -289,7 +285,7 @@
             this.panelFilter.Location = new System.Drawing.Point(0, 0);
             this.panelFilter.Margin = new System.Windows.Forms.Padding(0);
             this.panelFilter.Name = "panelFilter";
-            this.panelFilter.Size = new System.Drawing.Size(446, 26);
+            this.panelFilter.Size = new System.Drawing.Size(446, 19);
             this.panelFilter.TabIndex = 1;
             // 
             // tabCtrl
