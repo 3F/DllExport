@@ -29,6 +29,7 @@ using System.Linq;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
@@ -121,7 +122,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         public IEnumerable<IProject> GetInactiveInstalled(IEnumerable<IProject> projects)
         {
             return projects?.Where(p => p.Installed && Data.All(d => d.DxpIdent != p.DxpIdent))
-                            .Each(p => p.Config.Install = true); // since we're not using ConfigureProject()
+                            .ForEach(p => p.Config.Install = true); // since we're not using ConfigureProject()
         }
 
         public ProjectItemsControl()

@@ -22,26 +22,12 @@
  * THE SOFTWARE.
 */
 
-using System;
 using System.Collections.Generic;
-using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.Extensions
 {
     internal static class CollectionExtension
     {
-        /// <summary>
-        /// Foreach in Linq manner.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="items"></param>
-        /// <param name="act">The action that should be executed for each item.</param>
-        public static IEnumerable<T> Each<T>(this IEnumerable<T> items, Action<T> act)
-        {
-            items?.ForEach((x, i) => act(x));
-            return items;
-        }
-
         /// <summary>
         /// To combine string items.
         /// </summary>
