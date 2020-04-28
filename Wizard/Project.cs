@@ -26,20 +26,19 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Construction;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
+using net.r_eg.DllExport.Wizard.Gears;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 using RGiesecke.DllExport;
-using static net.r_eg.DllExport.Wizard.PreProc;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public class Project: IProject
+    public class Project: IProject, IProjectSvc
     {
         public const string DXP_INVALID = "EEE00000-0000-0000-0000-000000000000";
 
@@ -53,12 +52,9 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public const string DXP_TARGET = "net.r_eg.DllExport.targets";
 
-        private readonly Version incConari = new Version("1.4.0");
-
-        private readonly Version incILMerge = new Version("3.0.29");
-
         private const string WZ_ID = "Wz";
-        private const string ILMERGE_TMP = ".ilm0";
+
+        private readonly IEnumerable<IProjectGear> gears;
 
         /// <summary>
         /// Access to found project.
@@ -73,18 +69,14 @@ namespace net.r_eg.DllExport.Wizard
         /// Installation checking.
         /// </summary>
         public bool Installed
-        {
-            get => InternalError == null && !string.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
-        }
+            => InternalError == null 
+            && !string.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
 
         /// <summary>
         /// Message if an internal error occurred, otherwise null value.
         /// TODO: because of DxpIsolatedEnv. See details there.
         /// </summary>
-        public string InternalError
-        {
-            get => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluatedValue;
-        }
+        public string InternalError => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluatedValue;
 
         /// <summary>
         /// Special identifier. Like `ProjectGuid` that is not available in SDK-based projects.
@@ -250,6 +242,17 @@ namespace net.r_eg.DllExport.Wizard
             return true;
         }
 
+        #region IProjectSvc
+
+        ProjectTargetElement IProjectSvc.AddTarget(string name) => AddTarget(name);
+        bool IProjectSvc.RemoveXmlTarget(string name) => RemoveXmlTarget(name);
+        void IProjectSvc.SetProperty(string name, string value) => SetProperty(name, value);
+        void IProjectSvc.SetProperty(string name, bool val) => SetProperty(name, val);
+        void IProjectSvc.SetProperty(string name, int val) => SetProperty(name, val);
+        void IProjectSvc.SetProperty(string name, long val) => SetProperty(name, val);
+
+        #endregion
+
         /// <param name="xproject"></param>
         /// <param name="init"></param>
         public Project(IXProject xproject, IConfigInitializer init)
@@ -264,6 +267,10 @@ namespace net.r_eg.DllExport.Wizard
         public Project(IXProject xproject)
         {
             XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
+
+            gears = new[] { 
+                new PreProcGear(this) 
+            };
 
             AllocateProperties(
                 MSBuildProperties.DXP_ID,
@@ -287,6 +294,9 @@ namespace net.r_eg.DllExport.Wizard
 
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
         }
+
+        protected void InstallGears() => gears.ForEach(g => g.Install());
+        protected void UninstallGears(bool hardReset) => gears.ForEach(g => g.Uninstall(hardReset));
 
         protected void ActionRestore()
         {
@@ -471,75 +481,25 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Applied Patches: {Config.Compiler.patches}");
         }
 
-        protected void CfgPreProc()
-        {
-            CmdType type = Config.PreProc.Type;
-
-            SetProperty(MSBuildProperties.DXP_PRE_PROC_TYPE, (long)type);
-            Log.send(this, $"Pre-Processing type: {type}");
-
-            if(type == CmdType.None) {
-                return;
-            }
-
-            var sb = new StringBuilder(3);
-
-            if((type & CmdType.Conari) == CmdType.Conari)
-            {
-                Log.send(this, $"Integrate Conari: {incConari}");
-                AddPackageIfNotExists("Conari", $"{incConari}");
-                sb.Append("Conari.dll ");
-            }
-
-            if((type & CmdType.ILMerge) == CmdType.ILMerge)
-            {
-                SetProperty(MSBuildProperties.DXP_ILMERGE, Config.PreProc.Cmd);
-                Log.send(this, $"Merge modules via ILMerge {incILMerge}: {Config.PreProc.Cmd}");
-
-                AddPackageIfNotExists("ilmerge", $"{incILMerge}");
-                sb.Append($"{Config.PreProc.Cmd} ");
-            }
-
-            if((type & CmdType.Exec) == CmdType.Exec)
-            {
-                Log.send(this, $"Pre-Processing command: {Config.PreProc.Cmd}");
-                sb.Append($"{Config.PreProc.Cmd} ");
-            }
-
-            AddPreProcTarget(
-                FormatPreProcCmd(type, sb), 
-                (type & CmdType.IgnoreErr) == CmdType.IgnoreErr,
-                (type & CmdType.DebugInfo) == CmdType.DebugInfo
-            );
-        }
-
         protected void CfgCommonData()
         {
             CfgNamespace();
             CfgPlatform();
             CfgCompiler();
-            CfgPreProc();
+            InstallGears();
         }
 
-        protected void Reset(bool properties)
+        protected void Reset(bool hardReset)
         {
             RemoveDllExportLib();
-            RemovePreProcTarget();
+            UninstallGears(hardReset);
 
-            if(properties) {
+            if(hardReset) {
                 RemoveProperties(ConfigProperties.Keys.ToArray());
                 ConfigProperties.Clear();
             }
 
             XProject.Reevaluate();
-        }
-
-        protected bool CmpPublicKeyTokens(string pkToken, string pkTokenAsm)
-        {
-            if(pkTokenAsm == null || string.IsNullOrWhiteSpace(pkToken)) {
-                return false;
-            }
-            return pkToken.Equals(pkTokenAsm, StringComparison.InvariantCultureIgnoreCase);
         }
 
         protected void AddExternalStorage()
@@ -592,52 +552,6 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildTargets.DXP_R_DYN, 
                 $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' And '$(DllExportRPkgDyn)' != 'false'"
             );
-        }
-
-        protected void AddPreProcTarget(string cmd, bool continueOnError, bool optoutlogic)
-        {
-            var target = AddTarget(MSBuildTargets.DXP_PRE_PROC);
-
-            target.BeforeTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = METALIB_PK_TOKEN;
-
-            var tCopy = target.AddTask("Copy");
-            tCopy.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
-            tCopy.SetParameter("DestinationFolder", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
-            tCopy.SetParameter("SkipUnchangedFiles", "true");
-            tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
-
-            var tExec = target.AddTask("Exec");
-            tExec.SetParameter("Command", cmd ?? throw new ArgumentNullException(nameof(cmd)));
-            tExec.SetParameter("WorkingDirectory", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
-            tExec.ContinueOnError = continueOnError.ToString().ToLower();
-
-            if(optoutlogic)
-            {
-                OverrideDebugType();
-                AddPreProcAfterTarget(target, tExec);
-            }
-
-            var tDelete = target.AddTask("Delete");
-            tDelete.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})");
-            tDelete.ContinueOnError = "true";
-        }
-
-        protected void AddPreProcAfterTarget(ProjectTargetElement ppTarget, ProjectTaskElement tExec)
-        {
-            var tMove = ppTarget.AddTask("Move");
-            tMove.SetParameter("SourceFiles", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F}){ILMERGE_TMP}.dll");
-            tMove.SetParameter("DestinationFiles", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F})");
-            tMove.SetParameter("OverwriteReadOnlyFiles", "true");
-            tMove.ContinueOnError = tExec.ContinueOnError;
-
-            var target = AddTarget(MSBuildTargets.DXP_PRE_PROC_AFTER);
-            target.AfterTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = METALIB_PK_TOKEN;
-
-            var tDelete = target.AddTask("Delete");
-            tDelete.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F}){ILMERGE_TMP}.pdb");
-            tDelete.ContinueOnError = "true";
         }
 
         protected void AddRestoreDxp(string name, string condition, string manager)
@@ -697,7 +611,7 @@ namespace net.r_eg.DllExport.Wizard
                     continue;
                 }
 
-                if(PublicKeyTokenLimit && CmpPublicKeyTokens(METALIB_PK_TOKEN, refer.Assembly.PublicKeyToken)) {
+                if(PublicKeyTokenLimit && METALIB_PK_TOKEN.CmpPublicKeyTokenWith(refer.Assembly.PublicKeyToken)) {
                     Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
                     XProject.RemoveItem(refer); // immediately modifies collection from XProject.GetReferences
                     continue;
@@ -750,14 +664,6 @@ namespace net.r_eg.DllExport.Wizard
                 Log.send(this, $"Find and remove '{dxpTarget}' as an old .target file of the DllExport.", Message.Level.Info);
                 while(XProject.RemoveImport(XProject.GetImport(dxpTarget, null))) { }
             }
-        }
-
-        protected void RemovePreProcTarget()
-        {
-            Log.send(this, $"Trying to remove pre-proc-targets: `{MSBuildTargets.DXP_PRE_PROC}`, `{MSBuildTargets.DXP_PRE_PROC_AFTER}`", Message.Level.Info);
-            while(RemoveXmlTarget(MSBuildTargets.DXP_PRE_PROC)) { }
-            while(RemoveXmlTarget(MSBuildTargets.DXP_PRE_PROC_AFTER)) { }
-            while(RemoveOverridedDebugType()) { }
         }
 
         protected bool RemoveXmlTarget(string name)
@@ -825,13 +731,6 @@ namespace net.r_eg.DllExport.Wizard
 
         protected string GetProperty(string name) => XProject?.GetPropertyValue(name);
 
-        protected void AddPackageIfNotExists(string id, string version)
-        {
-            if(XProject.GetFirstPackageReference(id ?? throw new ArgumentNullException(nameof(id))).parentItem == null) {
-                XProject.AddPackageReference(id, version);
-            }
-        }
-
         protected virtual string MakeBasePath(string path, bool prefix = true)
         {
             string ret = SlnDir?.MakeRelativePath(path);
@@ -859,30 +758,6 @@ namespace net.r_eg.DllExport.Wizard
         private void SetProperty(string name, bool val) => SetProperty(name, val.ToString().ToLower());
         private void SetProperty(string name, int val) => SetProperty(name, val.ToString());
         private void SetProperty(string name, long val) => SetProperty(name, val.ToString());
-
-        private string FormatPreProcCmd(CmdType type, StringBuilder sb)
-        {
-            string cmd = sb?.ToString().TrimEnd();
-
-            if((type & CmdType.ILMerge) == CmdType.ILMerge)
-            {
-                return $"$(ILMergeConsolePath) {cmd} $(TargetFileName) /out:$(TargetFileName)" 
-                        + (((type & CmdType.DebugInfo) == 0) ? " /ndebug" : $"{ILMERGE_TMP}.dll");
-            }
-            return cmd;
-        }
-
-        private void OverrideDebugType()
-        {
-            var prop = XProject.Project.Xml.AddPropertyGroup().SetProperty(MSBuildProperties.PRJ_DBG_TYPE, "pdbonly");
-            prop.Condition = "'$(DebugType)'!='full'";
-            prop.Label = METALIB_PK_TOKEN;
-        }
-
-        private bool RemoveOverridedDebugType() => XProject.RemoveProperty(
-            XProject.GetProperties().FirstOrDefault(p => p.name == MSBuildProperties.PRJ_DBG_TYPE && p.parentProperty.Xml.Label == METALIB_PK_TOKEN),
-            true
-        );
 
         private string CopyLib(string src, string dest)
         {

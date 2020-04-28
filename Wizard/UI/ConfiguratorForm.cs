@@ -37,6 +37,7 @@ using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Kit;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard.UI

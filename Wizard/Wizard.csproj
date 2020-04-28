@@ -57,6 +57,7 @@
     <Reference Include="System.Windows.Forms" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IProjectSvc.cs" />
     <Compile Include="MSBuildTargets.cs" />
     <Compile Include="Extensions\ThreadingExtension.cs" />
     <Compile Include="PackageInfo.cs" />
@@ -73,6 +74,8 @@
     <Compile Include="CompilerCfg.cs" />
     <Compile Include="MSBuildProperties.cs" />
     <Compile Include="DxpIsolatedEnv.cs" />
+    <Compile Include="Gears\IProjectGear.cs" />
+    <Compile Include="Gears\PreProcGear.cs" />
     <Compile Include="PreProc.cs" />
     <Compile Include="Platform.cs" />
     <Compile Include="IProject.cs" />

@@ -24,8 +24,6 @@
 
 using System;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 
 namespace net.r_eg.DllExport.Wizard.Extensions
 {
@@ -38,7 +36,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns></returns>
         public static bool ToBoolean(this string value)
         {
-            if(String.IsNullOrWhiteSpace(value)) {
+            if(string.IsNullOrWhiteSpace(value)) {
                 return false;
             }
 
@@ -67,7 +65,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns></returns>
         public static int ToInteger(this string value)
         {
-            if(String.IsNullOrWhiteSpace(value)) {
+            if(string.IsNullOrWhiteSpace(value)) {
                 return 0;
             }
 
@@ -81,7 +79,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns></returns>
         public static long ToLongInteger(this string value)
         {
-            if(String.IsNullOrWhiteSpace(value)) {
+            if(string.IsNullOrWhiteSpace(value)) {
                 return 0;
             }
 
@@ -94,44 +92,17 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <param name="url"></param>
         public static void OpenUrl(this string url)
         {
-            if(!String.IsNullOrWhiteSpace(url)) {
+            if(!string.IsNullOrWhiteSpace(url)) {
                 System.Diagnostics.Process.Start(url);
             }
         }
 
-        /// <summary>
-        /// Calculate SHA-1 hash from file.
-        /// </summary>
-        /// <param name="file">Path to file.</param>
-        /// <returns>SHA-1 Hash code.</returns>
-        public static string SHA1HashFromFile(this string file)
+        internal static bool CmpPublicKeyTokenWith(this string pkToken, string pkTokenAsm)
         {
-            using(var fs = File.OpenRead(file))
-            {
-                using(SHA1 sha1 = SHA1.Create()) {
-                    return BytesToHexView(sha1.ComputeHash(fs));
-                }
+            if(pkTokenAsm == null || string.IsNullOrWhiteSpace(pkToken)) {
+                return false;
             }
-        }
-
-        /// <summary>
-        /// To add postfix to filename.
-        /// </summary>
-        /// <param name="fname">Filename or path to file with extension or without.</param>
-        /// <param name="postfix"></param>
-        /// <returns></returns>
-        public static string AddFileNamePostfix(this string fname, string postfix)
-        {
-            if(String.IsNullOrWhiteSpace(fname) || String.IsNullOrWhiteSpace(postfix)) {
-                return fname;
-            }
-
-            int idx = fname.LastIndexOf('.');
-            if(idx == -1) {
-                return fname + postfix;
-            }
-
-            return fname.Insert(idx, postfix);
+            return pkToken.Equals(pkTokenAsm, StringComparison.InvariantCultureIgnoreCase);
         }
 
         /// <summary>
@@ -141,7 +112,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns></returns>
         public static string OpenDoubleQuotes(this string value)
         {
-            if(String.IsNullOrWhiteSpace(value)) {
+            if(string.IsNullOrWhiteSpace(value)) {
                 return value;
             }
 
@@ -183,31 +154,17 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <param name="path"></param>
         /// <param name="root"></param>
         /// <returns></returns>
-        public static string CombineRootPath(string path, string root)
+        private static string CombineRootPath(string path, string root)
         {
-            if(String.IsNullOrWhiteSpace(path) || Path.IsPathRooted(path)) {
+            if(string.IsNullOrWhiteSpace(path) || Path.IsPathRooted(path)) {
                 return path;
             }
 
-            if(String.IsNullOrWhiteSpace(root)) {
+            if(string.IsNullOrWhiteSpace(root)) {
                 return path;
             }
 
             return Path.Combine(root, path);
-        }
-
-        /// <summary>
-        /// To format bytes data to hex view.
-        /// </summary>
-        /// <param name="data">Bytes data.</param>
-        /// <returns>Hex view of bytes.</returns>
-        private static string BytesToHexView(byte[] data)
-        {
-            var ret = new StringBuilder();
-            foreach(byte b in data) {
-                ret.Append(b.ToString("X2"));
-            }
-            return ret.ToString();
         }
     }
 }

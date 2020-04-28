@@ -139,6 +139,8 @@ namespace net.r_eg.DllExport.Wizard
 
         public const string PRJ_DBG_TYPE = "DebugType";
 
+        public const string PRJ_CP_LOCKFILE_ASM = "CopyLocalLockFileAssemblies";
+
         public const string SLN_DIR = "SolutionDir";
     }
 }
