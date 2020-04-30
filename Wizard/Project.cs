@@ -723,8 +723,8 @@ namespace net.r_eg.DllExport.Wizard
                         label       = id
                     }
                 }, 
-                null, 
-                ".NET DllExport"
+                null,
+                DllExportVersion.DXP
             );
             return targets;
         }

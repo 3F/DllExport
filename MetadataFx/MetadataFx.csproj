@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -7,7 +7,6 @@
     <OutputType>Library</OutputType>
     <AssemblyName>DllExport</AssemblyName>
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
-    <ApplicationVersion>1.0.0.0</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>System.Runtime.InteropServices</RootNamespace>
   </PropertyGroup>
@@ -44,6 +43,7 @@
   <ItemGroup>
     <Compile Include="DllExportAttribute.cs" />
     <Compile Include="AssemblyInfo.cs" />
+    <Compile Include="..\DllExportVersion.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

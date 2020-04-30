@@ -152,7 +152,7 @@
       <DependentUpon>ProjectItemControl.cs</DependentUpon>
     </Compile>
     <Compile Include="IWizardConfig.cs" />
-    <Compile Include="WizardVersion.cs" />
+    <Compile Include="..\DllExportVersion.cs" />
     <Compile Include="DllExportCfgTask.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

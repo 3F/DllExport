@@ -48,6 +48,7 @@
     <Compile Include="PeFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\DllExportVersion.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

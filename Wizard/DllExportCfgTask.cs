@@ -266,7 +266,7 @@ namespace net.r_eg.DllExport.Wizard
                 exec.Log.Received -= OnMsg;
                 exec.Log.Received += OnMsg;
 
-                LSender.Send(this, $"vW: {WizardVersion.S_INFO}", Message.Level.Info);
+                LSender.Send(this, $"vW: {DllExportVersion.S_INFO}", Message.Level.Info);
                 PrintKeys(Message.Level.Debug);
 
                 try
