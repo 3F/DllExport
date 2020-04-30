@@ -8,7 +8,7 @@
     <AssemblyName>RGiesecke.DllExport.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
-    <RootNamespace>RGiesecke.DllExport</RootNamespace>
+    <RootNamespace>RGiesecke.DllExport.MSBuild</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -58,13 +58,20 @@
     <Compile Include="RGiesecke.DllExport.MSBuild\DllExportAppDomainIsolatedTask.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\ExportTaskImplementation.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\DllExportTask.cs" />
-    <Compile Include="RGiesecke.DllExport.MSBuild\Properties\Resources.Designer.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="..\DllExportVersion.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\IDllExportTask.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MSBuild\Properties\Resources.resx" />
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -81,7 +81,6 @@
     <Compile Include="Parsing\IlToolBase.cs" />
     <Compile Include="Parsing\ILAsm.cs" />
     <Compile Include="Parsing\ILDasm.cs" />
-    <Compile Include="Parsing\Regexes.Designer.cs" />
     <Compile Include="Parsing\Actions\IlParsingUtils.cs" />
     <Compile Include="Parsing\Actions\ExternalAssemlyDeclaration.cs" />
     <Compile Include="Parsing\Actions\ClassDeclarationParserAction.cs" />
@@ -93,7 +92,11 @@
     <Compile Include="Parsing\Actions\NormalParserAction.cs" />
     <Compile Include="Parsing\Actions\ParserStateActionAttribute.cs" />
     <Compile Include="Parsing\Actions\ParserStateValues.cs" />
-    <Compile Include="Properties\Resources.Designer.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="..\DllExportVersion.cs" />
     <Compile Include="IDllExportNotifier.cs" />
     <Compile Include="CpuPlatform.cs" />
@@ -108,9 +111,9 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Parsing\Regexes.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
