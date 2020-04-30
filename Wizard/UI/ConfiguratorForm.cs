@@ -177,16 +177,16 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             var sb = new StringBuilder();
 
-            sb.Append(".NET DllExport");
+            sb.Append(DllExportVersion.DXP);
 
 #if PUBLIC_RELEASE
-            sb.Append(" " + WizardVersion.S_INFO);
+            sb.Append(" " + DllExportVersion.S_INFO);
 #else
-            sb.Append($" - Based on {WizardVersion.S_NUM}");
+            sb.Append($" - Based on {DllExportVersion.S_NUM}");
 #endif
-            if(WizardVersion.S_REL.Length > 0)
+            if(DllExportVersion.S_REL.Length > 0)
             {
-                sb.Append($" [{WizardVersion.S_REL}]");
+                sb.Append($" [{DllExportVersion.S_REL}]");
             }
 #if DEBUG
             sb.Append(" [Debug]");

@@ -9,7 +9,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using RGiesecke.DllExport.MSBuild.Properties;
 
 namespace RGiesecke.DllExport.MSBuild
 {

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -7,15 +7,8 @@
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <ApplicationVersion>1.2.7.38851</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
-    <RootNamespace>RGiesecke.DllExport</RootNamespace>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
+    <RootNamespace>RGiesecke.DllExport.MSBuild</RootNamespace>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -65,13 +58,20 @@
     <Compile Include="RGiesecke.DllExport.MSBuild\DllExportAppDomainIsolatedTask.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\ExportTaskImplementation.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\DllExportTask.cs" />
-    <Compile Include="RGiesecke.DllExport.MSBuild\Properties\Resources.Designer.cs" />
-    <Compile Include="DllExportVersion.cs" />
+    <Compile Include="Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="..\DllExportVersion.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\IDllExportTask.cs" />
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="MSBuild\Properties\Resources.resx" />
+    <EmbeddedResource Include="Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

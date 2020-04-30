@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -7,15 +7,8 @@
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <ApplicationVersion>1.2.7.38850</ApplicationVersion>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>RGiesecke.DllExport</RootNamespace>
-    <FileUpgradeFlags>
-    </FileUpgradeFlags>
-    <UpgradeBackupLocation>
-    </UpgradeBackupLocation>
-    <OldToolsVersion>3.5</OldToolsVersion>
-    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -88,7 +81,6 @@
     <Compile Include="Parsing\IlToolBase.cs" />
     <Compile Include="Parsing\ILAsm.cs" />
     <Compile Include="Parsing\ILDasm.cs" />
-    <Compile Include="Parsing\Regexes.Designer.cs" />
     <Compile Include="Parsing\Actions\IlParsingUtils.cs" />
     <Compile Include="Parsing\Actions\ExternalAssemlyDeclaration.cs" />
     <Compile Include="Parsing\Actions\ClassDeclarationParserAction.cs" />
@@ -100,8 +92,12 @@
     <Compile Include="Parsing\Actions\NormalParserAction.cs" />
     <Compile Include="Parsing\Actions\ParserStateActionAttribute.cs" />
     <Compile Include="Parsing\Actions\ParserStateValues.cs" />
-    <Compile Include="Properties\Resources.Designer.cs" />
-    <Compile Include="DllExportVersion.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="..\DllExportVersion.cs" />
     <Compile Include="IDllExportNotifier.cs" />
     <Compile Include="CpuPlatform.cs" />
     <Compile Include="DllExportNotificationEventArgs.cs" />
@@ -115,9 +111,9 @@
     <Compile Include="AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Parsing\Regexes.resx" />
     <EmbeddedResource Include="Properties\Resources.resx">
-      <SubType>Designer</SubType>
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

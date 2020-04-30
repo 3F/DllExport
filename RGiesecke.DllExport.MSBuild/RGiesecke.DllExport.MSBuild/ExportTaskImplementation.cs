@@ -14,7 +14,6 @@ using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
 using Microsoft.Win32;
-using RGiesecke.DllExport.MSBuild.Properties;
 
 namespace RGiesecke.DllExport.MSBuild
 {
