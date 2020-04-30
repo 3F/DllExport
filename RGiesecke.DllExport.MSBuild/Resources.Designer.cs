@@ -61,6 +61,42 @@ namespace RGiesecke.DllExport.MSBuild {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {0}` is configured as `{1}`..
+        /// </summary>
+        internal static string _0_is_configured_as_1 {
+            get {
+                return ResourceManager.GetString("_0_is_configured_as_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is ignored due to {1}..
+        /// </summary>
+        internal static string _0_is_ignored_due_to_1 {
+            get {
+                return ResourceManager.GetString("_0_is_ignored_due_to_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to {0} is not configured..
+        /// </summary>
+        internal static string _0_is_not_configured {
+            get {
+                return ResourceManager.GetString("_0_is_not_configured", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Allocated item `{0}` = `{1}`..
+        /// </summary>
+        internal static string Allocated_item_0_1 {
+            get {
+                return ResourceManager.GetString("Allocated_item_0_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to {0} has not been setup..
         /// </summary>
         internal static string AssemblyRedirection_for_0_has_not_been_setup_ {
@@ -121,6 +157,15 @@ namespace RGiesecke.DllExport.MSBuild {
         internal static string Cannot_get_a_reference_to_ToolLocationHelper {
             get {
                 return ResourceManager.GetString("Cannot_get_a_reference_to_ToolLocationHelper", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Incorrect format of {0}..
+        /// </summary>
+        internal static string Incorrect_format_of_0_ {
+            get {
+                return ResourceManager.GetString("Incorrect_format_of_0_", resourceCulture);
             }
         }
         

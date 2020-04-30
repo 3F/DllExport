@@ -101,6 +101,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        public string InvokedPoint
+        {
+            get;
+            set;
+        }
+
         public string MetaLib
         {
             get;

@@ -159,4 +159,19 @@
   <data name="Cannot_find_0_" xml:space="preserve">
     <value>Cannot find '{0}'.</value>
   </data>
+  <data name="Incorrect_format_of_0_" xml:space="preserve">
+    <value>Incorrect format of {0}.</value>
+  </data>
+  <data name="Allocated_item_0_1" xml:space="preserve">
+    <value>Allocated item `{0}` = `{1}`.</value>
+  </data>
+  <data name="_0_is_configured_as_1" xml:space="preserve">
+    <value>{0}` is configured as `{1}`.</value>
+  </data>
+  <data name="_0_is_ignored_due_to_1" xml:space="preserve">
+    <value>{0} is ignored due to {1}.</value>
+  </data>
+  <data name="_0_is_not_configured" xml:space="preserve">
+    <value>{0} is not configured.</value>
+  </data>
 </root>

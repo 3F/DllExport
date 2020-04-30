@@ -7,6 +7,7 @@
     <OutputType>Library</OutputType>
     <AssemblyName>RGiesecke.DllExport.MSBuild</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <DefineConstants>NET40</DefineConstants>
     <FileAlignment>512</FileAlignment>
     <RootNamespace>RGiesecke.DllExport.MSBuild</RootNamespace>
   </PropertyGroup>
@@ -16,7 +17,7 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
     <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DefineConstants>$(DefineConstants);DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -26,8 +27,7 @@
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>
-    </DefineConstants>
+    <DefineConstants>$(DefineConstants)</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
@@ -37,6 +37,7 @@
     <AssemblyOriginatorKeyFile>..\com.github.3F.DllExport.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.Build" />
     <Reference Include="Microsoft.Build.Framework">
       <Private>True</Private>
     </Reference>
@@ -50,6 +51,10 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="IPostProcExecutor.cs" />
+    <Compile Include="PostProc.cs" />
+    <Compile Include="ExecutorLogger.cs" />
+    <Compile Include="Executor.cs" />
     <Compile Include="RGiesecke.DllExport.MSBuild\IInputRawValues.cs" />
     <Compile Include="RGiesecke.DllExport\DllExportServiceProviderExtensions.cs" />
     <Compile Include="RGiesecke.DllExport\Null.cs" />
@@ -77,6 +82,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\MvsSln\MvsSln\MvsSln.csproj">
+      <Project>{f905dfb2-2e67-4ff7-9001-924f6f2d645d}</Project>
+      <Name>MvsSln</Name>
+    </ProjectReference>
     <ProjectReference Include="..\RGiesecke.DllExport\RGiesecke.DllExport.csproj">
       <Project>{ac6947c6-0637-429a-a5f1-54447a494e6d}</Project>
       <Name>RGiesecke.DllExport</Name>

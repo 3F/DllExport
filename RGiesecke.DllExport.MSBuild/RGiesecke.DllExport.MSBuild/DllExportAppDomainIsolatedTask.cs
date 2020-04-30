@@ -330,6 +330,12 @@ namespace RGiesecke.DllExport.MSBuild
             set => _ExportTaskImplementation.SysObjRebase = value;
         }
 
+        public string InvokedPoint
+        {
+            get => _ExportTaskImplementation.InvokedPoint;
+            set => _ExportTaskImplementation.InvokedPoint = value;
+        }
+
         public string MetaLib
         {
             get {
@@ -435,7 +441,18 @@ namespace RGiesecke.DllExport.MSBuild
 
         public override bool Execute()
         {
-            return this._ExportTaskImplementation.Execute();
+            var ret = _ExportTaskImplementation.Execute();
+
+            if(string.IsNullOrEmpty(InvokedPoint))
+            {
+                Log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(PostProc), $"{nameof(InvokedPoint)} == null");
+                return ret;
+            }
+
+            using(var postproc = new PostProc(InvokedPoint, Log))
+            {
+                return postproc.Process(new Executor(Log)) && ret;
+            }
         }
 
         public object GetService(Type serviceType)
