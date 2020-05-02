@@ -161,6 +161,15 @@ namespace RGiesecke.DllExport.MSBuild {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The file `{0}` is not supported to continue {1} processing..
+        /// </summary>
+        internal static string File_0_is_not_supported_for_1 {
+            get {
+                return ResourceManager.GetString("File_0_is_not_supported_for_1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Incorrect format of {0}..
         /// </summary>
         internal static string Incorrect_format_of_0_ {

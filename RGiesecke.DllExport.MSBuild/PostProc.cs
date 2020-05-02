@@ -75,7 +75,7 @@ namespace RGiesecke.DllExport.MSBuild
             string prjfile = data[1].Trim();
 
             _sln = new Sln(slnfile, SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData);
-            Prj  = Sln.Env.Projects.FirstOrDefault(xp => xp.ProjectFullPath == prjfile);
+            Prj  = GetProject(prjfile);
 
             CallbackProperties = data.Skip(2).Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p));
 
@@ -86,6 +86,27 @@ namespace RGiesecke.DllExport.MSBuild
 
             PopulateProperties(GetDependents(Prj), (p) => $"DllExportDependents{p}");
             PopulateProperties(GetDependencies(Prj), (p) => $"DllExportDependencies{p}");
+        }
+
+        private IXProject GetProject(string file)
+        {
+            IXProject ret = Sln.Env.Projects.FirstOrDefault(p => p.ProjectFullPath == file);
+            if(ret != null)
+            {
+                return ret;
+            }
+
+            // We're working with external storage through Import section.
+            foreach(var xp in Sln.Env.Projects)
+            {
+                if(xp.Project.Imports?.Any(p => p.ImportedProject?.FullPath == file) == true)
+                {
+                    return xp;
+                }
+            }
+
+            // or not ...
+            throw new NotSupportedException(string.Format(Resources.File_0_is_not_supported_for_1, file, nameof(PostProc)));
         }
 
         /// <summary>

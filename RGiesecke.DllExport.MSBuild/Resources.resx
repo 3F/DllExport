@@ -174,4 +174,7 @@
   <data name="_0_is_not_configured" xml:space="preserve">
     <value>{0} is not configured.</value>
   </data>
+  <data name="File_0_is_not_supported_for_1" xml:space="preserve">
+    <value>The file `{0}` is not supported to continue {1} processing.</value>
+  </data>
 </root>
