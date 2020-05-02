@@ -30,7 +30,8 @@ using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 using RGiesecke.DllExport;
-using static net.r_eg.DllExport.Wizard.PreProc;
+using PostProcType = net.r_eg.DllExport.Wizard.PostProc.CmdType;
+using PreProcType = net.r_eg.DllExport.Wizard.PreProc.CmdType;
 
 namespace net.r_eg.DllExport.Wizard
 {
@@ -151,6 +152,15 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         /// <summary>
+        /// Access to Post-Processing.
+        /// </summary>
+        public PostProc PostProc
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// Adds to top new namespace into Namespaces property.
         /// </summary>
         /// <param name="ns"></param>
@@ -201,8 +211,16 @@ namespace net.r_eg.DllExport.Wizard
                 patches             = (PatchesType)GetValue(MSBuildProperties.DXP_PATCHES, xp).ToLongInteger()
             };
 
-            var cmdType = (CmdType)GetValue(MSBuildProperties.DXP_PRE_PROC_TYPE, xp).ToLongInteger();
-            PreProc = new PreProc().Configure(cmdType, GetPreProcCmd(cmdType, xp));
+            var preType = (PreProcType)GetValue(MSBuildProperties.DXP_PRE_PROC_TYPE, xp).ToLongInteger();
+            PreProc = new PreProc().Configure(preType, GetPreProcCmd(preType, xp));
+
+            var postType = (PostProcType)GetValue(MSBuildProperties.DXP_POST_PROC_TYPE, xp).ToLongInteger();
+            PostProc = new PostProc().Configure
+            (
+                postType,
+                GetPostProcEnv(postType, xp),
+                GetPostProcCmd(postType, xp)
+            );
         }
 
         public UserConfig(IConfigInitializer cfg)
@@ -255,14 +273,14 @@ namespace net.r_eg.DllExport.Wizard
             return Platform.Default;
         }
 
-        protected string GetPreProcCmd(CmdType type, IXProject xp)
+        protected string GetPreProcCmd(PreProcType type, IXProject xp)
         {
-            if((type & CmdType.ILMerge) == CmdType.ILMerge)
+            if((type & PreProcType.ILMerge) == PreProcType.ILMerge)
             {
                 return GetUnevaluatedValue(MSBuildProperties.DXP_ILMERGE, xp);
             }
 
-            if((type & CmdType.Exec) == CmdType.Exec)
+            if((type & PreProcType.Exec) == PreProcType.Exec)
             {
                 var tExec = xp?.Project.Xml?.Targets
                             .FirstOrDefault(t => t.Name == MSBuildTargets.DXP_PRE_PROC && t.Label == Project.METALIB_PK_TOKEN)?
@@ -276,6 +294,24 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             return null;
+        }
+
+        protected string GetPostProcEnv(PostProcType type, IXProject xp)
+        {
+            if(type != PostProcType.None) {
+                return GetUnevaluatedValue(MSBuildProperties.DXP_PROC_ENV, xp);
+            }
+            return null;
+        }
+
+        protected string GetPostProcCmd(PostProcType type, IXProject xp)
+        {
+            if(type == PostProcType.None) {
+                return null;
+            }
+
+            //TODO: 
+            return "...";
         }
 
         private string GetValue(string property, IXProject project)

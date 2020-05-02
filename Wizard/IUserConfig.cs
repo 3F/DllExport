@@ -86,6 +86,11 @@ namespace net.r_eg.DllExport.Wizard
         PreProc PreProc { get; set; }
 
         /// <summary>
+        /// Access to Post-Processing.
+        /// </summary>
+        PostProc PostProc { get; set; }
+
+        /// <summary>
         /// Adds to top new namespace into Namespaces property.
         /// </summary>
         /// <param name="ns"></param>

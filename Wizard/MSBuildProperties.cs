@@ -120,13 +120,25 @@ namespace net.r_eg.DllExport.Wizard
 
         /// <summary>
         /// Used Pre-Processing type.
+        /// https://github.com/3F/DllExport/pull/146
         /// </summary>
         public const string DXP_PRE_PROC_TYPE = "DllExportPreProcType";
+
+        /// <summary>
+        /// Used Post-Processing type.
+        /// https://github.com/3F/DllExport/pull/148
+        /// </summary>
+        public const string DXP_POST_PROC_TYPE = "DllExportPostProcType";
 
         /// <summary>
         /// List of modules for ILMerge if used.
         /// </summary>
         public const string DXP_ILMERGE = "DllExportILMerge";
+
+        /// <summary>
+        /// Env cfg for Post-Proc feature.
+        /// </summary>
+        public const string DXP_PROC_ENV = "DllExportProcEnv";
 
         /// <summary>
         /// Meta library full path to file.

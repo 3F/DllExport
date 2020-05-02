@@ -395,9 +395,17 @@ namespace net.r_eg.DllExport.Wizard.UI
             ));
         }
 
+        private void LoadPostProcProperties(IProject prj = null) //TODO: user choice for a specific project
+        {
+            postProcControl.LoadProperties(prj?.XProject ?? GetProject(0)?.XProject);
+        }
+
         private void UpdateRefBefore(IProject prj)
         {
+            LoadPostProcProperties(prj);
+
             preProcControl.Export(prj.Config.PreProc);
+            postProcControl.Export(prj.Config.PostProc);
             //TODO: to change processing of projectItems to this way
         }
 
@@ -409,6 +417,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             projectItems.Resume();
 
             preProcControl.Render(prj.Config.PreProc);
+            postProcControl.Render(prj.Config.PostProc);
 
             txtCfgData.Text = confFormater.Parse(prj);
         }
@@ -471,6 +480,8 @@ namespace net.r_eg.DllExport.Wizard.UI
                 btnToOnline.Visible = true;
                 txtLogUpd.SetData("You're using an offline version or such `-dxp-version actual`.");
             }
+
+            LoadPostProcProperties();
         }
 
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)

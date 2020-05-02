@@ -33,8 +33,15 @@ namespace net.r_eg.DllExport.Wizard
 
         /// <summary>
         /// Pre-Processing.
+        /// https://github.com/3F/DllExport/pull/146
         /// </summary>
         internal const string DXP_PRE_PROC = "DllExportPreProc";
+
+        /// <summary>
+        /// Post-Processing.
+        /// https://github.com/3F/DllExport/pull/148
+        /// </summary>
+        internal const string DXP_POST_PROC = RGiesecke.DllExport.MSBuild.PostProc.ENTRY_POINT;
 
         /// <summary>
         /// Post-Actions of the main Pre-Processing.

@@ -60,6 +60,7 @@
             this.tabData = new System.Windows.Forms.TabPage();
             this.labelStorage = new System.Windows.Forms.Label();
             this.txtCfgData = new System.Windows.Forms.TextBox();
+            this.tabPostProc = new System.Windows.Forms.TabPage();
             this.tabUpdating = new System.Windows.Forms.TabPage();
             this.txtLogUpd = new System.Windows.Forms.TextBox();
             this.panelUpdVerTop = new System.Windows.Forms.Panel();
@@ -72,6 +73,7 @@
             this.lnk3F = new System.Windows.Forms.LinkLabel();
             this.labelSrc = new System.Windows.Forms.Label();
             this.txtBuildInfo = new System.Windows.Forms.TextBox();
+            this.postProcControl = new net.r_eg.DllExport.Wizard.UI.Controls.PostProcControl();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).BeginInit();
             this.splitCon.Panel1.SuspendLayout();
@@ -83,6 +85,7 @@
             this.tabCfgDxp.SuspendLayout();
             this.tabPreProc.SuspendLayout();
             this.tabData.SuspendLayout();
+            this.tabPostProc.SuspendLayout();
             this.tabUpdating.SuspendLayout();
             this.panelUpdVerTop.SuspendLayout();
             this.tabBuildInfo.SuspendLayout();
@@ -297,6 +300,7 @@
             this.tabCtrl.Controls.Add(this.tabCfgDxp);
             this.tabCtrl.Controls.Add(this.tabPreProc);
             this.tabCtrl.Controls.Add(this.tabData);
+            this.tabCtrl.Controls.Add(this.tabPostProc);
             this.tabCtrl.Controls.Add(this.tabUpdating);
             this.tabCtrl.Controls.Add(this.tabBuildInfo);
             this.tabCtrl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -341,12 +345,13 @@
             this.tabPreProc.Name = "tabPreProc";
             this.tabPreProc.Size = new System.Drawing.Size(442, 230);
             this.tabPreProc.TabIndex = 4;
-            this.tabPreProc.Text = "Pre-Processing";
+            this.tabPreProc.Text = "Pre-processing";
             this.tabPreProc.UseVisualStyleBackColor = true;
             // 
             // preProcControl
             // 
             this.preProcControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.preProcControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.preProcControl.Location = new System.Drawing.Point(0, 0);
             this.preProcControl.Name = "preProcControl";
             this.preProcControl.Size = new System.Drawing.Size(442, 230);
@@ -388,6 +393,16 @@
             this.txtCfgData.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.txtCfgData.Size = new System.Drawing.Size(436, 198);
             this.txtCfgData.TabIndex = 13;
+            // 
+            // tabPostProc
+            // 
+            this.tabPostProc.Controls.Add(this.postProcControl);
+            this.tabPostProc.Location = new System.Drawing.Point(4, 25);
+            this.tabPostProc.Name = "tabPostProc";
+            this.tabPostProc.Size = new System.Drawing.Size(442, 230);
+            this.tabPostProc.TabIndex = 5;
+            this.tabPostProc.Text = "Post-processing";
+            this.tabPostProc.UseVisualStyleBackColor = true;
             // 
             // tabUpdating
             // 
@@ -534,6 +549,15 @@
             this.txtBuildInfo.Size = new System.Drawing.Size(436, 184);
             this.txtBuildInfo.TabIndex = 12;
             // 
+            // postProcControl
+            // 
+            this.postProcControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.postProcControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.postProcControl.Location = new System.Drawing.Point(0, 0);
+            this.postProcControl.Name = "postProcControl";
+            this.postProcControl.Size = new System.Drawing.Size(442, 230);
+            this.postProcControl.TabIndex = 0;
+            // 
             // ConfiguratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -563,6 +587,7 @@
             this.tabPreProc.ResumeLayout(false);
             this.tabData.ResumeLayout(false);
             this.tabData.PerformLayout();
+            this.tabPostProc.ResumeLayout(false);
             this.tabUpdating.ResumeLayout(false);
             this.tabUpdating.PerformLayout();
             this.panelUpdVerTop.ResumeLayout(false);
@@ -609,5 +634,7 @@
         private System.Windows.Forms.Label labelSrcMit;
         private System.Windows.Forms.TabPage tabPreProc;
         private Controls.PreProcControl preProcControl;
+        private System.Windows.Forms.TabPage tabPostProc;
+        private Controls.PostProcControl postProcControl;
     }
 }

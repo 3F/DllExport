@@ -18,7 +18,7 @@ namespace RGiesecke.DllExport.MSBuild
 {
     internal sealed class PostProc: IDisposable
     {
-        private const string ENTRY_POINT = "DllExportPostProc";
+        internal const string ENTRY_POINT = "DllExportPostProc";
 
         private readonly IList<string> allocatedItems = new List<string>();
         private readonly Sln _sln;
