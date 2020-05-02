@@ -13,6 +13,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Framework;
+using Microsoft.Build.Utilities;
 using Microsoft.Win32;
 
 namespace RGiesecke.DllExport.MSBuild
@@ -472,14 +473,13 @@ namespace RGiesecke.DllExport.MSBuild
                     }
                     this._Values.InferOutputFile();
                     this.ValidateKeyFiles(binaryProperties.IsSigned);
-                    using(DllExportWeaver dllExportWeaver = new DllExportWeaver((IServiceProvider)this) {
-                        Timeout = this.Timeout
-                    })
+
+                    using(var dllExportWeaver = new DllExportWeaver(this) { Timeout = Timeout })
                     {
-                        dllExportWeaver.InputValues = (IInputValues)this._ActualTask;
+                        dllExportWeaver.InputValues = _ActualTask;
                         dllExportWeaver.Run();
                     }
-                    return this._ErrorCount == 0;
+                    return ExecutePostProc(_ErrorCount == 0, _ActualTask.Log);
                 }
                 catch(Exception ex)
                 {
@@ -490,6 +490,21 @@ namespace RGiesecke.DllExport.MSBuild
                 this._LoggedMessages.Clear();
             }
             return false;
+        }
+
+        // https://github.com/3F/DllExport/pull/148
+        private bool ExecutePostProc(bool ret, TaskLoggingHelper log)
+        {
+            if(!ret || string.IsNullOrEmpty(InvokedPoint))
+            {
+                log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(PostProc), $"!{ret} || {nameof(InvokedPoint)} == null");
+                return ret;
+            }
+
+            using(var postproc = new PostProc(InvokedPoint, log))
+            {
+                return postproc.Process(new Executor(log));
+            }
         }
 
         private void OnDllWrapperNotification(object sender, DllExportNotificationEventArgs e)

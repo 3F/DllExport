@@ -439,21 +439,7 @@ namespace RGiesecke.DllExport.MSBuild
             this._ExportTaskImplementation.InferOutputFile();
         }
 
-        public override bool Execute()
-        {
-            var ret = _ExportTaskImplementation.Execute();
-
-            if(string.IsNullOrEmpty(InvokedPoint))
-            {
-                Log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(PostProc), $"{nameof(InvokedPoint)} == null");
-                return ret;
-            }
-
-            using(var postproc = new PostProc(InvokedPoint, Log))
-            {
-                return postproc.Process(new Executor(Log)) && ret;
-            }
-        }
+        public override bool Execute() => _ExportTaskImplementation.Execute();
 
         public object GetService(Type serviceType)
         {
