@@ -101,7 +101,7 @@ namespace RGiesecke.DllExport
             set;
         }
 
-        public string InvokedPoint
+        public string ProcEnv
         {
             get;
             set;

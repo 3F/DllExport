@@ -330,10 +330,10 @@ namespace RGiesecke.DllExport.MSBuild
             set => _ExportTaskImplementation.SysObjRebase = value;
         }
 
-        public string InvokedPoint
+        public string ProcEnv
         {
-            get => _ExportTaskImplementation.InvokedPoint;
-            set => _ExportTaskImplementation.InvokedPoint = value;
+            get => _ExportTaskImplementation.ProcEnv;
+            set => _ExportTaskImplementation.ProcEnv = value;
         }
 
         public string MetaLib

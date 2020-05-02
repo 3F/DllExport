@@ -264,10 +264,10 @@ namespace RGiesecke.DllExport.MSBuild
             set => _Values.SysObjRebase = value;
         }
 
-        public string InvokedPoint
+        public string ProcEnv
         {
-            get => _Values.InvokedPoint;
-            set => _Values.InvokedPoint = value;
+            get => _Values.ProcEnv;
+            set => _Values.ProcEnv = value;
         }
 
         public string MetaLib
@@ -495,13 +495,13 @@ namespace RGiesecke.DllExport.MSBuild
         // https://github.com/3F/DllExport/pull/148
         private bool ExecutePostProc(bool ret, TaskLoggingHelper log)
         {
-            if(!ret || string.IsNullOrEmpty(InvokedPoint))
+            if(!ret || string.IsNullOrEmpty(ProcEnv))
             {
-                log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(PostProc), $"!{ret} || {nameof(InvokedPoint)} == null");
+                log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(PostProc), $"!{ret} || {nameof(ProcEnv)} == null");
                 return ret;
             }
 
-            using(var postproc = new PostProc(InvokedPoint, log))
+            using(var postproc = new PostProc(ProcEnv, log))
             {
                 return postproc.Process(new Executor(log));
             }
