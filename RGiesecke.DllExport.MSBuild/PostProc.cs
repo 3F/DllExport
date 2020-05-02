@@ -57,6 +57,11 @@ namespace RGiesecke.DllExport.MSBuild
                 return true;
             }
 
+            if(!IsExistCallback(ENTRY_POINT)) {
+                log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(IPostProcExecutor), $"{ENTRY_POINT} == null");
+                return true;
+            }
+
             return executor.Execute(Prj, ENTRY_POINT, SysProperties);
         }
 
@@ -150,12 +155,16 @@ namespace RGiesecke.DllExport.MSBuild
 
         private void AllocateItem(string type, string inc)
         {
-            if(Prj.AddItem(type, inc))
+            if(!IsExistItem(type, inc) && Prj.AddItem(type, inc))
             {
                 allocatedItems.Add(type);
                 log.LogMessage(MessageImportance.Low, Resources.Allocated_item_0_1, type, inc);
             }
         }
+
+        private bool IsExistItem(string type, string inc) => Prj.GetItem(type, inc).parentProject != null;
+
+        private bool IsExistCallback(string name) => Prj.Project.Targets.ContainsKey(name) == true;
 
         private IXProject GetProjectByGuid(IEnumerable<IXProject> projects, string guid) 
             => projects?.FirstOrDefault(p => p.ProjectGuid.Guid() == guid.Guid());
