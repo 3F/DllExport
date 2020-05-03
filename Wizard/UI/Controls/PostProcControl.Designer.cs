@@ -41,10 +41,10 @@
             this.txtPostProc = new System.Windows.Forms.TextBox();
             this.listActivatedProperties = new System.Windows.Forms.ListBox();
             this.dgvProperties = new System.Windows.Forms.DataGridView();
-            this.linkAboutVsSBE = new System.Windows.Forms.LinkLabel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.linkAboutVsSBE = new System.Windows.Forms.LinkLabel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).BeginInit();
             this.SuspendLayout();
@@ -82,6 +82,7 @@
             // radioDependentProjects
             // 
             this.radioDependentProjects.AutoSize = true;
+            this.radioDependentProjects.Checked = true;
             this.radioDependentProjects.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.radioDependentProjects.Location = new System.Drawing.Point(3, 3);
             this.radioDependentProjects.Name = "radioDependentProjects";
@@ -123,7 +124,6 @@
             this.radioCustom.Name = "radioCustom";
             this.radioCustom.Size = new System.Drawing.Size(111, 17);
             this.radioCustom.TabIndex = 38;
-            this.radioCustom.TabStop = true;
             this.radioCustom.Text = "Custom Post-Proc:";
             this.toolTip.SetToolTip(this.radioCustom, "Not implemented for this version");
             this.radioCustom.UseVisualStyleBackColor = true;
@@ -136,7 +136,6 @@
             this.radioPostProcDisabled.Name = "radioPostProcDisabled";
             this.radioPostProcDisabled.Size = new System.Drawing.Size(167, 17);
             this.radioPostProcDisabled.TabIndex = 37;
-            this.radioPostProcDisabled.TabStop = true;
             this.radioPostProcDisabled.Text = "Disabled /Runtime alternative:";
             this.radioPostProcDisabled.UseVisualStyleBackColor = true;
             // 
@@ -199,17 +198,6 @@
             this.dgvProperties.StandardTab = true;
             this.dgvProperties.TabIndex = 33;
             // 
-            // linkAboutVsSBE
-            // 
-            this.linkAboutVsSBE.AutoSize = true;
-            this.linkAboutVsSBE.Location = new System.Drawing.Point(330, 27);
-            this.linkAboutVsSBE.Name = "linkAboutVsSBE";
-            this.linkAboutVsSBE.Size = new System.Drawing.Size(107, 13);
-            this.linkAboutVsSBE.TabIndex = 32;
-            this.linkAboutVsSBE.TabStop = true;
-            this.linkAboutVsSBE.Text = "vsSolutionBuildEvent";
-            this.linkAboutVsSBE.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAboutVsSBE_LinkClicked);
-            // 
             // colName
             // 
             this.colName.HeaderText = "Name";
@@ -223,6 +211,17 @@
             this.colValue.HeaderText = "Value";
             this.colValue.Name = "colValue";
             this.colValue.ReadOnly = true;
+            // 
+            // linkAboutVsSBE
+            // 
+            this.linkAboutVsSBE.AutoSize = true;
+            this.linkAboutVsSBE.Location = new System.Drawing.Point(330, 27);
+            this.linkAboutVsSBE.Name = "linkAboutVsSBE";
+            this.linkAboutVsSBE.Size = new System.Drawing.Size(107, 13);
+            this.linkAboutVsSBE.TabIndex = 32;
+            this.linkAboutVsSBE.TabStop = true;
+            this.linkAboutVsSBE.Text = "vsSolutionBuildEvent";
+            this.linkAboutVsSBE.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAboutVsSBE_LinkClicked);
             // 
             // PostProcControl
             // 

@@ -32,9 +32,8 @@ namespace net.r_eg.DllExport.Wizard
     /// </summary>
     public sealed class PostProc
     {
-        private const string ENV_SLN    = "$(SolutionPath)";
-        private const string ENV_PRJ    = "$(MSBuildThisFileFullPath)";
-        private const string DEF_TDIR   = "TargetDir";
+        private const string ENV_SLN    = "$(" + MSBuildProperties.SLN_PATH + ")";
+        private const string ENV_PRJ    = "$(" + MSBuildProperties.MSB_THIS_FULL_FPATH + ")";
 
         [System.Flags]
         public enum CmdType: long
@@ -105,7 +104,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private IList<string> InitProcEnv(CmdType type, IEnumerable<string> env)
         {
-            var ret = new List<string>(env.Count() + 2);
+            var ret = new List<string>(env.Count() + 3);
 
             if(!env.Contains(ENV_SLN)) {
                 ret.Add(ENV_SLN);
@@ -117,8 +116,8 @@ namespace net.r_eg.DllExport.Wizard
 
             if((type & (CmdType.DependentX86X64 | CmdType.DependentIntermediateFiles)) != 0)
             {
-                if(!env.Contains(DEF_TDIR)) {
-                    ret.Add(DEF_TDIR);
+                if(!env.Contains(MSBuildProperties.PRJ_TARGET_DIR)) {
+                    ret.Add(MSBuildProperties.PRJ_TARGET_DIR);
                 }
             }
 

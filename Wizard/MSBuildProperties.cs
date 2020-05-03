@@ -154,5 +154,9 @@ namespace net.r_eg.DllExport.Wizard
         public const string PRJ_CP_LOCKFILE_ASM = "CopyLocalLockFileAssemblies";
 
         public const string SLN_DIR = "SolutionDir";
+
+        public const string SLN_PATH = "SolutionPath";
+
+        public const string MSB_THIS_FULL_FPATH = "MSBuildThisFileFullPath";
     }
 }

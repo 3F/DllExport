@@ -24,7 +24,6 @@
 
 using System;
 using Microsoft.Build.Construction;
-using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 using static net.r_eg.DllExport.Wizard.PostProc;
 
@@ -35,7 +34,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private readonly IProjectSvc prj;
 
         private IUserConfig Config => prj.Config;
-        private IXProject XProject => prj.XProject;
         private ISender Log => Config.Log;
 
         public void Install() => CfgPostProc();

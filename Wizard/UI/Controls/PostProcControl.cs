@@ -64,7 +64,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         internal void LoadProperties(IXProject project)
         {
             dgvProperties.Rows.Clear();
-            project?.GetProperties().ForEach(p => dgvProperties.Rows.Add(p.name, p.unevaluatedValue));
+            project?.GetProperties().ForEach(p => dgvProperties.Rows.Add(p.name, p.evaluatedValue));
         }
 
         public PostProcControl() => InitializeComponent();
@@ -88,10 +88,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             CmdType ret = CmdType.None;
 
-            if(radioCustom.Checked) { ret = CmdType.Custom; }
-            if(radioDependentProjects.Checked) { ret = CmdType.Predefined; }
+            if(radioCustom.Checked)             { ret = CmdType.Custom; }
+            if(radioDependentProjects.Checked)  { ret = CmdType.Predefined; }
 
-            if(chkX86X64.Checked) { ret |= CmdType.DependentX86X64; }
+            if(chkX86X64.Checked)            { ret |= CmdType.DependentX86X64; }
             if(chkIntermediateFiles.Checked) { ret |= CmdType.DependentIntermediateFiles; }
 
             return ret;
@@ -100,7 +100,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private void SetProcEnv(IEnumerable<string> env)
         {
             listActivatedProperties.Items.Clear();
-            listActivatedProperties.Items.AddRange(env.Skip(/*sln;prj*/2).ToArray());
+            listActivatedProperties.Items.AddRange(env.Skip(RGiesecke.DllExport.MSBuild.PostProc.OFS_ENV_PROP).ToArray());
         }
 
         private IEnumerable<string> GetProcEnv()
@@ -110,12 +110,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void SetUIDependentProjects(bool activated)
         {
-            chkX86X64.Enabled = activated;
-            chkIntermediateFiles.Enabled = activated;
+            chkX86X64.Enabled = chkIntermediateFiles.Enabled = activated;
 
-            if(!activated) {
-                chkX86X64.Checked = chkIntermediateFiles.Checked = false;
-            }
+            if(!activated) chkX86X64.Checked = chkIntermediateFiles.Checked = false;
         }
 
         private void radioDependentProjects_CheckedChanged(object sender, EventArgs e) => SetUIDependentProjects(radioDependentProjects.Checked);

@@ -20,6 +20,11 @@ namespace RGiesecke.DllExport.MSBuild
     {
         internal const string ENTRY_POINT = "DllExportPostProc";
 
+        /// <summary>
+        /// Offset to CallbackProperties.
+        /// </summary>
+        internal const int OFS_ENV_PROP = 2; // sln;prj;...
+
         private readonly IList<string> allocatedItems = new List<string>();
         private readonly Sln _sln;
         private readonly TaskLoggingHelper log;
@@ -72,7 +77,7 @@ namespace RGiesecke.DllExport.MSBuild
             this.log = log ?? throw new ArgumentNullException(nameof(log));
             var data = (raw ?? throw new ArgumentNullException(nameof(raw))).Split(';');
 
-            if(data.Length < 2) {
+            if(data.Length < OFS_ENV_PROP) {
                 throw new ArgumentException(string.Format(Resources.Incorrect_format_of_0_, "sln;prj"));
             }
 
@@ -82,7 +87,7 @@ namespace RGiesecke.DllExport.MSBuild
             _sln = new Sln(slnfile, SlnItems.ProjectDependenciesXml | SlnItems.LoadMinimalDefaultData);
             Prj  = GetProject(prjfile);
 
-            CallbackProperties = data.Skip(2).Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p));
+            CallbackProperties = data.Skip(OFS_ENV_PROP).Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p));
 
             AllocateItem("DllExportDirX64", @"$(TargetDir)x64\*.*");
             AllocateItem("DllExportDirX86", @"$(TargetDir)x86\*.*");
