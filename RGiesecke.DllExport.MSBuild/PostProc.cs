@@ -70,6 +70,10 @@ namespace RGiesecke.DllExport.MSBuild
             return executor.Execute(Prj, ENTRY_POINT, SysProperties);
         }
 
+        internal static string GetNameForDependentsProperty(string name) => $"DllExportDependents{name}";
+
+        internal static string GetNameForDependenciesProperty(string name) => $"DllExportDependencies{name}";
+
         /// <param name="raw">$(SolutionPath);$(MSBuildThisFileFullPath);...CallbackProperties...</param>
         /// <param name="log"></param>
         public PostProc(string raw, TaskLoggingHelper log)
@@ -94,8 +98,8 @@ namespace RGiesecke.DllExport.MSBuild
             AllocateItem("DllExportDirBefore", @"$(TargetDir)Before\*.*");
             AllocateItem("DllExportDirAfter", @"$(TargetDir)After\*.*");
 
-            PopulateProperties(GetDependents(Prj), (p) => $"DllExportDependents{p}");
-            PopulateProperties(GetDependencies(Prj), (p) => $"DllExportDependencies{p}");
+            PopulateProperties(GetDependents(Prj), p => GetNameForDependentsProperty(p));
+            PopulateProperties(GetDependencies(Prj), p => GetNameForDependenciesProperty(p));
         }
 
         private IXProject GetProject(string file)

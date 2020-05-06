@@ -26,6 +26,7 @@ using System;
 using Microsoft.Build.Construction;
 using net.r_eg.MvsSln.Log;
 using static net.r_eg.DllExport.Wizard.PostProc;
+using MSBuildPostProc = RGiesecke.DllExport.MSBuild.PostProc;
 
 namespace net.r_eg.DllExport.Wizard.Gears
 {
@@ -36,9 +37,15 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private IUserConfig Config => prj.Config;
         private ISender Log => Config.Log;
 
+        private string DependentsTargetDir => MSBuildPostProc.GetNameForDependentsProperty(MSBuildProperties.PRJ_TARGET_DIR);
+
         public void Install() => CfgPostProc();
 
-        public void Uninstall(bool hardReset) => RemovePostProcTarget(hardReset);
+        public void Uninstall(bool hardReset)
+        {
+            RemoveDerivativeTargets();
+            RemovePostProcTarget();
+        }
 
         public PostProcGear(IProjectSvc prj)
         {
@@ -68,25 +75,47 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 Log.send(this, $"Post-Processing Custom type is not fully implemented: {type}", Message.Level.Warn);
                 return;
             }
-            
+
+            if((type & (CmdType.DependentX86X64 | CmdType.DependentIntermediateFiles)) != 0)
+            {
+                CfgDepPostProc(AddRecursiveDependentsFor(MSBuildProperties.PRJ_TARGET_DIR), type);
+            }
+        }
+
+        private void CfgDepPostProc(ProjectTargetElement dep, CmdType type)
+        {
             if((type & CmdType.DependentX86X64) == CmdType.DependentX86X64)
             {
-                AddTaskForX86X64(target, 86);
-                AddTaskForX86X64(target, 64);
+                AddTaskForX86X64(dep, 86);
+                AddTaskForX86X64(dep, 64);
             }
 
             if((type & CmdType.DependentIntermediateFiles) == CmdType.DependentIntermediateFiles)
             {
-                AddTasksIntermediateFiles(target, "Before");
-                AddTasksIntermediateFiles(target, "After");
+                AddTasksIntermediateFiles(dep, "Before");
+                AddTasksIntermediateFiles(dep, "After");
             }
+        }
+
+        /// <summary>
+        /// https://github.com/3F/DllExport/pull/148#issuecomment-624021746
+        /// </summary>
+        private ProjectTargetElement AddRecursiveDependentsFor(string id)
+        {
+            var target = AllocateDerivativeTarget("For" + id);
+
+            target.AfterTargets = MSBuildTargets.DXP_POST_PROC;
+            target.Label        = Project.METALIB_PK_TOKEN;
+            target.Outputs      = $"%({MSBuildPostProc.GetNameForDependentsProperty(id)}.Identity)";
+
+            return target;
         }
 
         private void AddTaskForX86X64(ProjectTargetElement target, int arch)
         {
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"@(DllExportDirX{arch})");
-            tCopy.SetParameter("DestinationFolder", $@"@(DllExportDependentsTargetDir->'%(Identity)x{arch}\')");
+            tCopy.SetParameter("DestinationFolder", $@"%({DependentsTargetDir}.Identity)x{arch}\");
             tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
         }
 
@@ -94,14 +123,34 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"@(DllExportDir{dir})");
-            tCopy.SetParameter("DestinationFolder", $@"@(DllExportDependentsTargetDir->'%(Identity){dir}\')");
+            tCopy.SetParameter("DestinationFolder", $@"%({DependentsTargetDir}.Identity){dir}\");
             tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
         }
 
-        private void RemovePostProcTarget(bool _)
+        private ProjectTargetElement AllocateDerivativeTarget(string name) => prj.AddTarget(GetDerivativeTargetName(name));
+
+        private void RemovePostProcTarget()
         {
             Log.send(this, $"Trying to remove post-proc-target `{MSBuildTargets.DXP_POST_PROC}`");
             while(prj.RemoveXmlTarget(MSBuildTargets.DXP_POST_PROC)) { }
         }
+
+        private void RemoveDerivativeTargets()
+        {
+            foreach(var target in prj.XProject.Project.Xml.Targets)
+            {
+                if(target.Label != Project.METALIB_PK_TOKEN
+                    || target.Name == MSBuildTargets.DXP_POST_PROC
+                    || !target.Name.StartsWith(GetDerivativeTargetName(null)))
+                {
+                    continue;
+                }
+
+                Log.send(this, $"Remove derivative post-proc target `{target.Name}`", Message.Level.Trace);
+                while(prj.RemoveXmlTarget(target.Name)) { }
+            }
+        }
+
+        private string GetDerivativeTargetName(string name) => $"{MSBuildTargets.DXP_POST_PROC}{name}";
     }
 }
