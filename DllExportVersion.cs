@@ -6,7 +6,7 @@ namespace net.r_eg.DllExport
 
     internal struct DllExportVersion
     {
-        public const string S_NUM = "1.7.0";
+        public const string S_NUM = "1.7.1";
         public const string S_REV = "0";
         public const string S_REL = "";
 

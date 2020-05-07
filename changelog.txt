@@ -2,6 +2,98 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7.1] 2020.05.07
+
+    * NEW: Pre-Processing feature. PR #146.
+           Related issue #40
+           
+           Official ILMerge support;
+           https://github.com/dotnet/ILMerge
+           
+           Quick integration with Conari for most easy access to unmanaged features;
+           https://github.com/3F/Conari
+           
+           +Other related tools and assembly manipulations.
+           Manual configuring: https://github.com/3F/DllExport/issues/40#issuecomment-593147220
+           
+    * NEW: Post-Processing. PR #148.
+           Continues direction of Pre-Processing feature. PR #146
+           Related issue #144
+           
+           Explanation and details:
+           https://ko-fi.com/Blog/Post/ILMerge---Conari---Debug-information---DllExport-=-O5O61MV8A
+    
+           1.7.1 Provides only basic GUI support for predefined options. Thus,
+
+            *! Some Post-Proc features are not yet available in GUI. 
+            But you can already configure it with msbuild:
+            ```
+            <Target Name="DllExportPostProc">
+
+                <!-- After activation, you can access the following properties and items:
+                
+                $(DllExport)     - version
+                $(DllExportSln)  - full path to .sln which controls current project
+                $(DllExportPrj)  - full path to current project where processed .NET DllExport
+                
+                @(DllExportDirX64)    - $(TargetDir)x64\*.*
+                @(DllExportDirX86)    - $(TargetDir)x86\*.*
+                @(DllExportDirBefore) - $(TargetDir)Before\*.*
+                @(DllExportDirAfter)  - $(TargetDir)After\*.*
+                
+                @(DllExportDependents + populated property name) 
+                   - each populated properties from DllExportProcEnv, 
+                      e.g. DllExportDependentsTargetDir
+                      
+                @(DllExportDependencies + populated property name) 
+                  - each populated properties from DllExportProcEnv, 
+                      e.g. DllExportDependenciesTargetDir
+                      
+                @(DllExportSeqDependents + populated property name) 
+                   - each populated properties from DllExportProcEnv, 
+                      e.g. DllExportSeqDependentsTargetDir
+                      
+                -->
+
+            </Target>
+            ```
+            https://github.com/3F/DllExport/pull/148#issuecomment-622115091
+            
+    * NEW: Optional copying of intermediate files + x86+x64 directories into output 
+               for projects that dependent on projects where used DllExport. Issue #144.
+               
+               Including sequential referencing through other projects:
+               https://github.com/3F/DllExport/pull/148#issuecomment-625193408
+    
+    * FIXED: Fixed #140 ... failed to create safe SSL/TLS context.
+    
+    * FIXED: Pack of fixes for .net.dllexport.targets. PR #147.
+    
+            * Fixed "Cannot modify an evaluated object originating in an imported file".
+            * Fixed possible duplication in .net.dllexport.targets when configuring.
+            * Adds removing TargetsFile if not used.
+            * Fixed possible loss of settings in .targets when configuring.
+    
+    * FIXED: Fixed #143 'Microsoft.NET.Sdk' specified could not be found.
+    
+    * FIXED: A multiple empty `<PropertyGroup />` in project files during new configuration.
+    
+    * CHANGED: Wizard. Dropped support for ssl3 + tls1.0 + tls1.1
+    
+    * CHANGED: Wizard. Simplified notification for stable versions.
+
+    * CHANGED: Manager. Access to hMSBuild tool (packed) via `-hMSBuild` key.
+                        https://github.com/3F/hMSBuild
+                        Since it uses packed version (while GetNuTool is integrated inside), 
+                        you need use -dxp-version to control specific version.
+                        
+    * CHANGED: Updated Cecil 0.11.2
+               https://github.com/jbevain/cecil/releases/tag/0.11.2
+    
+    * CHANGED: Updated MvsSln 2.5.2
+               https://github.com/3F/MvsSln/releases/tag/2.5.2
+
+
 [v1.7] 2020.01.31
 
     * NEW: .NET Core based projects support. 
