@@ -139,5 +139,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
                 }
             }
         }
+
+        internal static void ForegroundAction(this Form ctrl, Action<Form> act = null)
+        {
+            ctrl.TopMost = false;
+            act?.Invoke(ctrl);
+            ctrl.TopMost = true;
+        }
     }
 }
