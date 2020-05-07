@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.chkSeqDep = new System.Windows.Forms.CheckBox();
             this.linkAboutDependent = new System.Windows.Forms.LinkLabel();
             this.radioDependentProjects = new System.Windows.Forms.RadioButton();
             this.linkAboutPostProc = new System.Windows.Forms.LinkLabel();
@@ -51,6 +52,7 @@
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.chkSeqDep);
             this.panelMain.Controls.Add(this.linkAboutDependent);
             this.panelMain.Controls.Add(this.radioDependentProjects);
             this.panelMain.Controls.Add(this.linkAboutPostProc);
@@ -67,6 +69,18 @@
             this.panelMain.Name = "panelMain";
             this.panelMain.Size = new System.Drawing.Size(442, 230);
             this.panelMain.TabIndex = 32;
+            // 
+            // chkSeqDep
+            // 
+            this.chkSeqDep.AutoSize = true;
+            this.chkSeqDep.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.chkSeqDep.Location = new System.Drawing.Point(142, 3);
+            this.chkSeqDep.Name = "chkSeqDep";
+            this.chkSeqDep.Size = new System.Drawing.Size(36, 17);
+            this.chkSeqDep.TabIndex = 43;
+            this.chkSeqDep.Text = "++";
+            this.toolTip.SetToolTip(this.chkSeqDep, "Including sequential referencing through other projects.");
+            this.chkSeqDep.UseVisualStyleBackColor = true;
             // 
             // linkAboutDependent
             // 
@@ -86,10 +100,10 @@
             this.radioDependentProjects.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.radioDependentProjects.Location = new System.Drawing.Point(3, 3);
             this.radioDependentProjects.Name = "radioDependentProjects";
-            this.radioDependentProjects.Size = new System.Drawing.Size(179, 17);
+            this.radioDependentProjects.Size = new System.Drawing.Size(133, 17);
             this.radioDependentProjects.TabIndex = 41;
             this.radioDependentProjects.TabStop = true;
-            this.radioDependentProjects.Text = "Post-Proc for dependent projects";
+            this.radioDependentProjects.Text = "For dependent projects";
             this.radioDependentProjects.UseVisualStyleBackColor = true;
             this.radioDependentProjects.CheckedChanged += new System.EventHandler(this.radioDependentProjects_CheckedChanged);
             // 
@@ -255,5 +269,6 @@
         private System.Windows.Forms.ToolTip toolTip;
         private System.Windows.Forms.DataGridViewTextBoxColumn colName;
         private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
+        private System.Windows.Forms.CheckBox chkSeqDep;
     }
 }

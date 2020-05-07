@@ -37,8 +37,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private IUserConfig Config => prj.Config;
         private ISender Log => Config.Log;
 
-        private string DependentsTargetDir => MSBuildPostProc.GetNameForDependentsProperty(MSBuildProperties.PRJ_TARGET_DIR);
-
         public void Install() => CfgPostProc();
 
         public void Uninstall(bool hardReset)
@@ -78,7 +76,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & (CmdType.DependentX86X64 | CmdType.DependentIntermediateFiles)) != 0)
             {
-                CfgDepPostProc(AddRecursiveDependentsFor(MSBuildProperties.PRJ_TARGET_DIR), type);
+                CfgDepPostProc(AddRecursiveDependentsFor(MSBuildProperties.PRJ_TARGET_DIR, type), type);
             }
         }
 
@@ -86,48 +84,56 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             if((type & CmdType.DependentX86X64) == CmdType.DependentX86X64)
             {
-                AddTaskForX86X64(dep, 86);
-                AddTaskForX86X64(dep, 64);
+                AddTaskForX86X64(dep, type, 86);
+                AddTaskForX86X64(dep, type, 64);
             }
 
             if((type & CmdType.DependentIntermediateFiles) == CmdType.DependentIntermediateFiles)
             {
-                AddTasksIntermediateFiles(dep, "Before");
-                AddTasksIntermediateFiles(dep, "After");
+                AddTasksIntermediateFiles(dep, type, "Before");
+                AddTasksIntermediateFiles(dep, type, "After");
             }
         }
 
         /// <summary>
         /// https://github.com/3F/DllExport/pull/148#issuecomment-624021746
         /// </summary>
-        private ProjectTargetElement AddRecursiveDependentsFor(string id)
+        private ProjectTargetElement AddRecursiveDependentsFor(string id, CmdType type)
         {
             var target = AllocateDerivativeTarget("For" + id);
 
             target.AfterTargets = MSBuildTargets.DXP_POST_PROC;
             target.Label        = Project.METALIB_PK_TOKEN;
-            target.Outputs      = $"%({MSBuildPostProc.GetNameForDependentsProperty(id)}.Identity)";
+            target.Outputs      = $"%({GetDependentsTargetDir(type)}.Identity)";
 
             return target;
         }
 
-        private void AddTaskForX86X64(ProjectTargetElement target, int arch)
+        private void AddTaskForX86X64(ProjectTargetElement target, CmdType type, int arch)
         {
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"@(DllExportDirX{arch})");
-            tCopy.SetParameter("DestinationFolder", $@"%({DependentsTargetDir}.Identity)x{arch}\");
+            tCopy.SetParameter("DestinationFolder", $@"%({GetDependentsTargetDir(type)}.Identity)x{arch}\");
             tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
         }
 
-        private void AddTasksIntermediateFiles(ProjectTargetElement target, string dir)
+        private void AddTasksIntermediateFiles(ProjectTargetElement target, CmdType type, string dir)
         {
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"@(DllExportDir{dir})");
-            tCopy.SetParameter("DestinationFolder", $@"%({DependentsTargetDir}.Identity){dir}\");
+            tCopy.SetParameter("DestinationFolder", $@"%({GetDependentsTargetDir(type)}.Identity){dir}\");
             tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
         }
 
         private ProjectTargetElement AllocateDerivativeTarget(string name) => prj.AddTarget(GetDerivativeTargetName(name));
+
+        private string GetDependentsTargetDir(CmdType type)
+        {
+            if((type & CmdType.SeqDependentForSys) == CmdType.SeqDependentForSys) {
+                return MSBuildPostProc.GetNameForSeqDependentsProperty(MSBuildProperties.PRJ_TARGET_DIR);
+            }
+            return MSBuildPostProc.GetNameForDependentsProperty(MSBuildProperties.PRJ_TARGET_DIR);
+        }
 
         private void RemovePostProcTarget()
         {

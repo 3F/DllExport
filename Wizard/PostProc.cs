@@ -38,15 +38,17 @@ namespace net.r_eg.DllExport.Wizard
         [System.Flags]
         public enum CmdType: long
         {
-            None = 0x0,
+            None,
 
-            Custom = 0x1,
+            Custom                      = 0x1,
 
-            Predefined = 0x2,
+            Predefined                  = 0x2,
 
-            DependentX86X64 = 0x4,
+            DependentX86X64             = 0x4,
 
-            DependentIntermediateFiles = 0x8,
+            DependentIntermediateFiles  = 0x8,
+
+            SeqDependentForSys          = 0x10,
         }
 
         /// <summary>

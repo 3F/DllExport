@@ -72,6 +72,8 @@ namespace RGiesecke.DllExport.MSBuild
 
         internal static string GetNameForDependentsProperty(string name) => $"DllExportDependents{name}";
 
+        internal static string GetNameForSeqDependentsProperty(string name) => $"DllExportSeqDependents{name}";
+
         internal static string GetNameForDependenciesProperty(string name) => $"DllExportDependencies{name}";
 
         /// <param name="raw">$(SolutionPath);$(MSBuildThisFileFullPath);...CallbackProperties...</param>
@@ -99,6 +101,7 @@ namespace RGiesecke.DllExport.MSBuild
             AllocateItem("DllExportDirAfter", @"$(TargetDir)After\*.*");
 
             PopulateProperties(GetDependents(Prj), p => GetNameForDependentsProperty(p));
+            PopulateProperties(GetSeqDependents(Prj), p => GetNameForSeqDependentsProperty(p));
             PopulateProperties(GetDependencies(Prj), p => GetNameForDependenciesProperty(p));
         }
 
@@ -125,6 +128,11 @@ namespace RGiesecke.DllExport.MSBuild
 
         /// <summary>
         /// Get projects that depend on the specified project.
+        /// 
+        /// https://github.com/3F/DllExport/pull/148#issuecomment-624831606
+        /// ProjectC -} ProjectA + ProjectB
+        /// ProjectB -} ProjectA
+        /// ...
         /// </summary>
         /// <param name="project"></param>
         /// <returns></returns>
@@ -132,7 +140,7 @@ namespace RGiesecke.DllExport.MSBuild
         {
             foreach(var dep in Sln.ProjectDependencies.Dependencies)
             {
-                if(dep.Value.Any(g => g == project.ProjectGuid))
+                if(dep.Value.Any(g => g.Guid() == project.ProjectGuid.Guid()))
                 {
                     var prj = GetProjectByGuid(Sln.Env.Projects, dep.Key);
                     if(prj != null) yield return prj;
@@ -151,6 +159,41 @@ namespace RGiesecke.DllExport.MSBuild
             {
                 var prj = GetProjectByGuid(Sln.Env.Projects, pguid);
                 if(prj != null) yield return prj;
+            }
+        }
+
+        /// <summary>
+        /// Get projects that depend on the specified project.
+        /// Including sequential referencing through other projects.
+        /// 
+        /// https://github.com/3F/DllExport/pull/148#issuecomment-624831606
+        /// ProjectC -} ProjectA + ProjectB
+        /// ProjectB -} ProjectA
+        /// ...
+        /// +
+        /// ... ProjectC -} ProjectB -} ProjectA
+        /// </summary>
+        /// <param name="project"></param>
+        /// <returns></returns>
+        private IEnumerable<IXProject> GetSeqDependents(IXProject project)
+        {
+            bool GetSeqDependents(HashSet<string> dep)
+            {
+                foreach(var prj in dep)
+                {
+                    if(prj.Guid() == project.ProjectGuid.Guid()) return true;
+                    if(GetSeqDependents(Sln.ProjectDependencies.Dependencies[prj])) return true;
+                }
+                return false;
+            }
+
+            foreach(var dep in Sln.ProjectDependencies.Dependencies)
+            {
+                if(GetSeqDependents(dep.Value))
+                {
+                    var prj = GetProjectByGuid(Sln.Env.Projects, dep.Key);
+                    if(prj != null) yield return prj;
+                }
             }
         }
 

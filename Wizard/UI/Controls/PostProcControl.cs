@@ -80,8 +80,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if((type & CmdType.Custom) == CmdType.Custom) { radioCustom.Checked = true; }
             if((type & CmdType.Predefined) == CmdType.Predefined) { radioDependentProjects.Checked = true; }
 
-            chkX86X64.Checked = ((type & CmdType.DependentX86X64) == CmdType.DependentX86X64);
-            chkIntermediateFiles.Checked = ((type & CmdType.DependentIntermediateFiles) == CmdType.DependentIntermediateFiles);
+            chkX86X64.Checked               = ((type & CmdType.DependentX86X64) == CmdType.DependentX86X64);
+            chkIntermediateFiles.Checked    = ((type & CmdType.DependentIntermediateFiles) == CmdType.DependentIntermediateFiles);
+            chkSeqDep.Checked               = ((type & CmdType.SeqDependentForSys) == CmdType.SeqDependentForSys);
         }
 
         private CmdType GetCmdType()
@@ -91,8 +92,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(radioCustom.Checked)             { ret = CmdType.Custom; }
             if(radioDependentProjects.Checked)  { ret = CmdType.Predefined; }
 
-            if(chkX86X64.Checked)            { ret |= CmdType.DependentX86X64; }
-            if(chkIntermediateFiles.Checked) { ret |= CmdType.DependentIntermediateFiles; }
+            if(chkX86X64.Checked)               { ret |= CmdType.DependentX86X64; }
+            if(chkIntermediateFiles.Checked)    { ret |= CmdType.DependentIntermediateFiles; }
+            if(chkSeqDep.Checked)               { ret |= CmdType.SeqDependentForSys; }
 
             return ret;
         }
@@ -110,7 +112,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void SetUIDependentProjects(bool activated)
         {
-            chkX86X64.Enabled = chkIntermediateFiles.Enabled = activated;
+            chkX86X64.Enabled = chkIntermediateFiles.Enabled = chkSeqDep.Enabled = activated;
 
             if(!activated) chkX86X64.Checked = chkIntermediateFiles.Checked = false;
         }
