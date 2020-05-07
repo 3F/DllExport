@@ -685,15 +685,18 @@ namespace net.r_eg.DllExport.Wizard
             return false;
         }
 
+        protected static void RemoveEmptyPropertyGroups(IXProject xp) 
+            => xp?.Project.Xml.PropertyGroups.ToArray()
+                                .Where(p => p.Properties.Count < 1)
+                                .ForEach(p => p.Parent?.RemoveChild(p));
+
         protected void RemoveProperties(params string[] names)
         {
             foreach(string name in names)
             {
-                if(!string.IsNullOrWhiteSpace(name)) {
-                    // Log.send(this, $"'{ProjectPath}' Remove old properties: '{name}'", Message.Level.Trace);
-                    while(XProject.RemoveProperty(name, true)) { }
-                }
+                if(!string.IsNullOrWhiteSpace(name)) while(XProject.RemoveProperty(name, true)) { }
             }
+            RemoveEmptyPropertyGroups(XProject); //TODO: id for our group
         }
 
         /// <summary>
