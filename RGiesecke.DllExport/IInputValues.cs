@@ -98,6 +98,12 @@ namespace RGiesecke.DllExport
             set;
         }
 
+        string ProcEnv
+        {
+            get;
+            set;
+        }
+
         string MetaLib
         {
             get;

@@ -83,6 +83,7 @@
           KeyContainer="$(DllExportKeyContainer)"
           KeyFile="$(DllExportKeyFile)"
           ProjectDirectory="$(DllExportProjectDirectory)"
+          ProcEnv="$(DllExportProcEnv)"
           InputFileName="$(DllExportInputFileName)"
           FrameworkPath="$(DllExportFrameworkPath)"
           VsDevCmd="$(DllExportVsDevCmd)"

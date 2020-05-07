@@ -109,7 +109,7 @@ namespace net.r_eg.DllExport.Wizard
                 (
                     GetTStoragePath(out string dir), 
                     dir, 
-                    Config
+                    this
                 );
                 return _targetsFile;
             }

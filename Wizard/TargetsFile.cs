@@ -107,13 +107,13 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        public TargetsFile(string file, string rootpath, IWizardConfig cfg)
-            : this(file, rootpath, cfg.Type)
+        public TargetsFile(string file, string rootpath, IConfigInitializer ini)
+            : this(file, rootpath, ini.Config.Type)
         {
-            Config = new UserConfig(cfg);
+            Config = new UserConfig(ini);
         }
 
-        public TargetsFile(string file, string rootpath, ActionType type)
+        protected TargetsFile(string file, string rootpath, ActionType type)
             : base(type == ActionType.Recover ? new XProject(file) : new XProject())
         {
             this.rootpath = rootpath;

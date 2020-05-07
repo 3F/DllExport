@@ -330,6 +330,12 @@ namespace RGiesecke.DllExport.MSBuild
             set => _ExportTaskImplementation.SysObjRebase = value;
         }
 
+        public string ProcEnv
+        {
+            get => _ExportTaskImplementation.ProcEnv;
+            set => _ExportTaskImplementation.ProcEnv = value;
+        }
+
         public string MetaLib
         {
             get {
@@ -433,10 +439,7 @@ namespace RGiesecke.DllExport.MSBuild
             this._ExportTaskImplementation.InferOutputFile();
         }
 
-        public override bool Execute()
-        {
-            return this._ExportTaskImplementation.Execute();
-        }
+        public override bool Execute() => _ExportTaskImplementation.Execute();
 
         public object GetService(Type serviceType)
         {

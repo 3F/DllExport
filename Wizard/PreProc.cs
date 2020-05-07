@@ -24,6 +24,9 @@
 
 namespace net.r_eg.DllExport.Wizard
 {
+    /// <summary>
+    /// https://github.com/3F/DllExport/pull/146
+    /// </summary>
     public sealed class PreProc
     {
         /// <summary>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -117,64 +117,13 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Input_file_0_is_not_a_DLL_hint" xml:space="preserve">
-    <value>Input file "{0}" does not have a DLL extension.</value>
-  </data>
-  <data name="Cannot_get_a_reference_to_ToolLocationHelper" xml:space="preserve">
-    <value>Cannot get a reference to {0}, starting with .Net 4.5, this class is required to find ilasm.exe and ildasm.exe.</value>
-  </data>
-  <data name="Cannot_find_ilasm_exe_without_a_FrameworkPath" xml:space="preserve">
-    <value>Cannot find ilasm.exe without a FrameworkPath.</value>
-  </data>
-  <data name="Cannot_find_ilasm_exe_in_0_" xml:space="preserve">
-    <value>Cannot find ilasm.exe in '{0}'.</value>
-  </data>
-  <data name="ToolLocationHelperTypeName_could_not_find_1" xml:space="preserve">
-    <value>{0} could not find {1}.</value>
-  </data>
-  <data name="Output_assembly_was_signed_however_neither_keyfile_nor_keycontainer_could_be_inferred__Reading_those_values_from_assembly_attributes_is_not__yet__supported__they_have_to_be_defined_inside_the_MSBuild_project_file" xml:space="preserve">
-    <value>Output assembly was signed, however neither keyfile nor keycontainer could be inferred. Reading those values from assembly attributes is not (yet) supported, they have to be defined inside the MSBuild project file.</value>
-  </data>
-  <data name="Both_key_values_KeyContainer_0_and_KeyFile_0_are_present_only_one_can_be_specified" xml:space="preserve">
-    <value>Both key values: KeyContainer "{0}" and KeyFile "{0}" are present, only one can be specified.</value>
-  </data>
-  <data name="Cannot_find_lib_exe_in_0_" xml:space="preserve">
-    <value>Cannot find lib.exe in '{0}'.</value>
-  </data>
-  <data name="Input_file_0_does_not_exist__cannot_create_unmanaged_exports" xml:space="preserve">
-    <value>Input file "{0}" does not exist, cannot create unmanaged exports.</value>
-  </data>
-  <data name="Skipped_Method_Exports" xml:space="preserve">
-    <value>Skipped method exports, because the platform target is neither x86 nor x64. Set the MsBuild property 'NoDllExportsForAnyCpu' to false if you want to create separate versions for x86 and x64. (e.g. you can do that in the package manager console: Set-NoDllExportsForAnyCpu -value $false)</value>
-  </data>
-  <data name="Input_file_is_empty__cannot_create_unmanaged_exports" xml:space="preserve">
-    <value>Input file is empty, cannot create unmanaged exports.</value>
-  </data>
-  <data name="SdkPath_is_empty_continuing_with_0_" xml:space="preserve">
-    <value>SdkPath is empty, continuing with '{0}'.</value>
-  </data>
-  <data name="AssemblyRedirection_for_0_has_not_been_setup_" xml:space="preserve">
-    <value>{0} has not been setup.</value>
-  </data>
-  <data name="Cannot_find_0_" xml:space="preserve">
-    <value>Cannot find '{0}'.</value>
-  </data>
-  <data name="Incorrect_format_of_0_" xml:space="preserve">
-    <value>Incorrect format of {0}.</value>
-  </data>
-  <data name="Allocated_item_0_1" xml:space="preserve">
-    <value>Allocated item `{0}` = `{1}`.</value>
-  </data>
-  <data name="_0_is_configured_as_1" xml:space="preserve">
-    <value>{0}` is configured as `{1}`.</value>
-  </data>
-  <data name="_0_is_ignored_due_to_1" xml:space="preserve">
-    <value>{0} is ignored due to {1}.</value>
-  </data>
-  <data name="_0_is_not_configured" xml:space="preserve">
-    <value>{0} is not configured.</value>
-  </data>
-  <data name="File_0_is_not_supported_for_1" xml:space="preserve">
-    <value>The file `{0}` is not supported to continue {1} processing.</value>
-  </data>
+  <metadata name="toolTip.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
+    <value>17, 17</value>
+  </metadata>
+  <metadata name="colName.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
+  <metadata name="colValue.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
+    <value>True</value>
+  </metadata>
 </root>

@@ -337,6 +337,12 @@ namespace RGiesecke.DllExport.MSBuild
             set => _ExportTaskImplementation.SysObjRebase = value;
         }
 
+        public string ProcEnv
+        {
+            get => _ExportTaskImplementation.ProcEnv;
+            set => _ExportTaskImplementation.ProcEnv = value;
+        }
+
         public string MetaLib
         {
             get {

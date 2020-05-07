@@ -268,8 +268,10 @@ namespace net.r_eg.DllExport.Wizard
         {
             XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
 
-            gears = new[] { 
-                new PreProcGear(this) 
+            gears = new IProjectGear[] 
+            { 
+                new PreProcGear(this),
+                new PostProcGear(this),
             };
 
             AllocateProperties(
@@ -289,7 +291,9 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_PATCHES,
                 MSBuildProperties.DXP_PLATFORM,
                 MSBuildProperties.DXP_PRE_PROC_TYPE,
-                MSBuildProperties.DXP_ILMERGE
+                MSBuildProperties.DXP_ILMERGE,
+                MSBuildProperties.DXP_POST_PROC_TYPE,
+                MSBuildProperties.DXP_PROC_ENV
             );
 
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
@@ -368,7 +372,8 @@ namespace net.r_eg.DllExport.Wizard
                     peCheck         = PeCheckType.PeIl,
                     patches         = PatchesType.None,
                 },
-                PreProc = new PreProc().Configure(),
+                PreProc     = new PreProc().Configure(),
+                PostProc    = new PostProc().Configure(null),
             };
         }
 
