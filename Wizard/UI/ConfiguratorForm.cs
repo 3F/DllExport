@@ -345,8 +345,11 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             foreach(var prj in projects)
             {
-                if(!DDNS.IsValidNS(prj.Config.Namespace)) {
-                    MessageBox.Show($"{prj.ProjectPath}\n\n>> Namespace: '{prj.Config.Namespace}'", "Fix data before continue", 0, MessageBoxIcon.Warning);
+                if(!DDNS.IsValidNS(prj.Config.Namespace)) 
+                {
+                    this.ForegroundAction(_=> MessageBox.Show(
+                        $"{prj.ProjectPath}\n\n>> Namespace: '{prj.Config.Namespace}'", "Fix data before continue", 0, MessageBoxIcon.Warning
+                    ));
                     return false;
                 }
 
@@ -440,6 +443,21 @@ namespace net.r_eg.DllExport.Wizard.UI
             }
         }
 
+        private bool Apply()
+        {
+            exec.TargetsFileIfCfg?.Reset();
+            UpdateRefBefore();
+
+            if(!SaveProjects(projectItems.Data)) {
+                return false;
+            }
+            // updates other installed with which we did not interact in this session
+            SaveProjects(projectItems.GetInactiveInstalled(GetProjects(exec.ActiveSlnFile)));
+
+            exec.SaveTStorageOrDelete();
+            return true;
+        }
+
         private void EnableTabsWhenNoSln(bool status) => ((Control)tabCfgDxp).Enabled = status;
 
         private string GetBuildInfo()
@@ -467,7 +485,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void ConfiguratorForm_Load(object sender, EventArgs e)
         {
-            TopMost = false; TopMost = true;
+            this.ForegroundAction();
 
             if(!string.IsNullOrEmpty(pkgVer.Activated))
             {
@@ -501,17 +519,22 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            exec.TargetsFileIfCfg?.Reset();
-            UpdateRefBefore();
+            Task.Factory.StartNew(() => 
+            {
+                btnApply.UIAction(x => x.Enabled = false);
+                progressLine.StartTrainEffect(panelTop.Width);
+                void _stop() => progressLine.StopAll();
 
-            if(!SaveProjects(projectItems.Data)) {
-                return;
-            }
-            // updates other installed with which we did not interact in this session
-            SaveProjects(projectItems.GetInactiveInstalled(GetProjects(exec.ActiveSlnFile)));
-
-            exec.SaveTStorageOrDelete();
-            Close();
+                if(Apply()) 
+                {
+                    this.UIAction(x => { _stop(); x.Close(); });
+                }
+                else 
+                {
+                    _stop();
+                    btnApply.UIAction(x => x.Enabled = true);
+                }
+            });
         }
 
         private void lnkSrc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport".OpenUrl();
