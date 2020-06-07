@@ -53,6 +53,10 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
         }
 
+        /// <summary>
+        /// https://github.com/3F/DllExport/issues/128
+        /// https://github.com/3F/DllExport/issues/158
+        /// </summary>
         /// <param name="state"></param>
         /// <param name="raw">raw definition of the .field</param>
         /// <returns>true if processed</returns>
@@ -80,7 +84,31 @@ namespace RGiesecke.DllExport.Parsing.Actions
 
                 if(m.Success) 
                 {
-                    raw = new string(' ', 2) + raw.Substring(0, m.Index) + GetFloatDef(m);
+                    raw = GetInst(raw.Substring(0, m.Index) + GetFloatInfDef(m));
+                    return true;
+                }
+            }
+
+            if((Parser.InputValues.Patches & PatchesType.NaNToken) == PatchesType.NaNToken)
+            {
+                // .field public static literal float32 'NaN' = float32(-nan(ind))
+                // .field public static literal float64 'NaN' = float64(-nan(ind))
+
+                Match m = Regex.Match
+                (
+                    raw,
+                    @"=\s*
+                        float(?:(?'x64'64)|32)
+                        \(
+                            -nan\(ind\)
+                        \)
+                    ", 
+                    RegexOptions.IgnorePatternWhitespace
+                );
+
+                if(m.Success) 
+                {
+                    raw = GetInst(raw.Substring(0, m.Index) + GetNaNDef(m));
                     return true;
                 }
             }
@@ -88,7 +116,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
             return false;
         }
 
-        private static string GetFloatDef(Match fld)
+        private static string GetFloatInfDef(Match fld)
         {
             var sb = new StringBuilder(4);
             sb.Append("= float");
@@ -114,5 +142,26 @@ namespace RGiesecke.DllExport.Parsing.Actions
 
             return sb.ToString();
         }
+
+        private static string GetNaNDef(Match fld)
+        {
+            var sb = new StringBuilder(3);
+            sb.Append("= float");
+
+            if(fld.Groups["x64"].Success)
+            {
+                sb.Append("64");
+                sb.Append("(0xFFF8000000000000)");
+            }
+            else
+            {
+                sb.Append("32");
+                sb.Append("(0xFFC00000)");
+            }
+
+            return sb.ToString();
+        }
+
+        private static string GetInst(string l) => new string(' ', 2) + l;
     }
 }

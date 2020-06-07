@@ -28,6 +28,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
+            this.chkNaNPatching = new System.Windows.Forms.CheckBox();
             this.linkInfPatching = new System.Windows.Forms.LinkLabel();
             this.linkSysObjRebase = new System.Windows.Forms.LinkLabel();
             this.chkRebaseSysObj = new System.Windows.Forms.CheckBox();
@@ -185,6 +186,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             // groupCompiler
             // 
+            this.groupCompiler.Controls.Add(this.chkNaNPatching);
             this.groupCompiler.Controls.Add(this.linkInfPatching);
             this.groupCompiler.Controls.Add(this.linkSysObjRebase);
             this.groupCompiler.Controls.Add(this.chkRebaseSysObj);
@@ -205,6 +207,18 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.groupCompiler.Size = new System.Drawing.Size(313, 149);
             this.groupCompiler.TabIndex = 9;
             this.groupCompiler.TabStop = false;
+            // 
+            // chkNaNPatching
+            // 
+            this.chkNaNPatching.AutoSize = true;
+            this.chkNaNPatching.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkNaNPatching.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkNaNPatching.Location = new System.Drawing.Point(244, 129);
+            this.chkNaNPatching.Name = "chkNaNPatching";
+            this.chkNaNPatching.Size = new System.Drawing.Size(64, 17);
+            this.chkNaNPatching.TabIndex = 16;
+            this.chkNaNPatching.Text = "-nan(ind)";
+            this.chkNaNPatching.UseVisualStyleBackColor = true;
             // 
             // linkInfPatching
             // 
@@ -662,5 +676,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private System.Windows.Forms.CheckBox chkInfPatching;
         private System.Windows.Forms.LinkLabel linkInfPatching;
         private System.Windows.Forms.LinkLabel linkPeCheck;
+        private System.Windows.Forms.CheckBox chkNaNPatching;
     }
 }

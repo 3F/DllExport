@@ -264,9 +264,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             PatchesType patches = PatchesType.None;
 
-            if(chkInfPatching.Checked) {
-                patches |= PatchesType.InfToken;
-            }
+            if(chkInfPatching.Checked) { patches |= PatchesType.InfToken; }
+            if(chkNaNPatching.Checked) { patches |= PatchesType.NaNToken; }
 
             return patches;
         }
@@ -274,6 +273,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private void SetPatchesType(PatchesType type)
         {
             chkInfPatching.Checked = (type & PatchesType.InfToken) == PatchesType.InfToken;
+            chkNaNPatching.Checked = (type & PatchesType.NaNToken) == PatchesType.NaNToken;
         }
 
         private void InstalledStatus(bool status)

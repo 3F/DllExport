@@ -36,6 +36,8 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
         }
 
+        // https://github.com/3F/DllExport/issues/128
+        // https://github.com/3F/DllExport/issues/158
         private bool TreatIL(ParserStateValues state, ref string raw)
         {
             if((Parser.InputValues.Patches & PatchesType.InfToken) == PatchesType.InfToken)
@@ -59,7 +61,30 @@ namespace RGiesecke.DllExport.Parsing.Actions
 
                 if(m.Success)
                 {
-                    raw = new string(' ', 4) + raw.Substring(0, m.Index) + GetFloatDef(m);
+                    raw = GetInst(raw.Substring(0, m.Index) + GetFloatInfDef(m));
+                    return true;
+                }
+            }
+
+            if((Parser.InputValues.Patches & PatchesType.NaNToken) == PatchesType.NaNToken)
+            {
+                // ldc.r8     -nan(ind)
+                // ldc.r4     -nan(ind)
+
+                Match m = Regex.Match
+                (
+                    raw,
+                    @"
+                        ldc.r(?:(?'x64'8)|4)
+                        \s*
+                        -nan\(ind\)
+                    ", 
+                    RegexOptions.IgnorePatternWhitespace
+                );
+
+                if(m.Success)
+                {
+                    raw = GetInst(raw.Substring(0, m.Index) + GetNaNDef(m));
                     return true;
                 }
             }
@@ -67,7 +92,7 @@ namespace RGiesecke.DllExport.Parsing.Actions
             return false;
         }
 
-        private static string GetFloatDef(Match fld)
+        private static string GetFloatInfDef(Match fld)
         {
             var sb = new StringBuilder(4);
             sb.Append("ldc.r");
@@ -93,5 +118,26 @@ namespace RGiesecke.DllExport.Parsing.Actions
 
             return sb.ToString();
         }
+
+        private static string GetNaNDef(Match fld)
+        {
+            var sb = new StringBuilder(3);
+            sb.Append("ldc.r");
+
+            if(fld.Groups["x64"].Success)
+            {
+                sb.Append("8     ");
+                sb.Append("(00 00 00 00 00 00 F8 FF)");
+            }
+            else
+            {
+                sb.Append("4     ");
+                sb.Append("(00 00 C0 FF)");
+            }
+
+            return sb.ToString();
+        }
+
+        private static string GetInst(string l) => new string(' ', 4) + l;
     }
 }
