@@ -1,5 +1,7 @@
 param($installPath, $toolsPath, $package, $project)
 
+if(!$project) { Return; } # PM
+
 $manager = "DllExport.bat"
 Copy-Item "$installPath\\$manager" "$PWD" -Force
 
