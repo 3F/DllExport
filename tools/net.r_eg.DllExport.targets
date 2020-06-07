@@ -109,7 +109,7 @@
   <UsingTask TaskName="RGiesecke.DllExport.MSBuild.DllExportAppDomainIsolatedTask" AssemblyFile="RGiesecke.DllExport.MSBuild.dll" />
 
   <!-- To support multi-targeting in SDK-Based projects: netstandard2.0;net40;... -->
-  <Target Name="DllExportMetaXBaseTarget" BeforeTargets="GenerateTargetFrameworkMonikerAttribute">
+  <Target Name="DllExportMetaXBaseTarget" BeforeTargets="GenerateTargetFrameworkMonikerAttribute" Inputs="$(TargetFramework)" Outputs="$(DllExportMetaXBase)">
     <PropertyGroup>
       <IsNetCoreBased Condition="$(TargetFramework.StartsWith('netc')) Or $(TargetFramework.StartsWith('nets'))">true</IsNetCoreBased>
       <DllExportMetaXBase Condition="$(IsNetCoreBased) == 'true'">$(DllExportDirMetaCore)</DllExportMetaXBase>
