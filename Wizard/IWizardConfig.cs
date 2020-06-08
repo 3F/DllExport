@@ -73,6 +73,16 @@ namespace net.r_eg.DllExport.Wizard
         string PkgVer { get; }
 
         /// <summary>
+        /// Indicates the status of the used package.
+        /// </summary>
+        bool Distributable { get; }
+
+        /// <summary>
+        /// The type of the current package, eg. offline, ...
+        /// </summary>
+        string PackageType { get; }
+
+        /// <summary>
         /// Proxy configuration if presented in `-proxy` key.
         /// </summary>
         string Proxy { get; }

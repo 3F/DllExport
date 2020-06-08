@@ -39,7 +39,7 @@ namespace net.r_eg.DllExport.Wizard
         protected readonly IExecutor exec;
         private readonly string proxy;
 
-        public string Activated => exec.Config.PkgVer;
+        public string Activated => DllExportVersion.S_PRODUCT;
 
         public Task<IEnumerable<string>> GetFromGitHubAsync(CancellationToken ct = default)
             => GetFromRemoteAsync("https://3F.github.io/DllExport/data/pkgrel", ct);
@@ -54,7 +54,7 @@ namespace net.r_eg.DllExport.Wizard
         internal bool IsNewStableVersionFrom(IEnumerable<string> versions, out Version found)
         {
             found = FindStableVersion(versions);
-            return (found != null && found > new Version(Activated));
+            return (found != null && found > DllExportVersion.number);
         }
 
         public PackageInfo(IExecutor exec)

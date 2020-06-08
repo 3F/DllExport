@@ -136,6 +136,12 @@ namespace net.r_eg.DllExport.Wizard
         }
         private string _pkgVer;
 
+        /// <see cref="IWizardConfig.Distributable"/>
+        public bool Distributable => !string.IsNullOrWhiteSpace(PkgVer) && PkgVer[0] != '-';
+
+        /// <see cref="IWizardConfig.PackageType"/>
+        public string PackageType => (string.IsNullOrWhiteSpace(PkgVer) || PkgVer.Equals("actual", StringComparison.OrdinalIgnoreCase)) ? "offline" : PkgVer;
+
         /// <summary>
         /// Proxy configuration if presented in `-proxy` key.
         /// </summary>
@@ -314,6 +320,7 @@ namespace net.r_eg.DllExport.Wizard
         private void PrintKeys(Message.Level level)
         {
             LSender.Send(this, $"Instance: '{Assembly.GetEntryAssembly().Location}'", level);
+            LSender.Send(this, $"Build version: '{DllExportVersion.S_INFO_P}'", level);
             LSender.Send(this, $"SlnDir: '{SlnDir}'", level);
             LSender.Send(this, $"SlnFile: '{SlnFile}'", level);
             LSender.Send(this, $"PkgPath: '{PkgPath}'", level);

@@ -40,9 +40,8 @@ namespace net.r_eg.DllExport.Wizard.UI
 
             var sb = new StringBuilder(45);
             sb.AppendLine("```"); // for default reports on github issue tracker because some users don't know
-            sb.AppendLine($"Installed: {prj.Installed}");
-            sb.AppendLine($"Project type: {prj.XProject.ProjectItem.project.EpType.ToString()}");
-            sb.AppendLine($"PkgVer: {prj.Config.Wizard.PkgVer}");
+            sb.AppendLine($"Installed: {prj.Installed}; {DllExportVersion.S_INFO_P}; invoked: {prj.Config.Wizard.PkgVer}");
+            sb.AppendLine($"Project type: {prj.XProject.ProjectItem.project.EpType}");
             sb.AppendLine($"Storage: {prj.Config.Wizard.CfgStorage}");
             sb.AppendLine($"Compiler.Platform: {prj.Config.Platform}");
             sb.AppendLine($"Compiler.ordinalsBase: {prj.Config.Compiler.ordinalsBase}");
