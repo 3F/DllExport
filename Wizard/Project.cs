@@ -589,9 +589,11 @@ namespace net.r_eg.DllExport.Wizard
             taskExec.Condition = $"({condition}) And {ifManager}";
 
             string args;
-            if(Config?.Wizard?.MgrArgs != null) {
+            if(Config?.Wizard?.MgrArgs != null) 
+            {
                 args = Regex.Replace(Config.Wizard.MgrArgs, @"-action\s\w+", "", RegexOptions.IgnoreCase);
                 args = args.Replace("%", "%%"); // part of issue 88, probably because of %(_data.FullPath) etc.
+                args = Regex.Replace(args, @"-force(?:\s|$)", "", RegexOptions.IgnoreCase); // user commands only
             }
             else {
                 args = string.Empty;
