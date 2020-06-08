@@ -55,6 +55,7 @@ namespace net.r_eg.DllExport.Wizard
         private const string WZ_ID = "Wz";
 
         private readonly IEnumerable<IProjectGear> gears;
+        private readonly LegacyPackagesFile lpf;
 
         /// <summary>
         /// Access to found project.
@@ -273,6 +274,8 @@ namespace net.r_eg.DllExport.Wizard
                 new PreProcGear(this),
                 new PostProcGear(this),
             };
+
+            lpf = new LegacyPackagesFile(xproject.ProjectPath);
 
             AllocateProperties(
                 MSBuildProperties.DXP_ID,
@@ -539,12 +542,7 @@ namespace net.r_eg.DllExport.Wizard
             if(!string.IsNullOrWhiteSpace(Config.Wizard.PkgVer) 
                 && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
             {
-                XProject.AddPackageReference
-                (
-                    UserConfig.PKG_ID, 
-                    Config.Wizard.PkgVer, 
-                    new Dictionary<string, string>() {{ "Visible", "false" }, { WZ_ID, "1" }} // VS2010 etc
-                );
+                AddDllExportRef();
             }
 
             AddRestoreDxp(
@@ -556,6 +554,23 @@ namespace net.r_eg.DllExport.Wizard
             AddDynRestore(
                 MSBuildTargets.DXP_R_DYN, 
                 $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' And '$(DllExportRPkgDyn)' != 'false'"
+            );
+        }
+
+        // https://github.com/3F/DllExport/issues/152
+        protected void AddDllExportRef()
+        {
+            if(lpf.IsValidExists)
+            {
+                lpf.AddOrUpdatePackage(UserConfig.PKG_ID, Config.Wizard.PkgVer, "net40");
+                return;
+            }
+
+            XProject.AddPackageReference
+            (
+                UserConfig.PKG_ID,
+                Config.Wizard.PkgVer,
+                new Dictionary<string, string>() { { "Visible", "false" }, { WZ_ID, "1" } } // VS2010 etc
             );
         }
 
@@ -642,6 +657,7 @@ namespace net.r_eg.DllExport.Wizard
                     XProject.RemoveItem(item);
                 }
             }
+            lpf.RemoveSavedPackage(UserConfig.PKG_ID);
 
             Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(DXP_TARGET, null))) { }
