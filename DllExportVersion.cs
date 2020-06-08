@@ -11,6 +11,7 @@ namespace net.r_eg.DllExport
         public const string S_REL = "";
 
         public const string S_NUM_REV = S_NUM + "." + S_REV;
+        public const string S_PRODUCT = "1.7.1";
 
         public const string BRANCH_SHA1 = "-";
         public const string BRANCH_NAME = "-";
@@ -20,6 +21,7 @@ namespace net.r_eg.DllExport
         public static readonly Version number = new Version(S_NUM_REV);
 
         internal const string S_INFO        = S_NUM_REV + "+" + BRANCH_SHA1;
+        internal const string S_INFO_P      = S_PRODUCT + "+" + BRANCH_SHA1;
         internal const string S_INFO_FULL   = S_INFO + ":" + BRANCH_NAME + "-" + BRANCH_REVC;
     }
 }

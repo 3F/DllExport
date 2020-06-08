@@ -487,7 +487,7 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             this.ForegroundAction();
 
-            if(!string.IsNullOrEmpty(pkgVer.Activated))
+            if(exec.Config.Distributable)
             {
                 UpdateListOfPackages();
                 txtLogUpd.SetData($"{CmdUpdate} ...");
@@ -496,7 +496,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             {
                 panelUpdVerTop.Enabled = false;
                 btnToOnline.Visible = true;
-                txtLogUpd.SetData("You're using an offline version or such `-dxp-version actual`.");
+                txtLogUpd.SetData($"You are using a package version of type `{exec.Config.PackageType}`.");
             }
 
             LoadPostProcProperties();

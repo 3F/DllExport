@@ -272,6 +272,7 @@ set key=!arg[%idx%]!
     ) else if [!key!]==[-pkg-link] ( set /a "idx+=1" & call :eval arg[!idx!] v
         
         set pkgLink=!v!
+        set dxpVersion=!key!
 
         goto continue
     ) else if [!key!]==[-force] ( 

@@ -539,10 +539,10 @@ namespace net.r_eg.DllExport.Wizard
                 false
             );
 
-            if(!string.IsNullOrWhiteSpace(Config.Wizard.PkgVer) 
+            if(Config.Wizard.Distributable 
                 && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
             {
-                AddDllExportRef();
+                AddDllExportRef(Config.Wizard.PkgVer);
             }
 
             AddRestoreDxp(
@@ -558,18 +558,18 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         // https://github.com/3F/DllExport/issues/152
-        protected void AddDllExportRef()
+        protected void AddDllExportRef(string version)
         {
             if(lpf.IsValidExists)
             {
-                lpf.AddOrUpdatePackage(UserConfig.PKG_ID, Config.Wizard.PkgVer, "net40");
+                lpf.AddOrUpdatePackage(UserConfig.PKG_ID, version, "net40");
                 return;
             }
 
             XProject.AddPackageReference
             (
                 UserConfig.PKG_ID,
-                Config.Wizard.PkgVer,
+                version,
                 new Dictionary<string, string>() { { "Visible", "false" }, { WZ_ID, "1" } } // VS2010 etc
             );
         }
