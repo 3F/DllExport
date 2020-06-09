@@ -95,33 +95,36 @@ namespace RGiesecke.DllExport
             }
         }
 
-        public static ValueDisposable<string> CreateTempDirectory()
+        internal sealed class TempDir: IDisposable
         {
-            return new ValueDisposable<string>(Utilities.CreateTempDirectoryCore(), (Action<string>)(dir => Directory.Delete(dir, true)));
-        }
+            public string FullPath { get; }
 
-        private static string CreateTempDirectoryCore()
-        {
-            string path1 = (string)null;
-            try
+            public TempDir()
             {
-                string tempFileName = Path.GetTempFileName();
-                if(!string.IsNullOrEmpty(tempFileName) && File.Exists(tempFileName))
-                {
-                    File.Delete(tempFileName);
-                }
-                string path2 = Path.Combine(Path.GetFullPath(Path.GetDirectoryName(tempFileName)), Path.GetFileNameWithoutExtension(tempFileName));
-                Directory.CreateDirectory(path2);
-                return path2;
+                string path = Path.GetTempPath();
+                string name = Guid.NewGuid().ToString();
+
+                FullPath = Path.Combine(path, $"dxp-{name}");
+                Directory.CreateDirectory(FullPath);
             }
-            catch
+
+            #region IDisposable
+
+            private bool disposed;
+
+            private void Dispose(bool _)
             {
-                if(!string.IsNullOrEmpty(path1) && Directory.Exists(path1))
+                if(!disposed)
                 {
-                    Directory.Delete(path1, true);
+                    if(Directory.Exists(FullPath)) Directory.Delete(FullPath, true);
+
+                    disposed = true;
                 }
-                throw;
             }
+
+            public void Dispose() => Dispose(true);
+
+            #endregion
         }
     }
 }

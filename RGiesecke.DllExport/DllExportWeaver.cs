@@ -7,11 +7,12 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Security.Permissions;
 using System.Text;
+using RGiesecke.DllExport.Extensions;
 using RGiesecke.DllExport.Parsing;
 using RGiesecke.DllExport.Properties;
+using TempDir = RGiesecke.DllExport.Utilities.TempDir;
 
 namespace RGiesecke.DllExport
 {
@@ -70,37 +71,46 @@ namespace RGiesecke.DllExport
                     }
                 }
             }
-            if(this.Exports.Count == 0)
+
+            if(Exports.Count == 0)
             {
                 return;
             }
-            using(this.GetNotifier().CreateContextName((object)this, Resources.CreateTempDirectoryContextName))
+
+            using(GetNotifier().CreateContextName(this, Resources.CreateTempDirectoryContextName))
+            using(var dir = new TempDir())
             {
-                using(ValueDisposable<string> tempDirectory = Utilities.CreateTempDirectory())
+                RunIlDasm(dir.FullPath);
+
+                void _ilasm() => RunIlAsm(dir.FullPath);
+
+                if(InputValues.LeaveIntermediateFiles.IsTrue())
                 {
-                    this.RunIlDasm(tempDirectory.Value);
-                    bool flag = ((IEnumerable<string>)new string[2] { "true", "yes" }).Any<string>((Func<string, bool>)(t => t.Equals(this.InputValues.LeaveIntermediateFiles, StringComparison.InvariantCultureIgnoreCase)));
-                    if(flag)
-                    {
-                        using(this.GetNotifier().CreateContextName((object)this, Resources.CopyBeforeContextName))
-                            DllExportWeaver.CopyDirectory(tempDirectory.Value, Path.Combine(Path.GetDirectoryName(this.InputValues.OutputFileName), "Before"), true);
-                    }
-                    using(IlAsm ilAsm = this.PrepareIlAsm(tempDirectory.Value))
-                        this.RunIlAsm(ilAsm);
-                    if(!flag)
-                    {
-                        return;
-                    }
-                    using(this.GetNotifier().CreateContextName((object)this, Resources.CopyAfterContextName))
-                        DllExportWeaver.CopyDirectory(tempDirectory.Value, Path.Combine(Path.GetDirectoryName(this.InputValues.OutputFileName), "After"), true);
+                    MakeWithIntermediateFiles(dir, _ilasm);
+                    return;
                 }
+
+                _ilasm();
             }
         }
 
-        private IDllExportNotifier GetNotifier()
+        private void MakeWithIntermediateFiles(TempDir dir, Action ilasm)
         {
-            return this.ServiceProvider.GetService<IDllExportNotifier>();
+            const string _PRE   = "Before";
+            const string _POST  = "After";
+
+            string fout = Path.GetDirectoryName(InputValues.OutputFileName);
+
+            using(GetNotifier().CreateContextName(this, Resources.CopyBeforeContextName))
+                CopyDirectory(dir.FullPath, Path.Combine(fout, _PRE), true);
+
+            ilasm?.Invoke();
+
+            using(GetNotifier().CreateContextName(this, Resources.CopyAfterContextName))
+                CopyDirectory(dir.FullPath, Path.Combine(fout, _POST), true);
         }
+
+        private IDllExportNotifier GetNotifier() => ServiceProvider.GetService<IDllExportNotifier>();
 
         private static string GetCleanedDirectoryPath(string path)
         {
@@ -144,16 +154,24 @@ namespace RGiesecke.DllExport
             }
         }
 
-        private void RunIlAsm(IlAsm ilAsm)
+        private void RunIlAsm(string tempDir)
         {
-            using(GetNotifier().CreateContextName(this, "RunIlAsm"))
+            using(IlAsm ilAsm = PrepareIlAsm(tempDir ?? throw new ArgumentNullException(nameof(tempDir))))
+            {
+                RunIlAsm(ilAsm);
+            }
+        }
+
+        private IlAsm RunIlAsm(IlAsm ilAsm)
+        {
+            using(GetNotifier().CreateContextName(this, nameof(RunIlAsm)))
             {
                 if(InputValues.Cpu != CpuPlatform.AnyCpu) {
-                    reassembleFile(ilAsm, InputValues.OutputFileName, "", InputValues.Cpu);
-                    return;
+                    reassembleFile(ilAsm, InputValues.OutputFileName, string.Empty, InputValues.Cpu);
+                    return ilAsm;
                 }
 
-                string dir      = Path.GetDirectoryName(InputValues.OutputFileName) ?? "";
+                string dir      = Path.GetDirectoryName(InputValues.OutputFileName) ?? string.Empty;
                 string fileName = Path.GetFileName(InputValues.OutputFileName);
 
                 if(!Directory.Exists(dir)) {
@@ -163,6 +181,8 @@ namespace RGiesecke.DllExport
                 reassembleFile(ilAsm, Path.Combine(Path.Combine(dir, "x86"), fileName), ".x86", CpuPlatform.X86);
                 reassembleFile(ilAsm, Path.Combine(Path.Combine(dir, "x64"), fileName), ".x64", CpuPlatform.X64);
             }
+
+            return ilAsm;
         }
 
         private IlAsm PrepareIlAsm(string tempDirectory)

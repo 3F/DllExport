@@ -49,11 +49,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DisabledAssemblyResolver.cs" />
+    <Compile Include="Extensions\StringExtension.cs" />
     <Compile Include="PatchesType.cs" />
     <Compile Include="PeCheckType.cs" />
     <Compile Include="DllExportLogginCodes.cs" />
     <Compile Include="DllExportServiceProviderExtensions.cs" />
-    <Compile Include="GenericDisposable.cs" />
     <Compile Include="IProblemSolver.cs" />
     <Compile Include="NotificationContext.cs" />
     <Compile Include="AssemblyBinaryProperties.cs" />
@@ -74,7 +74,6 @@
     <Compile Include="SourceCodePosition.cs" />
     <Compile Include="SourceCodeRange.cs" />
     <Compile Include="Utilities.cs" />
-    <Compile Include="ValueDisposable.cs" />
     <Compile Include="Parsing\HasServiceProvider.cs" />
     <Compile Include="Parsing\IlParser.cs" />
     <Compile Include="Parsing\DllExportNotifierWrapper.cs" />
