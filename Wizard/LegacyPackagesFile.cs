@@ -77,6 +77,7 @@ namespace net.r_eg.DllExport.Wizard
             if(!File.Exists(file))
             {
                 xml = GetNewInstance();
+                return;
             }
 
             try

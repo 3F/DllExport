@@ -218,6 +218,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.chkNaNPatching.Size = new System.Drawing.Size(64, 17);
             this.chkNaNPatching.TabIndex = 16;
             this.chkNaNPatching.Text = "-nan(ind)";
+            this.toolTip.SetToolTip(this.chkNaNPatching, "ldc.r8; ldc.r4; .field;\r\n\r\n-nan(ind) to \r\n00 00 C0 FF\r\n00 00 00 00 00 00 " +
+        "F8 FF");
             this.chkNaNPatching.UseVisualStyleBackColor = true;
             // 
             // linkInfPatching
@@ -303,6 +305,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.chkInfPatching.Size = new System.Drawing.Size(207, 17);
             this.chkInfPatching.TabIndex = 14;
             this.chkInfPatching.Text = "Single + Double Inf/-Inf token patching";
+            this.toolTip.SetToolTip(this.chkInfPatching, "ldc.r8; ldc.r4; .field; \r\n\r\ninf/-inf to \r\n0x7F800000/0xFF800000\r\n0x7FF000" +
+        "0000000000/0xFFF0000000000000");
             this.chkInfPatching.UseVisualStyleBackColor = true;
             // 
             // rbPlatformX86

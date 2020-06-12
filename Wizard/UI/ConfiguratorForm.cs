@@ -299,6 +299,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             toolTipMain.SetToolTip(comboBoxSln, sln);
 
             RenderListOfProjects(GetProjects(sln));
+            LoadPostProcProperties();
         }
 
         private void RenderProjects(string sln, ProjectFilter filter)
@@ -498,8 +499,6 @@ namespace net.r_eg.DllExport.Wizard.UI
                 btnToOnline.Visible = true;
                 txtLogUpd.SetData($"You are using a package version of type `{exec.Config.PackageType}`.");
             }
-
-            LoadPostProcProperties();
         }
 
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)

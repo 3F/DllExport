@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -35,6 +36,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     public partial class PostProcControl: UserControl
     {
+        private readonly KeyValuePair<Color, Color> colorLineMain = new KeyValuePair<Color, Color>(/*BackColor*/ Color.FromArgb(225, 241, 253), /*ForeColor*/ Color.FromArgb(23, 36, 47));
+        private readonly KeyValuePair<Color, Color> colorLineAct = new KeyValuePair<Color, Color>(/*BackColor*/ Color.FromArgb(245, 242, 203), /*ForeColor*/ Color.FromArgb(23, 36, 47));
+
         public CmdType Type => GetCmdType();
 
         public IEnumerable<string> ProcEnv => GetProcEnv();
@@ -54,7 +58,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
             //TODO: implement logic
             //txtPostProc.Text = instance.Cmd;
-            txtPostProc.Text = $"Some Post-Proc features are not yet available in GUI for v{DllExportVersion.S_INFO}. But you can already configure it with msbuild: https://github.com/3F/DllExport/pull/148 \r\n* Follow the news or open PR to https://github.com/3F/DllExport";
+            txtPostProc.Text = $"Some Post-Proc features are not yet available in GUI for v{DllExportVersion.S_PRODUCT}. But you can also configure it with msbuild: https://github.com/3F/DllExport/wiki/PostProc";
         }
 
         public PostProc Export(PostProc obj) => (obj ?? throw new ArgumentNullException(nameof(obj)))
@@ -117,10 +121,45 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(!activated) chkX86X64.Checked = chkIntermediateFiles.Checked = false;
         }
 
+        private void ActivateProperty(object value)
+        {
+            if(!listActivatedProperties.Items.Contains(value))
+            {
+                listActivatedProperties.Items.Add(value);
+            }
+        }
+
         private void radioDependentProjects_CheckedChanged(object sender, EventArgs e) => SetUIDependentProjects(radioDependentProjects.Checked);
 
         private void linkAboutVsSBE_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/issues/144#issuecomment-609494726".OpenUrl();
         private void linkAboutPostProc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/pull/148#issuecomment-622115091".OpenUrl();
         private void linkAboutDependent_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/issues/144#issue-594663447".OpenUrl();
+
+        private void dgvProperties_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if(e.RowIndex >= 0)
+            {
+                ActivateProperty(dgvProperties[0, e.RowIndex].Value);
+                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = colorLineAct.Key;
+                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = colorLineAct.Value;
+            }
+        }
+
+        private void dgvProperties_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if(e.RowIndex >= 0)
+            {
+                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = colorLineMain.Key;
+                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = colorLineMain.Value;
+            }
+        }
+
+        private void listActivatedProperties_DoubleClick(object sender, EventArgs e)
+        {
+            if(listActivatedProperties.SelectedIndex >= 0)
+            {
+                listActivatedProperties.Items.RemoveAt(listActivatedProperties.SelectedIndex);
+            }
+        }
     }
 }

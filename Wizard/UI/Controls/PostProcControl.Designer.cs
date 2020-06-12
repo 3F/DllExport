@@ -184,6 +184,7 @@
             this.listActivatedProperties.Name = "listActivatedProperties";
             this.listActivatedProperties.Size = new System.Drawing.Size(133, 84);
             this.listActivatedProperties.TabIndex = 34;
+            this.listActivatedProperties.DoubleClick += new System.EventHandler(this.listActivatedProperties_DoubleClick);
             // 
             // dgvProperties
             // 
@@ -211,6 +212,8 @@
             this.dgvProperties.Size = new System.Drawing.Size(304, 84);
             this.dgvProperties.StandardTab = true;
             this.dgvProperties.TabIndex = 33;
+            this.dgvProperties.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProperties_CellClick);
+            this.dgvProperties.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProperties_CellDoubleClick);
             // 
             // colName
             // 
