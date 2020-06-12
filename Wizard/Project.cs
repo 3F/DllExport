@@ -528,28 +528,19 @@ namespace net.r_eg.DllExport.Wizard
         {
             string dxpTarget = AddImport(Config.Wizard.DxpTarget, true, METALIB_PK_TOKEN);
 
-            var lib = MetaLib(false);
-            Log.send(this, $"Add meta library: '{lib}'", Message.Level.Info);
-
-            XProject.AddReference(
-                $"DllExport, PublicKeyToken={METALIB_PK_TOKEN}",
-                MakeBasePath(lib), 
-                false,
-                null,
-                false
-            );
-
             if(Config.Wizard.Distributable 
                 && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
             {
                 AddDllExportRef(Config.Wizard.PkgVer);
             }
 
-            AddRestoreDxp(
+            var rst = AddRestoreDxp(
                 MSBuildTargets.DXP_PKG_R, 
                 $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' Or !Exists('{dxpTarget}')",
                 UserConfig.MGR_FILE
             );
+
+            AddRestoreFirstPhase(rst, dxpTarget);
 
             AddDynRestore(
                 MSBuildTargets.DXP_R_DYN, 
@@ -574,7 +565,7 @@ namespace net.r_eg.DllExport.Wizard
             );
         }
 
-        protected void AddRestoreDxp(string name, string condition, string manager)
+        protected ProjectTargetElement AddRestoreDxp(string name, string condition, string manager)
         {
             var target = AddTarget(name);
             target.BeforeTargets = "PrepareForBuild";
@@ -600,6 +591,34 @@ namespace net.r_eg.DllExport.Wizard
             }
             taskExec.SetParameter("Command", $".\\{manager} {args} -action Restore");
             taskExec.SetParameter("WorkingDirectory", $"$({MSBuildProperties.SLN_DIR})");
+
+            return target;
+        }
+
+        // https://github.com/3F/DllExport/issues/159
+        protected void AddRestoreFirstPhase(ProjectTargetElement target, string dxpTarget)
+        {
+            var t = target.AddTask("MSBuild");
+            t.Condition = $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true'";
+            t.SetParameter("Projects", dxpTarget);
+            t.SetParameter("Targets", "DllExportMetaXBaseTarget");
+            t.SetParameter("Properties", "TargetFramework=$(TargetFramework)");
+            t.AddOutputProperty("TargetOutputs", "DllExportMetaXBase");
+
+            var lib = MetaLib(false);
+            Log.send(this, $"Add meta library: '{lib}'", Message.Level.Info);
+
+            target.AddItemGroup().AddItem
+            (
+                "Reference",
+                $"DllExport, PublicKeyToken={METALIB_PK_TOKEN}",
+                new Dictionary<string, string>() 
+                {
+                    { "HintPath", MakeBasePath(lib) },
+                    { "Private", false.ToString() },
+                    { "SpecificVersion", false.ToString() }
+                }
+            );
         }
 
         // https://github.com/3F/DllExport/issues/62#issuecomment-353785676
