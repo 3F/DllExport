@@ -2,6 +2,42 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7.3] 2020.06.12
+
+    * FIXED: Fixed syntax error at token '-' in: IL_002d: ldc.r8 -nan(ind) with "return Double.NaN"
+             Through "Single + Double NaN token patching" option. Issue #158.
+                ```
+                .field = float32(-nan(ind)) -> 0xFFC00000
+                .field = float64(-nan(ind)) -> 0xFFF8000000000000
+
+                ldc.r8 -nan(ind) -> 00 00 00 00 00 00 F8 FF
+                ldc.r4 -nan(ind) -> 00 00 C0 FF
+                ```
+             
+    * FIXED: NuGet packages are not visible as installed when DLLExport enabled for project.
+             Issue #152.
+    
+    * FIXED: Concurrency Issue with Parallel Project Builds. Issue #73.
+    
+    * FIXED: Fixed the first phase of the build when restoring. Related issue #159.
+    
+    * FIXED: Fixed VS NuGet PM possible error:
+             "You cannot call a method on a null-valued expression."
+             
+    * CHANGED: Improves package integration. PR  #161.
+                - Updated logic for packages through `-pkg-link` key.
+                - Removed `-force` key from the project files 
+                  if it was pushed together with other commands for manager.
+
+
+[v1.7.2] 
+
+    * NOTE: Version 1.7.2 does not exist! 
+            To avoid confusion and additional misunderstanding with 1.2.7, 
+            👉 Minor version 1.7.2 will be numbered as [ 1.7.3 ]
+            
+            https://github.com/3F/DllExport/milestone/11
+
 [v1.7.1] 2020.05.07
 
     * NEW: Pre-Processing feature. PR #146.

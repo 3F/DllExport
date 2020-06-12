@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <Version>1.7.1</Version>
+    <Version>1.7.3</Version>
     <MetadataFxPath>..\MetadataFx\</MetadataFxPath>
   </PropertyGroup>
 
