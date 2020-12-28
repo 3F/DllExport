@@ -25,6 +25,7 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Build.Evaluation;
+using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
@@ -144,11 +145,9 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void SetProperties(IEnumerable<KeyValuePair<string, string>> properties, string condition, string label)
         {
-            var group = XProject.Project.Xml.AddPropertyGroup();
-            group.Condition = condition;
-            group.Label     = label;
-
-            properties.ForEach(p => group.SetProperty(p.Key, p.Value));
+            properties.ForEach(p => 
+                XProject.AddPropertyGroup(label, condition).SetProperty(p.Key, p.Value)
+            );
         }
 
         protected void ResetById(IProject prj)
