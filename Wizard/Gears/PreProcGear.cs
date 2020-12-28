@@ -119,7 +119,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             var target = prj.AddTarget(MSBuildTargets.DXP_PRE_PROC);
 
             target.BeforeTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = Project.METALIB_PK_TOKEN;
+            target.Label = Id;
 
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
@@ -161,7 +161,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             var target = prj.AddTarget(MSBuildTargets.DXP_PRE_PROC_AFTER);
             target.AfterTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = Project.METALIB_PK_TOKEN;
+            target.Label = Id;
 
             var tDelete = target.AddTask("Delete");
             tDelete.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F}){ILMERGE_TMP}.pdb");
@@ -208,7 +208,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             var prop = pgroup.SetProperty(MSBuildProperties.PRJ_CP_LOCKFILE_ASM, "true");
             prop.Condition = "$(TargetFramework.StartsWith('netc')) Or $(TargetFramework.StartsWith('nets'))";
-            prop.Label = Project.METALIB_PK_TOKEN;
+            prop.Label = Id;
         }
 
         private bool RemoveCopyLocalLockFileAssemblies() => RemoveLabeledProperty(MSBuildProperties.PRJ_CP_LOCKFILE_ASM);
@@ -217,7 +217,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             var prop = pgroup.SetProperty(MSBuildProperties.PRJ_DBG_TYPE, "pdbonly");
             prop.Condition = "'$(DebugType)'!='full' And '$(DebugType)'!='pdbonly'";
-            prop.Label = Project.METALIB_PK_TOKEN;
+            prop.Label = Id;
         }
 
         private bool RemoveOverridedDebugType() => RemoveLabeledProperty(MSBuildProperties.PRJ_DBG_TYPE);
@@ -226,7 +226,10 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             // access to properties without evaluating the condition attribute
             ProjectPropertyElement _Get() => XProject.Project.Xml.Properties
-                                            .FirstOrDefault(p => p.Name == name && p.Label == Project.METALIB_PK_TOKEN);
+                                            .FirstOrDefault(p => 
+                                                p.Name == name 
+                                                && (p.Label == Id || p.Label == Project.METALIB_PK_TOKEN)
+                                             ); // METALIB_PK_TOKEN was for 1.7.3 or less
 
             var pp = _Get();
             if(pp?.Parent == null) {

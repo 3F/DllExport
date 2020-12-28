@@ -37,7 +37,12 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private IUserConfig Config => prj.Config;
         private ISender Log => Config.Log;
 
-        public void Install() => CfgPostProc();
+        private string Id => $"{Project.METALIB_PK_TOKEN}:PostProc";
+
+        public void Install()
+        {
+            CfgPostProc(Config.PostProc.Type);
+        }
 
         public void Uninstall(bool hardReset)
         {
@@ -50,10 +55,8 @@ namespace net.r_eg.DllExport.Wizard.Gears
             this.prj = prj ?? throw new ArgumentNullException(nameof(prj));
         }
 
-        private void CfgPostProc()
+        private void CfgPostProc(CmdType type)
         {
-            CmdType type = Config.PostProc.Type;
-
             prj.SetProperty(MSBuildProperties.DXP_POST_PROC_TYPE, (long)type);
             Log.send(this, $"Post-Processing type: {type}");
 
@@ -65,7 +68,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             Log.send(this, $"Proc-Env: {Config.PostProc.ProcEnv}");
 
             var target = prj.AddTarget(MSBuildTargets.DXP_POST_PROC);
-            target.Label = Project.METALIB_PK_TOKEN;
+            target.Label = Id;
 
             if((type & CmdType.Custom) == CmdType.Custom)
             {
@@ -103,7 +106,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             var target = AllocateDerivativeTarget("For" + id);
 
             target.AfterTargets = MSBuildTargets.DXP_POST_PROC;
-            target.Label        = Project.METALIB_PK_TOKEN;
+            target.Label        = Id;
             target.Outputs      = $"%({GetDependentsTargetDir(type)}.Identity)";
 
             return target;
@@ -145,7 +148,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             foreach(var target in prj.XProject.Project.Xml.Targets)
             {
-                if(target.Label != Project.METALIB_PK_TOKEN
+                if((target.Label != Id && target.Label != Project.METALIB_PK_TOKEN) // METALIB_PK_TOKEN was for 1.7.3 or less
                     || target.Name == MSBuildTargets.DXP_POST_PROC
                     || !target.Name.StartsWith(GetDerivativeTargetName(null)))
                 {
