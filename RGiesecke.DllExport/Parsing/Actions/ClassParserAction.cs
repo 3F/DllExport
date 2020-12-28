@@ -23,9 +23,9 @@ namespace RGiesecke.DllExport.Parsing.Actions
             }
             else if(trimmedLine.StartsWith(".method", StringComparison.Ordinal))
             {
-                ExportedClass exportedClass;
-                if(state.ClassNames.Count == 0 || !this.Parser.Exports.ClassesByName.TryGetValue(state.ClassNames.Peek(), out exportedClass))
+                if(state.ClassNames.Count == 0 || !Parser.Exports.ClassesByName.TryGetValue(state.ClassNames.Peek(), out _))
                 {
+                    state.State = ParserState.Method; // https://github.com/3F/DllExport/issues/174
                     return;
                 }
                 state.Method.Reset();
