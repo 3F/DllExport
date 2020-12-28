@@ -28,6 +28,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.Extensions;
+using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using static net.r_eg.DllExport.Wizard.PostProc;
@@ -67,8 +68,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         //TODO: select a specific project + add property to the list
         internal void LoadProperties(IXProject project)
         {
-            dgvProperties.Rows.Clear();
-            project?.GetProperties().ForEach(p => dgvProperties.Rows.Add(p.name, p.evaluatedValue));
+            dgvProperties.UIAction(g => g.Rows.Clear());
+            if(project == null) return;
+
+            var props = project.GetProperties().ToArray(); // array prevents possible InvalidOperationException
+            dgvProperties.UIAction(g => props.ForEach(p => g.Rows.Add(p.name, p.evaluatedValue)));
         }
 
         public PostProcControl() => InitializeComponent();
@@ -118,7 +122,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             chkX86X64.Enabled = chkIntermediateFiles.Enabled = chkSeqDep.Enabled = activated;
 
-            if(!activated) chkX86X64.Checked = chkIntermediateFiles.Checked = false;
+            if(!activated) chkX86X64.Checked = chkIntermediateFiles.Checked = chkSeqDep.Checked = false;
         }
 
         private void ActivateProperty(object value)

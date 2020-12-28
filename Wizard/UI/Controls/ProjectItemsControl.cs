@@ -27,7 +27,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows.Forms;
-using net.r_eg.DllExport.Wizard.Extensions;
+using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 
@@ -212,7 +212,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             project.Config.UseCecil     = control.UseCecil;
             project.Config.Platform     = control.Platform;
             project.Config.Compiler     = control.Compiler;
-            project.Config.Namespace    = control.Namespaces.Text.Trim();
+
+            control.UIAction(x => 
+                project.Config.Namespace = x.Namespaces.Text.Trim()
+            );
 
             return project;
         }
