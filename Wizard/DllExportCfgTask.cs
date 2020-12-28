@@ -37,6 +37,7 @@ namespace net.r_eg.DllExport.Wizard
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
 
         private UI.MsgForm uimsg;
+        private readonly string toolDir = Environment.CurrentDirectory;
         private readonly object sync = new object();
 
         #region ITask properties
@@ -45,14 +46,12 @@ namespace net.r_eg.DllExport.Wizard
         public string RootPath { get; set; }
 
         /// <inheritdoc cref="IWizardConfig.SlnDir"/>
-        [Required]
         public string SlnDir { get; set; }
 
         /// <inheritdoc cref="IWizardConfig.SlnFile"/>
         public string SlnFile { get; set; }
 
         /// <inheritdoc cref="IWizardConfig.PkgPath"/>
-        [Required]
         public string PkgPath { get; set; }
 
         /// <inheritdoc cref="IWizardConfig.MetaLib"/>
@@ -127,7 +126,7 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        #endregion ITask properties
+        #endregion
 
         /// <inheritdoc cref="IWizardConfig.Distributable"/>
         public bool Distributable => !string.IsNullOrWhiteSpace(PkgVer) && PkgVer[0] != '-';
@@ -222,20 +221,22 @@ namespace net.r_eg.DllExport.Wizard
 
         private void UpdateMSBuildValues()
         {
-            RootPath    = RootPath.DirectoryPathFormat();
+            RootPath    = (RootPath ?? toolDir.FindUpDirUsingFile("*.sln")).DirectoryPathFormat();
+
             SlnDir      = SlnDir.DirectoryPathFormat(RootPath);
             SlnFile     = SlnFile.FilePathFormat(RootPath);
-            PkgPath     = PkgPath.DirectoryPathFormat(RootPath);
+
+            PkgPath     = (PkgPath ?? toolDir.FindUpDirUsingFile("*.nuspec") ?? toolDir.UpDir())
+                            .DirectoryPathFormat(RootPath);
+
             MetaLib     = MetaLib.FilePathFormat();
             MetaCor     = MetaCor.FilePathFormat();
             DxpTarget   = DxpTarget.FilePathFormat();
+            PkgVer      = PkgVer?.Trim();
+            StoragePath = StoragePath.FilePathFormat() ?? TargetsFile.DEF_CFG_FILE;
 
             // possible double quotes at least from 1.6.0 and 1.6.1
             MgrArgs = MgrArgs.OpenDoubleQuotes();
-
-            PkgVer = PkgVer.Trim();
-
-            StoragePath = StoragePath.FilePathFormat() ?? TargetsFile.DEF_CFG_FILE;
         }
 
         private void PrintKeys(Message.Level level)
