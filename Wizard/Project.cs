@@ -714,7 +714,7 @@ namespace net.r_eg.DllExport.Wizard
                 return false;
             }
 
-            var target = XProject.Project.Xml.Targets.Where(t => t.Name == name).FirstOrDefault();
+            var target = XProject.Project.Xml.Targets.FirstOrDefault(t => t.Name == name);
             if(target != null) {
                 XProject.Project.Xml.RemoveChild(target);
                 return true;
@@ -722,18 +722,13 @@ namespace net.r_eg.DllExport.Wizard
             return false;
         }
 
-        protected static void RemoveEmptyPropertyGroups(IXProject xp) 
-            => xp?.Project.Xml.PropertyGroups.ToArray()
-                                .Where(p => p.Properties.Count < 1)
-                                .ForEach(p => p.Parent?.RemoveChild(p));
-
         protected void RemoveProperties(params string[] names)
         {
             foreach(string name in names)
             {
                 if(!string.IsNullOrWhiteSpace(name)) while(XProject.RemoveProperty(name, true)) { }
             }
-            RemoveEmptyPropertyGroups(XProject); //TODO: id for our group
+            XProject.RemoveEmptyPropertyGroups(); //TODO: id for our group
         }
 
         /// <summary>

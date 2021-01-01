@@ -23,6 +23,8 @@
 */
 
 using System;
+using System.Linq;
+using Microsoft.Build.Construction;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 
@@ -85,5 +87,43 @@ namespace net.r_eg.DllExport.Wizard.Extensions
                 xp.AddPackageReference(id, version);
             }
         }
+
+        internal static ProjectPropertyGroupElement GetOrAddPropertyGroup(this IXProject xp, string label, string condition = null)
+        {
+            if(xp == null) throw new ArgumentNullException(nameof(xp));
+            if(string.IsNullOrEmpty(label)) throw new ArgumentOutOfRangeException(nameof(label));
+
+            var pgroup = xp.Project.Xml.PropertyGroups.FirstOrDefault(p => p.Label == label);
+            if(pgroup != null) return pgroup;
+
+            return xp.AddPropertyGroup(label, condition);
+        }
+
+        internal static ProjectPropertyGroupElement AddPropertyGroup(this IXProject xp, string label = null, string condition = null)
+        {
+            if(xp == null) throw new ArgumentNullException(nameof(xp));
+
+            var pgroup = xp.Project.Xml.AddPropertyGroup();
+
+            if(label != null)
+            {
+                pgroup.Label = label;
+            }
+
+            if(condition != null)
+            {
+                pgroup.Condition = condition;
+            }
+
+            return pgroup;
+        }
+
+        internal static void RemovePropertyGroups(this IXProject xp, Func<ProjectPropertyGroupElement, bool> condition)
+            => xp?.Project.Xml.PropertyGroups.ToArray()
+                                .Where(p => condition(p))
+                                .ForEach(p => p.Parent?.RemoveChild(p));
+
+        internal static void RemoveEmptyPropertyGroups(this IXProject xp) 
+            => xp.RemovePropertyGroups(p => p.Properties.Count < 1);
     }
 }

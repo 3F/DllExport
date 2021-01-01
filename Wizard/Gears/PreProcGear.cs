@@ -41,26 +41,36 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private readonly Version incILMerge = new Version("3.0.29");
 
         private readonly IProjectSvc prj;
-        private readonly ProjectPropertyGroupElement pgroup;
+        private ProjectPropertyGroupElement pgroup;
+
+        private string Id => $"{Project.METALIB_PK_TOKEN}:PreProc";
 
         private IUserConfig Config => prj.Config;
         private IXProject XProject => prj.XProject;
         private ISender Log => Config.Log;
 
-        public void Install() => CfgPreProc();
+        public void Install()
+        {
+            pgroup = XProject.GetOrAddPropertyGroup(Id);
+            CfgPreProc(Config.PreProc.Type);
 
-        public void Uninstall(bool hardReset) => RemovePreProcTarget(hardReset);
+            // Since CmdType can remove or add any feature at the same time,
+            XProject.RemoveEmptyPropertyGroups(); // we'll also need to release its possible empty container
+        }
+
+        public void Uninstall(bool hardReset)
+        {
+            RemovePreProcTarget(hardReset);
+            XProject.RemovePropertyGroups(p => p.Label == Id);
+        }
 
         public PreProcGear(IProjectSvc prj)
         {
-            this.prj    = prj ?? throw new ArgumentNullException(nameof(prj));
-            pgroup      = XProject.Project.Xml.AddPropertyGroup();
+            this.prj = prj ?? throw new ArgumentNullException(nameof(prj));
         }
 
-        private void CfgPreProc()
+        private void CfgPreProc(CmdType type)
         {
-            CmdType type = Config.PreProc.Type;
-
             prj.SetProperty(MSBuildProperties.DXP_PRE_PROC_TYPE, (long)type);
             Log.send(this, $"Pre-Processing type: {type}");
 
@@ -109,7 +119,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             var target = prj.AddTarget(MSBuildTargets.DXP_PRE_PROC);
 
             target.BeforeTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = Project.METALIB_PK_TOKEN;
+            target.Label = Id;
 
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
@@ -151,7 +161,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             var target = prj.AddTarget(MSBuildTargets.DXP_PRE_PROC_AFTER);
             target.AfterTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = Project.METALIB_PK_TOKEN;
+            target.Label = Id;
 
             var tDelete = target.AddTask("Delete");
             tDelete.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F}){ILMERGE_TMP}.pdb");
@@ -198,7 +208,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             var prop = pgroup.SetProperty(MSBuildProperties.PRJ_CP_LOCKFILE_ASM, "true");
             prop.Condition = "$(TargetFramework.StartsWith('netc')) Or $(TargetFramework.StartsWith('nets'))";
-            prop.Label = Project.METALIB_PK_TOKEN;
+            prop.Label = Id;
         }
 
         private bool RemoveCopyLocalLockFileAssemblies() => RemoveLabeledProperty(MSBuildProperties.PRJ_CP_LOCKFILE_ASM);
@@ -206,8 +216,8 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private void OverrideDebugType()
         {
             var prop = pgroup.SetProperty(MSBuildProperties.PRJ_DBG_TYPE, "pdbonly");
-            prop.Condition = "'$(DebugType)'!='full'";
-            prop.Label = Project.METALIB_PK_TOKEN;
+            prop.Condition = "'$(DebugType)'!='full' And '$(DebugType)'!='pdbonly'";
+            prop.Label = Id;
         }
 
         private bool RemoveOverridedDebugType() => RemoveLabeledProperty(MSBuildProperties.PRJ_DBG_TYPE);
@@ -216,7 +226,10 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             // access to properties without evaluating the condition attribute
             ProjectPropertyElement _Get() => XProject.Project.Xml.Properties
-                                            .FirstOrDefault(p => p.Name == name && p.Label == Project.METALIB_PK_TOKEN);
+                                            .FirstOrDefault(p => 
+                                                p.Name == name 
+                                                && (p.Label == Id || p.Label == Project.METALIB_PK_TOKEN)
+                                             ); // METALIB_PK_TOKEN was for 1.7.3 or less
 
             var pp = _Get();
             if(pp?.Parent == null) {
