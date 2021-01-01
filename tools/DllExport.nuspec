@@ -27,6 +27,6 @@
     <summary>.NET DllExport with .NET Core support (aka 3F/DllExport)</summary>
     <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions dotnetcore Conari pinvoke net-c-func native tools dotnet-DllExport unmanaged-export hMSBuild GetNuTool MvsSln</tags>
     <releaseNotes> changelog: https://github.com/3F/DllExport/blob/master/changelog.txt </releaseNotes>
-    <copyright>Copyright (c) 2009-2015  Robert Giesecke / Copyright (c) 2016-2020  Denis Kuzmin &lt; x-3F@outlook.com &gt; GitHub/3F </copyright>
+    <copyright>Copyright (c) 2009-2015  Robert Giesecke | Copyright (c) 2016-2021  Denis Kuzmin &lt;x-3F@outlook.com&gt; github/3F </copyright>
   </metadata>
 </package>

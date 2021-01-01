@@ -4,7 +4,7 @@
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
-Copyright (c) 2016-2020  Denis Kuzmin < x-3F@outlook.com > GitHub/3F
+Copyright (c) 2016-2021  Denis Kuzmin <x-3F@outlook.com> github/3F
 ```
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hh2oxibqoi6wrdnc/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/branch/master)
