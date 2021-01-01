@@ -1,93 +1,19 @@
 ﻿{
   "Header": {
     "_": [
-      "https://github.com/3F/vsSolutionBuildEvent"
+      " This file for vsSolutionBuildEvent ",
+      " https://github.com/3F/vsSolutionBuildEvent "
     ],
-    "Compatibility": "0.9"
+    "Compatibility": "0.12.4"
   },
-  "Components": [
-    {
-      "ClassName": "InternalComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "UserVariableComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "TryComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "OwpComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "NuGetComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "FunctionComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "FileComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "DteComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "BuildComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "BoxComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "SevenZipComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "ConditionComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "EvMSBuildComponent",
-      "Enabled": true
-    },
-    {
-      "ClassName": "CommentComponent",
-      "Enabled": true
-    }
-  ],
   "PreBuild": [
     {
       "Enabled": true,
       "Name": "ActDir",
       "Caption": "Prepare output directory",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
-      "IgnoreIfBuildFailed": false,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[($(Configuration) == \"PublicRelease\") {\n    #[$(cfgname = 'Release')]\n}\nelse{\n    #[$(cfgname = $(Configuration))]\n}]\n\n#[$(dbin = \"bin/$(cfgname)/\")]\n\n$(revDeltaBase  = \"2016/10/12\")\n$(revDeltaMin   = $([System.Math]::Pow(10, 3)))\n$$(revDeltaMax   = $([System.Math]::Pow(10, 5)))\n$(revDeltaMax   = 65534) #[\" limit of AssemblyVersion (2^16 - 2) - i.e. 65534 max allowed \"]\n\n$(pDllExport    = \"RGiesecke.DllExport\")\n$(pMeta         = \"MetadataFx\")\n$(pMetaCore     = \"MetadataCore\")\n$(pNSBin        = \"NSBin\")\n$(pMvsSln       = \"MvsSln\")\n$(pWizard       = \"Wizard\")\n$(pManager      = \"Manager\")\n$(pPeViewer     = \"PeViewer\")\n$(pGetNuTool    = \"GetNuTool\")\n$(phMSBuild     = \"hMSBuild\")\n$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")\n$(odir          = \"$(dbin)raw/\")\n\n#[IO delete.directory(\"$(dbin)\", true)]\n#[IO copy.directory(\"\", \"$(dbin)\", true)]",
         "Command__": [
           "#[($(Configuration) == \"PublicRelease\") {",
           "    #[$(cfgname = 'Release')]",
@@ -125,26 +51,9 @@
       "Enabled": true,
       "Name": "ActSubmodules",
       "Caption": "submodules and packages",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
-      "IgnoreIfBuildFailed": false,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive GetNuTool\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(pMvsSln)/MvsSln.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive MvsSln\", 1000)]\n}]\n\n#[( !(#[IO exists.file(\"$(phMSBuild)/hMSBuild.sln\")]) )\n{\n    #[File call(\"git\", \"submodule update --init --recursive hMSBuild\", 1000)]\n}]\n\nTODO: option for expensive coreclr\n\n\n#[\" Packages \"]\n\n#[( !(#[IO exists.file(\"packages/__checked\")]) )\n{\n    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]\n        \n    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config;Wizard/packages.config\\\" /nologo /v:m /m:4\")]\n    \n    #[IO copy.directory(\"\", \"packages/\", true)]\n    #[File write(\"packages/__checked\"): ]\n}]",
         "Command__": [
           "#[( !(#[IO exists.file(\"$(pGetNuTool)/gnt.sln\")]) )",
           "{",
@@ -184,16 +93,9 @@
       "Caption": "Custom build for dependencies ...",
       "SupportMSBuild": false,
       "SupportSBEScripts": false,
-      "IgnoreIfBuildFailed": false,
-      "BuildType": "Common",
-      "Confirmation": false,
       "ToConfiguration": [
         "PublicRelease|Any CPU"
       ],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
       "Process": {
         "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
         "Waiting": true,
@@ -203,7 +105,6 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeFile, vsSolutionBuildEvent",
         "Type": "File",
-        "Command": "cd MvsSln & build PublicRelease",
         "Command__": [
           "cd MvsSln & build PublicRelease"
         ]
@@ -213,26 +114,9 @@
       "Enabled": true,
       "Name": "ActUpdVersions",
       "Caption": "Update version number",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
-      "IgnoreIfBuildFailed": false,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var pVer = #[File get(\".version\")]]\n#[$(dxpPrintVersion = \"v$(pVer)\")]\n\n#[IO replace.Regex(\"$(pMetaCore)/$(pMetaCore).csproj\", \"<Version>.+?</Version>\", \"<Version>$(pVer)</Version>\")]\n\n#[var pReleaseVersion   = #[File get(\".release.version\")]]\n#[$(pReleaseVersion     = $(pReleaseVersion.Trim()))]\n\n#[( $(pReleaseVersion) == \"\" ) {\n    #[$(partRelV = \"\")]\n    #[$(pVerRel  = \"$(pVer)\")]\n} else {\n    #[$(partRelV = \"-$(pReleaseVersion)\")]\n    #[$(pVerRel  = \"$(pVer)-$(pReleaseVersion)\")]\n}]\n\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[IO replace.Regex(\"DllExportVersion.cs\", \"(\\sS_NUM\\s=).+?\\\";\", \"$1 \\\"$(pVer)\\\";\")]\n    #[IO replace.Regex(\"DllExportVersion.cs\", \"(\\sS_REL\\s=).+?\\\";\", \"$1 \\\"$(pReleaseVersion)\\\";\")]\n}]",
         "Command__": [
           "#[var pVer = #[File get(\".version\")]]",
           "#[$(dxpPrintVersion = \"v$(pVer)\")]",
@@ -262,28 +146,12 @@
       "Enabled": true,
       "Name": "ActWizardVersion",
       "Caption": "Update WizardVersion",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
-      "IgnoreIfBuildFailed": false,
-      "BuildType": "Common",
-      "Confirmation": false,
       "ToConfiguration": [
         "PublicRelease|Any CPU"
       ],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[var tpl = // This code was generated by a vsSolutionBuildEvent. \n// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.\nnamespace net.r_eg.DllExport\n{\n    using System;\n\n    internal struct DllExportVersion\n    {\n        public const string S_NUM = \"%S_NUM%\";\n        public const string S_REV = \"%S_REV%\";\n        public const string S_REL = \"%S_REL%\";\n\n        public const string S_NUM_REV = S_NUM + \".\" + S_REV;\n        public const string S_PRODUCT = \"$(pVerRel)\";\n\n        public const string BRANCH_SHA1 = \"%B_SHA1%\";\n        public const string BRANCH_NAME = \"%B_NAME%\";\n        public const string BRANCH_REVC = \"%B_REVC%\";\n\n        public const string DXP = \".NET DllExport\";\n        public static readonly Version number = new Version(S_NUM_REV);\n\n        internal const string S_INFO        = S_NUM_REV + \"+\" + BRANCH_SHA1;\n        internal const string S_INFO_P      = S_PRODUCT + \"+\" + BRANCH_SHA1;\n        internal const string S_INFO_FULL   = S_INFO + \":\" + BRANCH_NAME + \"-\" + BRANCH_REVC;\n    }\n}]\n\n\n#[\" \n    Calculate revision\n\"]\n#[var tBase     = $([System.DateTime]::Parse('$(revDeltaBase)').ToBinary())]\n#[var tNow      = $([System.DateTime]::UtcNow.Ticks)]\n#[var revBuild  = #[$(\n                    [System.TimeSpan]::FromTicks('$(\n                        [MSBuild]::Subtract($(tNow), $(tBase))\n                    )')\n                    .TotalMinutes.ToString('0'))]]\n                     \n#[var revBuild  = #[$(\n                    [MSBuild]::Add(\n                        $(revDeltaMin), \n                        $([MSBuild]::Modulo(\n                            $(revBuild), \n                            $([MSBuild]::Subtract(\n                                $(revDeltaMax), $(revDeltaMin)\n                             ))\n                         ))\n                     )\n                   )]\n]\n\n#[$(dxpPrintVersion = \"v$(pVer).$(revBuild)$(partRelV)\")]\n\n#[\" \n    Remove placeholders\n\"]\n#[var tpl = $(tpl.Replace(\"%S_NUM%\", \"$(pVer)\").Replace(\"%S_REV%\", \"$(revBuild)\").Replace(\"%S_REL%\", \"$(pReleaseVersion)\"))]\n\n#[\" \n    Checking of the git to define sha1, branch name, etc.\n\"]\n#[var isGit = #[IO cmd(\"git rev-parse 2>&1\")]]\n#[( $(isGit) == \"\" )\n{\n    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]\n    #[var bName = #[IO sout(\"git\", \"rev-parse --abbrev-ref HEAD\")]]\n    #[var bRevc = #[IO sout(\"git\", \"rev-list HEAD --count\")]]\n    \n    #[($(bName) == \"HEAD\") {\n        #[var bName = $(APPVEYOR_REPO_BRANCH)]\n    }]\n    \n    #[$(dxpPrintVersion = \"$(dxpPrintVersion)+$(bSha1)\")]\n}\nelse {\n    #[$(bSha1 = '-')] #[$(bName = '-')] #[$(bRevc = '-')]\n}]\n\n#[var tpl = #[$(tpl.Replace(\"%B_SHA1%\", \"#[var bSha1]\")\n                   .Replace(\"%B_NAME%\", \"#[var bName]\")\n                   .Replace(\"%B_REVC%\", \"#[var bRevc]\") )]]\n\n#[\" \n    Save result\n\"]\n#[File write(\"DllExportVersion.cs\"):#[var tpl]]",
         "Command__": [
           "#[var tpl = // This code was generated by a vsSolutionBuildEvent. ",
           "// Changes to this file may cause incorrect behavior and will be lost if the code is regenerated.",
@@ -382,26 +250,10 @@
       "Enabled": true,
       "Name": "ActBinaries",
       "Caption": "Binaries & tools ...",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file(\n            \"$(SolutionDir)tools/*.*\", \n            \"$(odir)/tools/\", \n            true, \n            {\"*.nuspec\"})]\n\n#[IO copy.file(\"tools/DllExport.nuspec\", \"$(odir)/DllExport.nuspec\", true)]\n#[IO replace(\"$(odir)/DllExport.nuspec\", \"$-version-$\", \"$(pVerRel)\")]\n\n#[IO copy.file({\n                \"$(pDllExport)/$(OutDir:$(pDllExport))/*.*\",\n                \"$(pMSBuild)/$(OutDir:$(pMSBuild))/*.*\",\n                \"$(pNSBin)/$(OutDir:$(pNSBin))/*.*\",\n                \"$(pWizard)/$(OutDir:$(pWizard))/*.*\",\n                \"$(pPeViewer)/$(OutDir:$(pPeViewer))/*.*\"\n               }, \n               \"$(odir)/tools/\", true)]\n\n#[\" https://github.com/3F/DllExport/issues/36 \"]\n#[IO copy.directory(\"\", \"$(odir)/lib/net20/\", true)]\n#[IO write(\"$(odir)/lib/net20/_._\"):]\n\n#[$(metaCoreTargetVer = $(TargetFramework:$(pMetaCore)))]\n\n#[IO copy.directory(\"\", \"$(odir)/lib/$(metaCoreTargetVer)/\", true)]\n#[IO write(\"$(odir)/lib/$(metaCoreTargetVer)/_._\"):]\n\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/*.dll\", \"$(odir)/tools/raw/lib/net20/\", true)]\n#[IO copy.file(\"$(pMetaCore)/$(OutputPath:$(pMetaCore))*.dll\", \"$(odir)/tools/raw/lib/netstd/\", true)]\n\n##[IO copy.file(\"tools/build.targets\", \"$(odir)/build/net/DllExport.targets\", true)]\n\n#[IO copy.file({ \"Readme.md\", \"3rd-party.txt\", \"changelog.txt\", \".gitattributes\" }, \"$(odir)/\", true)]\n#[IO copy.file(\"LICENSE\", \"$(odir)/License.txt\", true)]\n\n#[var buildInfo =  $([System.String]::Concat(\"  \"))\n    S_NUM_REV:          #[$(pVer)].#[$(revBuild)]\n    \n    S_REL:              #[$(pReleaseVersion)]\n    \n    bSha1:              #[$(bSha1)]\n    \n    MetaCor:            #[$(TargetFramework:$(pMetaCore))]\n    \n    MetaLib:            #[$(TargetFrameworkVersion:$(pMeta))]\n    \n    Wizard:             #[$(TargetFrameworkVersion:$(pWizard))]\n    \n    Configuration:      #[$(Configuration)]\n    \n    :: generated by a vsSolutionBuildEvent #[$(vsSolutionBuildEvent)]\n]\n\n#[IO writeLine(\"$(odir)/build_info.txt\"):#[var buildInfo]]\n\n\n#[IO replace(\"$(odir)/DllExport.nuspec\", \"{build_info}\", \"$(buildInfo)\")]",
         "Command__": [
           "#[IO copy.file(",
           "            \"$(SolutionDir)tools/*.*\", ",
@@ -468,26 +320,10 @@
       "Enabled": true,
       "Name": "XmlMetadata",
       "Caption": "Prepare XML metadata of the library",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]\n\n#[IO copy.file(\"$(pMeta)/$(OutDir:$(pMeta))/DllExport.xml\", \n               \"$(odir)/tools/raw/lib/net20/\", true)]\n\n#[IO replace.Regex(\"$(odir)/tools/raw/lib/net20/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]\n\n\n#[IO copy.file(\"$(pMetaCore)/$(DocumentationFile:$(pMetaCore))\", \n               \"$(odir)/tools/raw/lib/netstd/\", true)]\n\n#[IO replace.Regex(\"$(odir)/tools/raw/lib/netstd/DllExport.xml\", \"$(IDNS).*F00+\", \"$(IDNS)\")]",
         "Command__": [
           "#[$(IDNS = 'D3F00FF1770DED978EC774BA389F2DC9')]",
           "",
@@ -508,26 +344,10 @@
       "Enabled": true,
       "Name": "ActILAsm",
       "Caption": "Provide our ILAsm & ILDasm",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO copy.file({\n                \"packages/ILAsm/bin/Win.x86/*.dll\",\n                \"packages/ILAsm/bin/Win.x86/*.exe\",\n                \"packages/ILAsm/*.txt\",\n                \"packages/ILAsm/*.md\"\n               }, \n               \"$(odir)/tools/coreclr/\", true)]",
         "Command__": [
           "#[IO copy.file({",
           "                \"packages/ILAsm/bin/Win.x86/*.dll\",",
@@ -543,16 +363,7 @@
       "Enabled": true,
       "Name": "WizardInst",
       "Caption": "Preparing Managers ...",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
       "Process": {
         "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
         "Waiting": true,
@@ -562,7 +373,6 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[IO writeLine(STDOUT): Build GetNuTool ...]\n#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]\n\n#[var frontend = $(pManager)\\\\batch\\\\Manager.bat]\n#[var gntECore = \"$(pGetNuTool)\\\\bin\\\\Release\\\\raw\\\\executables\\\\batch\\\\gnt.bat\"]\n#[var dxpWZ = $(dbin.Replace('/', '\\\\'))DllExport.bat]\n\n#[try\n{\n    #[IO writeLine(STDOUT):\n        #[IO cmd(\"copy /Y/B $(frontend)+$(gntECore) $(dxpWZ)\")]\n     ]\n}\ncatch(err, msg)\n{\n    #[IO write(STDOUT):\n        Trying with another method... ]\n    \n    #[IO cmd(\"type $(frontend)>$(dxpWZ)\")]\n    #[IO cmd(\"type $(gntECore)>>$(dxpWZ)\")]\n    \n    #[IO writeLine(STDOUT): ok]\n\n}]\n\n\n#[\" \n    finalization\n\"]\n#[IO replace.Regex(\"$(dxpWZ)\", \"(@echo off) & echo.*?exit /B \\d+\", \"$1\")]\n\n\n#[\" \n    update version\n\"]\n#[IO replace(\"$(dxpWZ)\", \"$-pkg-version-$\", \"$(pVerRel)\")]\n#[( $(Configuration) != \"PublicRelease\" )\n{\n    #[$(wzPrintVer = \"$(pVer)$(partRelV)\")]\n    #[( $(Configuration) ~= \"Debug\" )\n    {\n        #[$(wzPrintVer += \" [ Debug ]\")]\n    }]    \n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(wzPrintVer)\")]\n}\nelse\n{\n    #[IO replace(\"$(dxpWZ)\", \"$-version-$\", \"$(dxpPrintVersion)\")]\n}]\n\n#[\" \n    .compressor\n\"]\n#[IO writeLine(STDOUT): Generate minified version of the Wizard's manager ...]\n#[$(mbatch = \"$(SolutionDir)$(pManager)/batch/\")]\n#[IO writeLine(STDOUT): #[IO cmd(\"$(SolutionDir)tools\\hMSBuild $(mbatch).compressor /p:core=\\\"$(SolutionDir)$(dxpWZ)\\\" /p:output=\\\"$(SolutionDir)$(dxpWZ)_minified.bat\\\" /p:maptpl=\\\"$(mbatch)map.tpl.targets\\\" /nologo /v:m /m:4 \", 400)]]\n\n##[IO copy.file(\"$(dxpWZ)\", \"$(dxpWZ).full.bat\", true)]\n#[IO copy.file(\"$(dxpWZ)_minified.bat\", \"$(dxpWZ)\", true)]\n#[IO delete.files({\"$(dxpWZ)_minified.bat\"})]\n\n#[IO copy.file(\"$(dxpWZ)\", \"$(odir)/\", true)]\n\n\n#[\" \n    quick commands\n\"]\n\n##[IO write(\"$(dbin)/DllExport_Configure.bat\"): DllExport -action Configure %*]\n",
         "Command__": [
           "#[IO writeLine(STDOUT): Build GetNuTool ...]",
           "#[IO writeLine(STDOUT): #[IO cmd(\"cd GetNuTool & call build PublicRelease\", 400)]]",
@@ -641,16 +451,7 @@
       "Enabled": true,
       "Name": "MgrTests",
       "Caption": "Preparing tests for manager ...",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
       "Process": {
         "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
         "Waiting": true,
@@ -660,7 +461,6 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "\n#[$(mgrTests = \"$(dbin)/tests/mgr/\")]\n\n#[IO copy.file(\n            {\n                \"$(dbin)*.bat\",\n                \"$(dbin)*.map\",\n                \"$(dbin)*.targets\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]\n\n\n#[IO copy.file(\n            {\n                \"$(mbatch)tests.bat\",\n                \"$(mbatch)tests.targets\"\n            }, \n            \"$(mgrTests)/\", \n            true\n)]\n\n#[File replace(\"$(mgrTests)tests.bat\", \"$version$\", \"$(pVerRel)\")]",
         "Command__": [
           "",
           "#[$(mgrTests = \"$(dbin)/tests/mgr/\")]",
@@ -693,16 +493,7 @@
       "Enabled": true,
       "Name": "hMSBuild",
       "Caption": "Build hMSBuild ...",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
       "Process": {
         "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
         "Waiting": true,
@@ -715,7 +506,6 @@
         "Handler": "cmd.exe /C",
         "Newline": "&",
         "Wrapper": "",
-        "Command": "echo Build hMSBuild ... \necho. \necho. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") \necho. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")\necho. \ncd hMSBuild \ncall build \n(copy /Y/B \"$(hMSBuildRawDir)hMSBuild.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")",
         "Command__": [
           "echo Build hMSBuild ... ",
           "echo. ",
@@ -732,19 +522,11 @@
       "Enabled": true,
       "Name": "OfflineVersion",
       "Caption": "Preparing Offline version ...",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
       "ToConfiguration": [
         "PublicRelease|Any CPU",
         "Release|Any CPU"
       ],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
       "Process": {
         "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
         "Waiting": true,
@@ -754,7 +536,6 @@
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[\" \n    Offline version\n\"]\n#[$(mgrOffline = \"$(pManager)\\\\batch\\\\Manager.offline.bat\")]\n\n#[IO copy.directory(\"$(odir)\", \"$(dbin)/raw.offline/packages/DllExport\", true, true)]\n#[IO copy.file(\"$(mgrOffline)\", \"$(dbin)/raw.offline/DllExport.bat\", true)]\n#[IO copy.file({ \".gitattributes\" }, \"$(dbin)/raw.offline/\", true)]\n##[IO write(\"$(dbin)/raw.offline/DllExport_Configure.bat\"): DllExport -action Configure %*]\n\n#[IO write(\"$(dbin)/raw.offline/Readme.txt\"): \n! Please note ! this folder contains an offline version of the .NET DllExport package. \n\nManager is already configured for already received package inside this folder through DllExport.bat wrapper in upper level.\nInternet connection is not required for any use.\n\nUse the same commands to this wrapper as for the classic version, for example:\n\n```\n    DllExport -action Export\n```\n\nPlease read our documentation or press:\n\n```\n    DllExport -help\n```\n\n! Don't forget to search the latest an offline version of this package with the new features and bug fixes ! \n    \n\nAbout manager:\nhttps://github.com/3F/DllExport/wiki/DllExport-Manager\n\nThe latest releases including nightly builds:\nhttps://github.com/3F/DllExport/releases\n\nThe project repo on GitHub:\nhttps://github.com/3F/DllExport\n\n\n]\n\n",
         "Command__": [
           "#[\" ",
           "    Offline version",
@@ -807,26 +588,10 @@
       "Enabled": true,
       "Name": "ActPack",
       "Caption": "Packing with GetNuTool ...",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
       "IgnoreIfBuildFailed": true,
-      "BuildType": "Common",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "#[\" v1.5 and 1.6 contains bug if used 1.2.3-alpha, 1.2.3-beta-2, 1.2.3-rc ... \"] \n##[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")] \n#[IO cmd(\"tools\\\\gnt.bat /t:pack /p:ngin=\\\"$(SolutionDir)$(odir)\\\" /p:ngout=\\\"$(SolutionDir)$(dbin)\\\"\", 400)]\n\n#[( $(cfgname) != \"Debug\" )\n{\n    #[($(revBuild) == \"\" || $(revBuild) ~= \"*\") {\n        #[$(zipname = \"DllExport.$(pVerRel).zip\")]\n    }\n    else {\n        #[$(zipname = \"DllExport.$(pVer).$(revBuild)$(partRelV)+$(bSha1).zip\")]\n    }]\n    \n    ##[7z pack.files({ \n            \"$(odir)\\\\lib\\\\net20\\\\*.*\",\n            \"$(odir)\\\\lib\\\\$(metaCoreTargetVer)\\\\*.*\",\n            \"$(odir)\\\\tools\\\\*.*\",\n            \"$(odir)\\\\tools\\\\coreclr\\\\*.*\",\n            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\net20\\\\*.*\",\n            \"$(odir)\\\\tools\\\\raw\\\\lib\\\\netstd\\\\*.*\",\n            \"$(odir)\\\\*.*\"\n        }, \n        \"$(dbin)\\\\$(zipname)\", \n        { \"$(odir)\\\\*.nuspec\" })]\n        \n    \n    \n    #[\" \n        Offline version\n    \"]\n    \n    #[7z pack.directory(\n        \"$(dbin)raw.offline\", \n        \"$(dbin)offline.$(zipname)\",\n        Zip,\n        Deflate,\n        1\n    )]\n    \n}]\n",
         "Command__": [
           "#[\" v1.5 and 1.6 contains bug if used 1.2.3-alpha, 1.2.3-beta-2, 1.2.3-rc ... \"] ",
           "##[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")] ",
@@ -873,44 +638,20 @@
       }
     }
   ],
-  "CancelBuild": [],
-  "WarningsBuild": [],
-  "ErrorsBuild": [],
-  "OWPBuild": [],
-  "Transmitter": [],
-  "CommandEvent": [],
-  "Logging": [],
   "SlnOpened": [
     {
       "Enabled": true,
       "Name": "ActDefConst",
       "Caption": "define dynamic constants",
-      "SupportMSBuild": true,
-      "SupportSBEScripts": true,
-      "IgnoreIfBuildFailed": false,
       "BuildType": "BeforeAndAfter",
-      "Confirmation": false,
-      "ToConfiguration": [],
-      "ExecutionOrder": {
-        "$type": "net.r_eg.vsSBE.Events.ExecutionOrder[], vsSolutionBuildEvent",
-        "$values": []
-      },
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 30
-      },
       "Mode": {
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
-        "Command": "$(defConstList = \"CONFVER_EXISTS\")\n$(+DefConstDynamic = $(defConstList):Configurator)",
         "Command__": [
           "$(defConstList = \"CONFVER_EXISTS\")",
           "$(+DefConstDynamic = $(defConstList):Configurator)"
         ]
       }
     }
-  ],
-  "SlnClosed": []
+  ]
 }
