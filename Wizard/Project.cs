@@ -806,6 +806,9 @@ namespace net.r_eg.DllExport.Wizard
 
         private string CopyLib(string src, string dest)
         {
+            if(!File.Exists(src)) throw new FileNotFoundException();
+            if(string.IsNullOrWhiteSpace(dest)) throw new DirectoryNotFoundException();
+
             var dir = Path.GetDirectoryName(dest);
             if(!Directory.Exists(dir)) {
                 Directory.CreateDirectory(dir);

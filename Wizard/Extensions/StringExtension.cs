@@ -125,6 +125,28 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             return v;
         }
 
+        internal static string FindUpDirUsingFile(this string path, string pattern)
+        {
+            if(string.IsNullOrWhiteSpace(pattern)) throw new ArgumentOutOfRangeException(nameof(pattern));
+
+            var dir = new DirectoryInfo(path ?? throw new ArgumentNullException(nameof(path)));
+            while(dir.Parent != null)
+            {
+                foreach(var _ in dir.EnumerateFiles(pattern)) return dir.FullName;
+                dir = dir.Parent;
+            }
+
+            return null;
+        }
+
+        internal static string UpDir(this string path, int level = 1)
+        {
+            var dir = new DirectoryInfo(path ?? throw new ArgumentNullException(nameof(path)));
+            
+            while(dir.Parent != null && level-- > 0) dir = dir.Parent;
+            return dir?.FullName;
+        }
+
         /// <summary>
         /// Formatting of the path to directory.
         /// </summary>
@@ -132,6 +154,8 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns></returns>
         public static string DirectoryPathFormat(this string path, string root = null)
         {
+            if(string.IsNullOrWhiteSpace(path)) return root;
+
             return CombineRootPath(
                 MvsSln.Extensions.StringExtension.DirectoryPathFormat(OpenDoubleQuotes(path)),
                 root

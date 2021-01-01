@@ -9,8 +9,6 @@
   <Target Name="DllExportWizard">
     
     <PropertyGroup>
-      <wSlnDir Condition="'$(wSlnDir)' == ''">.\</wSlnDir>
-      <wPkgPath Condition="'$(wPkgPath)' == ''">packages\DllExport</wPkgPath>
       <wMetaLib Condition="'$(wMetaLib)' == ''">tools\raw\lib\net20\DllExport.dll</wMetaLib>
       <wMetaCor Condition="'$(wMetaCor)' == ''">tools\raw\lib\netstd\DllExport.dll</wMetaCor>
       <wDxpTarget Condition="'$(wDxpTarget)' == ''">tools\net.r_eg.DllExport.targets</wDxpTarget>
@@ -18,6 +16,9 @@
     </PropertyGroup>
     
     <PropertyGroup Label="Optional">
+      <wSlnDir Condition="'$(wSlnDir)' == ''"></wSlnDir> <!-- Path to solution directory -->
+      <wPkgPath Condition="'$(wPkgPath)' == ''"></wPkgPath> <!-- Path to root package directory -->
+      
       <!-- SlnFile: Optional predefined .sln file to process via the restore operations etc. -->
       <wSlnFile Condition="'$(wSlnFile)' == ''"></wSlnFile> <!-- will be used the first found .sln file if it's empty -->
       <wRootPath Condition="'$(wRootPath)' == ''"></wRootPath> <!-- Optional root path of user paths. Affects on wSlnFile, wSlnDir, wPkgPath -->

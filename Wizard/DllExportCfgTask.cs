@@ -37,149 +37,88 @@ namespace net.r_eg.DllExport.Wizard
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
 
         private UI.MsgForm uimsg;
+        private readonly string toolDir = Environment.CurrentDirectory;
         private readonly object sync = new object();
 
-        /// <summary>
-        /// Optional root path of user paths. 
-        /// Affects on SlnFile, SlnDir, PkgPath.
-        /// </summary>
-        public string RootPath
-        {
-            get => _rootPath;
-            set => _rootPath = value.DirectoryPathFormat();
-        }
-        private string _rootPath;
+        #region ITask properties
+
+        /// <inheritdoc cref="IWizardConfig.RootPath"/>
+        public string RootPath { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.SlnDir"/>
+        public string SlnDir { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.SlnFile"/>
+        public string SlnFile { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.PkgPath"/>
+        public string PkgPath { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.MetaLib"/>
+        [Required]
+        public string MetaLib { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.MetaCor"/>
+        [Required]
+        public string MetaCor { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.DxpTarget"/>
+        [Required]
+        public string DxpTarget { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.MgrArgs"/>
+        public string MgrArgs { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.PkgVer"/>
+        public string PkgVer { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.Proxy"/>
+        public string Proxy { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.MsgGuiLevel"/>
+        public int MsgGuiLevel { get; set; }
+
+        /// <inheritdoc cref="IWizardConfig.StoragePath"/>
+        public string StoragePath { get; set; }
 
         /// <summary>
-        /// Path to directory with .sln files to be processed.
+        /// Updates an action type for <see cref="IWizardConfig.Type"/> using raw value.
         /// </summary>
         [Required]
-        public string SlnDir
+        public string Action
         {
-            get => _slnDir;
-            set => _slnDir = value.DirectoryPathFormat(RootPath);
-        }
-        private string _slnDir;
-
-        /// <summary>
-        /// Optional predefined .sln file to process via the restore operations etc.
-        /// </summary>
-        public string SlnFile
-        {
-            get => _slnFile;
-            set => _slnFile = value.FilePathFormat(RootPath);
-        }
-        private string _slnFile;
-
-        /// <summary>
-        /// Root path of the DllExport package.
-        /// </summary>
-        [Required]
-        public string PkgPath
-        {
-            get => _pkgPath;
-            set => _pkgPath = value.DirectoryPathFormat(RootPath);
-        }
-        private string _pkgPath;
-
-        /// <summary>
-        /// Relative path to meta library.
-        /// </summary>
-        [Required]
-        public string MetaLib
-        {
-            get => _metaLib;
-            set => _metaLib = value.FilePathFormat();
-        }
-        private string _metaLib;
-
-        /// <summary>
-        /// Relative path to meta core library.
-        /// </summary>
-        [Required]
-        public string MetaCor
-        {
-            get => _metacor;
-            set => _metacor = value.FilePathFormat();
-        }
-        private string _metacor;
-
-        /// <summary>
-        /// Path to .targets file of the DllExport.
-        /// </summary>
-        [Required]
-        public string DxpTarget
-        {
-            get => _dxpTarget;
-            set => _dxpTarget = value.FilePathFormat();
-        }
-        private string _dxpTarget;
-
-        /// <summary>
-        /// Arguments to manager.
-        /// </summary>
-        public string MgrArgs
-        {
-            get => _mgrArgs;
-            // possible double quotes at least from 1.6.0 and 1.6.1
-            set => _mgrArgs = value.OpenDoubleQuotes();
-        }
-        public string _mgrArgs;
-
-        /// <summary>
-        /// Version of the package that invokes target.
-        /// </summary>
-        public string PkgVer
-        {
-            get => _pkgVer;
-            set => _pkgVer = value.Trim();
-        }
-        private string _pkgVer;
-
-        /// <see cref="IWizardConfig.Distributable"/>
-        public bool Distributable => !string.IsNullOrWhiteSpace(PkgVer) && PkgVer[0] != '-';
-
-        /// <see cref="IWizardConfig.PackageType"/>
-        public string PackageType => (string.IsNullOrWhiteSpace(PkgVer) || PkgVer.Equals("actual", StringComparison.OrdinalIgnoreCase)) ? "offline" : PkgVer;
-
-        /// <summary>
-        /// Proxy configuration if presented in `-proxy` key.
-        /// </summary>
-        public string Proxy
-        {
-            get;
-            set;
-        }
-
-        /// <summary>
-        /// Path to external storage if used.
-        /// </summary>
-        public string StoragePath
-        {
-            get
+            set
             {
-                if(_storagePath == null) {
-                    _storagePath = TargetsFile.DEF_CFG_FILE;
+                if(string.IsNullOrWhiteSpace(value))
+                {
+                    Type = ActionType.Default;
+                    return;
                 }
-                return _storagePath;
+
+                Type = (ActionType)Enum.Parse
+                (
+                    typeof(ActionType),
+                    value.Trim(),
+                    false
+                );
             }
-            set => _storagePath = value.FilePathFormat();
         }
-        private string _storagePath;
 
         /// <summary>
-        /// Raw storage type via CfgStorage. 
+        /// Updates storage type for <see cref="IWizardConfig.CfgStorage"/> using raw value.
         /// </summary>
         public string Storage
         {
             set
             {
-                if(String.IsNullOrWhiteSpace(value)) {
+                if(string.IsNullOrWhiteSpace(value))
+                {
                     CfgStorage = CfgStorageType.Default;
                     return;
                 }
 
-                CfgStorage = (CfgStorageType)Enum.Parse(
+                CfgStorage = (CfgStorageType)Enum.Parse
+                (
                     typeof(CfgStorageType), 
                     value.Trim(), 
                     true
@@ -187,58 +126,19 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        /// <summary>
-        /// Where to store configuration data.
-        /// </summary>
-        public CfgStorageType CfgStorage
-        {
-            get;
-            set;
-        } = CfgStorageType.Default;
+        #endregion
 
-        /// <summary>
-        /// Raw type of operation via ActionType.
-        /// </summary>
-        [Required]
-        public string Action
-        {
-            set
-            {
-                if(String.IsNullOrWhiteSpace(value)) {
-                    Type = ActionType.Default;
-                    return;
-                }
+        /// <inheritdoc cref="IWizardConfig.Distributable"/>
+        public bool Distributable => !string.IsNullOrWhiteSpace(PkgVer) && PkgVer[0] != '-';
 
-                Type = (ActionType)Enum.Parse(
-                    typeof(ActionType),
-                    value.Trim(),
-                    //char.ToUpperInvariant(value[0]) + value.Substring(1).ToLowerInvariant()
-                    false
-                );
-            }
-        }
+        /// <inheritdoc cref="IWizardConfig.PackageType"/>
+        public string PackageType => (string.IsNullOrWhiteSpace(PkgVer) || PkgVer.Equals("actual", StringComparison.OrdinalIgnoreCase)) ? "offline" : PkgVer;
 
-        /// <summary>
-        /// The evaluated type of operation.
-        /// </summary>
-        public ActionType Type
-        {
-            get;
-            protected set;
-        }
+        /// <inheritdoc cref="IWizardConfig.CfgStorage"/>
+        public CfgStorageType CfgStorage { get; set; } = CfgStorageType.Default;
 
-        /// <summary>
-        /// To show messages via GUI dlg for selected level (any positive number) and above.
-        /// Levels: 0 - 5 (see Message.Level)
-        /// '4' = means 4 (Error) + 5 (Fatal) levels.
-        /// Any negative number disables this.
-        /// It affects only for messages to GUI.
-        /// </summary>
-        public int MsgGuiLevel
-        {
-            get;
-            set;
-        }
+        /// <inheritdoc cref="IWizardConfig.Type"/>
+        public ActionType Type { get; protected set; }
 
         /// <summary>
         /// Executes the msbuild task.
@@ -246,7 +146,9 @@ namespace net.r_eg.DllExport.Wizard
         /// <returns>true if the task successfully executed.</returns>
         public override bool Execute()
         {
-            if(String.IsNullOrWhiteSpace(SlnDir)) {
+            UpdateMSBuildValues();
+
+            if(string.IsNullOrWhiteSpace(SlnDir)) {
                 throw new ArgumentNullException(nameof(SlnDir));
             }
 
@@ -317,6 +219,26 @@ namespace net.r_eg.DllExport.Wizard
             Console.ResetColor();
         }
 
+        private void UpdateMSBuildValues()
+        {
+            RootPath    = (RootPath ?? toolDir.FindUpDirUsingFile("*.sln")).DirectoryPathFormat();
+
+            SlnDir      = SlnDir.DirectoryPathFormat(RootPath);
+            SlnFile     = SlnFile.FilePathFormat(RootPath);
+
+            PkgPath     = (PkgPath ?? toolDir.FindUpDirUsingFile("*.nuspec") ?? toolDir.UpDir())
+                            .DirectoryPathFormat(RootPath);
+
+            MetaLib     = MetaLib.FilePathFormat();
+            MetaCor     = MetaCor.FilePathFormat();
+            DxpTarget   = DxpTarget.FilePathFormat();
+            PkgVer      = PkgVer?.Trim();
+            StoragePath = StoragePath.FilePathFormat() ?? TargetsFile.DEF_CFG_FILE;
+
+            // possible double quotes at least from 1.6.0 and 1.6.1
+            MgrArgs = MgrArgs.OpenDoubleQuotes();
+        }
+
         private void PrintKeys(Message.Level level)
         {
             LSender.Send(this, $"Instance: '{Assembly.GetEntryAssembly().Location}'", level);
@@ -358,22 +280,22 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         #region IDisposable
-        private bool disposed = false;
 
-        // To correctly implement the disposable pattern.
+        private bool disposed;
+
         public void Dispose()
         {
             Dispose(true);
+            GC.SuppressFinalize(this);
         }
 
         protected virtual void Dispose(bool _)
         {
-            if(disposed) {
-                return;
+            if(!disposed)
+            {
+                Free();
+                disposed = true;
             }
-            disposed = true;
-
-            Free();
         }
 
         #endregion
