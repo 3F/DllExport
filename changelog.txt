@@ -2,6 +2,35 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[v1.7.4] 2021.01.02
+
+    * FIXED: Basic project integration stuck on adding property message. Issue #175.
+             Modern VS/MSBuild 16.8+
+    
+    * FIXED: Fixed integration with Conari and merging modules via ILMerge. Issue #170.
+    
+    * FIXED: double.NaN leads to errors for non exported methods. Issue #174.
+             ```
+             syntax error at token '-' in: IL_0029: ldc.r8 -nan(ind)
+             ```
+             
+    * NEW: Manager. Implemented `-no-mgr` key:
+            - Do not use manager for automatic restore the remote package.
+            
+    * CHANGED: FIPS compliant algorithms.
+               Unable to install when FIPS enabled. Issue #171.
+               
+    * CHANGED: Improved the searching paths logic for RootPath and PkgPath, 
+                to be more loyal when no keys for some reason. Part of #175.
+               
+    * CHANGED: Updated MvsSln 2.5.3
+               https://github.com/3F/MvsSln/releases/tag/2.5.3
+               
+    * CHANGED: Use special edition for DllExport project. Part of issue #171.
+               https://github.com/3F/MvsSln
+               branch: edition/DllExport
+
+
 [v1.7.3] 2020.06.12
 
     * FIXED: Fixed syntax error at token '-' in: IL_002d: ldc.r8 -nan(ind) with "return Double.NaN"
