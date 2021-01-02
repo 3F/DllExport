@@ -159,9 +159,16 @@ set appl=%app% -pkg-link "..\..\DllExport.$version$.nupkg"
     setlocal 
         echo Test case 16: checking for -dxp-version, -server, -proxy  & set "%flagName%=16"
         
-        call %mgrFile% -action Default -dxp-version 1.6.5
-        call %app% -action Default -dxp-version 1.6.5 -server "https://127.0.0.1:8082/" -proxy "guest:1234@127.0.0.1:7428" 
+        call %mgrFile% -action Default -dxp-version 1.7.3
+        call %app% -action Default -dxp-version 1.7.3 -server "https://127.0.0.1:8082/" -proxy "guest:1234@127.0.0.1:7428" 
         :: -pe-exp-list "bin\Debug\regXwild.dll"
+
+    endlocal
+
+    setlocal 
+        echo Test case 17: checking for -no-mgr flag & set "%flagName%=17"
+
+        call %appl% -no-mgr
 
     endlocal
     

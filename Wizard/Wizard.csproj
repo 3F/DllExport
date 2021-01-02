@@ -59,6 +59,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DxpOptType.cs" />
     <Compile Include="Gears\PostProcGear.cs" />
     <Compile Include="IProjectSvc.cs" />
     <Compile Include="MSBuildTargets.cs" />

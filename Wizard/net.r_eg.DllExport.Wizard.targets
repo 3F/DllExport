@@ -27,6 +27,7 @@
       <wMgrArgs Condition="'$(wMgrArgs)' == ''"></wMgrArgs>
       <wPkgVer Condition="'$(wPkgVer)' == ''"></wPkgVer> <!-- Version of the package that invokes target -->
       <wProxy Condition="'$(wProxy)' == ''"></wProxy>
+      <wDxpOpt Condition="'$(wDxpOpt)' == ''">0</wDxpOpt>
     </PropertyGroup>
 
     <PropertyGroup Label="Debug">
@@ -54,6 +55,7 @@
         Action="$(wAction)" 
         PkgVer="$(wPkgVer)" 
         Proxy="$(wProxy)" 
+        DxpOpt="$(wDxpOpt)" 
         MsgGuiLevel="$(MsgGuiLevel)" 
     />
 

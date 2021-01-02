@@ -125,5 +125,32 @@ namespace net.r_eg.DllExport.Wizard.Extensions
 
         internal static void RemoveEmptyPropertyGroups(this IXProject xp) 
             => xp.RemovePropertyGroups(p => p.Properties.Count < 1);
+
+        internal static bool RemoveXmlTarget(this IXProject xp, string name)
+        {
+            if(string.IsNullOrWhiteSpace(name))
+            {
+                return false;
+            }
+
+            var target = xp?.Project.Xml.Targets?.FirstOrDefault(t => t.Name == name);
+            if(target != null)
+            {
+                xp.Project.Xml.RemoveChild(target);
+                return true;
+            }
+            return false;
+        }
+
+        internal static void RemoveProperties(this IXProject xp, params string[] names)
+        {
+            if(xp == null) return;
+
+            foreach(string name in names)
+            {
+                if(!string.IsNullOrWhiteSpace(name)) while(xp.RemoveProperty(name, true)) { }
+            }
+            xp.RemoveEmptyPropertyGroups();
+        }
     }
 }

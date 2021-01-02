@@ -57,32 +57,18 @@ namespace net.r_eg.DllExport.Wizard
         private readonly IEnumerable<IProjectGear> gears;
         private readonly LegacyPackagesFile lpf;
 
-        /// <summary>
-        /// Access to found project.
-        /// </summary>
-        public IXProject XProject
-        {
-            get;
-            protected set;
-        }
+        /// <inheritdoc cref="IProject.XProject"/>
+        public IXProject XProject { get; protected set; }
 
-        /// <summary>
-        /// Installation checking.
-        /// </summary>
+        /// <inheritdoc cref="IProject.Installed"/>
         public bool Installed
             => InternalError == null 
             && !string.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
 
-        /// <summary>
-        /// Message if an internal error occurred, otherwise null value.
-        /// TODO: because of DxpIsolatedEnv. See details there.
-        /// </summary>
+        /// <inheritdoc cref="IProject.InternalError"/>
         public string InternalError => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluatedValue;
 
-        /// <summary>
-        /// Special identifier. Like `ProjectGuid` that is not available in SDK-based projects.
-        /// https://github.com/3F/DllExport/issues/36#issuecomment-320794498
-        /// </summary>
+        /// <inheritdoc cref="IProject.DxpIdent"/>
         public string DxpIdent
         {
             get
@@ -103,9 +89,7 @@ namespace net.r_eg.DllExport.Wizard
         }
         private string _dxpIdent;
 
-        /// <summary>
-        /// Relative path from location of sln file.
-        /// </summary>
+        /// <inheritdoc cref="IProject.ProjectPath"/>
         public string ProjectPath
         {
             get
@@ -119,57 +103,28 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        /// <summary>
-        /// Full path to root solution directory.
-        /// </summary>
+        /// <inheritdoc cref="IProject.SlnDir"/>
         public virtual string SlnDir => XProject?.Sln?.SolutionDir ?? Config?.Wizard?.SlnDir;
 
-        /// <summary>
-        /// Get defined namespace for project.
-        /// </summary>
+        /// <inheritdoc cref="IProject.ProjectNamespace"/>
         public string ProjectNamespace => GetProperty(MSBuildProperties.PRJ_NAMESPACE);
 
-        /// <summary>
-        /// Checks usage of external storage for this project.
-        /// </summary>
+        /// <inheritdoc cref="IProject.HasExternalStorage"/>
         public bool HasExternalStorage => XProject?.GetImports(null, Guids.X_EXT_STORAGE).Count() > 0;
 
-        /// <summary>
-        /// Active configuration of user data.
-        /// </summary>
-        public IUserConfig Config
-        {
-            get;
-            set;
-        }
+        /// <inheritdoc cref="IProject.Config"/>
+        public IUserConfig Config { get; set; }
 
-        /// <summary>
-        /// List of used MSBuild properties.
-        /// </summary>
-        public IDictionary<string, string> ConfigProperties
-        {
-            get;
-            private set;
-        } = new Dictionary<string, string>();
+        /// <inheritdoc cref="IProject.ConfigProperties"/>
+        public IDictionary<string, string> ConfigProperties { get; private set; } 
+            = new Dictionary<string, string>();
 
-        /// <summary>
-        /// Limitation of actions if not used PublicKeyToken.
-        /// https://github.com/3F/DllExport/issues/65
-        /// </summary>
-        public bool PublicKeyTokenLimit
-        {
-            get;
-            set;
-        } = true;
+        /// <inheritdoc cref="IProject.PublicKeyTokenLimit"/>
+        public bool PublicKeyTokenLimit { get; set; } = true;
 
         protected ISender Log => Config?.Log ?? LSender._;
 
-        /// <summary>
-        /// Returns fullpath to meta library for current project.
-        /// </summary>
-        /// <param name="evaluate">Will return unevaluated value if false.</param>
-        /// <param name="corlib">netfx-based or netcore-based meta lib.</param>
-        /// <returns></returns>
+        /// <inheritdoc cref="IProject.MetaLib"/>
         public virtual string MetaLib(bool evaluate, bool corlib = false)
         {
             string mdll = GetMetaDll(corlib);
@@ -192,11 +147,7 @@ namespace net.r_eg.DllExport.Wizard
             );
         }
 
-        /// <summary>
-        /// To recover references with project file.
-        /// IWizardConfig.CfgStorage value can affect on type of this references.
-        /// </summary>
-        /// <param name="id">Known identifier of the references.</param>
+        /// <inheritdoc cref="IProject.Recover"/>
         public void Recover(string id)
         {
             if(string.IsNullOrWhiteSpace(id)) {
@@ -208,9 +159,7 @@ namespace net.r_eg.DllExport.Wizard
             ActionConfigure(true);
         }
 
-        /// <summary>
-        /// To unset configured data from project if presented.
-        /// </summary>
+        /// <inheritdoc cref="IProject.Unset"/>
         public void Unset()
         {
             Log.send(this, $"Trying to unset data from '{DxpIdent}'", Message.Level.Info);
@@ -218,11 +167,7 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        /// <summary>
-        /// To configure project via specific action.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
+        /// <inheritdoc cref="IProject.Configure"/>
         public virtual bool Configure(ActionType type)
         {
             switch(type) {
@@ -246,7 +191,7 @@ namespace net.r_eg.DllExport.Wizard
         #region IProjectSvc
 
         ProjectTargetElement IProjectSvc.AddTarget(string name) => AddTarget(name);
-        bool IProjectSvc.RemoveXmlTarget(string name) => RemoveXmlTarget(name);
+        bool IProjectSvc.RemoveXmlTarget(string name) => XProject.RemoveXmlTarget(name);
         void IProjectSvc.SetProperty(string name, string value) => SetProperty(name, value);
         void IProjectSvc.SetProperty(string name, bool val) => SetProperty(name, val);
         void IProjectSvc.SetProperty(string name, int val) => SetProperty(name, val);
@@ -254,17 +199,13 @@ namespace net.r_eg.DllExport.Wizard
 
         #endregion
 
-        /// <param name="xproject"></param>
-        /// <param name="init"></param>
         public Project(IXProject xproject, IConfigInitializer init)
             : this(xproject)
         {
             Config = GetUserConfig(xproject, init);
-
             Config.AddTopNamespace(ProjectNamespace);
         }
 
-        /// <param name="xproject"></param>
         public Project(IXProject xproject)
         {
             XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
@@ -448,7 +389,7 @@ namespace net.r_eg.DllExport.Wizard
                 }
             }
 
-            RemoveProperties(MSBuildProperties.PRJ_PLATFORM);
+            XProject.RemoveProperties(MSBuildProperties.PRJ_PLATFORM);
             SetProperty(MSBuildProperties.PRJ_PLATFORM, platform);
             Log.send(this, $"Export has been configured for platform: {platformS ?? platform}");
         }
@@ -503,7 +444,7 @@ namespace net.r_eg.DllExport.Wizard
             UninstallGears(hardReset);
 
             if(hardReset) {
-                RemoveProperties(ConfigProperties.Keys.ToArray());
+                XProject.RemoveProperties(ConfigProperties.Keys.ToArray()); //TODO: id for our group
                 ConfigProperties.Clear();
             }
 
@@ -569,6 +510,8 @@ namespace net.r_eg.DllExport.Wizard
         {
             var target = AddTarget(name);
             target.BeforeTargets = "PrepareForBuild";
+
+            if((Config.Wizard.Options & DxpOptType.NoMgr) == DxpOptType.NoMgr) return target;
 
             var ifManager = $"Exists('$({MSBuildProperties.SLN_DIR}){manager}')";
 
@@ -687,10 +630,10 @@ namespace net.r_eg.DllExport.Wizard
             while(XProject.RemoveImport(XProject.GetImport(null, METALIB_PK_TOKEN))) { }
 
             Log.send(this, $"Trying to remove old restore-target: '{MSBuildTargets.DXP_PKG_R}'", Message.Level.Info);
-            while(RemoveXmlTarget(MSBuildTargets.DXP_PKG_R)) { }
+            while(XProject.RemoveXmlTarget(MSBuildTargets.DXP_PKG_R)) { }
 
             Log.send(this, $"Trying to remove dynamic `import` section: '{MSBuildTargets.DXP_R_DYN}'", Message.Level.Info);
-            while(RemoveXmlTarget(MSBuildTargets.DXP_R_DYN)) { }
+            while(XProject.RemoveXmlTarget(MSBuildTargets.DXP_R_DYN)) { }
 
             Log.send(this, $"Trying to remove X_EXT_STORAGE Import elements: '{Guids.X_EXT_STORAGE}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(null, Guids.X_EXT_STORAGE))) { }
@@ -706,29 +649,6 @@ namespace net.r_eg.DllExport.Wizard
                 Log.send(this, $"Find and remove '{dxpTarget}' as an old .target file of the DllExport.", Message.Level.Info);
                 while(XProject.RemoveImport(XProject.GetImport(dxpTarget, null))) { }
             }
-        }
-
-        protected bool RemoveXmlTarget(string name)
-        {
-            if(string.IsNullOrWhiteSpace(name)) {
-                return false;
-            }
-
-            var target = XProject.Project.Xml.Targets.FirstOrDefault(t => t.Name == name);
-            if(target != null) {
-                XProject.Project.Xml.RemoveChild(target);
-                return true;
-            }
-            return false;
-        }
-
-        protected void RemoveProperties(params string[] names)
-        {
-            foreach(string name in names)
-            {
-                if(!string.IsNullOrWhiteSpace(name)) while(XProject.RemoveProperty(name, true)) { }
-            }
-            XProject.RemoveEmptyPropertyGroups(); //TODO: id for our group
         }
 
         /// <summary>

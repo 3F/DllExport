@@ -92,7 +92,7 @@
                 var vdict = gencomb(cdict, 2, (int i) => { return char.IsLetter(cdict[i]) || cdict[i] == '_'; });
 
                 // to skip processing for:
-                var exvar = new[] { "__p_call", "__dxp_pv", "wMgrArgs", "wPkgVer", "wProxy", "wSlnDir", "wPkgPath", "wMetaLib", "wMetaCor", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver" };
+                var exvar = new[] { "__p_call", "__dxp_pv", "wMgrArgs", "wPkgVer", "wProxy", "wDxpOpt", "wSlnDir", "wPkgPath", "wMetaLib", "wMetaCor", "wDxpTarget", "wAction", "wSlnFile", "wRootPath", "ngserver" };
 
                 const string VNAME  = "[a-z_][a-z_0-9]+";
                 const string VERS   = "[Minified version]";

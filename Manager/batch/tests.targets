@@ -19,6 +19,7 @@
     <CallTarget Targets="testCase14" Condition="'$(testCase)' == '14'" />
     <CallTarget Targets="testCase15" Condition="'$(testCase)' == '15'" />
     <CallTarget Targets="testCase16" Condition="'$(testCase)' == '16'" />
+    <CallTarget Targets="testCase17" Condition="'$(testCase)' == '17'" />
   </Target>
   <Import Project="$(MSBuildThisFileDirectory)\$(tmapFile)" />
   
@@ -119,8 +120,8 @@
   </Target>
 
   <Target Name="testCase16">
-    <Error Text="dxpVersion: $(dxpVersion) == 1.6.5" Condition="'$(dxpVersion)' != '1.6.5'" />
-    <Message Text="dxpVersion: $(dxpVersion) == 1.6.5" Importance="High" />
+    <Error Text="dxpVersion: $(dxpVersion) == 1.7.3" Condition="'$(dxpVersion)' != '1.7.3'" />
+    <Message Text="dxpVersion: $(dxpVersion) == 1.7.3" Importance="High" />
 
     <Error Text="pkgSrv: $(pkgSrv) == $(DataDefSrv)" Condition="'$(pkgSrv)' != '$(DataDefSrv)'" />
     <Message Text="pkgSrv: $(pkgSrv) == $(DataDefSrv)" Importance="High" />
@@ -130,6 +131,11 @@
 
     <!-- <Error Text="peExpList: $(peExpList) == bin\Debug\regXwild.dll" Condition="'$(peExpList)' != 'bin\Debug\regXwild.dll'" />
     <Message Text="peExpList: $(peExpList) == bin\Debug\regXwild.dll" Importance="High" /> -->
+  </Target>
+
+  <Target Name="testCase17">
+    <Error Text="wDxpOpt: $(wDxpOpt) &amp; 1 == 1" Condition="$([MSBuild]::BitwiseAnd($(wDxpOpt), 1)) != '1'" />
+    <Message Text="wDxpOpt: $(wDxpOpt) &amp; 1 == 1" Importance="High" />
   </Target>
 
 </Project>

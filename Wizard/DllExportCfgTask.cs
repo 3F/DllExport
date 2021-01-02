@@ -126,6 +126,14 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
+        /// <summary>
+        /// Updates type for <see cref="Options"/>.
+        /// </summary>
+        public long DxpOpt
+        {
+            set => Options = (DxpOptType)value;
+        }
+
         #endregion
 
         /// <inheritdoc cref="IWizardConfig.Distributable"/>
@@ -136,6 +144,9 @@ namespace net.r_eg.DllExport.Wizard
 
         /// <inheritdoc cref="IWizardConfig.CfgStorage"/>
         public CfgStorageType CfgStorage { get; set; } = CfgStorageType.Default;
+
+        /// <inheritdoc cref="IWizardConfig.Options"/>
+        public DxpOptType Options { get; protected set; }
 
         /// <inheritdoc cref="IWizardConfig.Type"/>
         public ActionType Type { get; protected set; }
@@ -253,6 +264,7 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"Proxy:   '{Proxy}'", level);
             LSender.Send(this, $"DxpTarget: '{DxpTarget}'", level);
             LSender.Send(this, $"RootPath: '{RootPath}'", level);
+            LSender.Send(this, $"Options:  '{Options}'", level);
             LSender.Send(this, $"Storage: '{CfgStorage}'", level);
             LSender.Send(this, $"StoragePath: '{StoragePath}'", level);
             LSender.Send(this, $"Action: '{Type}'", level);

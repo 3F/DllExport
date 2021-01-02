@@ -77,6 +77,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             sb.AppendLine($"UseCecil: {prj.Config.UseCecil}");
             sb.AppendLine($"intermediateFiles: {prj.Config.Compiler.intermediateFiles}");
             sb.AppendLine($"timeout: {prj.Config.Compiler.timeout}");
+            sb.AppendLine($"Options: {prj.Config.Wizard.Options}");
             sb.AppendLine($"RootPath: {prj.Config.Wizard.RootPath}");
             sb.AppendLine($"PkgPath: {prj.Config.Wizard.PkgPath}");
             sb.AppendLine($"SlnFile: {prj.Config.Wizard.SlnFile}");

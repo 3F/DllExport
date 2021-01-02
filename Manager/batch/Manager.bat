@@ -1,6 +1,6 @@
 @echo off & echo Incomplete script. Compile it first via 'build.bat' - github.com/3F/DllExport 1>&2 & exit /B 1
 
-:: Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ]
+:: Copyright (c) 2016-2021  Denis Kuzmin [x-3F@outlook.com] github/3F
 :: https://github.com/3F/DllExport
 
 
@@ -84,6 +84,11 @@ set "fManager=!dpnx0!"
 set "wRootPath=!cd!"
 
 :: -
+:: bitwise parameters
+
+set /a wDxpOpt=0
+
+:: -
 
 set "dxpDebug="
 set "buildInfo="
@@ -121,7 +126,7 @@ goto commands
 echo.
 @echo .NET DllExport $-version-$
 @echo Copyright (c) 2009-2015  Robert Giesecke
-@echo Copyright (c) 2016-2020  Denis Kuzmin [ x-3F@outlook.com ] GitHub/3F
+@echo Copyright (c) 2016-2021  Denis Kuzmin ^<x-3F@outlook.com^> github/3F
 echo.
 echo MIT License
 @echo https://github.com/3F/DllExport
@@ -131,60 +136,61 @@ echo.
 @echo Usage: DllExport [args to DllExport] [args to GetNuTool] [args to hMSBuild]
 echo ------
 echo.
-echo Arguments:
-echo ----------
-echo  -action {type} - Specified action for Wizard. Where {type}:
-echo       * Configure - To configure DllExport for specific projects.
-echo       * Update    - To update pkg reference for already configured projects.
-echo       * Restore   - To restore configured DllExport.
-echo       * Export    - To export configured projects data.
-echo       * Recover   - To re-configure projects via predefined/exported data.
-echo       * Unset     - To unset all data from specified projects.
-echo       * Upgrade   - Aggregates an Update action with additions for upgrading.
+echo Arguments
+echo ---------
+echo -action {type} - Specified action for Wizard. Where {type}:
+echo   * Configure - To configure DllExport for specific projects.
+echo   * Update    - To update pkg reference for already configured projects.
+echo   * Restore   - To restore configured DllExport.
+echo   * Export    - To export configured projects data.
+echo   * Recover   - To re-configure projects via predefined/exported data.
+echo   * Unset     - To unset all data from specified projects.
+echo   * Upgrade   - Aggregates an Update action with additions for upgrading.
 echo.
-echo  -sln-dir {path}    - Path to directory with .sln files to be processed.
-echo  -sln-file {path}   - Optional predefined .sln file to be processed.
-echo  -metalib {path}    - Relative path to meta library.
-echo  -metacor {path}    - Relative path to meta core library.
-echo  -dxp-target {path} - Relative path to entrypoint wrapper of the main core.
-echo  -dxp-version {num} - Specific version of DllExport. Where {num}:
-echo       * Versions: 1.6.6 ...
-echo       * Keywords: 
-echo         `actual` - Unspecified local/latest remote version; 
-echo                    ( Only if you know what you are doing )
+echo -sln-dir {path}    - Path to directory with .sln files to be processed.
+echo -sln-file {path}   - Optional predefined .sln file to be processed.
+echo -metalib {path}    - Relative path to meta library.
+echo -metacor {path}    - Relative path to meta core library.
+echo -dxp-target {path} - Relative path to entrypoint wrapper of the main core.
+echo -dxp-version {num} - Specific version of DllExport. Where {num}:
+echo   * Versions: 1.7.3 ...
+echo   * Keywords: 
+echo     `actual` - Unspecified local/latest remote version; 
+echo                ( Only if you know what you are doing )
 echo.
-echo  -msb {path}           - Full path to specific msbuild.
-echo  -hMSBuild {args}      - Access to hMSBuild tool (packed) https://github.com/3F/hMSBuild
-echo  -packages {path}      - A common directory for packages.
-echo  -server {url}         - Url for searching remote packages.
-echo  -proxy {cfg}          - To use proxy. The format: [usr[:pwd]@]host[:port]
-echo  -pkg-link {uri}       - Direct link to package from the source via specified URI.
-echo  -force                - Aggressive behavior, e.g. like removing pkg when updating.
-echo  -mgr-up               - Updates this manager to version from '-dxp-version'.
-echo  -wz-target {path}     - Relative path to entrypoint wrapper of the main wizard.
-echo  -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
-echo  -eng                  - Try to use english language for all build messages.
-echo  -GetNuTool {args}     - Access to GetNuTool (integrated) https://github.com/3F/GetNuTool
-echo  -debug                - To show additional information.
-echo  -version              - Displays version for which (together with) it was compiled.
-echo  -build-info           - Displays actual build information from selected DllExport.
-echo  -help                 - Displays this help. Aliases: -help -h
+echo -msb {path}           - Full path to specific msbuild.
+echo -hMSBuild {args}      - Access to hMSBuild tool (packed) https://github.com/3F/hMSBuild
+echo -packages {path}      - A common directory for packages.
+echo -server {url}         - Url for searching remote packages.
+echo -proxy {cfg}          - To use proxy. The format: [usr[:pwd]@]host[:port]
+echo -pkg-link {uri}       - Direct link to package from the source via specified URI.
+echo -force                - Aggressive behavior, e.g. like removing pkg when updating.
+echo -no-mgr               - Do not use %~nx0 for automatic restore the remote package.
+echo -mgr-up               - Updates %~nx0 to version from '-dxp-version'.
+echo -wz-target {path}     - Relative path to entrypoint wrapper of the main wizard.
+echo -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
+echo -eng                  - Try to use english language for all build messages.
+echo -GetNuTool {args}     - Access to GetNuTool (integrated) https://github.com/3F/GetNuTool
+echo -debug                - To show additional information.
+echo -version              - Displays version for which (together with) it was compiled.
+echo -build-info           - Displays actual build information from selected DllExport.
+echo -help                 - Displays this help. Aliases: -help -h
 echo.
-echo Flags:
-echo ------
+echo Flags
+echo -----
 echo  __p_call - To use the call-type logic when invoking %~nx0
 echo.
-echo Samples:
-echo --------
-echo  DllExport -action Configure -force -pkg-link http://host/v1.6.6.nupkg
-echo  DllExport -action Restore -sln-file "Conari.sln"
-echo  DllExport -proxy guest:1234@10.0.2.15:7428 -action Configure
+echo Samples
+echo -------
+echo DllExport -action Configure -force -pkg-link http://host/v1.7.3.nupkg
+echo DllExport -action Restore -sln-file "Conari.sln"
+echo DllExport -proxy guest:1234@10.0.2.15:7428 -action Configure
 echo.
-echo  DllExport -mgr-up -dxp-version 1.6.6
-echo  DllExport -action Upgrade -dxp-version 1.6.6
+echo DllExport -mgr-up -dxp-version 1.7.3
+echo DllExport -action Upgrade -dxp-version 1.7.3
 echo.
-echo  DllExport -GetNuTool /p:ngpackages="Conari;regXwild"
-echo  DllExport -pe-exp-list bin\Debug\regXwild.dll
+echo DllExport -GetNuTool /p:ngpackages="Conari;regXwild"
+echo DllExport -pe-exp-list bin\Debug\regXwild.dll
 
 goto endpoint
 
@@ -280,6 +286,11 @@ set key=!arg[%idx%]!
         set kForce=1
 
         goto continue
+    ) else if [!key!]==[-no-mgr] ( 
+
+        set /a wDxpOpt^|=1
+
+        goto continue
     ) else if [!key!]==[-mgr-up] ( 
 
         set mgrUp=1
@@ -347,6 +358,7 @@ call :dbgprint "-metalib = " wMetaLib
 call :dbgprint "-metacor = " wMetaCor
 call :dbgprint "-dxp-target = " wDxpTarget
 call :dbgprint "-wz-target = " tWizard
+call :dbgprint "#opt " wDxpOpt
 
 if defined dxpVersion (
     if "!dxpVersion!"=="actual" (

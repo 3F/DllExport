@@ -88,6 +88,11 @@ namespace net.r_eg.DllExport.Wizard
         string Proxy { get; }
 
         /// <summary>
+        /// Options through <see cref="DxpOptType"/>.
+        /// </summary>
+        DxpOptType Options { get; }
+
+        /// <summary>
         /// Path to external storage if used.
         /// </summary>
         string StoragePath { get; }
