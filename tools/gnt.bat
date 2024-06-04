@@ -1,66 +1,34 @@
 @echo off
-:: GetNuTool - Executable version
-:: Copyright (c) 2015-2018,2020  Denis Kuzmin [ x-3F@outlook.com ]
+:: GetNuTool /shell/batch edition
+:: Copyright (c) 2015-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
 :: https://github.com/3F/GetNuTool
-set aa=gnt.core
-set ab="%temp%\%random%%random%%aa%"
-if "%~1"=="-unpack" goto ag
-set ac=%*
-if defined __p_call if defined ac set ac=%ac:^^=^%
-set ad=%__p_msb%
-if defined ad goto ah
-if "%~1"=="-msbuild" goto ai
-for %%v in (4.0, 14.0, 12.0, 3.5, 2.0) do (
-for /F "usebackq tokens=2* skip=2" %%a in (
-`reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\%%v" /v MSBuildToolsPath 2^> nul`
-) do if exist %%b (
-set ad="%%~b\MSBuild.exe"
-goto ah
-)
-)
-echo MSBuild was not found. Try -msbuild "fullpath" args 1>&2
-exit/B 2
-:ai
-shift
-set ad=%1
-shift
-set ae=%ac:!= #__b_ECL## %
-setlocal enableDelayedExpansion
-set ae=!ae:%%=%%%%!
-:aj
-for /F "tokens=1* delims==" %%a in ("!ae!") do (
-if "%%~b"=="" (
-call :ak !ae!
-exit/B %ERRORLEVEL%
-)
-set ae=%%a #__b_EQ## %%b
-)
-goto aj
-:ak
-shift & shift
-set "ac="
-:al
-set ac=!ac! %1
-shift & if not "%~2"=="" goto al
-set ac=!ac: #__b_EQ## ==!
+set ee=gnt.core&set ef="%temp%\%ee%1.9.0%random%%random%"&if "%~1"=="-unpack" goto en
+if "%~1"=="-msbuild" goto eo
+set eg=%*&setlocal enableDelayedExpansion&set "eh=%~1 "&set ei=!eh:~0,1!&if "!ei!" NEQ " " if !ei! NEQ / set eg=/p:ngpackages=!eg!
+set "ej=%msb.gnt.cmd%"&if defined ej goto ep
+set ek=hMSBuild&if exist msb.gnt.cmd set ek=msb.gnt.cmd
+for /F "tokens=*" %%i in ('%ek% -only-path 2^>^&1 ^&call echo %%^^ERRORLEVEL%%') do 2>nul (if not defined ej (set ej="%%i")else set el=%%i)
+if .%el%==.0 if exist !ej! goto ep
+for %%v in (4.0,14.0,12.0,3.5,2.0)do (for /F "usebackq tokens=2* skip=2" %%a in (`reg query "HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\MSBuild\ToolsVersions\%%v" /v MSBuildToolsPath 2^> nul`) do if exist %%b (set ej="%%~b\MSBuild.exe"
+if exist !ej! (if %%v NEQ 3.5 if %%v NEQ 2.0 goto ep
+echo Override engine or contact for legacy support %%v&exit/B120)))&echo Engine is not found. Try with hMSBuild 1>&2
+exit/B2
+:eo
+echo This feature is disabled in current version >&2
+exit/B120
+:ep
+set em=/noconlog&if "%debug%"=="true" set em=/v:q
+call :eq&call :er "/help" "-help" "/h" "-h" "/?" "-?"&call !ej! %ef% /nologo /noautorsp !em! /p:wpath="%cd%/" !eg!&set el=!ERRORLEVEL!&del /Q/F %ef%&exit/B!el!
+:en
+set ef="%cd%\%ee%"&echo Generating a %ee% at %cd%\...
+:eq
 setlocal disableDelayedExpansion
-set ac=%ac: #__b_ECL## =!%
-:ah
-call :am
-call %ad% %ab% /nologo /p:wpath="%cd%/" /v:m /m:4 %ac%
-set "ad="
-set af=%ERRORLEVEL%
-del /Q/F %ab%
-exit/B %af%
-:ag
-set ab="%cd%\%aa%"
-echo Generating minified version in %ab% ...
-:am
-<nul set /P ="">%ab%
-set a=PropertyGroup&set b=Condition&set c=ngpackages&set d=Target&set e=DependsOnTargets&set f=TaskCoreDllPath&set g=MSBuildToolsPath&set h=UsingTask&set i=CodeTaskFactory&set j=ParameterGroup&set k=Reference&set l=Include&set m=System&set n=Using&set o=Namespace&set p=IsNullOrEmpty&set q=return&set r=string&set s=delegate&set t=foreach&set u=WriteLine&set v=Combine&set w=Console.WriteLine&set x=Directory&set y=GetNuTool&set z=StringComparison&set _=EXT_NUSPEC
-<nul set /P =^<!-- GetNuTool - github.com/3F/GetNuTool --^>^<!-- Copyright (c) 2015-2018,2020  Denis Kuzmin [ x-3F@outlook.com ] --^>^<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"^>^<%a%^>^<ngconfig %b%="'$(ngconfig)'==''"^>packages.config^</ngconfig^>^<ngserver %b%="'$(ngserver)'==''"^>https://www.nuget.org/api/v2/package/^</ngserver^>^<%c% %b%="'$(%c%)'==''"^>^</%c%^>^<ngpath %b%="'$(ngpath)'==''"^>packages^</ngpath^>^</%a%^>^<%d% Name="get" BeforeTargets="Build" %e%="header"^>^<a^>^<Output PropertyName="plist" TaskParameter="Result"/^>^</a^>^<b plist="$(plist)"/^>^</%d%^>^<%d% Name="pack" %e%="header"^>^<c/^>^</%d%^>^<%a%^>^<%f% %b%="Exists('$(%g%)\Microsoft.Build.Tasks.v$(MSBuildToolsVersion).dll')"^>$(%g%)\Microsoft.Build.Tasks.v$(MSBuildToolsVersion).dll^</%f%^>^<%f% %b%="'$(%f%)'=='' and Exists('$(%g%)\Microsoft.Build.Tasks.Core.dll')"^>$(%g%)\Microsoft.Build.Tasks.Core.dll^</%f%^>^</%a%^>^<%h% TaskName="a" TaskFactory="%i%" AssemblyFile="$(%f%)"^>^<%j%^>^<Result Output="true"/^>^</%j%^>^<Task^>^<%k% %l%="%m%.Xml"/^>^<%k% %l%="%m%.Xml.Linq"/^>^<%n% %o%="%m%"/^>^<%n% %o%="%m%.Collections.Generic"/^>^<%n% %o%="%m%.IO"/^>^<%n% %o%="%m%.Xml.Linq"/^>^<Code Type="Fragment" Language="cs"^>^<![CDATA[var a=@"$(ngconfig)";var b=@"$(%c%)";var c=@"$(wpath)";if(!String.%p%(b)){Result=b;%q% true;}var d=Console.Error;Action^<%r%,Queue^<%r%^>^>e=%s%(%r% f,Queue^<%r%^>g){%t%(var h in XDocument.Load(f).Descendants("package")){var i=h.Attribute("id");var j=h.Attribute("version");var k=h.Attribute("output");if(i==null){d.%u%("'id' does not exist in '{0}'",f);%q%;}var l=i.Value;if(j!=null){l+="/"+j.Value;}if(k!=null){g.Enqueue(l+":"+k.Value);continue;}g.Enqueue(l);}};var m=new Queue^<%r%^>();%t%(var f in a.Split(new char[]{a.IndexOf('^|')!=-1?'^|':';'},(StringSplitOptions)1))>>%ab%
-<nul set /P ={var n=Path.%v%(c,f);if(File.Exists(n)){e(n,m);}else{d.%u%(".config '{0}' is not found.",n);}}if(m.Count^<1){d.%u%("Empty list. Use .config or /p:%c%\n");}else{Result=%r%.Join("|",m.ToArray());}]]^>^</Code^>^</Task^>^</%h%^>^<%h% TaskName="b" TaskFactory="%i%" AssemblyFile="$(%f%)"^>^<%j%^>^<plist/^>^</%j%^>^<Task^>^<%k% %l%="WindowsBase"/^>^<%n% %o%="%m%"/^>^<%n% %o%="%m%.IO"/^>^<%n% %o%="%m%.IO.Packaging"/^>^<%n% %o%="%m%.Net"/^>^<Code Type="Fragment" Language="cs"^>^<![CDATA[var a=@"$(ngserver)";var b=@"$(wpath)";var c=@"$(ngpath)";var d=@"$(proxycfg)".Trim();var e=@"$(debug)"=="true";if(plist==null){%q% false;}ServicePointManager.SecurityProtocol^|=SecurityProtocolType.Tls11^|SecurityProtocolType.Tls12;var f=new %r%[]{"/_rels/","/package/","/[Content_Types].xml"};Action^<%r%,object^>g=%s%(%r% h,object i){if(e){%w%(h,i);}};Func^<%r%,WebProxy^>j=%s%(%r% k){var l=k.Split('@');if(l.Length^<=1){%q% new WebProxy(l[0],false);}var m=l[0].Split(':');%q% new WebProxy(l[1],false){Credentials=new NetworkCredential(m[0],(m.Length^>1)?m[1]:null)};};Func^<%r%,%r%^>n=%s%(%r% i){%q% Path.%v%(b,i??"");};Action^<%r%,%r%,%r%^>o=%s%(%r% p,%r% q,%r% r){var s=Path.GetFullPath(n(r??q));if(%x%.Exists(s)){%w%("`{0}` was found in \"{1}\"",q,s);%q%;}Console.Write("Getting `{0}` ... ",p);var t=Path.%v%(Path.GetTempPath(),Guid.NewGuid().ToString());using(var u=new WebClient()){try{if(!String.%p%(d)){u.Proxy=j(d);}u.Headers.Add("User-Agent","%y% $(%y%)");u.UseDefaultCredentials=true;if(u.Proxy.Credentials==null){u.Proxy.Credentials=CredentialCache.DefaultCredentials;}u.DownloadFile(a+p,t);}catch(Exception v){Console.Error.%u%(v.Message);%q%;}}%w%("Extracting into \"{0}\"",s);using(var w=ZipPackage.Open(t,FileMode.Open,FileAccess.Read)){%t%(var x in w.GetParts()){var y=Uri.UnescapeDataString(x.Uri.OriginalString);if>>%ab%
-<nul set /P =(f.Any(z=^>y.StartsWith(z,%z%.Ordinal))){continue;}var _=Path.%v%(s,y.TrimStart('/'));g("- `{0}`",y);var aa=Path.GetDirectoryName(_);if(!%x%.Exists(aa)){%x%.CreateDirectory(aa);}using(Stream ab=x.GetStream(FileMode.Open,FileAccess.Read))using(var ac=File.OpenWrite(_)){try{ab.CopyTo(ac);}catch(FileFormatException v){g("[x]?crc: {0}",_);}}}}File.Delete(t);};%t%(var w in plist.Split(new char[]{plist.IndexOf('^|')!=-1?'^|':';'},(StringSplitOptions)1)){var ad=w.Split(new char[]{':'},2);var p=ad[0];var r=(ad.Length^>1)?ad[1]:null;var q=p.Replace('/','.');if(!String.%p%(c)){r=Path.%v%(c,r??q);}o(p,q,r);}]]^>^</Code^>^</Task^>^</%h%^>^<%h% TaskName="c" TaskFactory="%i%" AssemblyFile="$(%f%)"^>^<Task^>^<%k% %l%="%m%.Xml"/^>^<%k% %l%="%m%.Xml.Linq"/^>^<%k% %l%="WindowsBase"/^>^<%n% %o%="%m%"/^>^<%n% %o%="%m%.Collections.Generic"/^>^<%n% %o%="%m%.IO"/^>^<%n% %o%="%m%.Linq"/^>^<%n% %o%="%m%.IO.Packaging"/^>^<%n% %o%="%m%.Xml.Linq"/^>^<%n% %o%="%m%.Text.RegularExpressions"/^>^<Code Type="Fragment" Language="cs"^>^<![CDATA[var a=@"$(ngin)";var b=@"$(ngout)";var c=@"$(wpath)";var d=@"$(debug)"=="true";var %_%=".nuspec";var EXT_NUPKG=".nupkg";var TAG_META="metadata";var DEF_CONTENT_TYPE="application/octet";var MANIFEST_URL="http://schemas.microsoft.com/packaging/2010/07/manifest";var ID="id";var VER="version";Action^<%r%,object^>e=%s%(%r% f,object g){if(d){%w%(f,g);}};var h=Console.Error;a=Path.%v%(c,a);if(!%x%.Exists(a)){h.%u%("`{0}` is not found.",a);%q% false;}b=Path.%v%(c,b);var i=%x%.GetFiles(a,"*"+%_%,SearchOption.TopDirectoryOnly).FirstOrDefault();if(i==null){h.%u%("{0} is not found in `{1}`",%_%,a);%q% false;}%w%("Found {0}: `{1}`",%_%,i);var j=XDocument.Load(i).Root.Elements().FirstOrDefault(k=^>k.Name.LocalName==TAG_META);if(j==null){h.%u%("{0} does not contain {1}.",i,TAG_META);%q% false;}var l=>>%ab%
-<nul set /P =new Dictionary^<%r%,%r%^>();%t%(var m in j.Elements()){l[m.Name.LocalName.ToLower()]=m.Value;}if(l[ID].Length^>100^|^|!Regex.IsMatch(l[ID],@"^\w+([_.-]\w+)*$",RegexOptions.IgnoreCase^|RegexOptions.ExplicitCapture)){h.%u%("The format `{0}` is not correct.",ID);%q% false;}var n=new %r%[]{Path.%v%(a,"_rels"),Path.%v%(a,"package"),Path.%v%(a,"[Content_Types].xml")};var o=%r%.Format("{0}.{1}{2}",l[ID],l[VER],EXT_NUPKG);if(!String.IsNullOrWhiteSpace(b)){if(!%x%.Exists(b)){%x%.CreateDirectory(b);}o=Path.%v%(b,o);}%w%("Creating nupkg `{0}` ...",o);using(var p=Package.Open(o,FileMode.Create)){Uri q=new Uri(String.Format("/{0}{1}",l[ID],%_%),UriKind.Relative);p.CreateRelationship(q,TargetMode.Internal,MANIFEST_URL);%t%(var r in %x%.GetFiles(a,"*.*",SearchOption.AllDirectories)){if(n.Any(k=^>r.StartsWith(k,%z%.Ordinal))){continue;}%r% s;if(r.StartsWith(a,%z%.OrdinalIgnoreCase)){s=r.Substring(a.Length).TrimStart(Path.DirectorySeparatorChar);}else{s=r;}e("- `{0}`",s);var t=%r%.Join("/",s.Split('\\','/').Select(g=^>Uri.EscapeDataString(g)));Uri u=PackUriHelper.CreatePartUri(new Uri(t,UriKind.Relative));var v=p.CreatePart(u,DEF_CONTENT_TYPE,CompressionOption.Maximum);using(Stream w=v.GetStream())using(var x=new FileStream(r,FileMode.Open,FileAccess.Read)){x.CopyTo(w);}}Func^<%r%,%r%^>y=%s%(%r% z){%q%(l.ContainsKey(z))?l[z]:"";};var _=p.PackageProperties;_.Creator=y("authors");_.Description=y("description");_.Identifier=l[ID];_.Version=l[VER];_.Keywords=y("tags");_.Title=y("title");_.LastModifiedBy="%y% $(%y%)";}]]^>^</Code^>^</Task^>^</%h%^>^<%d% Name="Build" %e%="get"/^>^<%a%^>^<%y%^>1.8.0.53134+df76082^</%y%^>^<wpath %b%="'$(wpath)'==''"^>$(MSBuildProjectDirectory)^</wpath^>^</%a%^>^<%d% Name="header"^>^<Message Text="%%0D%%0A%y% $(%y%)%%0D%%0A(c) 2015-2018,2020  Denis Kuzmin [ x-3F@outlook.com ] GitHub/3F%%0D%%0A" >>%ab%
-<nul set /P =Importance="high"/^>^</%d%^>^</Project^>>>%ab%
-exit/B 0
+<nul set/P="">%ef%&set -=ngconfig&set [=Condition&set ]=packages.config&set ;=ngserver&set .=package&set ,=GetNuTool&set :=wpath&set +=TaskCoreDllPath&set {=Exists&set }=MSBuildToolsPath&set _=Microsoft.Build.Tasks.&set a=MSBuildToolsVersion&set b=Target&set c=tmode&set d=ParameterGroup&set e=Reference&set f=System&set g=Namespace&set h=Console.WriteLine(&set i=string&set j=return&set k=Console.Error.WriteLine(&set l=string.IsNullOrEmpty(&set m=foreach&set n=Attribute&set o=Append&set p=Path&set q=Combine&set r=Length&set s=false&set t=ToString&set u=SecurityProtocolType&set v=ServicePointManager.SecurityProtocol&set w=Credentials&set x=Directory&set y=CreateDirectory&set z=Console.Write(&set $=using&set #=FileMode&set @=FileAccess&set `=StringComparison&set ?=StartsWith
+<nul set/P=^<?xml version="1.0" encoding="utf-8"?^>^<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003"^>^<PropertyGroup^>^<%-% %[%="'$(%-%)'==''"^>%]%;.tools\%]%^</%-%^>^<%;% %[%="'$(%;%)'==''"^>https://www.nuget.org/api/v2/%.%/^</%;%^>^<ngpath %[%="'$(ngpath)'==''"^>packages^</ngpath^>^<%,%^>1.9.0.58814+bb83b59^</%,%^>^<%:% %[%="'$(%:%)'==''"^>$(MSBuildProjectDirectory)^</%:%^>^<%+% %[%="%{%('$(%}%)\%_%v$(%a%).dll')"^>$(%}%)\%_%v$(%a%).dll^</%+%^>^<%+% %[%="'$(%+%)'=='' and %{%('$(%}%)\%_%Core.dll')"^>$(%}%)\%_%Core.dll^</%+%^>^</PropertyGroup^>^<%b% Name="get" BeforeTargets="Build"^>^<d %c%="get"/^>^</%b%^>^<%b% Name="grab"^>^<d %c%="grab"/^>^</%b%^>^<%b% Name="pack"^>^<d %c%="pack"/^>^</%b%^>^<UsingTask TaskName="d" TaskFactory="CodeTaskFactory" AssemblyFile="$(%+%)"^>^<%d%^>^<%c%/^>^</%d%^>^<Task^>^<%e% Include="%f%.Xml"/^>^<%e% Include="%f%.Xml.Linq"/^>^<%e% Include="WindowsBase"/^>^<Using %g%="%f%"/^>^<Using %g%="%f%.IO"/^>^<Using %g%="%f%.IO.Packaging"/^>^<Using %g%="%f%.Linq"/^>^<Using %g%="%f%.Net"/^>^<Using %g%="%f%.Xml.Linq"/^>^<Code Type="Fragment" Language="cs"^>^<![CDATA[if("$(logo)"!="no")%h%"\nGetNuTool $(%,%)\n(c) 2015-2024  Denis Kuzmin <x-3F@outlook.com> github/3F\n");var d="{0} is not found ";var e=new %i%[]{"/_rels/","/%.%/","/[Content_Types].xml"};Action^<%i%,object^>f=(g,h)=^>{if("$(debug)".Trim()=="true")%h%g,h);};Func^<%i%,XElement^>i=j=^>{try{%j% XDocument.Load(j).Root;}catch(Exception k){%k%k.Message);throw;}};Func^<%i%,%i%[]^>l=m=^>m.Split(new[]{m.Contains('^|')?'^|':';'},(StringSplitOptions)1);if(%c%=="get"^|^|%c%=="grab"){var n=@"$(ngpackages)";var o=new StringBuilder();if(%l%n)){Action^<%i%^>p=q=^>{%m%(var r in i(q).Descendants("%.%")){var s=r.%n%("id");var t=r.%n%("version");var u=r.%n%("output");var v=r.%n%("sha1");if(s==null){%k%"{0} is corrupted",q);%j%;}o.%o%(s.Value);if(t!=null)o.%o%("/"+t.Value);if(v!=null)o.%o%("?"+v.Value);if(u!=null)o.%o%(":">>%ef%
+<nul set/P=+u.Value);o.%o%(';');}};%m%(var q in l(@"$(%-%)")){var w=%p%.%q%(@"$(%:%)",q);if(File.%{%(w)){p(w);}else f(d,w);}if(o.%r%^<1){%k%"Empty .config + ngpackages");%j% %s%;}n=o.%t%();}var x=@"$(ngpath)";var y=@"$(proxycfg)";%m%(var z in Enum.GetValues(typeof(%u%)).Cast^<%u%^>()){try{%v%^|=z;}catch(NotSupportedException){}}if("$(ssl3)"!="true")%v%^&=~(%u%)(48^|192^|768);Func^<%i%,WebProxy^>D=q=^>{var E=q.Split('@');if(E.%r%^<=1)%j% new WebProxy(E[0],%s%);var F=E[0].Split(':');%j% new WebProxy(E[1],%s%){%w%=new NetworkCredential(F[0],F.%r%^>1?F[1]:null)};};Func^<%i%,%i%^>G=H=^>{var I=%p%.GetDirectoryName(H);if(!%x%.%{%(I))%x%.%y%(I);%j% H;};Func^<%i%,%i%,%i%,%i%,bool^>J=(K,L,H,v)=^>{var M=%p%.GetFullPath(%p%.%q%(@"$(%:%)",H??L??""));if(%x%.%{%(M)^|^|File.%{%(M)){%h%"{0} use {1}",L,M);%j% true;}%z%K+" ... ");var N=%c%=="grab";var O=N?G(M):%p%.%q%(%p%.GetTempPath(),Guid.NewGuid().%t%());%$%(var P=new WebClient()){try{if(!%l%y)){P.Proxy=D(y);}P.Headers.Add("User-Agent","%,%/$(%,%)");P.UseDefaultCredentials=true;if(P.Proxy!=null^&^&P.Proxy.%w%==null){P.Proxy.%w%=CredentialCache.DefaultCredentials;}P.DownloadFile(@"$(%;%)"+K,O);}catch(Exception k){%k%k.Message);%j% %s%;}}%h%M);if(v!=null){%z%"{0} ... ",v);%$%(var Q=%f%.Security.Cryptography.SHA1.Create()){o.Clear();%$%(var R=new FileStream(O,(%#%)3,(%@%)1))%m%(var S in Q.ComputeHash(R))o.%o%(S.%t%("x2"));%z%o.%t%());if(!o.%t%().Equals(v,(%`%)5)){%h%"[x]");%j% %s%;}%h%);}}if(N)%j% true;%$%(var r=ZipPackage.Open(O,(%#%)3,(%@%)1)){%m%(var T in r.GetParts()){var U=Uri.UnescapeDataString(T.Uri.OriginalString);if(e.Any(V=^>U.%?%(V,(%`%)4)))continue;var W=%p%.%q%(M,U.TrimStart('/'));f("- {0}",U);%$%(var X=T.GetStream((%#%)3,(%@%)1))%$%(var Y=File.OpenWrite(G(W))){try{X.CopyTo(Y);}catch(FileFormatException){f("[x]?crc: {0}",W);}}}}File.Delete(O);%j% true;};%m%(var r in l(n)){var Z=r.Split(new[]{':'},2);var K=Z[0].Split(new[]{'?'},2);var H=Z.%r%^>1?Z[1]:null;var L=K[0].Replace(>>%ef%
+<nul set/P='/','.');if(!%l%x)){H=%p%.%q%(x,H??L);}if(!J(K[0],L,H,K.%r%^>1?K[1]:null)^&^&"$(break)".Trim()!="no")%j% %s%;}}else if(%c%=="pack"){var a=".nuspec";var b="metadata";var c="id";var A="version";var I=%p%.%q%(@"$(%:%)",@"$(ngin)");if(!%x%.%{%(I)){%k%d,I);%j% %s%;}var B=%x%.GetFiles(I,"*"+a).FirstOrDefault();if(B==null){%k%d+I,a);%j% %s%;}%h%"{0} use {1}",a,B);var C=i(B).Elements().FirstOrDefault(V=^>V.Name.LocalName==b);if(C==null){%k%d,b);%j% %s%;}var _=new %f%.Collections.Generic.Dictionary^<%i%,%i%^>();Func^<%i%,%i%^>dd=de=^>_.ContainsKey(de)?_[de]:"";%m%(var df in C.Elements())_[df.Name.LocalName.ToLower()]=df.Value;if(dd(c).%r%^>100^|^|!%f%.Text.RegularExpressions.Regex.IsMatch(dd(c),@"^\w+(?:[_.-]\w+)*$")){%k%"Invalid id");%j% %s%;}var dg=%i%.Format("{0}.{1}.nupkg",dd(c),dd(A));var dh=%p%.%q%(@"$(%:%)",@"$(ngout)");if(!%i%.IsNullOrWhiteSpace(dh)){if(!%x%.%{%(dh)){%x%.%y%(dh);}dg=%p%.%q%(dh,dg);}%h%"Creating %.% {0} ...",dg);%$%(var r=Package.Open(dg,(%#%)2)){var di=new Uri(%i%.Format("/{0}{1}",dd(c),a),(UriKind)2);r.CreateRelationship(di,0,"http://schemas.microsoft.com/packaging/2010/07/manifest");%m%(var dj in %x%.GetFiles(I,"*.*",(SearchOption)1)){if(e.Any(V=^>dj.%?%(%p%.%q%(I,V.Trim('/')),(%`%)4)))continue;var dk=dj.%?%(I,(%`%)5)?dj.Substring(I.%r%).TrimStart(%p%.DirectorySeparatorChar):dj;f("+ {0}",dk);var T=r.CreatePart(PackUriHelper.CreatePartUri(new Uri(%i%.Join("/",dk.Split('\\','/').Select(Uri.EscapeDataString)),(UriKind)2)),"application/octet",(CompressionOption)1);%$%(var dl=T.GetStream())%$%(var dm=new FileStream(dj,(%#%)3,(%@%)1)){dm.CopyTo(dl);}}var dn=r.PackageProperties;dn.Creator=dd("authors");dn.Description=dd("description");dn.Identifier=dd(c);dn.Version=dd(A);dn.Keywords=dd("tags");dn.Title=dd("title");dn.LastModifiedBy="%,%/$(%,%)";}}else %j% %s%;]]^>^</Code^>^</Task^>^</UsingTask^>^<%b% Name="Build" DependsOnTargets="%,%"/^>^</Project^>>>%ef%
+endlocal&exit/B0
+:er
+if defined eg set eg=!eg:%~1=!
+if "%~2" NEQ "" shift & goto er
+exit/B0
