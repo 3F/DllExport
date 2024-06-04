@@ -1,8 +1,5 @@
 @echo off & echo Incomplete script. Compile it first via 'build.bat' - github.com/3F/DllExport 1>&2 & exit /B 1
 
-:: Copyright (c) 2016-2021  Denis Kuzmin [x-3F@outlook.com] github/3F
-:: https://github.com/3F/DllExport
-
 
 :: /? will cause problems for the call commands below, so we just escape this via supported alternative:
 :: TODO: 
@@ -126,7 +123,7 @@ goto commands
 echo.
 @echo .NET DllExport $-version-$
 @echo Copyright (c) 2009-2015  Robert Giesecke
-@echo Copyright (c) 2016-2021  Denis Kuzmin ^<x-3F@outlook.com^> github/3F
+@echo Copyright (c) 2016-2024  Denis Kuzmin ^<x-3F@outlook.com^> github/3F
 echo.
 echo MIT License
 @echo https://github.com/3F/DllExport

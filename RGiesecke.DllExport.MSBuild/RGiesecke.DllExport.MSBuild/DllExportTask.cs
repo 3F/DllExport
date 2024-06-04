@@ -1,8 +1,10 @@
-﻿//# Author of original code ([Decompiled] MIT-License): Copyright (c) 2009-2015  Robert Giesecke
-//# Use Readme & LICENSE files for details.
-
-//# Modifications: Copyright (c) 2016-2021  Denis Kuzmin <x-3F@outlook.com> github/3F
-//$ Distributed under the MIT License (MIT)
+﻿/*!
+ * Copyright (c) Robert Giesecke
+ * Copyright (c) Denis Kuzmin <x-3F@outlook.com> github/3F
+ * Copyright (c) DllExport contributors https://github.com/3F/DllExport/graphs/contributors
+ * Licensed under the MIT License (MIT).
+ * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
+*/
 
 using System;
 using System.Resources;

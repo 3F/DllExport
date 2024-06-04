@@ -1,0 +1,12 @@
+The following notices are for informational purposes only.
+You must read LICENSE.txt
+----------------------------------------------------------
+
+# Author of the original code (decompiled `UnmanagedExports`, see Issue #3 for details):
+
+    Robert Giesecke
+
+# Author of the modified version as a open source project `github/3F/DllExport`:
+
+    Denis Kuzmin <x-3F@outlook.com> github/3F
+
