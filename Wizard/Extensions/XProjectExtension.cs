@@ -24,7 +24,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns>The evaluated property value, which is never null.</returns>
         public static string GetPropertyValue(this IXProject xp, string name, bool localScope = false)
         {
-            return xp?.GetProperty(name, localScope).evaluatedValue;
+            return xp?.GetProperty(name, localScope).evaluated;
         }
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace net.r_eg.DllExport.Wizard.Extensions
         /// <returns>The unevaluated property value, which is never null.</returns>
         public static string GetUnevaluatedPropertyValue(this IXProject xp, string name, bool localScope = false)
         {
-            return xp?.GetProperty(name, localScope).unevaluatedValue;
+            return xp?.GetProperty(name, localScope).unevaluated;
         }
 
         /// <summary>

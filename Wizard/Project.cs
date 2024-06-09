@@ -49,7 +49,7 @@ namespace net.r_eg.DllExport.Wizard
             && !string.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
 
         /// <inheritdoc cref="IProject.InternalError"/>
-        public string InternalError => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluatedValue;
+        public string InternalError => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluated;
 
         /// <inheritdoc cref="IProject.DxpIdent"/>
         public string DxpIdent
@@ -585,8 +585,8 @@ namespace net.r_eg.DllExport.Wizard
                 }
 
                 // all obsolete packages - https://github.com/3F/DllExport/issues/65
-                if(!PublicKeyTokenLimit && refer.evaluatedInclude == "DllExport") {
-                    Log.send(this, $"Remove old reference no-pk:'{refer.evaluatedInclude}'", Message.Level.Info);
+                if(!PublicKeyTokenLimit && refer.evaluated == "DllExport") {
+                    Log.send(this, $"Remove old reference no-pk:'{refer.evaluated}'", Message.Level.Info);
                     XProject.RemoveItem(refer);
                 }
             }

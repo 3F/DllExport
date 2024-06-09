@@ -203,7 +203,7 @@ namespace RGiesecke.DllExport.MSBuild
         {
             foreach(var dep in projects)
             {
-                CallbackProperties.ForEach(p => AllocateItem(formatter(p), dep.GetProperty(p, false).evaluatedValue));
+                CallbackProperties.ForEach(p => AllocateItem(formatter(p), dep.GetProperty(p, false).evaluated));
             }
         }
 

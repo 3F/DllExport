@@ -55,7 +55,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(project == null) return;
 
             var props = project.GetProperties().ToArray(); // array prevents possible InvalidOperationException
-            dgvProperties.UIAction(g => props.ForEach(p => g.Rows.Add(p.name, p.evaluatedValue)));
+            dgvProperties.UIAction(g => props.ForEach(p => g.Rows.Add(p.name, p.evaluated)));
         }
 
         public PostProcControl() => InitializeComponent();

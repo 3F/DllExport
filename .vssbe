@@ -73,17 +73,17 @@
           "TODO: option for expensive coreclr",
           "",
           "",
-          "#[\" Packages \"]",
+          "~ Packages",
           "",
           "#[( !(#[IO exists.file(\"packages/__checked\")]) )",
           "{",
-          "    #[File call(\"tools\\hmsbuild.bat\", \"-t:restore /v:q /nologo /p:Configuration=$(Configuration) /p:Platform=\\\"Any CPU\\\"\", 1000)]",
-          "        ",
           "    #[NuGet gnt.raw(\"/p:ngconfig=\\\"packages.config;PeViewer/packages.config;NSBin/packages.config;Wizard/packages.config\\\" /nologo /v:m /m:4\")]",
           "    ",
           "    #[IO copy.directory(\"\", \"packages/\", true)]",
           "    #[File write(\"packages/__checked\"): ]",
-          "}]"
+          "}]",
+          "",
+          "#[File scall(\"tools\\hmsbuild.bat\", \"~c $(Configuration) -t:restore /v:q /nologo\", 200)]"
         ]
       }
     },
