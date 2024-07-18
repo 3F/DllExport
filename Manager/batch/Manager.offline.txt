@@ -1,0 +1,27 @@
+
+This is the offline version of the .NET DllExport https://github.com/3F/DllExport
+
+n. Internet connection is NOT required.
+
+Note the following,
+
+* \DllExport.bat - is a wrapper of the original DllExport.bat
+* \packages\DllExport\DllExport.bat - original
+
+The wrapper is configured to accept the same commands as the original, for example:
+
+> DllExport -action Export
+
+Find the documentation here:
+https://github.com/3F/DllExport/wiki/DllExport-Manager
+
+or
+
+> DllExport -help
+
+! Make sure you have the latest version
+https://3F.github.io/DllExport/releases/latest/manager/
+https://github.com/3F/DllExport/releases
+
+
+-- .NET DllExport

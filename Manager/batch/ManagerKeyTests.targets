@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Target Name="Build">
+    <CallTarget Targets="vmap" />
+    <CallTarget Targets="dataCaseBasic" Condition="'$(dataCase)' == 'basic'" />
+    <CallTarget Targets="testCaseSpecSymbols" Condition="'$(testCase)' == 'SpecSymbols'" />
+  </Target>
+  <Import Project="$(MSBuildThisFileDirectory)\$(tmapFile)"/>
+  
+  <PropertyGroup Label="Expected data">
+    <DataSpecSymbols>$([MSBuild]::Escape("crazy&#39; dir&amp;name!356~`@#$^(+)_=-;[.]{,%}"))</DataSpecSymbols>
+    <DataDefWz>tools/net.r_eg.DllExport.Wizard.targets</DataDefWz>
+  </PropertyGroup>
+
+  <Target Name="dataCaseBasic">
+    <Message Text="wAction: $(wAction)" Importance="High" />
+    <Message Text="wSlnDir: $(wSlnDir)" Importance="High" />
+    <Message Text="wSlnFile: $(wSlnFile)" Importance="High" />
+    <Message Text="wMetaLib: $(wMetaLib)" Importance="High" />
+    <Message Text="wMetaCor: $(wMetaCor)" Importance="High" />
+    <Message Text="wDxpTarget: $(wDxpTarget)" Importance="High" />
+    <Message Text="tWizard: $(tWizard)" Importance="High" />
+    <Message Text="ngpath: $(dxpPackages)" Importance="High" />
+    <Message Text="dxpVersion: $(dxpVersion)" Importance="High" />
+    <Message Text="pkgSrv: $(pkgSrv)" Importance="High" />
+    <Message Text="proxy: $(proxy)" Importance="High" />
+    <Message Text="wDxpOpt: $(wDxpOpt)" Importance="High" />
+    <Message Text="peExpList: $(peExpList)" Importance="High" />
+    <Message Text="kForce: $(kForce)" Importance="High" />
+  </Target>
+
+  <Target Name="testCaseSpecSymbols">
+    <Error Text="wSlnDir: $(wSlnDir) == $(DataSpecSymbols)" Condition="$(wSlnDir) != $(DataSpecSymbols)" />
+    <Message Text="wSlnDir: $(wSlnDir) == $(DataSpecSymbols)" Importance="High" />
+
+    <Error Text="wSlnFile: $(wSlnFile) == $(DataSpecSymbols)" Condition="'$(wSlnFile)' != '$(DataSpecSymbols)'" />
+    <Message Text="wSlnFile: $(wSlnFile) == $(DataSpecSymbols)" Importance="High" />
+
+    <Error Text="wMetaLib: $(wMetaLib) == $(DataSpecSymbols)" Condition="'$(wMetaLib)' != '$(DataSpecSymbols)'" />
+    <Message Text="wMetaLib: $(wMetaLib) == $(DataSpecSymbols)" Importance="High" />
+
+    <Error Text="wMetaCor: $(wMetaCor) == $(DataSpecSymbols)" Condition="'$(wMetaCor)' != '$(DataSpecSymbols)'" />
+    <Message Text="wMetaCor: $(wMetaCor) == $(DataSpecSymbols)" Importance="High" />
+
+    <Error Text="wDxpTarget: $(wDxpTarget) == $(DataSpecSymbols)" Condition="'$(wDxpTarget)' != '$(DataSpecSymbols)'" />
+    <Message Text="wDxpTarget: $(wDxpTarget) == $(DataSpecSymbols)" Importance="High" />
+
+    <Error Text="tWizard: $(tWizard) == $(DataDefWz)" Condition="'$(tWizard)' != '$(DataDefWz)'" />
+    <Message Text="tWizard: $(tWizard) == $(DataDefWz)" Importance="High" />
+
+    <Error Text="ngpath: $(dxpPackages) == $(DataSpecSymbols)\\" Condition="'$(dxpPackages)' != '$(DataSpecSymbols)\\'" />
+    <Message Text="ngpath: $(dxpPackages) == $(DataSpecSymbols)\\" Importance="High" />
+  </Target>
+
+</Project>
