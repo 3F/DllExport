@@ -11,7 +11,6 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using net.r_eg.DllExport;
 using net.r_eg.MvsSln;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
@@ -157,9 +156,20 @@ namespace net.r_eg.DllExport.Activator
         /// <returns></returns>
         private IEnumerable<IXProject> GetDependencies(IXProject project)
         {
-            foreach(var pguid in Sln.ProjectDependencies.Dependencies[project.ProjectGuid])
+            HashSet<string> deps = Sln.ProjectDependencies?.Dependencies.GetOrDefault
+            (
+                project.ProjectGuid.ReformatSlnGuid() // F-166, MvsSln
+            );
+
+            if(deps == null)
             {
-                var prj = GetProjectByGuid(Sln.Env.Projects, pguid);
+                log.LogMessage(Resources.Cannot_find_0_, $"{project.ProjectGuid} in {nameof(Sln.ProjectDependencies)}");
+                yield break;
+            }
+
+            foreach(string pguid in deps)
+            {
+                IXProject prj = GetProjectByGuid(Sln.Env.Projects, pguid);
                 if(prj != null) yield return prj;
             }
         }
