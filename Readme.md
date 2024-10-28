@@ -28,8 +28,8 @@ Copyright (c) 2016-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
 > [ ***[Quick start](https://github.com/3F/DllExport/wiki/Quick-start)*** ] [ [Examples: C++, C#, Java, ...](https://github.com/3F/DllExport/wiki/Examples) ] 
 > -> { **[Wiki](https://github.com/3F/DllExport/wiki)** } { [🧪 Demo src](https://github.com/3F/Examples/tree/master/DllExport/BasicExport) }
 
-[![](https://github.com/3F/DllExport/raw/master/Resources/img/DllExport.png)](https://3F.github.io/DllExport/releases/latest/manager/)
-[![](https://raw.githubusercontent.com/3F/Conari/master/Conari/Resources/screencast_Complex_types.jpg)](https://www.youtube.com/watch?v=QXMj9-8XJnY)
+[![](https://github.com/3F/DllExport/blob/9a4bc5143b0b0ab6aca7cfc1abe3f6da9644ecd9/Resources/img/DllExport.png?raw=true)](https://3F.github.io/DllExport/releases/latest/manager/)
+[![](https://github.com/3F/DllExport/blob/36d452268c1f69b5c8dd5e22cc106c71ac76a82c/Resources/img/screencast_Complex_types.jpg?raw=true)](https://www.youtube.com/watch?v=QXMj9-8XJnY)
 
 For Lua, consider using [LuNari](https://github.com/3F/LuNari)
 
@@ -46,7 +46,7 @@ public static int entrypoint(IntPtr L)
 }
 ```
 
-For working with **unmanaged** memory including native or binary data from the heap and binding between .NET and unmanaged native C/C++ etc, use [Conari](https://github.com/3F/Conari) (Wiki. [**Quick-start**](https://github.com/3F/Conari/wiki/Quick-start))
+For working with **unmanaged** memory including native or binary data from the heap and binding between .NET and unmanaged native C/C++ etc, try [Conari](https://github.com/3F/Conari) (Wiki. [**Quick-start**](https://github.com/3F/Conari/wiki/Quick-start))
 
 ```csharp
 [DllExport] // DllExportModifiedClassLibrary.dll
@@ -139,10 +139,10 @@ git clone https://github.com/3F/DllExport.git DllExport
 cd DllExport
 ```
 
-Call *build.bat* to build final binaries like `DllExport.<version>.nupkg`, Manager, zip-archives, and related:
+Call *build.bat* to build final binaries like `DllExport.<version>.nupkg`, Manager, tests, zip-archives, and related:
 
 ```batch
-.\build Debug
+.\build Release
 ```
 
 Note, this relies on [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) scripting **if** you're using Visual Studio **IDE**.

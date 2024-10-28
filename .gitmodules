@@ -1,9 +1,9 @@
-[submodule "coreclr"]
-	path = coreclr
+[submodule "src/coreclr"]
+	path = src/coreclr
 	url = https://github.com/3F/coreclr.git
-[submodule "MvsSln"]
-	path = MvsSln
+[submodule "src/MvsSln"]
+	path = src/MvsSln
 	url = https://github.com/3F/MvsSln.git
-[submodule "hMSBuild"]
-	path = hMSBuild
+[submodule "src/hMSBuild"]
+	path = src/hMSBuild
 	url = https://github.com/3F/hMSBuild.git

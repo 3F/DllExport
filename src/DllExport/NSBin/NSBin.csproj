@@ -1,0 +1,14 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <RootNamespace>net.r_eg.DllExport.NSBin</RootNamespace>
+    <AssemblyName>net.r_eg.DllExport.NSBin</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Conari" Version="$(ConariVersion)" />
+    <PackageReference Include="Mono.Cecil" Version="$(MonoCecilVersion)" />
+  </ItemGroup>
+
+</Project>

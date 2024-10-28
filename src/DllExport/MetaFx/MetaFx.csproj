@@ -1,0 +1,13 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net20</TargetFramework>
+
+    <RootNamespace>System.Runtime.InteropServices</RootNamespace>
+    <AssemblyName>DllExport</AssemblyName>
+
+    <DocumentationFile>$(OutDir)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+
+</Project>

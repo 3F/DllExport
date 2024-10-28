@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <RootNamespace>net.r_eg.DllExport.Wizard</RootNamespace>
+    <AssemblyName>net.r_eg.DllExport.Wizard</AssemblyName>
+
+    <SuppressIncludeDllExportVersion>true</SuppressIncludeDllExportVersion>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' or '$(Configuration)' == 'PublicRelease' ">
+    <DefineConstants>$(DefConstDynamic)</DefineConstants>
+    <DefineConstants Condition=" '$(Configuration)' == 'PublicRelease' ">$(DefineConstants);PUBLIC_RELEASE</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+    <Reference Include="System.Windows.Forms" />
+    <PackageReference Include="Conari" Version="$(ConariVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\Activator\Activator.csproj" />
+    <ProjectReference Include="..\..\MvsSln\MvsSln\MvsSln.csproj" />
+    <ProjectReference Include="..\NSBin\NSBin.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="net.r_eg.DllExport.Wizard.targets">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </None>
+  </ItemGroup>
+
+</Project>

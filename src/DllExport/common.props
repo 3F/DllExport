@@ -1,0 +1,77 @@
+﻿<Project>
+  <Import Project="..\versions.props" />
+
+  <!-- redefine.props helps to override properties when it used as a submodule etc. -->
+  <Import Project="..\redefine.props" Condition="Exists('..\redefine.props')" />
+  <Import Project="..\..\redefine.props" Condition="Exists('..\..\redefine.props')" />
+
+  <PropertyGroup>
+    <RootOutDir>bin\prj\</RootOutDir>
+    <RootObjDir>bin\obj\</RootObjDir>
+
+    <OsUnixLike>false</OsUnixLike>
+    <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
+
+    <!-- F-206 -->
+    <TargetFramework>net40</TargetFramework>
+
+    <LangVersion>latest</LangVersion>
+    <TargetLatestRuntimePatch Condition="'$(TargetLatestRuntimePatch)'==''">true</TargetLatestRuntimePatch>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants Condition="'$(DllExportFeatureActivatorIsolatedTask)'=='true'">FEATURE_ACTIVATOR_ISOLATED_TASK;$(DefineConstants)</DefineConstants>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutPrjDir>$(RootOutDir)$(MSBuildProjectName)\$(Configuration)\</OutPrjDir>
+    <ObjPrjDir>$(RootObjDir)$(MSBuildProjectName)\$(Configuration)\</ObjPrjDir>
+
+    <OutDir>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(OutPrjDir)`))`))))</OutDir>
+    <OutputPath>$(OutDir)</OutputPath>
+    <IntermediateOutputPath>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(ObjPrjDir)`))`))))</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <DefineConstants>NET40;$(DefineConstants)</DefineConstants>
+    <SignAssembly>true</SignAssembly>
+    <AssemblyOriginatorKeyFile>..\..\com.github.3F.DllExport.snk</AssemblyOriginatorKeyFile>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Configurations>Debug;Release;PublicRelease</Configurations>
+    <NoWarn>1701;1702;CS1591;IDE1006</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GacMSBuildAddArtefacts>false</GacMSBuildAddArtefacts>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <GenerateAssemblyVersionAttribute>false</GenerateAssemblyVersionAttribute>
+    <GenerateAssemblyFileVersionAttribute>false</GenerateAssemblyFileVersionAttribute>
+    <GenerateAssemblyInformationalVersionAttribute>false</GenerateAssemblyInformationalVersionAttribute>
+
+    <Title>.NET DllExport</Title>
+    <Product>github.com/3F/DllExport</Product>
+    <Authors>$(Product)</Authors>
+    <Copyright>$(Product)</Copyright>
+    <RepositoryUrl>https://github.com/3F/DllExport</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'PublicRelease' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\DllExportVersion.cs" Condition="'$(SuppressIncludeDllExportVersion)'!='true'" />
+  </ItemGroup>
+
+</Project>

@@ -1,0 +1,34 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <RootNamespace>net.r_eg.DllExport.Activator</RootNamespace>
+    <AssemblyName>net.r_eg.DllExport.Activator</AssemblyName>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(GacMSBuildAddArtefacts)'=='true'">
+    <Reference Include="Microsoft.Build" Private="True" />
+    <Reference Include="Microsoft.Build.Framework" Private="True" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" Private="True" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(GacMSBuildAddArtefacts)'!='true'">
+    <Reference Include="Microsoft.Build" />
+    <Reference Include="Microsoft.Build.Framework" />
+    <Reference Include="Microsoft.Build.Utilities.v4.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Mono.Cecil" Version="$(MonoCecilVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Core\Extensions\StringExtension.cs" Link="Extensions\StringExtension.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Core\Core.csproj" />
+    <ProjectReference Include="..\..\MvsSln\MvsSln\MvsSln.csproj" />
+  </ItemGroup>
+
+</Project>

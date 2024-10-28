@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.1</TargetFramework>
+
+    <RootNamespace>net.r_eg.DllExport</RootNamespace>
+    <AssemblyName>DllExport</AssemblyName>
+
+    <DocumentationFile>$(OutDir)$(AssemblyName).xml</DocumentationFile>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <Compile Include="..\MetaFx\AssemblyInfo.cs" />
+    <Compile Include="..\MetaFx\DllExportAttribute.cs" />
+  </ItemGroup>
+
+</Project>

@@ -1,128 +1,111 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29519.87
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport", "RGiesecke.DllExport\RGiesecke.DllExport.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\DllExport\Core\Core.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetadataFx", "MetadataFx\MetadataFx.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaFx", "src\DllExport\MetaFx\MetaFx.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RGiesecke.DllExport.MSBuild", "RGiesecke.DllExport.MSBuild\RGiesecke.DllExport.MSBuild.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activator", "src\DllExport\Activator\Activator.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
 	ProjectSection(SolutionItems) = preProject
-		.gitmodules = .gitmodules
 		.release.version = .release.version
 		.version = .version
-		3rd-party.txt = 3rd-party.txt
-		changelog.txt = changelog.txt
-		LICENSE = LICENSE
-		packages.config = packages.config
-		Readme.md = Readme.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tools", "tools", "{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1}"
-	ProjectSection(SolutionItems) = preProject
-		tools\DllExport.nuspec = tools\DllExport.nuspec
-		tools\gnt.bat = tools\gnt.bat
-		tools\hMSBuild.bat = tools\hMSBuild.bat
-		tools\init.ps1 = tools\init.ps1
-		tools\net.r_eg.DllExport.targets = tools\net.r_eg.DllExport.targets
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "MvsSln", "MvsSln", "{4862DD29-ED07-4342-9E4D-CDAE89433A88}"
-	ProjectSection(SolutionItems) = preProject
-		MvsSln\.gitignore = MvsSln\.gitignore
-		MvsSln\.version = MvsSln\.version
-		MvsSln\build.bat = MvsSln\build.bat
-		MvsSln\changelog.txt = MvsSln\changelog.txt
-		MvsSln\License.txt = MvsSln\License.txt
-		MvsSln\packages.config = MvsSln\packages.config
-		MvsSln\Readme.md = MvsSln\Readme.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GetNuTool", "GetNuTool", "{D221D332-2A57-44F9-B866-F7C00C29032D}"
-	ProjectSection(SolutionItems) = preProject
-		GetNuTool\.gitignore = GetNuTool\.gitignore
-		GetNuTool\.version = GetNuTool\.version
-		GetNuTool\build.bat = GetNuTool\build.bat
-		GetNuTool\changelog.txt = GetNuTool\changelog.txt
-		GetNuTool\LICENSE = GetNuTool\LICENSE
-		GetNuTool\logic.targets = GetNuTool\logic.targets
-		GetNuTool\packages.config = GetNuTool\packages.config
-		GetNuTool\Readme.md = GetNuTool\Readme.md
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "build", "build", "{55898433-0EEF-4B38-B144-B2A40150E4F4}"
-	ProjectSection(SolutionItems) = preProject
-		.vssbe = .vssbe
+		3rd-party-NOTICES.txt = 3rd-party-NOTICES.txt
+		AUTHORS.txt = AUTHORS.txt
 		build.bat = build.bat
-		build_coreclr_x86.cmd = build_coreclr_x86.cmd
-		build_coreclr_x86_x64.cmd = build_coreclr_x86_x64.cmd
-		tools\gnt.bat = tools\gnt.bat
-		tools\hMSBuild.bat = tools\hMSBuild.bat
-		packages_restore.cmd = packages_restore.cmd
-		submodules.bat = submodules.bat
+		changelog.txt = changelog.txt
+		LICENSE.txt = LICENSE.txt
+		Readme.md = Readme.md
+		tests.bat = tests.bat
+		vsSolutionBuildEvent.bat = vsSolutionBuildEvent.bat
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBin", "NSBin\NSBin.csproj", "{311706A5-5ED2-4006-B794-055009D8A256}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1}"
+	ProjectSection(SolutionItems) = preProject
+		.tools\DllExport.nuspec = .tools\DllExport.nuspec
+		.tools\gnt.bat = .tools\gnt.bat
+		.tools\hMSBuild.bat = .tools\hMSBuild.bat
+		.tools\init.ps1 = .tools\init.ps1
+		.tools\net.r_eg.DllExport.targets = .tools\net.r_eg.DllExport.targets
+		.tools\netfx4sdk.cmd = .tools\netfx4sdk.cmd
+		.tools\packages.config = .tools\packages.config
+	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBinTest", "NSBinTest\NSBinTest.csproj", "{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBin", "src\DllExport\NSBin\NSBin.csproj", "{311706A5-5ED2-4006-B794-055009D8A256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "Wizard\Wizard.csproj", "{D10CF407-4483-4657-9FEA-BDB467391F3A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBinTest", "src\DllExport\NSBinTest\NSBinTest.csproj", "{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeViewer", "PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "src\DllExport\Wizard\Wizard.csproj", "{D10CF407-4483-4657-9FEA-BDB467391F3A}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSln", "MvsSln\MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeViewer", "src\DllExport\PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSlnTest", "MvsSln\MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSln", "src\MvsSln\MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSlnTest", "src\MvsSln\MvsSlnTest\MvsSlnTest.csproj", "{EC0CA220-39EC-41E5-B9D6-88D8F860F979}"
 	ProjectSection(ProjectDependencies) = postProject
 		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "hMSBuild", "hMSBuild", "{A708B33C-7E00-4AB0-BD02-2B748F2C713B}"
 	ProjectSection(SolutionItems) = preProject
-		hMSBuild\.gitignore = hMSBuild\.gitignore
-		hMSBuild\.version = hMSBuild\.version
-		hMSBuild\build.bat = hMSBuild\build.bat
-		hMSBuild\changelog.txt = hMSBuild\changelog.txt
-		hMSBuild\compress.bat = hMSBuild\compress.bat
-		hMSBuild\frontend.bat = hMSBuild\frontend.bat
-		hMSBuild\License.txt = hMSBuild\License.txt
-		hMSBuild\Readme.md = hMSBuild\Readme.md
-		hMSBuild\submodules.bat = hMSBuild\submodules.bat
-		hMSBuild\tests.bat = hMSBuild\tests.bat
+		src\hMSBuild\.version = src\hMSBuild\.version
+		src\hMSBuild\build.bat = src\hMSBuild\build.bat
+		src\hMSBuild\changelog.txt = src\hMSBuild\changelog.txt
+		src\hMSBuild\frontend.bat = src\hMSBuild\frontend.bat
+		src\hMSBuild\License.txt = src\hMSBuild\License.txt
+		src\hMSBuild\Readme.md = src\hMSBuild\Readme.md
+		src\hMSBuild\tests.bat = src\hMSBuild\tests.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{0969DEC4-0832-4110-AB49-A4BE30677862}"
 	ProjectSection(SolutionItems) = preProject
-		hMSBuild\tests\_run.bat = hMSBuild\tests\_run.bat
-		hMSBuild\tests\diffversions.bat = hMSBuild\tests\diffversions.bat
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "minified", "minified", "{9309746A-7318-4784-95B9-3C78C437BA39}"
-	ProjectSection(SolutionItems) = preProject
-		hMSBuild\minified\.compressor = hMSBuild\minified\.compressor
-	EndProjectSection
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "light", "light", "{6C22B481-EB28-4AF3-8C81-8AB931A8D569}"
-	ProjectSection(SolutionItems) = preProject
-		hMSBuild\light\.compressor = hMSBuild\light\.compressor
+		src\hMSBuild\tests\a.bat = src\hMSBuild\tests\a.bat
+		src\hMSBuild\tests\DiffVswStreamTests.bat = src\hMSBuild\tests\DiffVswStreamTests.bat
+		src\hMSBuild\tests\DiffVTests.bat = src\hMSBuild\tests\DiffVTests.bat
+		src\hMSBuild\tests\keysAndLogicTests.bat = src\hMSBuild\tests\keysAndLogicTests.bat
+		src\hMSBuild\tests\VswasTests.bat = src\hMSBuild\tests\VswasTests.bat
+		src\hMSBuild\tests\VswStreamTests.bat = src\hMSBuild\tests\VswStreamTests.bat
+		src\hMSBuild\tests\_run.bat = src\hMSBuild\tests\_run.bat
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manager", "Manager", "{A82C146D-054C-4F7A-A140-0BF79E5BCE4F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "batch", "batch", "{603C7C21-263D-4357-99C7-5653474A8F22}"
 	ProjectSection(SolutionItems) = preProject
-		Manager\batch\.compressor = Manager\batch\.compressor
-		Manager\batch\Manager.bat = Manager\batch\Manager.bat
-		Manager\batch\Manager.offline.bat = Manager\batch\Manager.offline.bat
-		Manager\batch\map.tpl.targets = Manager\batch\map.tpl.targets
-		Manager\batch\tests.bat = Manager\batch\tests.bat
-		Manager\batch\tests.targets = Manager\batch\tests.targets
+		src\DllExport\Manager\batch\a.bat = src\DllExport\Manager\batch\a.bat
+		src\DllExport\Manager\batch\Manager.bat = src\DllExport\Manager\batch\Manager.bat
+		src\DllExport\Manager\batch\Manager.offline.bat = src\DllExport\Manager\batch\Manager.offline.bat
+		src\DllExport\Manager\batch\Manager.offline.txt = src\DllExport\Manager\batch\Manager.offline.txt
+		src\DllExport\Manager\batch\ManagerKeyTests.bat = src\DllExport\Manager\batch\ManagerKeyTests.bat
+		src\DllExport\Manager\batch\ManagerKeyTests.targets = src\DllExport\Manager\batch\ManagerKeyTests.targets
+		src\DllExport\Manager\batch\_run.bat = src\DllExport\Manager\batch\_run.bat
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetadataCore", "MetadataCore\MetadataCore.csproj", "{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaCor", "src\DllExport\MetaCor\MetaCor.csproj", "{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "GetNuTool", "GetNuTool", "{B652721C-CCDB-4F17-9F9E-EB21F8478B98}"
+	ProjectSection(SolutionItems) = preProject
+		src\hMSBuild\GetNuTool\.version = src\hMSBuild\GetNuTool\.version
+		src\hMSBuild\GetNuTool\build.bat = src\hMSBuild\GetNuTool\build.bat
+		src\hMSBuild\GetNuTool\caller.bat = src\hMSBuild\GetNuTool\caller.bat
+		src\hMSBuild\GetNuTool\changelog.txt = src\hMSBuild\GetNuTool\changelog.txt
+		src\hMSBuild\GetNuTool\csharp.cs = src\hMSBuild\GetNuTool\csharp.cs
+		src\hMSBuild\GetNuTool\csinit.targets = src\hMSBuild\GetNuTool\csinit.targets
+		src\hMSBuild\GetNuTool\embd.bat = src\hMSBuild\GetNuTool\embd.bat
+		src\hMSBuild\GetNuTool\License.txt = src\hMSBuild\GetNuTool\License.txt
+		src\hMSBuild\GetNuTool\Readme.md = src\hMSBuild\GetNuTool\Readme.md
+		src\hMSBuild\GetNuTool\tests.bat = src\hMSBuild\GetNuTool\tests.bat
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{179AF057-A3F4-401B-821F-46D1580789C1}"
+	ProjectSection(SolutionItems) = preProject
+		src\hMSBuild\GetNuTool\tests\a.bat = src\hMSBuild\GetNuTool\tests\a.bat
+		src\hMSBuild\GetNuTool\tests\keysAndLogicTests.bat = src\hMSBuild\GetNuTool\tests\keysAndLogicTests.bat
+		src\hMSBuild\GetNuTool\tests\_run.bat = src\hMSBuild\GetNuTool\tests\_run.bat
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,12 +180,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{44F550ED-6D5E-45CB-8FD0-CBB35051B8E1} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
-		{4862DD29-ED07-4342-9E4D-CDAE89433A88} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
-		{55898433-0EEF-4B38-B144-B2A40150E4F4} = {E623294B-0FEA-4FA2-BA15-2750FE503F50}
 		{0969DEC4-0832-4110-AB49-A4BE30677862} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
-		{9309746A-7318-4784-95B9-3C78C437BA39} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
-		{6C22B481-EB28-4AF3-8C81-8AB931A8D569} = {A708B33C-7E00-4AB0-BD02-2B748F2C713B}
 		{603C7C21-263D-4357-99C7-5653474A8F22} = {A82C146D-054C-4F7A-A140-0BF79E5BCE4F}
+		{179AF057-A3F4-401B-821F-46D1580789C1} = {B652721C-CCDB-4F17-9F9E-EB21F8478B98}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EEADC215-3983-4718-A397-729069C59742}

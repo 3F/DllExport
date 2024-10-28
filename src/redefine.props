@@ -1,0 +1,14 @@
+﻿<Project>
+
+  <PropertyGroup Label="MvsSln">
+    <OverrideMvsSlnTFM>net40</OverrideMvsSlnTFM>
+    <OverrideMvsSlnTestTFM>net40</OverrideMvsSlnTestTFM>
+
+    <!-- https://github.com/3F/DllExport/issues/171 -->
+    <!-- https://github.com/3F/MvsSln/issues/51 -->
+    <MvsSlnFeatureHuid>true</MvsSlnFeatureHuid>
+
+    <MvsSlnGeneratePackageOnBuild>false</MvsSlnGeneratePackageOnBuild>
+  </PropertyGroup>
+
+</Project>
