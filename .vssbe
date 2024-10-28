@@ -1173,7 +1173,7 @@
           "",
           "",
           "#[File scall(\"DllExport.bat\", \"-packages $(RootAssetsDir) -dxp-version actual -action Restore >nul\", 60)]",
-          "#[File scall(\".tools\\hMSBuild.bat\", \"~x ~c $(cfgname) ~p \\\"$(Platform)\\\" assets.sln /p:RootAssetsDir=$(RootAssetsDir) >nul\", 200)]"
+          "#[File scall(\".tools\\hMSBuild.bat\", \"~x ~c $(cfgname) ~p \\\"$(Platform)\\\" assets.sln -t:restore -t:build /p:RootAssetsDir=$(RootAssetsDir) >nul\", 200)]"
         ]
       }
     }

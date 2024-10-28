@@ -17,7 +17,7 @@ using net.r_eg.DllExport.Wizard.Gears;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
-using net.r_eg.DllExport;
+using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.DllExport.Wizard
 {
@@ -38,7 +38,7 @@ namespace net.r_eg.DllExport.Wizard
         private const string WZ_ID = "Wz";
 
         private readonly IEnumerable<IProjectGear> gears;
-        private readonly LegacyPackagesFile lpf;
+        private readonly PackagesConfig pkgconf;
 
         /// <inheritdoc cref="IProject.XProject"/>
         public IXProject XProject { get; protected set; }
@@ -193,15 +193,22 @@ namespace net.r_eg.DllExport.Wizard
         {
             XProject = xproject ?? throw new ArgumentNullException(nameof(xproject));
 
-            gears = new IProjectGear[] 
-            { 
+            gears =
+            [
                 new PreProcGear(this),
                 new PostProcGear(this),
-            };
+            ];
 
-            lpf = new LegacyPackagesFile(xproject.ProjectPath);
+            pkgconf = new PackagesConfig
+            (
+                xproject.ProjectPath,
+                PackagesConfigOptions.LoadOrNew
+                    | PackagesConfigOptions.AutoCommit
+                    | PackagesConfigOptions.SilentLoading
+            );
 
-            AllocateProperties(
+            AllocateProperties
+            (
                 MSBuildProperties.DXP_ID,
                 MSBuildProperties.DXP_METALIB_NAME,
                 MSBuildProperties.DXP_NAMESPACE,
@@ -227,11 +234,13 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         protected void InstallGears() => gears.ForEach(g => g.Install());
+
         protected void UninstallGears(bool hardReset) => gears.ForEach(g => g.Uninstall(hardReset));
 
         protected void ActionRestore()
         {
-            if(Installed) {
+            if(Installed)
+            {
                 CfgDDNS();
             }
         }
@@ -475,9 +484,9 @@ namespace net.r_eg.DllExport.Wizard
         // https://github.com/3F/DllExport/issues/152
         protected void AddDllExportRef(string version)
         {
-            if(lpf.IsValidExists)
+            if(!pkgconf.IsNew)
             {
-                lpf.AddOrUpdatePackage(UserConfig.PKG_ID, version, "net40");
+                pkgconf.AddOrUpdatePackage(UserConfig.PKG_ID, version, "net40");
                 return;
             }
 
@@ -604,7 +613,8 @@ namespace net.r_eg.DllExport.Wizard
                     XProject.RemoveItem(item);
                 }
             }
-            lpf.RemoveSavedPackage(UserConfig.PKG_ID);
+
+            if(!pkgconf.IsNew) pkgconf.RemovePackage(UserConfig.PKG_ID);
 
             Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'", Message.Level.Info);
             while(XProject.RemoveImport(XProject.GetImport(DXP_TARGET, null))) { }
