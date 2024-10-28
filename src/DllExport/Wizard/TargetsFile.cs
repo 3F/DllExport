@@ -8,9 +8,9 @@
 using System;
 using System.Collections.Generic;
 using Microsoft.Build.Evaluation;
+using net.r_eg.Conari.Extension;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
-using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -109,33 +109,34 @@ namespace net.r_eg.DllExport.Wizard
             ResetById(parent);
             CfgCommonData();
 
-            var projectFile = MakeBasePath(parent.XProject.ProjectFullPath, false);
+            string projectFile = MakeBasePath(parent.XProject.ProjectFullPath, prefix: false);
 
             ConfigProperties[MSBuildProperties.DXP_CFG_ID] = parent.DxpIdent;
             ConfigProperties[MSBuildProperties.DXP_PRJ_FILE] = projectFile;
 
-            SetProperties(
+            SetProperties
+            (
                 ConfigProperties, 
                 MakeCondition(parent),
                 projectFile
             );
             XProject.Reevaluate();
 
-            if(XProject.GetImport().project == null) {
-                AddDllExportLib();
-            }
+            if(XProject.GetImport().project == null) AddDllExportLib();
         }
 
         protected void SetProperties(IEnumerable<KeyValuePair<string, string>> properties, string condition, string label)
-        {
-            properties.ForEach(p => 
-                XProject.AddPropertyGroup(label, condition).SetProperty(p.Key, p.Value)
-            );
-        }
+            => XProject.AddPropertyGroup(label, condition).E
+        (
+                group =>
+                properties.ForEach(p =>
+                    p.Value.If(v => v != null, v => group.SetProperty(p.Key, v))
+                )
+        );
 
         protected void ResetById(IProject prj)
         {
-            var cond = MakeCondition(prj);
+            string cond = MakeCondition(prj);
 
             foreach(var group in XProject.Project.Xml.PropertyGroups)
             {
