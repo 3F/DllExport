@@ -11,41 +11,27 @@ using System.Collections.Generic;
 
 namespace net.r_eg.DllExport.PeViewer
 {
-    internal sealed class ArgsHelper: IEnumerable<ArgsHelper>
+    /// <remarks>NOT thread safe</remarks>
+    internal sealed class ArgsHelper(string[] args): IEnumerable<ArgsHelper>
     {
-        private HashSet<int> accepted = new HashSet<int>();
+        private readonly HashSet<int> accepted = [];
 
-        private string[] args;
-        private volatile int idx;
-        private object sync = new object();
+        private readonly string[] args = args ?? throw new ArgumentNullException(nameof(args));
+        private int idx;
 
-        public IEnumerator<ArgsHelper> GetEnumerator()
-        {
-            return Iterate.GetEnumerator();
-        }
+        public IEnumerator<ArgsHelper> GetEnumerator() => Iterate.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return Iterate.GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => Iterate.GetEnumerator();
 
         public IEnumerable<ArgsHelper> Iterate
         {
             get
             {
-                lock(sync)
-                {
-                    for(idx = 0; idx < args.Length; ++idx) {
-                        yield return this;
-                    }
-                }
+                for(idx = 0; idx < args.Length; ++idx) yield return this;
             }
         }
 
-        public bool IsEmpty
-        {
-            get => args.Length < 1;
-        }
+        public bool IsEmpty => args.Length < 1;
 
         /// <summary>
         /// Expected keys that was accepted for using.
@@ -54,9 +40,7 @@ namespace net.r_eg.DllExport.PeViewer
         {
             get
             {
-                foreach(var pos in accepted) {
-                    yield return args[pos];
-                }
+                foreach(int pos in accepted) yield return args[pos];
             }
         }
 
@@ -67,47 +51,34 @@ namespace net.r_eg.DllExport.PeViewer
         {
             get
             {
-                for(int i = 0; i < args.Length; ++i) {
-                    if(!accepted.Contains(i)) {
-                        yield return args[i];
-                    }
+                for(int i = 0; i < args.Length; ++i)
+                {
+                    if(!accepted.Contains(i)) yield return args[i];
                 }
             }
         }
 
-        public bool Is(string key)
-        {
-            return Is(key, false, out string nul);
-        }
+        public bool Is(string key) => Is(key, false, out _);
 
-        public bool Is(string key, out string value)
-        {
-            return Is(key, true, out value);
-        }
+        public bool Is(string key, out string value) => Is(key, true, out value);
 
         public bool Is(string key, bool hasVal, out string value)
         {
             value = null;
 
-            lock(sync)
+            if(string.IsNullOrWhiteSpace(key) || !Eq(args[idx], key))
             {
-                if(String.IsNullOrWhiteSpace(key) || !Eq(args[idx], key)) {
-                    return false;
-                }
-
-                accepted.Add(idx);
-
-                if(hasVal && ++idx < args.Length) {
-                    value = args[idx];
-                    accepted.Add(idx);
-                }
-                return true;
+                return false;
             }
-        }
 
-        public ArgsHelper(string[] args)
-        {
-            this.args = args ?? throw new ArgumentNullException(nameof(args));
+            accepted.Add(idx);
+
+            if(hasVal && ++idx < args.Length)
+            {
+                value = args[idx];
+                accepted.Add(idx);
+            }
+            return true;
         }
 
         private bool Eq(string a, string b, StringComparison cmp = StringComparison.InvariantCultureIgnoreCase)

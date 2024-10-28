@@ -20,8 +20,8 @@ namespace net.r_eg.DllExport.Wizard.Gears
     {
         private const string ILMERGE_TMP = ".ilm0";
 
-        private readonly Version incConari = new Version("1.4.0");
-        private readonly Version incILMerge = new Version("3.0.29");
+        private readonly Version incConari = new("1.5.0");
+        private readonly Version incILMerge = new("3.0.41");
 
         private readonly IProjectSvc prj;
         private ProjectPropertyGroupElement pgroup;

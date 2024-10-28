@@ -13,18 +13,11 @@ namespace net.r_eg.DllExport.PeViewer
 {
     internal sealed class ArgsMapper
     {
-        private IDictionary<string, bool> commands;
+        private readonly IDictionary<string, bool> commands;
 
-        public ArgsHelper AHelper
-        {
-            get;
-            private set;
-        }
+        public ArgsHelper AHelper { get; private set; }
 
-        public bool IsEmptyArgs
-        {
-            get => AHelper.IsEmpty;
-        }
+        public bool IsEmptyArgs => AHelper.IsEmpty;
 
         public IEnumerable<string> CommandsPrintVersion
         {
@@ -32,10 +25,8 @@ namespace net.r_eg.DllExport.PeViewer
             {
                 foreach(var cmd in commands)
                 {
-                    var ret = $"{cmd.Key}";
-                    if(cmd.Value) {
-                        ret += " {data}";
-                    }
+                    string ret = $"{cmd.Key}";
+                    if(cmd.Value) ret += " {...}";
                     yield return ret;
                 }
             }
@@ -45,15 +36,9 @@ namespace net.r_eg.DllExport.PeViewer
         /// Keys that was defined in map but was not found in arguments.
         /// </summary>
         public IEnumerable<string> NotFound
-        {
-            get => Map.Where(m => !m.Value.defined).Select(m => m.Key);
-        }
+            => Map.Where(m => !m.Value.defined).Select(m => m.Key);
 
-        public Dictionary<string, ArgImp> Map
-        {
-            get;
-            private set;
-        } = new Dictionary<string, ArgImp>();
+        public Dictionary<string, ArgImp> Map { get; private set; } = [];
 
         internal struct ArgImp
         {
@@ -75,10 +60,7 @@ namespace net.r_eg.DllExport.PeViewer
         /// </summary>
         /// <param name="argname"></param>
         /// <returns></returns>
-        public bool Is(string argname)
-        {
-            return GetArg(argname).defined;
-        }
+        public bool Is(string argname) => GetArg(argname).defined;
 
         /// <summary>
         /// Is defined in args collection ?
@@ -88,16 +70,13 @@ namespace net.r_eg.DllExport.PeViewer
         /// <returns></returns>
         public bool Is(string argname, out string value)
         {
-            var ret = GetArg(argname);
+            ArgImp ret = GetArg(argname);
 
             value = ret.value;
             return ret.defined;
         }
 
-        public string GetValue(string argname)
-        {
-            return GetArg(argname).value;
-        }
+        public string GetValue(string argname) => GetArg(argname).value;
 
         public ArgsMapper(string[] args, IDictionary<string, bool> cmds)
         {
@@ -106,25 +85,24 @@ namespace net.r_eg.DllExport.PeViewer
 
             foreach(var cmd in commands)
             {
-                var imp = new ArgImp {
-                    name = cmd.Key
-                };
+                ArgImp imp = new() { name = cmd.Key };
 
-                foreach(var arg in AHelper)
+                foreach(ArgsHelper arg in AHelper)
                 {
-                    if(!cmd.Value) {
+                    if(!cmd.Value)
+                    {
                         imp.defined = arg.Is(imp.name);
                     }
-                    else {
+                    else
+                    {
                         imp.defined = arg.Is(imp.name, out imp.value);
                     }
 
-                    if(imp.defined) {
-                        break;
-                    }
+                    if(imp.defined) break;
                 }
 
-                if(Map.ContainsKey(imp.name)) {
+                if(Map.ContainsKey(imp.name))
+                {
                     throw new ArgumentException($"Duplicate arguments are not allowed: '{imp.name}'");
                 }
                 Map[imp.name] = imp;

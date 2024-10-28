@@ -7,19 +7,17 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Reflection;
+using net.r_eg.Conari.PE;
 
 namespace net.r_eg.DllExport.PeViewer
 {
-    /// <summary>
-    /// TODO: it's a first draft for `-list` command only.
-    /// </summary>
     class Program
     {
         static void Main(string[] args)
         {
-            var map = new ArgsMapper(args, new Dictionary<string, bool>()
+            ArgsMapper map = new(args, new Dictionary<string, bool>()
             {
                 { "-pemodule", true },
                 { "-list", false },
@@ -33,79 +31,101 @@ namespace net.r_eg.DllExport.PeViewer
                 CheckUnknown(map);
                 Cmd(map);
             }
-            catch(Exception ex) {
+            catch(Exception ex)
+            {
                 Msg(ex.Message, true);
+                Msg("");
+                CmdHelp(map);
             }
         }
 
         private static void Cmd(ArgsMapper map)
         {
-            if(map.IsEmptyArgs || map.Is("-version")) {
-                Msg(Assembly.GetExecutingAssembly().GetName().Version.ToString());
+            if(map.IsEmptyArgs || map.Is("-version"))
+            {
+#if PUBLIC_RELEASE
+                Msg(DllExportVersion.S_INFO_P, newline: false);
+#else
+                Msg(DllExportVersion.S_NUM, newline: false);
+#endif
+
+#if DEBUG
+                Msg(" [Debug]");
+#endif
                 Msg("");
-                Msg("Under the Conari license.");
-                Msg($"Conari: v{Conari.ConariVersion.S_NUM_REV} [{Conari.ConariVersion.BRANCH_SHA1}]");
-                Msg("Src: github.com/3F ");
-                Msg("     x-3F@outlook.com ");
+                Msg($"Powered by Conari {Conari.ConariVersion.S_NUM_REV}+{Conari.ConariVersion.BRANCH_SHA1}");
+                Msg("https://github.com/3F/Conari");
                 return;
             }
 
             if(map.Is("-h") || map.Is("-help"))
             {
-                Msg("Active commands: ");
-                foreach(var cmd in map.CommandsPrintVersion) {
-                    Msg($"  {cmd}");
-                }
+                CmdHelp(map);
                 return;
             }
 
             map.Is("-pemodule", out string aPeFile);
 
-            if(map.Is("-list")) {
+            if(map.Is("-list"))
+            {
                 CmdList(aPeFile);
                 return;
             }
 
-            throw new NotSupportedException(
-                $"Something went wrong. We can't handle this commands correctly: {String.Join(" ; ", map.AHelper.Used)} "
+            throw new NotSupportedException
+            (
+                $"Unsupported keys: {string.Join(" ; ", map.AHelper.Used)} "
             );
+        }
+
+        private static void CmdHelp(ArgsMapper map)
+        {
+            Msg("Active commands: ");
+            foreach(string cmd in map.CommandsPrintVersion) Msg($"  {cmd}");
         }
 
         private static void CmdList(string pemodule)
         {
-            if(pemodule == null) {
+            if(pemodule == null)
+            {
                 throw new ArgumentNullException($"-{nameof(pemodule)}");
             }
 
-            foreach(var name in PeFile.GetExportNames(pemodule)) {
-                Msg(name);
+            if(!File.Exists(pemodule))
+            {
+                throw new FileNotFoundException($"Module '{pemodule}' is not found.");
             }
+
+            using PEFile pe = new(pemodule);
+            foreach(string name in pe.ExportedProcNames) Msg(name);
         }
 
         private static void CheckUnknown(ArgsMapper map)
         {
-            var nonUsed = map?.AHelper?.NonUsed?.ToArray();
+            string[] nonUsed = map?.AHelper?.NonUsed?.ToArray();
 
-            if(nonUsed == null || nonUsed.Length < 1) {
-                return;
-            }
+            if(nonUsed == null || nonUsed.Length < 1) return;
 
-            foreach(var arg in nonUsed) {
+            foreach(string arg in nonUsed)
+            {
                 Msg($" ?-> `{arg}`", true);
             }
 
             throw new ArgumentException("Unknown or Incorrect arguments. Use `-help` to list available commands.");
         }
 
-        private static void Msg(string data, bool stderr = false)
+        private static void Msg(string data, bool stderr = false, bool newline = true)
         {
-            if(!stderr) {
-                Console.WriteLine(data);
+            if(newline) data += Environment.NewLine;
+
+            if(!stderr)
+            {
+                Console.Write(data);
                 return;
             }
 
             Console.ForegroundColor = ConsoleColor.Red;
-            Console.Error.WriteLine(data);
+            Console.Error.Write(data);
             Console.ResetColor();
         }
     }

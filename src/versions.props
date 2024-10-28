@@ -1,8 +1,8 @@
 ﻿<Project>
 
   <PropertyGroup>
-    <ConariVersion>1.4.0</ConariVersion>
-    <MonoCecilVersion>0.11.2</MonoCecilVersion>
+    <ConariVersion>1.5.0</ConariVersion>
+    <MonoCecilVersion>0.11.6</MonoCecilVersion>
     <xunitVersion>2.7.0</xunitVersion>
     <xunitVersionNet40>1.9.2</xunitVersionNet40>
   </PropertyGroup>
