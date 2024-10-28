@@ -1,0 +1,30 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.11.35327.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DllExport", "DllExport", "{7EFE776C-2D5C-487B-81F3-14D53D6F7099}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetfxAsset", "src\DllExport\assets\NetfxAsset\NetfxAsset.csproj", "{4D13A153-4DE3-4342-B447-F2DB081B2981}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{4D13A153-4DE3-4342-B447-F2DB081B2981} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1ED17F28-E550-4B00-8DF9-BD43241EEA55}
+	EndGlobalSection
+EndGlobal

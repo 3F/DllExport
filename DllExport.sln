@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "src\DllExport\Core\Core.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "src\DllExport\Core\Core.csproj", "{AC6947C6-0637-429A-A5F1-54447A494E6D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MetaFx", "src\DllExport\MetaFx\MetaFx.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaFx", "src\DllExport\MetaFx\MetaFx.csproj", "{D620BC4A-50CD-48DF-8C6E-B79555260EA0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Activator", "src\DllExport\Activator\Activator.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Activator", "src\DllExport\Activator\Activator.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
 	ProjectSection(SolutionItems) = preProject
@@ -34,13 +34,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".tools", ".tools", "{44F550
 		.tools\packages.config = .tools\packages.config
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBin", "src\DllExport\NSBin\NSBin.csproj", "{311706A5-5ED2-4006-B794-055009D8A256}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NSBin", "src\DllExport\NSBin\NSBin.csproj", "{311706A5-5ED2-4006-B794-055009D8A256}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NSBinTest", "src\DllExport\NSBinTest\NSBinTest.csproj", "{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NSBinTest", "src\DllExport\NSBinTest\NSBinTest.csproj", "{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Wizard", "src\DllExport\Wizard\Wizard.csproj", "{D10CF407-4483-4657-9FEA-BDB467391F3A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Wizard", "src\DllExport\Wizard\Wizard.csproj", "{D10CF407-4483-4657-9FEA-BDB467391F3A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PeViewer", "src\DllExport\PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PeViewer", "src\DllExport\PeViewer\PeViewer.csproj", "{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MvsSln", "src\MvsSln\MvsSln\MvsSln.csproj", "{F905DFB2-2E67-4FF7-9001-924F6F2D645D}"
 EndProject
@@ -105,6 +105,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{179AF057
 		src\hMSBuild\GetNuTool\tests\a.bat = src\hMSBuild\GetNuTool\tests\a.bat
 		src\hMSBuild\GetNuTool\tests\keysAndLogicTests.bat = src\hMSBuild\GetNuTool\tests\keysAndLogicTests.bat
 		src\hMSBuild\GetNuTool\tests\_run.bat = src\hMSBuild\GetNuTool\tests\_run.bat
+	EndProjectSection
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitedTest", "src\DllExport\UnitedTest\UnitedTest.csproj", "{0B356E3D-F2D6-485B-A8D9-3B78ED978550}"
+	ProjectSection(ProjectDependencies) = postProject
+		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F} = {0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}
+		{311706A5-5ED2-4006-B794-055009D8A256} = {311706A5-5ED2-4006-B794-055009D8A256}
+		{3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A} = {3CFD9EB8-69BC-4B41-9ABA-9C1850BE324A}
+		{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8} = {9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}
+		{AC6947C6-0637-429A-A5F1-54447A494E6D} = {AC6947C6-0637-429A-A5F1-54447A494E6D}
+		{BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F} = {BE8C8005-A6C6-41D0-9DB0-6B4B7BD1077F}
+		{D10CF407-4483-4657-9FEA-BDB467391F3A} = {D10CF407-4483-4657-9FEA-BDB467391F3A}
+		{D620BC4A-50CD-48DF-8C6E-B79555260EA0} = {D620BC4A-50CD-48DF-8C6E-B79555260EA0}
+		{EC0CA220-39EC-41E5-B9D6-88D8F860F979} = {EC0CA220-39EC-41E5-B9D6-88D8F860F979}
+		{F905DFB2-2E67-4FF7-9001-924F6F2D645D} = {F905DFB2-2E67-4FF7-9001-924F6F2D645D}
 	EndProjectSection
 EndProject
 Global
@@ -174,6 +188,12 @@ Global
 		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
 		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0F0E1861-4EC7-4125-B16A-EE95FA80FA0F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0B356E3D-F2D6-485B-A8D9-3B78ED978550}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0B356E3D-F2D6-485B-A8D9-3B78ED978550}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0B356E3D-F2D6-485B-A8D9-3B78ED978550}.PublicRelease|Any CPU.ActiveCfg = Release|Any CPU
+		{0B356E3D-F2D6-485B-A8D9-3B78ED978550}.PublicRelease|Any CPU.Build.0 = Release|Any CPU
+		{0B356E3D-F2D6-485B-A8D9-3B78ED978550}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0B356E3D-F2D6-485B-A8D9-3B78ED978550}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

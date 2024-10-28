@@ -16,7 +16,7 @@
 set reltype=%~1
 if not defined reltype set reltype=Release
 
-call .tools\gnt & call packages\vsSolutionBuildEvent\cim.cmd ~x ~c %reltype% || goto err
+call .tools\gnt & call packages\vsSolutionBuildEvent\cim.cmd ~x ~c %reltype% DllExport.sln || goto err
 set "frel=%reltype:Public=%"
 
 setlocal enableDelayedExpansion

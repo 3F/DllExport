@@ -8,6 +8,7 @@
   <PropertyGroup>
     <RootOutDir>bin\prj\</RootOutDir>
     <RootObjDir>bin\obj\</RootObjDir>
+    <RootAssetsDir>bin\assets\</RootAssetsDir>
 
     <OsUnixLike>false</OsUnixLike>
     <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
@@ -36,6 +37,7 @@
     <DefineConstants>NET40;$(DefineConstants)</DefineConstants>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\..\com.github.3F.DllExport.snk</AssemblyOriginatorKeyFile>
+    <IsPackable>false</IsPackable>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Configurations>Debug;Release;PublicRelease</Configurations>
     <NoWarn>1701;1702;CS1591;IDE1006</NoWarn>
@@ -58,20 +60,26 @@
     <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' Or '$(Configuration)' == 'PublicRelease' ">
+  <PropertyGroup Condition="'$(Configuration)'=='Release' Or '$(Configuration)'=='PublicRelease'">
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Include="..\..\DllExportVersion.cs" Condition="'$(SuppressIncludeDllExportVersion)'!='true'" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Appveyor.TestLogger.2.0.0\**" />
+    <EmbeddedResource Remove="Appveyor.TestLogger.2.0.0\**" />
+    <None Remove="Appveyor.TestLogger.2.0.0\**" />
   </ItemGroup>
 
 </Project>

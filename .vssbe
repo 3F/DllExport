@@ -1154,6 +1154,28 @@
           "#[IO scall(\"cmd\", \"/C mklink /J $(dbgPkgDir)DllExport.$(pVerRel) $(odir.Replace('/', '\\'))\")]"
         ]
       }
+    },
+    {
+      "Enabled": true,
+      "Name": "Assets",
+      "IgnoreIfBuildFailed": true,
+      "Mode": {
+        "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
+        "Type": "Script",
+        "Command__": [
+          "#[try",
+          "{",
+          "    #[IO delete.directory(\"$(RootAssetsDir)\", true)]",
+          "} catch{ F-53, SobaScript }]",
+          "",
+          "#[IO copy.directory(\"\", \"$(RootAssetsDir)\", true)]",
+          "#[IO scall(\"cmd\", \"/C mklink /J $(RootAssetsDir)\\DllExport $(odir.Replace('/', '\\'))\")]",
+          "",
+          "",
+          "#[File scall(\"DllExport.bat\", \"-packages $(RootAssetsDir) -dxp-version actual -action Restore >nul\", 60)]",
+          "#[File scall(\".tools\\hMSBuild.bat\", \"assets.sln ~x ~c $(Configuration) ~p \\\"$(Platform)\\\" /p:RootAssetsDir=$(RootAssetsDir) >nul\", 200)]"
+        ]
+      }
     }
   ],
   "SlnOpened": [

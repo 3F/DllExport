@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <Import Project="..\common.props" />
+
+  <PropertyGroup>
+    <TargetFramework>net472</TargetFramework>
+    <RootNamespace>net.r_eg.DllExport.UnitedTest</RootNamespace>
+    <AssemblyName>net.r_eg.DllExport.UnitedTest</AssemblyName>
+    <!-- <ImplicitUsings>enable</ImplicitUsings> -->
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Conari" Version="$(ConariVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- <Using Include="Xunit" /> -->
+  </ItemGroup>
+
+  <Target Name="AssetsProjectsBuildDep" BeforeTargets="PostBuildEvent">
+    <!-- <MSBuild BuildInParallel="true" Projects="..\..\..\assets.sln" Properties="Configuration=$(Configuration);Platform=$(Platform);RootAssetsDir=$(RootAssetsDir)" Targets="Build" /> -->
+  </Target>
+
+</Project>

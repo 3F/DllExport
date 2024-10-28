@@ -1,0 +1,49 @@
+﻿<Project>
+  <Import Project="..\..\versions.props" />
+
+  <PropertyGroup>
+    <Configuration Condition="'$(Configuration)'=='PublicRelease'">Release</Configuration>
+
+    <RootOutDir>$(RootAssetsDir)$(Configuration)\prj\</RootOutDir>
+    <RootObjDir>$(RootAssetsDir)$(Configuration)\obj\</RootObjDir>
+
+    <AssetDllExportPkg>$(RootAssetsDir)DllExport</AssetDllExportPkg>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <LangVersion>latest</LangVersion>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <OutPrjDir>$(RootOutDir)$(MSBuildProjectName)\</OutPrjDir>
+    <ObjPrjDir>$(RootObjDir)$(MSBuildProjectName)\</ObjPrjDir>
+
+    <OutDir>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(OutPrjDir)`))`))))</OutDir>
+    <OutputPath>$(OutDir)</OutputPath>
+    <IntermediateOutputPath>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(ObjPrjDir)`))`))))</IntermediateOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <Configurations>Debug;Release</Configurations>
+    <NoWarn>1701;1702;CS1591;IDE1006</NoWarn>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <DefineConstants>DEBUG;TRACE;$(DefineConstants)</DefineConstants>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\..\..\DllExportVersion.cs" Condition="'$(SuppressIncludeDllExportVersion)'!='true'" />
+  </ItemGroup>
+
+</Project>

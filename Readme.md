@@ -48,6 +48,8 @@ public static int entrypoint(IntPtr L)
 
 For working with **unmanaged** memory including native or binary data from the heap and binding between .NET and unmanaged native C/C++ etc, try [Conari](https://github.com/3F/Conari) (Wiki. [**Quick-start**](https://github.com/3F/Conari/wiki/Quick-start))
 
+[`[⏯]`](.\src\DllExport\assets\NetfxAsset\Basic.cs)
+
 ```csharp
 [DllExport] // DllExportModifiedClassLibrary.dll
 public static IntPtr callme(TCharPtr str, IntPtr structure)
@@ -62,6 +64,9 @@ public static IntPtr callme(TCharPtr str, IntPtr structure)
     return new NativeArray<int>(-1, v.x, 1, v.y);
 }
 ```
+
+[`[⏯]`](.\src\DllExport\UnitedTest\NetfxAssetBasicTest.cs)
+
 ```csharp
 ... // host side via C/C++, Java, Rust, Python, ... or even same dotnet C#
 using NativeString<TCharPtr> ns = new("Hello world!");
@@ -75,7 +80,7 @@ using NativeArray<int> nr = new(4, ptr); // (nstruct.Data.x == 8) != (nr[1] == 7
 
 *.NET DllExport* supports both Library (**.dll**) and Executable (**.exe**) PE modules.
 
-Find demo project here: https://github.com/3F/Examples/tree/master/DllExport/BasicExport
+`[⏯]` See also demo project here: https://github.com/3F/Examples/tree/master/DllExport/BasicExport
 
 ## How does it work
 
