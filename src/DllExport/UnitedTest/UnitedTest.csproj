@@ -1,21 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\common.props" />
+  <Import Project="..\tests.props" />
 
   <PropertyGroup>
-    <TargetFramework></TargetFramework> <!-- # common.props / F-206 -->
-    <TargetFrameworks>$(DxpTfmsForTests)</TargetFrameworks>
+    <TargetFrameworks>$(DllExportTestTFMs)</TargetFrameworks>
     <RootNamespace>net.r_eg.DllExport.UnitedTest</RootNamespace>
     <AssemblyName>net.r_eg.DllExport.UnitedTest</AssemblyName>
     <!-- <ImplicitUsings>enable</ImplicitUsings> -->
-    <IsTestProject>true</IsTestProject>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="xunit" Version="2.5.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Conari" Version="$(ConariVersion)" />

@@ -1,18 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\common.props" />
+  <Import Project="..\tests.props" />
 
   <PropertyGroup>
+    <TargetFrameworks>$(DllExportTestTFMs)</TargetFrameworks>
     <RootNamespace>net.r_eg.DllExport.NSBinTest</RootNamespace>
     <AssemblyName>net.r_eg.DllExport.NSBinTest</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\NSBin\NSBin.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="xunit" Version="$(xunitVersion)" Condition="'$(TargetFramework)'!='net40'" />
-    <PackageReference Include="xunit" Version="$(xunitVersionNet40)" Condition="'$(TargetFramework)'=='net40'" />
   </ItemGroup>
 
 </Project>

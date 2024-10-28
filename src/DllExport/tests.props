@@ -1,0 +1,16 @@
+﻿<Project>
+
+  <PropertyGroup>
+    <DllExportTestTFMs Condition="'$(DllExportTestTFMs)'==''">net472</DllExportTestTFMs>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="$(coverletCollectorVersion)" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="$(MicrosoftNETTestSdkVersion)" />
+    <PackageReference Include="xunit" Version="$(xunitVersion)" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="$(xunitRunnerVisualstudioVersion)" />
+  </ItemGroup>
+
+</Project>

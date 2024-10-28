@@ -2,6 +2,7 @@
   <Import Project="..\common.props" />
 
   <PropertyGroup>
+    <TargetFramework>$(DllExportTFM)</TargetFramework>
     <RootNamespace>net.r_eg.DllExport.NSBin</RootNamespace>
     <AssemblyName>net.r_eg.DllExport.NSBin</AssemblyName>
   </PropertyGroup>

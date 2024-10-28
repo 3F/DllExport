@@ -13,9 +13,8 @@
     <OsUnixLike>false</OsUnixLike>
     <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
 
-    <!-- F-206 -->
-    <TargetFramework>net40</TargetFramework>
-    <DxpTfmsForTests>net472</DxpTfmsForTests>
+    <!-- F-206 --><!-- Currently only supported TargetFramework not TargetFrameworks -->
+    <DllExportTFM Condition="'$(DllExportTFM)'==''">net40</DllExportTFM>
 
     <LangVersion>latest</LangVersion>
     <TargetLatestRuntimePatch Condition="'$(TargetLatestRuntimePatch)'==''">true</TargetLatestRuntimePatch>

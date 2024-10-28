@@ -1,8 +1,8 @@
 ﻿<Project>
 
   <PropertyGroup Label="MvsSln">
-    <OverrideMvsSlnTFM>net40</OverrideMvsSlnTFM>
-    <OverrideMvsSlnTestTFM>net40</OverrideMvsSlnTestTFM>
+    <OverrideMvsSlnTFM>net40;net472</OverrideMvsSlnTFM>
+    <OverrideMvsSlnTestTFM>net472</OverrideMvsSlnTestTFM>
 
     <!-- https://github.com/3F/DllExport/issues/171 -->
     <!-- https://github.com/3F/MvsSln/issues/51 -->

@@ -5,6 +5,9 @@
     <MonoCecilVersion>0.11.6</MonoCecilVersion>
     <xunitVersion>2.7.0</xunitVersion>
     <xunitVersionNet40>1.9.2</xunitVersionNet40>
+    <xunitRunnerVisualstudioVersion>2.5.3</xunitRunnerVisualstudioVersion>
+    <MicrosoftNETTestSdkVersion>17.8.0</MicrosoftNETTestSdkVersion>
+    <coverletCollectorVersion>6.0.0</coverletCollectorVersion>
   </PropertyGroup>
 
 </Project>
