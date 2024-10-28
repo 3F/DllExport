@@ -2,7 +2,7 @@
   <Import Project="..\..\versions.props" />
 
   <PropertyGroup>
-    <Configuration Condition="'$(Configuration)'=='PublicRelease'">Release</Configuration>
+    <Configuration Condition="'$(Configuration)'=='PublicRelease' or '$(Configuration)'==''">Release</Configuration>
 
     <RootOutDir>$(RootAssetsDir)$(Configuration)\prj\</RootOutDir>
     <RootObjDir>$(RootAssetsDir)$(Configuration)\obj\</RootObjDir>
