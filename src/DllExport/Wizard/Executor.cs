@@ -134,29 +134,37 @@ namespace net.r_eg.DllExport.Wizard
 
             switch(Config.Type)
             {
-                case ActionType.Configure: {
-                        UI.App.RunSTA(new UI.ConfiguratorForm(this));
-                        break;
+                case ActionType.Configure:
+                {
+                    UI.App.RunSTA(new UI.ConfiguratorForm(this));
+                    break;
                 }
-                case ActionType.Recover: {
-                        ActivateSln();
-                        Configure(TargetsFile.XProject);
-                        break;
+
+                case ActionType.Recover:
+                case ActionType.RecoverInit:
+                {
+                    ActivateSln();
+                    Configure(TargetsFile.XProject, Config.Type);
+                    break;
                 }
+
                 case ActionType.Restore:
                 case ActionType.Update:
                 case ActionType.Export:
-                case ActionType.Unset: {
-                        Configure(ActivateSln());
-                        break;
+                case ActionType.Unset:
+                {
+                    Configure(ActivateSln());
+                    break;
                 }
-                case ActionType.Info: {
-                        "https://github.com/3F/DllExport/wiki/Quick-start".OpenUrl();
-                        break;
+
+                case ActionType.Info:
+                {
+                    "https://github.com/3F/DllExport/wiki/Quick-start".OpenUrl();
+                    break;
                 }
-                case ActionType.Default: {
-                        return;
-                }
+
+                case ActionType.Default: return;
+
                 default: throw new NotImplementedException();
             }
         }
@@ -237,9 +245,12 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        protected void Configure(IXProject xp)
+        protected void Configure(IXProject xp, ActionType type)
         {
-            Config.CfgStorage = CfgStorageType.TargetsFile;
+            if(type == ActionType.Recover)
+            {
+                Config.CfgStorage = CfgStorageType.TargetsFile;
+            }
 
             foreach(var pgr in xp.Project.Xml.PropertyGroups)
             {

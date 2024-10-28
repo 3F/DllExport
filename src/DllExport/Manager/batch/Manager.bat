@@ -141,7 +141,8 @@ echo   * Configure - To configure DllExport for specific projects.
 echo   * Update    - To update pkg reference for already configured projects.
 echo   * Restore   - To restore configured DllExport.
 echo   * Export    - To export configured projects data.
-echo   * Recover   - To re-configure projects via predefined/exported data.
+echo   * Recover   - To re-configure projects using predefined data.
+echo                `RecoverInit` to initial setup.
 echo   * Unset     - To unset all data from specified projects.
 echo   * Upgrade   - Aggregates an Update action with additions for upgrading.
 echo.
@@ -217,7 +218,7 @@ set key=!arg[%idx%]!
     ) else if [!key!]==[-action] ( set /a "idx+=1" & call :eval arg[!idx!] v
         
         set wAction=!v!
-        for %%g in (Restore, Configure, Update, Export, Recover, Unset, Upgrade, Default) do (
+        for %%g in (Restore, Configure, Update, Export, Recover, RecoverInit, Unset, Upgrade, Default) do (
             if "!v!"=="%%g" goto continue
         )
 

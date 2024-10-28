@@ -33,9 +33,14 @@ namespace net.r_eg.DllExport.Wizard
         Info,
 
         /// <summary>
-        /// To re-configure projects via predefined/exported data.
+        /// To re-configure projects using predefined/exported data.
         /// </summary>
         Recover,
+
+        /// <summary>
+        /// Recover to initial setup using predefined/exported data.
+        /// </summary>
+        RecoverInit,
 
         /// <summary>
         /// To export configured projects data.
