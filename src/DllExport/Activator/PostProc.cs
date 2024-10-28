@@ -26,25 +26,17 @@ namespace net.r_eg.DllExport.Activator
         /// </summary>
         internal const int OFS_ENV_PROP = 2; // sln;prj;...
 
-        private readonly IList<string> allocatedItems = new List<string>();
+        private readonly IList<string> allocatedItems = [];
         private readonly Sln _sln;
         private readonly TaskLoggingHelper log;
 
         public ISlnResult Sln => _sln.Result;
 
-        public IXProject Prj
-        {
-            get;
-            private set;
-        }
+        public IXProject Prj { get; private set; }
 
-        public IEnumerable<string> CallbackProperties
-        {
-            get;
-            private set;
-        }
+        public IEnumerable<string> CallbackProperties { get; private set; }
 
-        private IDictionary<string, string> SysProperties => new Dictionary<string, string>()
+        private Dictionary<string, string> SysProperties => new()
         {
             { "DllExport", DllExportVersion.S_NUM_REV },
             { "DllExportSln", Sln.SolutionFile },
@@ -53,17 +45,20 @@ namespace net.r_eg.DllExport.Activator
 
         public bool Process(IPostProcExecutor executor)
         {
-            if(executor == null) {
+            if(executor == null)
+            {
                 log.LogError(Resources._0_is_not_configured, nameof(IPostProcExecutor));
                 return false;
             }
 
-            if(Prj == null) {
+            if(Prj == null)
+            {
                 log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(IPostProcExecutor), $"{nameof(IXProject)} == null");
                 return true;
             }
 
-            if(!IsExistCallback(ENTRY_POINT)) {
+            if(!IsExistCallback(ENTRY_POINT))
+            {
                 log.LogMessage(Resources._0_is_ignored_due_to_1, nameof(IPostProcExecutor), $"{ENTRY_POINT} == null");
                 return true;
             }
@@ -82,7 +77,7 @@ namespace net.r_eg.DllExport.Activator
         public PostProc(string raw, TaskLoggingHelper log)
         {
             this.log = log ?? throw new ArgumentNullException(nameof(log));
-            var data = (raw ?? throw new ArgumentNullException(nameof(raw))).Split(';');
+            string[] data = (raw ?? throw new ArgumentNullException(nameof(raw))).Split(';');
 
             if(data.Length < OFS_ENV_PROP) {
                 throw new ArgumentException(string.Format(Resources.Incorrect_format_of_0_, "sln;prj"));
@@ -96,14 +91,24 @@ namespace net.r_eg.DllExport.Activator
 
             CallbackProperties = data.Skip(OFS_ENV_PROP).Select(p => p.Trim()).Where(p => !string.IsNullOrEmpty(p));
 
-            AllocateItem("DllExportDirX64", @"$(TargetDir)x64\*.*");
-            AllocateItem("DllExportDirX86", @"$(TargetDir)x86\*.*");
+            switch(Prj.GetProperty("PlatformTarget").evaluated?.ToLower())
+            {
+                case "x64": AllocateItem("DllExportDirX64", @"$(TargetDir)*.*"); break;
+                case "x86": AllocateItem("DllExportDirX86", @"$(TargetDir)*.*"); break;
+                default:
+                {
+                    AllocateItem("DllExportDirX64", @"$(TargetDir)x64\*.*");
+                    AllocateItem("DllExportDirX86", @"$(TargetDir)x86\*.*");
+                    break;
+                }
+            }
+
             AllocateItem("DllExportDirBefore", @"$(TargetDir)Before\*.*");
             AllocateItem("DllExportDirAfter", @"$(TargetDir)After\*.*");
 
-            PopulateProperties(GetDependents(Prj), p => GetNameForDependentsProperty(p));
-            PopulateProperties(GetSeqDependents(Prj), p => GetNameForSeqDependentsProperty(p));
-            PopulateProperties(GetDependencies(Prj), p => GetNameForDependenciesProperty(p));
+            PopulateProperties(GetDependents(Prj), GetNameForDependentsProperty);
+            PopulateProperties(GetSeqDependents(Prj), GetNameForSeqDependentsProperty);
+            PopulateProperties(GetDependencies(Prj), GetNameForDependenciesProperty);
         }
 
         private IXProject GetProject(string file)
