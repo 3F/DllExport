@@ -377,17 +377,17 @@ if z%wAction%==zUpgrade (
 call :trim dxpPackages
 set "dxpPackages=!dxpPackages!\\"
 
-set "_remoteUrl=!dxpName!"
+set "reqPkg=!dxpName!"
 set "wPkgPath=!dxpPackages!!dxpName!"
 
 if defined dxpVersion (
-    set "_remoteUrl=!_remoteUrl!/!dxpVersion!"
+    set "reqPkg=!reqPkg!/!dxpVersion!"
     set "wPkgPath=!wPkgPath!.!dxpVersion!"
 )
 
 if defined kForce (
     if exist "!wPkgPath!" (
-        call :dbgprint "Removing old version before continue. '-force' key rule. " wPkgPath
+        call :dbgprint "Removing the old version. '-force' key rule. " wPkgPath
         rmdir /S/Q "!wPkgPath!"
     )
 )
@@ -408,16 +408,17 @@ if not exist !wzTarget! (
     if defined pkgLink (
         set pkgSrv=!pkgLink!
         
-        :: support of local relative paths
+        :: Relative path support to local
         if "!pkgSrv::=!"=="!pkgSrv!" (
             set pkgSrv=!cd!/!pkgSrv!
         )
         
         :: https://github.com/3F/GetNuTool/issues/6
-        if "!wPkgPath::=!"=="!wPkgPath!" ( 
-            set "_rlp=../" 
+        if "!wPkgPath::=!"=="!wPkgPath!" (
+            set "reqPkg=:../!wPkgPath!"
+        ) else (
+            set "reqPkg=:!wPkgPath!"
         )
-        set "_remoteUrl=:!_rlp!!wPkgPath!"
     )
 
     :: https://github.com/3F/DllExport/issues/74
@@ -425,7 +426,7 @@ if not exist !wzTarget! (
         set msb.gnt.cmd=!gMsbPath!
     )
 
-    set _gntC=-GetNuTool "!_remoteUrl!" /p:ngserver="!pkgSrv!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
+    set _gntC=-GetNuTool "!reqPkg!" /p:ngserver="!pkgSrv!" /p:ngpath="!dxpPackages!" /p:proxycfg="!proxy!"
     call :invokeCore _gntC "no"
 )
 
@@ -450,19 +451,19 @@ if defined buildInfo (
     goto endpoint
 )
 
-if not exist !wzTarget! (
-    echo Something went wrong. Try to use another keys.
-
-    set /a EXIT_CODE=%ERROR_FILE_NOT_FOUND%
-    goto endpoint
-)
-
 call :dbgprint "wRootPath = " wRootPath
 call :dbgprint "wAction = " wAction
 call :dbgprint "wMgrArgs = " wMgrArgs
 call :dbgprint "wzTarget = " wzTarget
 
 if not defined xmgrtest (
+
+    if not exist !wzTarget! (
+        echo Target cannot be initialized. Try to use another keys.
+
+        set /a EXIT_CODE=%ERROR_FILE_NOT_FOUND%
+        goto endpoint
+    )
 
     if defined gMsbPath (
         call :dbgprint "Use specific MSBuild Tools: " gMsbPath

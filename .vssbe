@@ -37,7 +37,6 @@
           "$(pWizard       = \"Wizard\")",
           "$(pManager      = \"Manager\")",
           "$(pPeViewer     = \"PeViewer\")",
-          "$(pGetNuTool    = \"GetNuTool\")",
           "$(phMSBuild     = \"hMSBuild\")",
           "$(pMSBuild      = \"RGiesecke.DllExport.MSBuild\")",
           "$(odir          = \"$(dbin)raw/\")",
@@ -55,11 +54,6 @@
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
         "Command__": [
-          "#[( !(#[IO exists.file(\"$(pGetNuTool)/..sln\")]) )",
-          "{",
-          "    #[File call(\"git\", \"submodule update --init --recursive GetNuTool\", 300)]",
-          "}]",
-          "",
           "#[( !(#[IO exists.file(\"$(pMvsSln)/MvsSln.sln\")]) )",
           "{",
           "    #[File call(\"git\", \"submodule update --init --recursive MvsSln\", 300)]",
@@ -759,7 +753,7 @@
           "",
           "                /* exit/B */",
           "",
-          "                content = Regex.Replace(content, @\"exit\\s*(?:\\/B\\s*?(?'code'\\d+)|\\/B)\\s*?\", (m) =>",
+          "                content = Regex.Replace(content, @\"exit\\s*(?:\\/B\\s*?(?'code'\\d+|(?:!|%)\" +VNAME+ @\"(?:!|%)?)|\\/B)\\s*?\", (m) =>",
           "                {",
           "                    string ret  = \"exit/B\";",
           "                    string code = m.Groups[\"code\"].Value;",
@@ -1043,7 +1037,8 @@
           "",
           "#[$(mgrTests = \"$(odir)/tests/\")]",
           "",
-          "#[IO copy.file({ \"hMSBuild/tests/*.bat\" }, \"$(mgrTests)\", true, { \"dbg*.bat\" })]",
+          "#[IO copy.file({ \"hMSBuild/tests/*.bat\" }, \"$(mgrTests)\", true, { \"dbg*.bat\", \"a.bat\" })]",
+          "#[IO copy.file({ \"hMSBuild/tests/a.bat\" }, \"$(mgrTests)hMSBuild/\", true)]",
           "#[IO copy.file({ \"hMSBuild/GetNuTool/tests/*.bat\" }, \"$(mgrTests)GetNuTool/\", true)]",
           "",
           "",
@@ -1061,7 +1056,8 @@
           "{",
           "    \"$(mbatch)ManagerKeyTests.bat\",",
           "    \"$(mbatch)ManagerKeyTests.targets\",",
-          "    \"$(mbatch)_run.bat\"",
+          "    \"$(mbatch)_run.bat\",",
+          "    \"$(mbatch)a.bat\"",
           "}, ",
           "\"$(mgrTests)\", true",
           ")]",
@@ -1070,35 +1066,6 @@
           "#[IO copy.file(\"$(dxpWZ)\", \"$(mgrTests)dbgdcore.bat\", true)]",
           "",
           "#[File replace(\"$(mgrTests)ManagerKeyTests.bat\", \"$version$\", \"$(pVerRel)\")]"
-        ]
-      }
-    },
-    {
-      "Enabled": false,
-      "Name": "hMSBuild",
-      "Caption": "Build hMSBuild ...",
-      "IgnoreIfBuildFailed": true,
-      "Process": {
-        "$type": "net.r_eg.vsSBE.Events.EventProcess, vsSolutionBuildEvent",
-        "Waiting": true,
-        "Hidden": true,
-        "TimeLimit": 400
-      },
-      "Mode": {
-        "$type": "net.r_eg.vsSBE.Events.ModeInterpreter, vsSolutionBuildEvent",
-        "Type": "Interpreter",
-        "Handler": "cmd.exe /C",
-        "Newline": "&",
-        "Wrapper": "",
-        "Command__": [
-          "echo Build hMSBuild ... ",
-          "echo. ",
-          "echo. $(hMSBuildRawDir = \"$(SolutionDir)\\\\$(phMSBuild)\\\\bin\\\\Release\\\\raw\\\\\") ",
-          "echo. $(hMSBuildOutput = \"$(SolutionDir)\\\\$(odir)\\\\\")",
-          "echo. ",
-          "cd hMSBuild ",
-          "call build ",
-          "(copy /Y/B \"$(hMSBuildRawDir)hMSBuild.bat\" \"$(hMSBuildOutput)hMSBuild.bat\" || type \"$(hMSBuildRawDir)hMSBuild.bat\">\"$(hMSBuildOutput)hMSBuild.bat\")"
         ]
       }
     },
@@ -1189,8 +1156,7 @@
           "    ",
           "}]",
           "",
-          "#[$(shaListDir = $(dbin))]",
-          "#[$(searchSubDirs = '0')]",
+          "#[$(shaListDir = $(dbin))] #[$(searchSubDirs = '0')]",
           "#[Core events.Post.item(\"ShaList\").run()]"
         ]
       }

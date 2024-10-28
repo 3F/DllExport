@@ -133,7 +133,7 @@ set exec=%mgrFile% -tests "ManagerKeyTests.targets" -pkg-link "..\..\DllExport.$
     ::_______ ------ ______________________________________
 
     :: check -dxp-version, -server, -proxy
-    call ..\%exec% -action Default -dxp-version 1.7.4
+    call ..\%exec% -action Default -dxp-version 1.7.4 >nul
     call a startTest "-action Default -dxp-version 1.7.4 -server `https://127.0.0.1:8082/` -proxy `guest:1234@127.0.0.1:7428`" || goto x
         call a findInStreamOrFail "dxpVersion: 1.7.4" || goto x
         call a findInStreamOrFail "pkgSrv: https://127.0.0.1:8082/" || goto x
@@ -189,6 +189,7 @@ exit /B
     echo - - - - - - - - - - - -
     echo.
 
+    set /a msgIdx=-1
     set "__p_call=1"
     setlocal disableDelayedExpansion
 

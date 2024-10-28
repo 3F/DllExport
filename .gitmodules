@@ -1,9 +1,6 @@
 [submodule "coreclr"]
 	path = coreclr
 	url = https://github.com/3F/coreclr.git
-[submodule "GetNuTool"]
-	path = GetNuTool
-	url = https://github.com/3F/GetNuTool.git
 [submodule "MvsSln"]
 	path = MvsSln
 	url = https://github.com/3F/MvsSln.git

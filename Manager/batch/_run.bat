@@ -1,7 +1,7 @@
 @echo off
 :: Copyright (c) 2016  Denis Kuzmin <x-3F@outlook.com> github/3F
 :: Tests. Part of https://github.com/3F/DllExport
-:: Based on https://github.com/3F/hMSBuild
+:: Based on https://github.com/3F/hMSBuild  +  https://github.com/3F/GetNuTool
 
 setlocal enableDelayedExpansion
 
@@ -25,9 +25,9 @@ call a isNotEmptyOrWhitespaceOrFail tgnt || exit /B1
 call a initAppVersion Dxp
 
 echo.
-call a cprint 0E  ----------------------
-call a cprint F0  "DllExport .bat testing"
-call a cprint 0E  ----------------------
+call a cprint 0E   ----------------
+call a cprint F0  "DllExport .bat ~"
+call a cprint 0E   ----------------
 echo.
 
 if "!gcount!" LSS "1" set /a gcount=0
