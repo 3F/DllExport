@@ -10,6 +10,7 @@ using System.Linq;
 using net.r_eg.Conari;
 using net.r_eg.Conari.PE;
 using net.r_eg.Conari.Types;
+using net.r_eg.DllExport.UnitedTest._svc;
 using Xunit;
 
 namespace net.r_eg.DllExport.UnitedTest

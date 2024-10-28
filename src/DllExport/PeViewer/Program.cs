@@ -6,6 +6,7 @@
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -13,19 +14,26 @@ using net.r_eg.Conari.PE;
 
 namespace net.r_eg.DllExport.PeViewer
 {
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+        internal static readonly Dictionary<string, bool> Switches = new()
         {
-            ArgsMapper map = new(args, new Dictionary<string, bool>()
-            {
-                { "-pemodule", true },
-                { "-list", false },
-                { "-version", false },
-                { "-h", false },
-                { "-help", false },
-            });
+            { "-pemodule", true },
+            { "-list", false },
+            { "-list-addr", false },
+            { "-hex", false },
+            { "-list-ord", false },
+            { "-magic", false },
+            { "-version", false },
+            { "-h", false },
+            { "-help", false },
+        };
 
+        static void Main(string[] args) => new Program(args);
+
+        Program(string[] args)
+        {
+            ArgsMapper map = new(args, Switches);
             try
             {
                 CheckUnknown(map);
@@ -34,12 +42,12 @@ namespace net.r_eg.DllExport.PeViewer
             catch(Exception ex)
             {
                 Msg(ex.Message, true);
-                Msg("");
+                Msg();
                 CmdHelp(map);
             }
         }
 
-        private static void Cmd(ArgsMapper map)
+        private void Cmd(ArgsMapper map)
         {
             if(map.IsEmptyArgs || map.Is("-version"))
             {
@@ -50,26 +58,38 @@ namespace net.r_eg.DllExport.PeViewer
 #endif
 
 #if DEBUG
-                Msg(" [Debug]");
+                Msg(" Debug");
 #endif
-                Msg("");
+                Msg();
                 Msg($"Powered by Conari {Conari.ConariVersion.S_NUM_REV}+{Conari.ConariVersion.BRANCH_SHA1}");
-                Msg("https://github.com/3F/Conari");
-                return;
+                Msg("https://github.com/3F/Conari"); return;
             }
 
             if(map.Is("-h") || map.Is("-help"))
             {
-                CmdHelp(map);
-                return;
+                CmdHelp(map); return;
             }
 
-            map.Is("-pemodule", out string aPeFile);
+            map.Is("-pemodule", out string file);
 
             if(map.Is("-list"))
             {
-                CmdList(aPeFile);
-                return;
+                CmdPe(file, x => Print(x.Export.Names)); return;
+            }
+
+            if(map.Is("-list-addr"))
+            {
+                CmdPe(file, x => Print(x.Export.Addresses, map.Is("-hex"))); return;
+            }
+
+            if(map.Is("-list-ord"))
+            {
+                CmdPe(file, x => Print(x.Export.NameOrdinals, map.Is("-hex"))); return;
+            }
+
+            if(map.Is("-magic"))
+            {
+                CmdPe(file, x => PrintStr((ushort)x.Magic, map.Is("-hex"))); return;
             }
 
             throw new NotSupportedException
@@ -78,13 +98,13 @@ namespace net.r_eg.DllExport.PeViewer
             );
         }
 
-        private static void CmdHelp(ArgsMapper map)
+        private void CmdHelp(ArgsMapper map)
         {
-            Msg("Active commands: ");
+            Msg("Available keys: ");
             foreach(string cmd in map.CommandsPrintVersion) Msg($"  {cmd}");
         }
 
-        private static void CmdList(string pemodule)
+        private void CmdPe(string pemodule, Action<PEFile> act)
         {
             if(pemodule == null)
             {
@@ -97,24 +117,31 @@ namespace net.r_eg.DllExport.PeViewer
             }
 
             using PEFile pe = new(pemodule);
-            foreach(string name in pe.ExportedProcNames) Msg(name);
+            act?.Invoke(pe);
         }
 
-        private static void CheckUnknown(ArgsMapper map)
+        private void Print(IEnumerable list, bool hex = false)
+        {
+            foreach(object data in list) PrintStr(data, hex);
+        }
+
+        private void PrintStr(object data, bool hex = false)
+        {
+            Msg(hex ? $"0x{data:x8}" : data.ToString());
+        }
+
+        private void CheckUnknown(ArgsMapper map)
         {
             string[] nonUsed = map?.AHelper?.NonUsed?.ToArray();
 
-            if(nonUsed == null || nonUsed.Length < 1) return;
-
-            foreach(string arg in nonUsed)
+            if(nonUsed.Length > 0)
             {
-                Msg($" ?-> `{arg}`", true);
+                foreach(string arg in nonUsed) Msg($" ?-> {arg}", true);
+                throw new ArgumentException("Unknown or Incorrect arguments.");
             }
-
-            throw new ArgumentException("Unknown or Incorrect arguments. Use `-help` to list available commands.");
         }
 
-        private static void Msg(string data, bool stderr = false, bool newline = true)
+        private void Msg(string data = "", bool stderr = false, bool newline = true)
         {
             if(newline) data += Environment.NewLine;
 

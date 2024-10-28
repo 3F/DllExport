@@ -4,10 +4,12 @@
   <PropertyGroup>
     <TargetFramework></TargetFramework> <!-- # common.props / F-206 -->
     <TargetFrameworks>$(DxpTfmsForTests)</TargetFrameworks>
-    <RootNamespace>net.r_eg.DllExport.UnitedTest</RootNamespace>
-    <AssemblyName>net.r_eg.DllExport.UnitedTest</AssemblyName>
+    <RootNamespace>net.r_eg.DllExport.PeViewerTest</RootNamespace>
+    <AssemblyName>net.r_eg.DllExport.PeViewerTest</AssemblyName>
     <!-- <ImplicitUsings>enable</ImplicitUsings> -->
+    <IsPackable>false</IsPackable>
     <IsTestProject>true</IsTestProject>
+    <SuppressIncludeDllExportVersion>true</SuppressIncludeDllExportVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -18,15 +20,16 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Conari" Version="$(ConariVersion)" />
+    <ProjectReference Include="..\PeViewer\PeViewer.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <!-- <Using Include="Xunit" /> -->
   </ItemGroup>
 
-  <Target Name="AssetsProjectsBuildDep" BeforeTargets="PostBuildEvent">
-    <!-- <MSBuild BuildInParallel="true" Projects="..\..\..\assets.sln" Properties="Configuration=$(Configuration);Platform=$(Platform);RootAssetsDir=$(RootAssetsDir)" Targets="Build" /> -->
-  </Target>
+  <ItemGroup>
+    <Compile Include="..\UnitedTest\_svc\Assets.cs" Link="_svc\Assets.cs" />
+    <Compile Include="..\UnitedTest\_svc\Tools.cs" Link="_svc\Tools.cs" />
+  </ItemGroup>
 
 </Project>

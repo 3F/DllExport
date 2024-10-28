@@ -15,6 +15,7 @@
 
     <!-- F-206 -->
     <TargetFramework>net40</TargetFramework>
+    <DxpTfmsForTests>net472</DxpTfmsForTests>
 
     <LangVersion>latest</LangVersion>
     <TargetLatestRuntimePatch Condition="'$(TargetLatestRuntimePatch)'==''">true</TargetLatestRuntimePatch>
