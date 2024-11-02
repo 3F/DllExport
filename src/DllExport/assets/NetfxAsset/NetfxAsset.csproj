@@ -4,6 +4,7 @@
     <TargetFramework>net472</TargetFramework>
     <RootNamespace>NetfxAsset</RootNamespace>
     <AssemblyName>NetfxAsset</AssemblyName>
+    <NoWarn>1701;1702;CS1591;IDE1006</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Conari" Version="$(ConariVersion)" />

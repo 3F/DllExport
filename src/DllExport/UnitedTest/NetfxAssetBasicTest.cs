@@ -8,6 +8,7 @@
 using System;
 using System.Linq;
 using net.r_eg.Conari;
+using net.r_eg.Conari.Native;
 using net.r_eg.Conari.PE;
 using net.r_eg.Conari.Types;
 using net.r_eg.DllExport.UnitedTest._svc;
@@ -30,6 +31,79 @@ namespace net.r_eg.DllExport.UnitedTest
 
             Assert.NotEmpty(pe.ExportedProcNames);
             Assert.NotNull(pe.ExportedProcNames.FirstOrDefault(s => s == "add"));
+        }
+
+        [Fact]
+        public void GetStructExargTest1()
+        {
+            using dynamic l = new ConariX(Assets.PrjNetfxRuntime);
+
+            try
+            {
+                IntPtr ptr = l.getStructExarg<IntPtr>();
+
+                using NativeStruct<Exarg> nst = new(ptr);
+
+                Assert.Equal(12816, nst.Data.x);
+                Assert.Equal(".NET DllExport + Conari", nst.Data.str);
+
+                // alternative via Native chains
+                dynamic data = ptr.Native()
+                                .f<int>("x", null)
+                                .f<CharPtr>("str")
+                                .Struct.Access;
+
+                Assert.Equal(nst.Data.x, data.x);
+                Assert.Equal(nst.Data.str, (CharPtr)data.str);
+            }
+            finally
+            {
+                l.free();
+            }
+        }
+
+        [Fact]
+        public void GetUnalignedStructTest1()
+        {
+            using dynamic l = new ConariX(Assets.PrjNetfxRuntime);
+            try
+            {
+                IntPtr ptr = l.getUnalignedStruct<IntPtr>();
+
+                dynamic data = ptr.Native()
+                                .f<int>("x") // <<< as is, unaligned
+                                .f<CharPtr>("str")
+                                .Struct.Access;
+
+                Assert.Equal("unaligned struct via Conari", (CharPtr)data.str);
+                Assert.Equal(0x1000, data.x);
+            }
+            finally
+            {
+                l.free();
+            }
+        }
+
+        [Fact]
+        public void PassTest1()
+        {
+            using dynamic l = new ConariX(Assets.PrjNetfxRuntime);
+
+            using NativeString<CharPtr> ns = new("test123");
+            using NativeStruct<Exarg> nstruct = new(new Exarg(0x3F_0000, ns));
+
+            Assert.True(l.pass<bool>(nstruct.Data.x, (CharPtr)ns, nstruct, "hello"));
+        }
+
+        [Fact]
+        public void PassBufferedTest1()
+        {
+            using dynamic l = new ConariX(Assets.PrjNetfxRuntime);
+
+            using BufferedString<CharPtr> ns = new("Hello world!");
+
+            l.passBuffered((IntPtr)ns);
+            Assert.Equal("new value", (CharPtr)ns);
         }
 
         [Fact]
@@ -66,7 +140,10 @@ namespace net.r_eg.DllExport.UnitedTest
                     Assert.Equal(upd.x, nr2[0]);
                 }
 
-                TCharPtr r = l.callme<TCharPtr>(ns + " and You 👋", nstruct);
+                // https://github.com/3F/Conari/issues/22
+                using NativeString<TCharPtr> nsnew = new($"{ns} and You 👋");
+
+                TCharPtr r = l.callme<TCharPtr>(nsnew, nstruct);
                 Assert.Equal("Рад знакомству 🤝 どうぞよろしく", r);
             }
             finally
@@ -105,6 +182,16 @@ namespace net.r_eg.DllExport.UnitedTest
             );
         }
 
+        #region optional structures for the convenience
+
         struct Arg { public int x, y; }
+
+        struct Exarg(int x, CharPtr str)
+        {
+            public int x = x;
+            public CharPtr str = str;
+        }
+
+        #endregion
     }
 }

@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Concurrent;
+using System.Runtime.InteropServices;
 using net.r_eg.Conari.Native;
 using net.r_eg.Conari.Types;
 
@@ -21,6 +22,20 @@ namespace NetfxAsset
 
         [DllExport]
         public static void throwException() => throw new NotImplementedException("こんにちは！");
+
+        [DllExport]
+        public static bool pass(int a, CharPtr cstr, Exarg data, [MarshalAs(UnmanagedType.LPWStr)] string str)
+            => (a == 0x3F_0000)
+                && (str == "hello")
+                && (cstr == "test123")
+                && (data.x == a)
+                && ((CharPtr)data.str == cstr);
+
+        [DllExport]
+        public static void passBuffered(CharPtr cstr)
+        {
+            new NativeString<CharPtr>(cstr.AddressPtr).update("new value");
+        }
 
         [DllExport]
         public static IntPtr callme(TCharPtr str, IntPtr structure)
@@ -41,6 +56,25 @@ namespace NetfxAsset
         }
 
         [DllExport]
+        public static IntPtr getStructExarg() => R
+        (
+            new NativeStruct<Exarg>(new Exarg
+            (
+                0x3210,
+                R(new NativeString<CharPtr>(".NET DllExport + Conari"))
+            ))
+        );
+
+        [DllExport]
+        public static IntPtr getUnalignedStruct() => NativeStruct.Make
+            .f<int>("x") // NOTE this field is not aligned as in getStructExarg() ^v
+            .f<CharPtr>("str")
+            .Struct.AddressPtr.Access()
+                .write(4096)
+                .write(R(new NativeString<CharPtr>("unaligned struct via Conari")))
+                .InitialPtr;
+
+        [DllExport]
         public static void free()
         {
             while(resources.Count > 0)
@@ -55,5 +89,15 @@ namespace NetfxAsset
             resources.Push(input);
             return input.AddressPtr;
         }
+
+        #region optional structures for the convenience
+
+        public struct Exarg(int x, IntPtr str)
+        {
+            public int x = x;
+            public IntPtr str = str;
+        }
+
+        #endregion
     }
 }
