@@ -41,7 +41,7 @@
             this.chkX86X64 = new System.Windows.Forms.CheckBox();
             this.txtPostProc = new System.Windows.Forms.TextBox();
             this.listActivatedProperties = new System.Windows.Forms.ListBox();
-            this.dgvProperties = new System.Windows.Forms.DataGridView();
+            this.dgvProperties = new net.r_eg.DllExport.Wizard.UI.Components.DataGridViewExt();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.linkAboutVsSBE = new System.Windows.Forms.LinkLabel();
@@ -207,7 +207,6 @@
             dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(225)))), ((int)(((byte)(241)))), ((int)(((byte)(253)))));
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(36)))), ((int)(((byte)(47)))));
             this.dgvProperties.RowsDefaultCellStyle = dataGridViewCellStyle1;
-            this.dgvProperties.RowTemplate.Height = 17;
             this.dgvProperties.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvProperties.Size = new System.Drawing.Size(304, 84);
             this.dgvProperties.StandardTab = true;
@@ -242,8 +241,8 @@
             // 
             // PostProcControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.panelMain);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.Name = "PostProcControl";

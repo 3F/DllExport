@@ -5,14 +5,12 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
-using net.r_eg.DllExport;
-
 namespace net.r_eg.DllExport.Wizard
 {
     public struct CompilerCfg
     {
         public const string PATH_CTM_ILASM = @"$(SolutionDir)bin\";
-        public const int TIMEOUT_EXEC = 30000;
+        public const int TIMEOUT_EXEC = 30_000;
 
         /// <summary>
         /// Base for ordinals.

@@ -395,7 +395,7 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Generate .exp + .lib via MS Library Manager: {Config.Compiler.genExpLib}");
 
             SetProperty(MSBuildProperties.DXP_OUR_ILASM, Config.Compiler.ourILAsm);
-            Log.send(this, $"Use our IL Assembler: {Config.Compiler.ourILAsm}");
+            Log.send(this, $"Use 3F's IL Assembler: {Config.Compiler.ourILAsm}");
 
             if(!string.IsNullOrEmpty(Config.Compiler.customILAsm))
             {

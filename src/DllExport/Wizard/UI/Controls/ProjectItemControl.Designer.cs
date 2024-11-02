@@ -94,7 +94,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.chkOurILAsm.Name = "chkOurILAsm";
             this.chkOurILAsm.Size = new System.Drawing.Size(276, 17);
             this.chkOurILAsm.TabIndex = 6;
-            this.chkOurILAsm.Text = "Use our IL Assembler. Try to fix 0x13 / 0x11 opcodes.";
+            this.chkOurILAsm.Text = "Use 3F's IL Assembler. +Fix for 0x13 / 0x11 opcodes.";
             this.chkOurILAsm.UseVisualStyleBackColor = true;
             this.chkOurILAsm.CheckedChanged += new System.EventHandler(this.chkOurILAsm_CheckedChanged);
             // 
@@ -164,7 +164,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             this.rbPlatformAnyCPU.AutoSize = true;
             this.rbPlatformAnyCPU.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformAnyCPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformAnyCPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbPlatformAnyCPU.Location = new System.Drawing.Point(66, 29);
             this.rbPlatformAnyCPU.Name = "rbPlatformAnyCPU";
             this.rbPlatformAnyCPU.Size = new System.Drawing.Size(13, 12);
@@ -176,7 +176,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             this.rbPlatformX64.AutoSize = true;
             this.rbPlatformX64.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbPlatformX64.Location = new System.Drawing.Point(34, 29);
             this.rbPlatformX64.Name = "rbPlatformX64";
             this.rbPlatformX64.Size = new System.Drawing.Size(13, 12);
@@ -313,7 +313,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             this.rbPlatformX86.AutoSize = true;
             this.rbPlatformX86.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbPlatformX86.Location = new System.Drawing.Point(7, 29);
             this.rbPlatformX86.Name = "rbPlatformX86";
             this.rbPlatformX86.Size = new System.Drawing.Size(13, 12);
@@ -339,7 +339,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.rbPlatformAuto.AutoSize = true;
             this.rbPlatformAuto.Checked = true;
             this.rbPlatformAuto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.rbPlatformAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.rbPlatformAuto.Location = new System.Drawing.Point(99, 29);
             this.rbPlatformAuto.Name = "rbPlatformAuto";
             this.rbPlatformAuto.Size = new System.Drawing.Size(13, 12);
@@ -608,8 +608,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             // ProjectItemControl
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.Controls.Add(this.groupPlatform);
             this.Controls.Add(this.groupCompiler);
             this.Controls.Add(this.groupTimeout);

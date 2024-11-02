@@ -47,7 +47,7 @@
             this.comboBoxStorage = new System.Windows.Forms.ComboBox();
             this.splitCon = new System.Windows.Forms.SplitContainer();
             this.panelPrjs = new System.Windows.Forms.Panel();
-            this.dgvFilter = new net.r_eg.vsSBE.UI.WForms.Components.DataGridViewExt();
+            this.dgvFilter = new net.r_eg.DllExport.Wizard.UI.Components.DataGridViewExt();
             this.gcInstalled = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.gcType = new System.Windows.Forms.DataGridViewImageColumn();
             this.gcPath = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -246,7 +246,6 @@
             this.dgvFilter.RowHeadersVisible = false;
             this.dgvFilter.RowHeadersWidth = 28;
             this.dgvFilter.RowHeadersWidthSizeMode = System.Windows.Forms.DataGridViewRowHeadersWidthSizeMode.DisableResizing;
-            this.dgvFilter.RowTemplate.Height = 17;
             this.dgvFilter.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.dgvFilter.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
             this.dgvFilter.Size = new System.Drawing.Size(446, 59);
@@ -482,11 +481,11 @@
             // labelSrcMit
             // 
             this.labelSrcMit.AutoSize = true;
-            this.labelSrcMit.Location = new System.Drawing.Point(41, 23);
+            this.labelSrcMit.Location = new System.Drawing.Point(17, 23);
             this.labelSrcMit.Name = "labelSrcMit";
-            this.labelSrcMit.Size = new System.Drawing.Size(38, 13);
+            this.labelSrcMit.Size = new System.Drawing.Size(78, 13);
             this.labelSrcMit.TabIndex = 21;
-            this.labelSrcMit.Text = "( MIT )";
+            this.labelSrcMit.Text = "( MIT License )";
             // 
             // linkIlasm
             // 
@@ -516,12 +515,12 @@
             // 
             this.lnk3F.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.lnk3F.AutoSize = true;
-            this.lnk3F.Location = new System.Drawing.Point(377, 23);
+            this.lnk3F.Location = new System.Drawing.Point(417, 23);
             this.lnk3F.Name = "lnk3F";
-            this.lnk3F.Size = new System.Drawing.Size(57, 13);
+            this.lnk3F.Size = new System.Drawing.Size(19, 13);
             this.lnk3F.TabIndex = 14;
             this.lnk3F.TabStop = true;
-            this.lnk3F.Text = "GitHub/3F";
+            this.lnk3F.Text = "3F";
             this.lnk3F.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lnk3F_LinkClicked);
             // 
             // labelSrc
@@ -560,8 +559,8 @@
             // 
             // ConfiguratorForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.ClientSize = new System.Drawing.Size(446, 370);
             this.Controls.Add(this.splitCon);
             this.Controls.Add(this.panelTop);
@@ -609,7 +608,7 @@
         private System.Windows.Forms.TabPage tabCfgDxp;
         private Controls.ProjectItemsControl projectItems;
         private System.Windows.Forms.TabPage tabBuildInfo;
-        private vsSBE.UI.WForms.Components.DataGridViewExt dgvFilter;
+        private net.r_eg.DllExport.Wizard.UI.Components.DataGridViewExt dgvFilter;
         private System.Windows.Forms.Panel panelFilter;
         private System.Windows.Forms.Panel panelPrjs;
         private System.Windows.Forms.DataGridViewTextBoxColumn gcInstalled;

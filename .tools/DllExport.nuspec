@@ -12,19 +12,23 @@
     <repository type="git" url="https://github.com/3F/DllExport" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
     <description>
-        Open source project .NET DllExport with .NET Core support (aka 3F/DllExport)
+        Open source project .NET DllExport with .NET Core support (aka 3F/DllExport aka DllExport.bat)
         https://github.com/3F/DllExport
         
         🚀 Quick start: https://github.com/3F/DllExport/wiki/Quick-start
         🔖 Examples. Unmanaged C++ / C# / Java: https://youtu.be/QXMj9-8XJnY
         🧪 Demo: https://github.com/3F/Examples/tree/master/DllExport/BasicExport
 
-        =========================
+        ===
         gnt DllExport/$-version-$
-        ============ https://github.com/3F/GetNuTool
+        https://github.com/3F/GetNuTool
+
+        ===
+        DllExport -dxp-version $-version-$
+        https://3F.github.io/DllExport/releases/latest/manager/
 
 {build_info}</description>
-    <summary>.NET DllExport with .NET Core support (aka 3F/DllExport)</summary>
+    <summary>.NET DllExport with .NET Core support (aka 3F/DllExport aka DllExport.bat)</summary>
     <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions dotnetcore Conari pinvoke net-c-func native tools dotnet-DllExport unmanaged-export hMSBuild GetNuTool MvsSln</tags>
     <releaseNotes> changelog: https://github.com/3F/DllExport/blob/master/changelog.txt </releaseNotes>
     <copyright>Copyright (c) 2009-2015  Robert Giesecke | Copyright (c) 2016-2024  Denis Kuzmin &lt;x-3F@outlook.com&gt; github/3F </copyright>

@@ -48,7 +48,7 @@ public static int entrypoint(IntPtr L)
 
 For working with **unmanaged** memory including native or binary data from the heap and binding between .NET and unmanaged native C/C++ etc, try [Conari](https://github.com/3F/Conari) (Wiki. [**Quick-start**](https://github.com/3F/Conari/wiki/Quick-start))
 
-[`[⏯]`](.\src\DllExport\assets\NetfxAsset\Basic.cs)
+[`[⏯]`](https://github.com/3F/DllExport/blob/master/src/DllExport/assets/NetfxAsset/Basic.cs)
 
 ```csharp
 [DllExport] // DllExportModifiedClassLibrary.dll
@@ -65,7 +65,7 @@ public static IntPtr callme(TCharPtr str, IntPtr structure)
 }
 ```
 
-[`[⏯]`](.\src\DllExport\UnitedTest\NetfxAssetBasicTest.cs)
+[`[⏯]`](https://github.com/3F/DllExport/blob/master/src/DllExport/UnitedTest/NetfxAssetBasicTest.cs)
 
 ```csharp
 ... // host side via C/C++, Java, Rust, Python, ... or even same dotnet C#
