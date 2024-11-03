@@ -16,6 +16,8 @@ using Xunit;
 
 namespace net.r_eg.DllExport.UnitedTest
 {
+    using static net.r_eg.Conari.Static.Members;
+
     public class NetfxAssetBasicTest
     {
         [Fact]
@@ -48,10 +50,20 @@ namespace net.r_eg.DllExport.UnitedTest
                 Assert.Equal(".NET DllExport + Conari", nst.Data.str);
 
                 // alternative via Native chains
-                dynamic data = ptr.Native()
-                                .f<int>("x", null)
-                                .f<CharPtr>("str")
-                                .Struct.Access;
+                dynamic data;
+                if(Is64bit)
+                {
+                    data = ptr.Native()
+                            .f<int>("x", null) // aligned 4 +4 (x64)
+                            .f<CharPtr>("str")
+                            .Struct.Access;
+                }
+                else
+                {
+                    ptr.Native()
+                        .f<int>("x")
+                        .f<CharPtr>("str").build(out data);
+                }
 
                 Assert.Equal(nst.Data.x, data.x);
                 Assert.Equal(nst.Data.str, (CharPtr)data.str);
@@ -71,7 +83,7 @@ namespace net.r_eg.DllExport.UnitedTest
                 IntPtr ptr = l.getUnalignedStruct<IntPtr>();
 
                 dynamic data = ptr.Native()
-                                .f<int>("x") // <<< as is, unaligned
+                                .f<int>("x") // <<< as is x86/x64, unaligned
                                 .f<CharPtr>("str")
                                 .Struct.Access;
 
@@ -92,7 +104,7 @@ namespace net.r_eg.DllExport.UnitedTest
             using NativeString<CharPtr> ns = new("test123");
             using NativeStruct<Exarg> nstruct = new(new Exarg(0x3F_0000, ns));
 
-            Assert.True(l.pass<bool>(nstruct.Data.x, (CharPtr)ns, nstruct, "hello"));
+            Assert.True(l.pass<bool>(nstruct.Data.x, (CharPtr)ns, "hello", nstruct));
         }
 
         [Fact]

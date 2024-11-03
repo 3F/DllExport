@@ -13,6 +13,8 @@ using net.r_eg.Conari.Types;
 
 namespace NetfxAsset
 {
+    using static net.r_eg.Conari.Static.Members;
+
     public static class Basic
     {
         private static readonly ConcurrentStack<IDisposable> resources = new();
@@ -22,14 +24,6 @@ namespace NetfxAsset
 
         [DllExport]
         public static void throwException() => throw new NotImplementedException("こんにちは！");
-
-        [DllExport]
-        public static bool pass(int a, CharPtr cstr, Exarg data, [MarshalAs(UnmanagedType.LPWStr)] string str)
-            => (a == 0x3F_0000)
-                && (str == "hello")
-                && (cstr == "test123")
-                && (data.x == a)
-                && ((CharPtr)data.str == cstr);
 
         [DllExport]
         public static void passBuffered(CharPtr cstr)
@@ -67,12 +61,19 @@ namespace NetfxAsset
 
         [DllExport]
         public static IntPtr getUnalignedStruct() => NativeStruct.Make
-            .f<int>("x") // NOTE this field is not aligned as in getStructExarg() ^v
+            .f<int>("x") // NOTE this field is not aligned (x64) as in getStructExarg() ^v
             .f<CharPtr>("str")
             .Struct.AddressPtr.Access()
                 .write(4096)
                 .write(R(new NativeString<CharPtr>("unaligned struct via Conari")))
                 .InitialPtr;
+
+        [DllExport]
+        public static bool pass(int a, CharPtr cstr, [MarshalAs(UnmanagedType.LPWStr)] string str, Exarg data)
+        {
+            bool lef = (a == 0x3F_0000) && (str == "hello") && (cstr == "test123");
+            return !Is64bit ? lef : lef && (data.x == a) && ((CharPtr)data.str == cstr);
+        }
 
         [DllExport]
         public static void free()
