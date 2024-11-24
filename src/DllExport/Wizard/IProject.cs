@@ -40,11 +40,6 @@ namespace net.r_eg.DllExport.Wizard
         string ProjectPath { get; }
 
         /// <summary>
-        /// Full path to root solution directory.
-        /// </summary>
-        string SlnDir { get; }
-
-        /// <summary>
         /// Get defined namespace for project.
         /// </summary>
         string ProjectNamespace { get; }

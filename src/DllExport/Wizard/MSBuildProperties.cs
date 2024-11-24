@@ -12,6 +12,11 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_ID = "DllExportIdent";
 
         /// <summary>
+        /// Base path to the manager and its packages
+        /// </summary>
+        public const string DXP_DIR = "DllExportDir";
+
+        /// <summary>
         /// Meta library file name.
         /// </summary>
         public const string DXP_METALIB_NAME = "DllExportMetaLibName";

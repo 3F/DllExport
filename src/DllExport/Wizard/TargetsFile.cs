@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using Microsoft.Build.Evaluation;
 using net.r_eg.Conari.Extension;
 using net.r_eg.DllExport.Wizard.Extensions;
@@ -15,30 +16,14 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
 {
+    using PathExt = MvsSln.Extensions.StringExtension;
+
     public class TargetsFile: Project, IProject, ITargetsFile, IDisposable
     {
         internal const string DEF_CFG_FILE = ".net.dllexport.targets";
 
-        private readonly string rootpath;
-
-        /// <summary>
-        /// Full path to root solution directory.
-        /// </summary>
-        public override string SlnDir => rootpath;
-
-        /// <summary>
-        /// To configure project via specific action.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <returns></returns>
         public override bool Configure(ActionType type) => Configure(type, null);
 
-        /// <summary>
-        /// To configure external .targets through parent project.
-        /// </summary>
-        /// <param name="type"></param>
-        /// <param name="parent"></param>
-        /// <returns></returns>
         public bool Configure(ActionType type, IProject parent)
         {
             if(type != ActionType.Update && type != ActionType.Configure) {
@@ -57,11 +42,6 @@ namespace net.r_eg.DllExport.Wizard
             return true;
         }
 
-        /// <summary>
-        /// To export data via parent project into .targets file.
-        /// </summary>
-        /// <param name="parent"></param>
-        /// <returns></returns>
         public bool Export(IProject parent)
         {
             AssignConfig(parent);
@@ -74,15 +54,8 @@ namespace net.r_eg.DllExport.Wizard
             return false;
         }
 
-        /// <summary>
-        /// Resets data for external .targets file.
-        /// </summary>
         public void Reset() => Reset(true);
 
-        /// <summary>
-        /// Saves data to the file system.
-        /// </summary>
-        /// <param name="reevaluate">Try to reevaluate data of project before saving.</param>
         public void Save(bool reevaluate)
         {
             if(reevaluate) {
@@ -91,32 +64,35 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        public TargetsFile(string file, string rootpath, IConfigInitializer ini)
-            : this(file, rootpath, ini.Config.Type)
+        public TargetsFile(string file, IConfigInitializer ini)
+            : this(file, ini.Config.Type)
         {
             Config = new UserConfig(ini);
         }
 
-        protected TargetsFile(string file, string rootpath, ActionType type)
+        protected TargetsFile(string file, ActionType type)
             : base(type == ActionType.Recover || type == ActionType.RecoverInit ? new XProject(file) : new XProject())
         {
-            this.rootpath = rootpath;
             XProject.Project.FullPath = file; // Only for saving. Loading through `Import` section.
         }
 
         protected void Configure(IProject parent)
         {
             ResetById(parent);
-            CfgCommonData();
+            CfgCommonData(MakeBaseProjectPath(Config.Wizard.RootPath, parent));
 
-            string projectFile = MakeBasePath(parent.XProject.ProjectFullPath, prefix: false);
+            string projectFile = PathExt.MakeRelativePath
+            (
+                parent.XProject.Sln.SolutionDir,
+                Path.GetFullPath(parent.XProject.ProjectFullPath)
+            );
 
             ConfigProperties[MSBuildProperties.DXP_CFG_ID] = parent.DxpIdent;
             ConfigProperties[MSBuildProperties.DXP_PRJ_FILE] = projectFile;
 
             SetProperties
             (
-                ConfigProperties, 
+                ConfigProperties,
                 MakeCondition(parent),
                 projectFile
             );

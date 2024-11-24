@@ -19,41 +19,20 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public class Executor: IExecutor, IConfigInitializer, IDisposable
+    public class Executor(IWizardConfig cfg): IExecutor, IConfigInitializer, IDisposable
     {
-        protected Dictionary<string, IEnvironment> solutions = new Dictionary<string, IEnvironment>();
+        private string _activeSlnFile;
+        private ITargetsFile _targetsFile;
 
-        /// <summary>
-        /// Cache for loaded projects.
-        /// </summary>
-        protected Dictionary<Guid, IProject> pcache = new Dictionary<Guid, IProject>();
+        protected Dictionary<string, IEnvironment> solutions = [];
+        protected Dictionary<Guid, IProject> pcache = [];
 
-        /// <summary>
-        /// Access to wizard configuration.
-        /// </summary>
-        public IWizardConfig Config
-        {
-            get;
-            protected set;
-        }
+        public IWizardConfig Config { get; protected set; } = cfg ?? throw new ArgumentNullException(nameof(cfg));
 
-        public ISender Log
-        {
-            get => LSender._;
-        }
+        public ISender Log => LSender._;
 
-        /// <summary>
-        /// ddNS feature core.
-        /// </summary>
-        public IDDNS DDNS
-        {
-            get;
-            set;
-        } = new DDNS(Encoding.UTF8);
+        public IDDNS DDNS { get; set; } = new DDNS(Encoding.UTF8);
 
-        /// <summary>
-        /// Latest selected .sln file.
-        /// </summary>
         public virtual string ActiveSlnFile
         {
             get => _activeSlnFile;
@@ -65,69 +44,38 @@ namespace net.r_eg.DllExport.Wizard
                 _targetsFile = null;
             }
         }
-        private string _activeSlnFile;
 
-        /// <summary>
-        /// List of available .sln files.
-        /// </summary>
         public IEnumerable<string> SlnFiles
-        {
-            get => Directory.GetFiles(Config.SlnDir, "*.sln", SearchOption.TopDirectoryOnly)
-                                .Combine(Config.SlnFile, true)
-                                .Select(s => Path.GetFullPath(s));
-        }
+            => Directory.GetFiles(Config.SlnDir, "*.sln", SearchOption.TopDirectoryOnly)
+                        .Combine(Config.SlnFile, true)
+                        .Select(Path.GetFullPath);
 
-        /// <summary>
-        /// Access to used external .targets.
-        /// </summary>
         public ITargetsFile TargetsFile
         {
             get
             {
-                if(_targetsFile != null) {
-                    return _targetsFile;
-                }
-
-                _targetsFile = new TargetsFile
+                _targetsFile ??= new TargetsFile
                 (
-                    GetTStoragePath(out string dir), 
-                    dir, 
+                    GetTStoragePath(out string _),
                     this
                 );
                 return _targetsFile;
             }
         }
-        private ITargetsFile _targetsFile;
 
-        /// <summary>
-        /// Access to used external .targets 
-        /// Only if CfgStorageType.TargetsFile or null.
-        /// </summary>
-        public ITargetsFile TargetsFileIfCfg => (Config?.CfgStorage == CfgStorageType.TargetsFile)? TargetsFile : null;
+        public ITargetsFile TargetsFileIfCfg
+            => (Config?.CfgStorage == CfgStorageType.TargetsFile) ? TargetsFile : null;
 
-        /// <summary>
-        /// List of all found projects with different configurations.
-        /// </summary>
-        /// <param name="sln">Full path to .sln</param>
-        /// <returns></returns>
         public IEnumerable<IProject> ProjectsBy(string sln)
         {
-            return GetEnv(sln)?.Projects?.Select(p => GetProject(p));
+            return GetEnv(sln)?.Projects?.Select(GetProject);
         }
 
-        /// <summary>
-        /// List of all found projects that's unique by guid.
-        /// </summary>
-        /// <param name="sln"></param>
-        /// <returns></returns>
         public IEnumerable<IProject> UniqueProjectsBy(string sln)
         {
-            return GetEnv(sln)?.UniqueByGuidProjects?.Select(p => GetProject(p));
+            return GetEnv(sln)?.UniqueByGuidProjects?.Select(GetProject);
         }
 
-        /// <summary>
-        /// To start process of the required configuration.
-        /// </summary>
         public void Configure()
         {
             Log.send(this, $"Action: {Config.Type}; Storage: {Config.CfgStorage}", Message.Level.Info);
@@ -169,10 +117,6 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        /// <summary>
-        /// Depending on the current CfgStorageType, 
-        /// Either save or delete used TargetsFile.
-        /// </summary>
         public void SaveTStorageOrDelete()
         {
             if(Config?.CfgStorage == CfgStorageType.TargetsFile)
@@ -187,25 +131,23 @@ namespace net.r_eg.DllExport.Wizard
             }
             catch(Exception ex)
             {
-                // optional behavior, we don't care
-                Log.send(this, $"Storage file cannot be deleted due to error: {ex.Message}", Message.Level.Debug);
+                Log.send(this, $"External storage cannot be deleted due to error: {ex.Message}", Message.Level.Debug);
             }
         }
-
-        public Executor(IWizardConfig cfg) => Config = cfg ?? throw new ArgumentNullException(nameof(cfg));
 
         /// <summary>
         /// Activates sln by using config.
         /// </summary>
-        /// <returns></returns>
         protected string ActivateSln()
         {
-            var sln = String.IsNullOrWhiteSpace(Config.SlnFile) ?
+            string sln = string.IsNullOrWhiteSpace(Config.SlnFile) ?
                                 SlnFiles?.FirstOrDefault() : Config.SlnFile;
 
-            ActiveSlnFile = sln ?? throw new ArgumentException(
-                String.Format(
-                    "We can't find any .sln file to continue processing. Use '{0}' property or check '{1}'",
+            ActiveSlnFile = sln ?? throw new ArgumentException
+            (
+                string.Format
+                (
+                    "Solution file (.sln) was not found. Try '{0}' property or check '{1}'",
                     nameof(IWizardConfig.SlnFile),
                     nameof(IWizardConfig.SlnDir)
                 )
@@ -306,13 +248,12 @@ namespace net.r_eg.DllExport.Wizard
         protected string GetTStoragePath(out string dir)
         {
             if(string.IsNullOrWhiteSpace(Config?.StoragePath) 
-                || string.IsNullOrWhiteSpace(ActiveSlnFile))
+                || string.IsNullOrWhiteSpace(Config?.RootPath))
             {
-                dir = null;
-                return null;
+                throw new ArgumentNullException(nameof(Config));
             }
 
-            dir = Path.GetDirectoryName(ActiveSlnFile);
+            dir = Path.GetDirectoryName(Config.RootPath);
             return Path.Combine(dir, Config.StoragePath);
         }
 

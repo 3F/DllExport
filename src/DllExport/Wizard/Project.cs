@@ -37,8 +37,6 @@ namespace net.r_eg.DllExport.Wizard
 
         private const string WZ_ID = "Wz";
 
-        private const string SLN_DIR = MSBuildProperties.SLN_DIR;
-
         private readonly IEnumerable<IProjectGear> gears;
         private readonly PackagesConfig pkgconf;
         private string _dxpIdent;
@@ -81,11 +79,9 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        public virtual string SlnDir => XProject?.Sln?.SolutionDir ?? Config?.Wizard?.SlnDir;
-
         public string ProjectNamespace => GetProperty(MSBuildProperties.PRJ_NAMESPACE);
 
-        public bool HasExternalStorage => XProject?.GetImports(null, Guids.X_EXT_STORAGE).Any() == true;
+        public bool HasExternalStorage => XProject?.GetImports(project: null, Guids.X_EXT_STORAGE).Any() == true;
 
         public IUserConfig Config { get; set; }
 
@@ -95,8 +91,6 @@ namespace net.r_eg.DllExport.Wizard
         public bool PublicKeyTokenLimit { get; set; } = true;
 
         protected ISender Log => Config?.Log ?? LSender._;
-
-        protected string GCacheDir => MakeBasePath(Path.GetFullPath(Path.Combine(Config.Wizard.PkgPath, "gcache")));
 
         public virtual string MetaLib(bool evaluate, bool corlib = false)
         {
@@ -112,10 +106,10 @@ namespace net.r_eg.DllExport.Wizard
                                     : "$(DllExportMetaXBase)",
 
                     (evaluate && Config?.Namespace != null) ? 
-                        Config.Namespace : "$(DllExportNamespace)",
+                        Config.Namespace : $"$({MSBuildProperties.DXP_NAMESPACE})",
 
                     (evaluate && mdll != null) ? 
-                        Path.GetFileName(mdll) : "$(DllExportMetaLibName)"
+                        Path.GetFileName(mdll) : $"$({MSBuildProperties.DXP_METALIB_NAME})"
                 )
             );
         }
@@ -214,7 +208,8 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_PRE_PROC_TYPE,
                 MSBuildProperties.DXP_ILMERGE,
                 MSBuildProperties.DXP_POST_PROC_TYPE,
-                MSBuildProperties.DXP_PROC_ENV
+                MSBuildProperties.DXP_PROC_ENV,
+                MSBuildProperties.DXP_DIR
             );
 
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
@@ -409,12 +404,18 @@ namespace net.r_eg.DllExport.Wizard
             Log.send(this, $"Applied Patches: {Config.Compiler.patches}");
         }
 
-        protected void CfgCommonData()
+        protected void CfgCommonData(string dxpDir = null)
         {
             CfgNamespace();
             CfgPlatform();
             CfgCompiler();
             InstallGears();
+
+            SetProperty
+            (
+                MSBuildProperties.DXP_DIR,
+                Path.Combine("$(MSBuildProjectDirectory)\\", dxpDir ?? MakeBaseProjectPath(Config.Wizard.RootPath))
+            );
         }
 
         protected void Reset(bool hardReset)
@@ -432,21 +433,22 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void AddExternalStorage()
         {
-            if(string.IsNullOrWhiteSpace(Config?.Wizard?.StoragePath)) {
-                throw new ArgumentException($"StoragePath is empty or null.", nameof(Config.Wizard.StoragePath));
+            if(string.IsNullOrWhiteSpace(Config?.Wizard?.StoragePath))
+            {
+                throw new ArgumentNullException(nameof(Config.Wizard.StoragePath));
             }
 
-            string xfile = Config.Wizard.StoragePath;
-            if(SlnDir != null) {
-                xfile = Path.Combine(SlnDir, xfile);
-            }
-
-            AddImport(xfile, false, Guids.X_EXT_STORAGE);
+            AddImport
+            (
+                Path.Combine(Config.Wizard.RootPath, Config.Wizard.StoragePath),
+                dxpDirBased: false,
+                Guids.X_EXT_STORAGE
+            );
         }
 
         protected void AddDllExportLib()
         {
-            string dxpTarget = AddImport(Config.Wizard.DxpTarget, true, METALIB_PK_TOKEN);
+            string dxpTarget = AddImport(Config.Wizard.DxpTarget, dxpDirBased: true, METALIB_PK_TOKEN);
 
             if(Config.Wizard.Distributable 
                 && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
@@ -454,10 +456,12 @@ namespace net.r_eg.DllExport.Wizard
                 AddDllExportRef(Config.Wizard.PkgVer);
             }
 
+            string gCacheDir = MakeBasePath(Path.Combine(Config.Wizard.PkgPath, "gcache"));
+
             var rst = AddRestoreDxp
             (
                 MSBuildTargets.DXP_PKG_R, 
-                $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' Or !Exists('{dxpTarget}') Or !Exists('{GCacheDir}')",
+                $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' Or !Exists('{dxpTarget}') Or !Exists('{gCacheDir}')",
                 UserConfig.MGR_FILE
             );
 
@@ -493,11 +497,11 @@ namespace net.r_eg.DllExport.Wizard
 
             if((Config.Wizard.Options & DxpOptType.NoMgr) == DxpOptType.NoMgr) return target;
 
-            var ifManager = $"Exists('$({SLN_DIR}){manager}')";
+            string ifManager = $"Exists('{GetDxpDirBased(manager)}')";
 
             var taskMsg = target.AddTask("Error");
             taskMsg.Condition = $"!{ifManager}";
-            taskMsg.SetParameter("Text", $"{manager} is not found: $({SLN_DIR}); https://github.com/3F/DllExport");
+            taskMsg.SetParameter("Text", $"{manager} was not found in {GetDxpDirBased()}; https://github.com/3F/DllExport");
 
             var taskExec = target.AddTask("Exec");
             taskExec.Condition = $"({condition}) And {ifManager}";
@@ -513,7 +517,7 @@ namespace net.r_eg.DllExport.Wizard
                 args = string.Empty;
             }
             taskExec.SetParameter("Command", $".\\{manager} {args} -action Restore");
-            taskExec.SetParameter("WorkingDirectory", $"$({SLN_DIR})");
+            taskExec.SetParameter("WorkingDirectory", GetDxpDirBased());
 
             return target;
         }
@@ -636,35 +640,31 @@ namespace net.r_eg.DllExport.Wizard
         /// To add `import` section.
         /// </summary>
         /// <param name="file">Path to project or .targets file.</param>
-        /// <param name="checking">To check existence of target via 'Condition' attr.</param>
+        /// <param name="dxpDirBased">To base on <see cref="MSBuildProperties.DXP_DIR"/>.</param>
         /// <param name="id">Id via `Label` attr.</param>
         /// <returns>Will return final added path to project or .targets file.</returns>
-        protected string AddImport(string file, bool checking, string id)
+        protected string AddImport(string file, bool dxpDirBased, string id)
         {
-            if(string.IsNullOrWhiteSpace(file)) {
-                throw new ArgumentNullException(nameof(file));
-            }
+            if(string.IsNullOrWhiteSpace(file)) throw new ArgumentNullException(nameof(file));
 
-            var targets = MakeBasePath(
-                Path.GetFullPath(
-                    Path.Combine(Config.Wizard.PkgPath, file)
-                )
-            );
+            string targets = dxpDirBased ?
+                    MakeBasePath(Path.Combine(Config.Wizard.PkgPath, file), prefix: true)
+                    : MakeBaseProjectPath(Path.Combine(Config.Wizard.RootPath, file));
 
             Log.send(this, $"Add .targets: '{targets}':{id}", Message.Level.Info);
 
             // we'll add inside ImportGroup because of: https://github.com/3F/DllExport/issues/77
-            XProject.AddImport(
-                new [] {
-                    new MvsSln.Projects.ImportElement() {
-                        project     = targets,
-                        // [MSBuild]::Escape for bug when path contains ';' symbol:
-                        // -The "exists" function only accepts a scalar value, but its argument ... evaluates to ...\path;\... which is not a scalar value. yeah
-                        condition   = $"Exists($([MSBuild]::Escape('{targets}')))",
-                        label       = id
-                    }
-                }, 
-                null,
+            XProject.AddImport
+            (
+                [new MvsSln.Projects.ImportElement
+                ( 
+                    project: targets,
+                    // [MSBuild]::Escape for bug when path contains ';' symbol:
+                    // -The "exists" function only accepts a scalar value, but its argument ... evaluates to ...\path;\... which is not a scalar value. yeah
+                    condition: dxpDirBased ? $"Exists($([MSBuild]::Escape('{targets}')))" : null,
+                    label: id
+                )],
+                condition: null,
                 DllExportVersion.DXP
             );
             return targets;
@@ -672,13 +672,20 @@ namespace net.r_eg.DllExport.Wizard
 
         protected string GetProperty(string name) => XProject?.GetPropertyValue(name);
 
-        protected virtual string MakeBasePath(string path, bool prefix = true)
+        protected string MakeBaseProjectPath(string path, IProject parent = null)
         {
-            string ret = SlnDir?.MakeRelativePath(path);
-            if(prefix) {
-                return $"$({SLN_DIR}){ret}";
-            }
-            return ret;
+            if(path == null) return null;
+
+            return (parent?.XProject.ProjectPath ?? XProject.ProjectPath)
+                .MakeRelativePath(Path.GetFullPath(path));
+        }
+
+        protected string MakeBasePath(string path, bool prefix = true)
+        {
+            if(path == null) return null;
+
+            string ret = Config.Wizard.RootPath?.MakeRelativePath(Path.GetFullPath(path));
+            return prefix ? GetDxpDirBased(ret) : ret;
         }
 
         private void AllocateProperties(params string[] names)
@@ -731,5 +738,7 @@ namespace net.r_eg.DllExport.Wizard
 
             return corlib ? cfg.MetaCor : cfg.MetaLib;
         }
+
+        private static string GetDxpDirBased(string path = null) => $"$({MSBuildProperties.DXP_DIR}){path}";
     }
 }
