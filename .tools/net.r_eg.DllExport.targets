@@ -44,6 +44,14 @@
     <DllExportDefPlatform Condition="'$(DllExportDefPlatform)' == ''">AnyCPU</DllExportDefPlatform>
   </PropertyGroup>
 
+  <ItemGroup Condition="'$(DllExportResolvePublish)'!='false'">
+    <!-- https://github.com/3F/DllExport/issues/224#issuecomment-1546883382 -->
+    <DllExportFilesToPublish
+          Include="$(TargetDir)x86\*.*;$(TargetDir)x64\*.*"
+          PlatformDir="$([System.IO.Directory]::GetParent(%(DllExportFilesToPublish.Directory)).Name)\" />
+    <ResolvedFileToPublish Include="@(DllExportFilesToPublish)" RelativePath="%(PlatformDir)%(Filename)%(Extension)" />
+  </ItemGroup>
+
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
       <DllExportPlatform Condition="'$(DllExportPlatform)' == '' Or '$(DllExportPlatform)' == 'Auto'">$(DllExportDefPlatform)</DllExportPlatform>
