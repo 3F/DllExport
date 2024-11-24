@@ -37,28 +37,25 @@ namespace net.r_eg.DllExport.Wizard
 
         private const string WZ_ID = "Wz";
 
+        private const string SLN_DIR = MSBuildProperties.SLN_DIR;
+
         private readonly IEnumerable<IProjectGear> gears;
         private readonly PackagesConfig pkgconf;
+        private string _dxpIdent;
 
-        /// <inheritdoc cref="IProject.XProject"/>
         public IXProject XProject { get; protected set; }
 
-        /// <inheritdoc cref="IProject.Installed"/>
         public bool Installed
             => InternalError == null 
             && !string.IsNullOrWhiteSpace(GetProperty(MSBuildProperties.DXP_ID));
 
-        /// <inheritdoc cref="IProject.InternalError"/>
         public string InternalError => XProject?.GetProperty(DxpIsolatedEnv.ERR_MSG, true).evaluated;
 
-        /// <inheritdoc cref="IProject.DxpIdent"/>
         public string DxpIdent
         {
             get
             {
-                if(_dxpIdent != null) {
-                    return _dxpIdent;
-                }
+                if(_dxpIdent != null) return _dxpIdent;
 
                 _dxpIdent = GetProperty(MSBuildProperties.DXP_ID);
                 if(string.IsNullOrWhiteSpace(_dxpIdent))
@@ -70,9 +67,7 @@ namespace net.r_eg.DllExport.Wizard
             }
             protected set => _dxpIdent = value;
         }
-        private string _dxpIdent;
 
-        /// <inheritdoc cref="IProject.ProjectPath"/>
         public string ProjectPath
         {
             get
@@ -86,28 +81,23 @@ namespace net.r_eg.DllExport.Wizard
             }
         }
 
-        /// <inheritdoc cref="IProject.SlnDir"/>
         public virtual string SlnDir => XProject?.Sln?.SolutionDir ?? Config?.Wizard?.SlnDir;
 
-        /// <inheritdoc cref="IProject.ProjectNamespace"/>
         public string ProjectNamespace => GetProperty(MSBuildProperties.PRJ_NAMESPACE);
 
-        /// <inheritdoc cref="IProject.HasExternalStorage"/>
-        public bool HasExternalStorage => XProject?.GetImports(null, Guids.X_EXT_STORAGE).Count() > 0;
+        public bool HasExternalStorage => XProject?.GetImports(null, Guids.X_EXT_STORAGE).Any() == true;
 
-        /// <inheritdoc cref="IProject.Config"/>
         public IUserConfig Config { get; set; }
 
-        /// <inheritdoc cref="IProject.ConfigProperties"/>
         public IDictionary<string, string> ConfigProperties { get; private set; } 
             = new Dictionary<string, string>();
 
-        /// <inheritdoc cref="IProject.PublicKeyTokenLimit"/>
         public bool PublicKeyTokenLimit { get; set; } = true;
 
         protected ISender Log => Config?.Log ?? LSender._;
 
-        /// <inheritdoc cref="IProject.MetaLib"/>
+        protected string GCacheDir => MakeBasePath(Path.GetFullPath(Path.Combine(Config.Wizard.PkgPath, "gcache")));
+
         public virtual string MetaLib(bool evaluate, bool corlib = false)
         {
             string mdll = GetMetaDll(corlib);
@@ -130,7 +120,6 @@ namespace net.r_eg.DllExport.Wizard
             );
         }
 
-        /// <inheritdoc cref="IProject.Recover"/>
         public void Recover(string id)
         {
             if(string.IsNullOrWhiteSpace(id)) {
@@ -142,7 +131,6 @@ namespace net.r_eg.DllExport.Wizard
             ActionConfigure(true);
         }
 
-        /// <inheritdoc cref="IProject.Unset"/>
         public void Unset()
         {
             Log.send(this, $"Trying to unset data from '{DxpIdent}'", Message.Level.Info);
@@ -150,7 +138,6 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        /// <inheritdoc cref="IProject.Configure"/>
         public virtual bool Configure(ActionType type)
         {
             switch(type) {
@@ -467,15 +454,16 @@ namespace net.r_eg.DllExport.Wizard
                 AddDllExportRef(Config.Wizard.PkgVer);
             }
 
-            var rst = AddRestoreDxp(
+            var rst = AddRestoreDxp
+            (
                 MSBuildTargets.DXP_PKG_R, 
-                $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' Or !Exists('{dxpTarget}')",
+                $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' Or !Exists('{dxpTarget}') Or !Exists('{GCacheDir}')",
                 UserConfig.MGR_FILE
             );
 
             AddRestoreFirstPhase(rst, dxpTarget);
-
-            AddDynRestore(
+            AddDynRestore
+            (
                 MSBuildTargets.DXP_R_DYN, 
                 $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' And '$(DllExportRPkgDyn)' != 'false'"
             );
@@ -505,11 +493,11 @@ namespace net.r_eg.DllExport.Wizard
 
             if((Config.Wizard.Options & DxpOptType.NoMgr) == DxpOptType.NoMgr) return target;
 
-            var ifManager = $"Exists('$({MSBuildProperties.SLN_DIR}){manager}')";
+            var ifManager = $"Exists('$({SLN_DIR}){manager}')";
 
             var taskMsg = target.AddTask("Error");
             taskMsg.Condition = $"!{ifManager}";
-            taskMsg.SetParameter("Text", $"{manager} is not found. Path: '$({MSBuildProperties.SLN_DIR})' - https://github.com/3F/DllExport");
+            taskMsg.SetParameter("Text", $"{manager} is not found: $({SLN_DIR}); https://github.com/3F/DllExport");
 
             var taskExec = target.AddTask("Exec");
             taskExec.Condition = $"({condition}) And {ifManager}";
@@ -525,7 +513,7 @@ namespace net.r_eg.DllExport.Wizard
                 args = string.Empty;
             }
             taskExec.SetParameter("Command", $".\\{manager} {args} -action Restore");
-            taskExec.SetParameter("WorkingDirectory", $"$({MSBuildProperties.SLN_DIR})");
+            taskExec.SetParameter("WorkingDirectory", $"$({SLN_DIR})");
 
             return target;
         }
@@ -688,7 +676,7 @@ namespace net.r_eg.DllExport.Wizard
         {
             string ret = SlnDir?.MakeRelativePath(path);
             if(prefix) {
-                return $"$({MSBuildProperties.SLN_DIR}){ret}";
+                return $"$({SLN_DIR}){ret}";
             }
             return ret;
         }
