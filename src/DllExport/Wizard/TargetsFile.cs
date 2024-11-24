@@ -6,18 +6,15 @@
 */
 
 using System;
-using System.Collections.Generic;
 using System.IO;
 using Microsoft.Build.Evaluation;
-using net.r_eg.Conari.Extension;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    using PathExt = MvsSln.Extensions.StringExtension;
-
     public class TargetsFile: Project, IProject, ITargetsFile, IDisposable
     {
         internal const string DEF_CFG_FILE = ".net.dllexport.targets";
@@ -81,16 +78,15 @@ namespace net.r_eg.DllExport.Wizard
             ResetById(parent);
             CfgCommonData(MakeBaseProjectPath(Config.Wizard.RootPath, parent));
 
-            string projectFile = PathExt.MakeRelativePath
+            string projectFile = parent.XProject.Sln.SolutionDir.MakeRelativePath
             (
-                parent.XProject.Sln.SolutionDir,
                 Path.GetFullPath(parent.XProject.ProjectFullPath)
             );
 
             ConfigProperties[MSBuildProperties.DXP_CFG_ID] = parent.DxpIdent;
             ConfigProperties[MSBuildProperties.DXP_PRJ_FILE] = projectFile;
 
-            SetProperties
+            XProject.SetProperties
             (
                 ConfigProperties,
                 MakeCondition(parent),
@@ -100,15 +96,6 @@ namespace net.r_eg.DllExport.Wizard
 
             if(XProject.GetImport().project == null) AddDllExportLib();
         }
-
-        protected void SetProperties(IEnumerable<KeyValuePair<string, string>> properties, string condition, string label)
-            => XProject.AddPropertyGroup(label, condition).E
-        (
-                group =>
-                properties.ForEach(p =>
-                    p.Value.If(v => v != null, v => group.SetProperty(p.Key, v))
-                )
-        );
 
         protected void ResetById(IProject prj)
         {

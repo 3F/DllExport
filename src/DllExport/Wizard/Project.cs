@@ -213,6 +213,7 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_PROC_ENV,
                 MSBuildProperties.DXP_DIR
             );
+            AllocPlatformTargetIfNeeded(xproject);
 
             Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
         }
@@ -690,11 +691,22 @@ namespace net.r_eg.DllExport.Wizard
             return prefix ? GetDxpDirBased(ret) : ret;
         }
 
+        private void AllocPlatformTargetIfNeeded(IXProject xp)
+        {
+            foreach(var pg in xp.Project.Xml.PropertyGroups)
+            {
+                var v = pg.Properties.FirstOrDefault(p => p.Name == MSBuildProperties.PRJ_PLATFORM)?.Value;
+                if(!string.IsNullOrEmpty(v) && pg.Properties.FirstOrDefault(p => p.Name == MSBuildProperties.DXP_ID)?.Name != null)
+                {
+                    AllocateProperties(MSBuildProperties.PRJ_PLATFORM);
+                    break;
+                }
+            }
+        }
+
         private void AllocateProperties(params string[] names)
         {
-            foreach(var name in names) {
-                ConfigProperties[name] = null;
-            }
+            foreach(string name in names) ConfigProperties[name] = null;
         }
 
         private void SetProperty(string name, string value)

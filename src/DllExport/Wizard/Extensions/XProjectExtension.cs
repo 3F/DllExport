@@ -6,13 +6,16 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Build.Construction;
+using net.r_eg.Conari.Extension;
 using net.r_eg.MvsSln.Core;
-using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.Extensions
 {
+    using net.r_eg.MvsSln.Extensions;
+
     internal static class XProjectExtension
     {
         /// <summary>
@@ -135,5 +138,14 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             }
             xp.RemoveEmptyPropertyGroups();
         }
+
+        internal static void SetProperties(this IXProject xp, IEnumerable<KeyValuePair<string, string>> properties, string condition, string label)
+            => xp.AddPropertyGroup(label, condition).E
+        (
+                group =>
+                properties.ForEach(p =>
+                    p.Value.If(v => v != null, v => group.SetProperty(p.Key, v))
+                )
+        );
     }
 }
