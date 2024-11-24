@@ -6,6 +6,8 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
+using System;
+
 namespace net.r_eg.DllExport.Extensions
 {
     internal static class StringExtension
@@ -22,9 +24,29 @@ namespace net.r_eg.DllExport.Extensions
             };
         }
 
+        internal static string TrueFalseNull
+        (
+            this bool? input,
+            Func<bool?, string> True,
+            Func<bool?, string> False,
+            Func<bool?, string> Null = null
+        )
+            => input switch
+            {
+                true => True(input),
+                false => False(input),
+                null => Null?.Invoke(input) ?? False(input),
+            };
+
         internal static string NullIfEmpty(this string input)
         {
             return string.IsNullOrEmpty(input) ? null : input;
+        }
+
+        internal static bool? ParseNullableBool(this string input)
+        {
+            if(string.IsNullOrEmpty(input) || input == "default" || input == "null") return null;
+            return input.IsTrue();
         }
     }
 }

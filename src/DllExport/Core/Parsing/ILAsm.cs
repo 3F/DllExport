@@ -412,9 +412,9 @@ namespace net.r_eg.DllExport.Parsing
                 "/nologo \"/out:{0}\" \"{1}.il\" {2} {3} {4} {5} {6} {7}", 
                 fileName, 
                 Path.Combine(TempDirectory, Path.GetFileNameWithoutExtension(InputValues.InputFileName)) + ilSuffix,
-                "/" + Path.GetExtension(fileName).Trim(new char[] { '.', '"' }).ToUpperInvariant(),
-                ressourceParam, 
-                InputValues.EmitDebugSymbols ? "/debug" : "/optimize", 
+                "/" + Path.GetExtension(fileName).Trim(['.', '"']).ToUpperInvariant(),
+                ressourceParam,
+                GetKeysToDebug(InputValues.EmitDebugSymbols), 
                 cpu == CpuPlatform.X86 ? "" : (" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")),
                 keyFile,
                 GetKeysToCustomILAsm()
@@ -424,6 +424,7 @@ namespace net.r_eg.DllExport.Parsing
         /// <returns>
         /// Keys to modified coreclr \ ILAsm 
         /// </returns>
+        [Localizable(false)]
         private string GetKeysToCustomILAsm()
         {
             if(string.IsNullOrWhiteSpace(InputValues.OurILAsmPath))
@@ -446,6 +447,20 @@ namespace net.r_eg.DllExport.Parsing
             }
 
             return sb.ToString();
+        }
+
+        [Localizable(false)]
+        private string GetKeysToDebug(DebugType type)
+        {
+            return type switch
+            {
+                DebugType.Debug => "/DEBUG",
+                DebugType.Optimize => "/OPTIMIZE",
+                DebugType.PdbOptimize => "/PDB /OPTIMIZE",
+                DebugType.DebugOptimize => "/DEBUG=OPT",
+                DebugType.DebugImpl => "/DEBUG=IMPL",
+                _ => throw new NotImplementedException()
+            };
         }
     }
 }

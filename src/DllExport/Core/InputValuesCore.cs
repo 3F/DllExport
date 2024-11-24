@@ -23,7 +23,7 @@ namespace net.r_eg.DllExport
 
         public string LeaveIntermediateFiles { get; set; }
 
-        public bool EmitDebugSymbols { get; set; }
+        public DebugType EmitDebugSymbols { get; set; }
 
         public string FrameworkPath { get; set; }
 

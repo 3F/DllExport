@@ -60,7 +60,7 @@ namespace net.r_eg.DllExport.Activator
 
         public bool? SkipOnAnyCpu { get; set; }
 
-        public bool EmitDebugSymbols
+        public DebugType EmitDebugSymbols
         {
             get => _Values.EmitDebugSymbols;
             set => _Values.EmitDebugSymbols = value;

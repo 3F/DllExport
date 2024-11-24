@@ -12,7 +12,7 @@ namespace net.r_eg.DllExport
     {
         CpuPlatform Cpu { get; set; }
 
-        bool EmitDebugSymbols { get; set; }
+        DebugType EmitDebugSymbols { get; set; }
 
         string LeaveIntermediateFiles { get; set; }
 

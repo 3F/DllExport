@@ -56,7 +56,6 @@
     <PropertyGroup>
       <DllExportPlatform Condition="'$(DllExportPlatform)' == '' Or '$(DllExportPlatform)' == 'Auto'">$(DllExportDefPlatform)</DllExportPlatform>
       <DllExportCpuType Condition="'$(DllExportCpuType)' == ''">$(CpuType)</DllExportCpuType>
-      <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)' == ''">$(DebugSymbols)</DllExportEmitDebugSymbols>
       <DllExportLeaveIntermediateFiles Condition="'$(DllExportLeaveIntermediateFiles)' == ''">false</DllExportLeaveIntermediateFiles>
       <DllExportTimeout Condition="'$(DllExportTimeout)' == ''">45000</DllExportTimeout>
       <DllExportKeyContainer Condition="'$(DllExportKeyContainer)' == ''">$(KeyContainerName)$(AssemblyKeyContainerName)</DllExportKeyContainer>
@@ -79,6 +78,15 @@
       <DllExportVcVarsAll Condition="'$(DllExportVcVarsAll)' == ''">$(DllExportVSRoot)VC\vcvarsall.bat;$(DllExportVSRoot)VC\Auxiliary\Build\vcvarsall.bat</DllExportVcVarsAll>
       <DllExportPeCheck Condition="'$(DllExportPeCheck)' == ''"></DllExportPeCheck>
       <DllExportPatches Condition="'$(DllExportPatches)' == ''"></DllExportPatches>
+    </PropertyGroup>
+
+    <PropertyGroup Label="EmitDebugSymbols" Condition="'$(DllExportEmitDebugSymbols)'==''">
+      <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' AND '$(DebugSymbols)'=='false' AND '$(DebugType)'=='none'">Optimize</DllExportEmitDebugSymbols>
+      <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' AND '$(DebugSymbols)'=='false' AND '$(DebugType)'!='none'">PdbOptimize</DllExportEmitDebugSymbols>
+      <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' AND '$(DebugSymbols)'=='true' AND '$(DebugType)'!='none'">DebugOptimize</DllExportEmitDebugSymbols>
+      <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='false' AND '$(DebugSymbols)'=='true' AND '$(DebugType)'!='none'">Debug</DllExportEmitDebugSymbols>
+      <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='false' AND '$(DebugSymbols)'=='false' AND '$(DebugType)'!='none'">DebugImpl</DllExportEmitDebugSymbols>
+      <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)'==''">$(DebugSymbols)</DllExportEmitDebugSymbols>
     </PropertyGroup>
 
     <DllExportActivatorTask

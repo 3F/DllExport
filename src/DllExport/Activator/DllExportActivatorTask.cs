@@ -11,6 +11,7 @@ using System.Resources;
 using System.Security.Permissions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
+using net.r_eg.DllExport.Extensions;
 
 namespace net.r_eg.DllExport.Activator
 {
@@ -42,8 +43,7 @@ namespace net.r_eg.DllExport.Activator
 
         public string SkipOnAnyCpu
         {
-            get => Convert.ToString(exportTask.SkipOnAnyCpu);
-            set => exportTask.SkipOnAnyCpu = string.IsNullOrEmpty(value) ? null : Convert.ToBoolean(value);
+            set => exportTask.SkipOnAnyCpu = value.ParseNullableBool();
         }
 
         public string TargetFrameworkVersion
@@ -88,10 +88,15 @@ namespace net.r_eg.DllExport.Activator
             set => exportTask.Cpu = value;
         }
 
-        public bool EmitDebugSymbols
+        DebugType IInputValues.EmitDebugSymbols
         {
             get => exportTask.EmitDebugSymbols;
             set => exportTask.EmitDebugSymbols = value;
+        }
+
+        public string EmitDebugSymbols
+        {
+            set => exportTask.EmitDebugSymbols = ParseEmitDebugSymbols(value);
         }
 
         public string LeaveIntermediateFiles
@@ -280,5 +285,17 @@ namespace net.r_eg.DllExport.Activator
         public override bool Execute() => exportTask.Execute();
 
         public object GetService(Type serviceType) => exportTask.GetService(serviceType);
+
+        private DebugType ParseEmitDebugSymbols(string input)
+        {
+            if(string.IsNullOrWhiteSpace(input)) return DebugType.Default;
+
+            return (DebugType)Enum.Parse
+            (
+                typeof(DebugType),
+                input.Trim(),
+                ignoreCase: true
+            );
+        }
     }
 }
