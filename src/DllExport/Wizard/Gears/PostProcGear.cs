@@ -97,17 +97,22 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         private void AddTaskForX86X64(ProjectTargetElement target, CmdType type, int arch)
         {
-            var tCopy = target.AddTask("Copy");
-            tCopy.SetParameter("SourceFiles", $"@(DllExportDirX{arch})");
-            tCopy.SetParameter("DestinationFolder", $@"%({GetDependentsTargetDir(type)}.Identity)x{arch}\");
-            tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
+            NewTasksCopyDependentsTargetDir(target, type, $"@(DllExportDirX{arch})", $"x{arch}\\");
         }
 
         private void AddTasksIntermediateFiles(ProjectTargetElement target, CmdType type, string dir)
         {
-            var tCopy = target.AddTask("Copy");
-            tCopy.SetParameter("SourceFiles", $"@(DllExportDir{dir})");
-            tCopy.SetParameter("DestinationFolder", $@"%({GetDependentsTargetDir(type)}.Identity){dir}\");
+            NewTasksCopyDependentsTargetDir(target, type, $"@(DllExportDir{dir})", $"{dir}\\");
+        }
+
+        private void NewTasksCopyDependentsTargetDir(ProjectTargetElement target, CmdType type, string src, string dst)
+        {
+            ProjectTaskElement tCopy = target.AddTask("Copy");
+            string dependentsTargetDir = GetDependentsTargetDir(type);
+
+            tCopy.SetParameter("SourceFiles", src);
+            tCopy.SetParameter("DestinationFolder", $@"%({dependentsTargetDir}.Identity){dst}");
+            tCopy.Condition = $"'%({dependentsTargetDir}.Identity)'!=''";
             tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
         }
 
