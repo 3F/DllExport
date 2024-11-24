@@ -12,13 +12,12 @@ using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
-using net.r_eg.DllExport;
 using PostProcType = net.r_eg.DllExport.Wizard.PostProc.CmdType;
 using PreProcType = net.r_eg.DllExport.Wizard.PreProc.CmdType;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public class UserConfig: IUserConfig
+    public class UserConfig(IWizardConfig cfg): IUserConfig
     {
         /// <summary>
         /// https://github.com/3F/DllExport/issues/2#issue-164662993
@@ -35,161 +34,65 @@ namespace net.r_eg.DllExport.Wizard
         internal const string MGR_FILE = MGR_NAME + ".bat";
         internal const string PKG_ID = "DllExport";
 
-        /// <summary>
-        /// Flag of installation.
-        /// </summary>
-        public bool Install
-        {
-            get;
-            set;
-        }
+        public bool Install { get; set; }
 
-        /// <summary>
-        /// A selected namespace for ddNS feature.
-        /// </summary>
-        public string Namespace
-        {
-            get;
-            set;
-        }
+        public string Namespace { get; set; }
 
-        /// <summary>
-        /// Allowed buffer size for NS.
-        /// </summary>
-        public int NSBuffer
-        {
-            get;
-            set;
-        }
+        public int NSBuffer { get; set; }
 
-        /// <summary>
-        /// To use Cecil instead of direct modifications.
-        /// </summary>
-        public bool UseCecil
-        {
-            get;
-            set;
-        }
+        public bool UseCecil { get; set; }
 
-        /// <summary>
-        /// Predefined list of namespaces.
-        /// </summary>
-        public List<string> Namespaces
-        {
-            get;
-            set;
-        }
+        public List<string> Namespaces { get; set; } =
+        [
+            NS_DEFAULT_VALUE,
+            "net.r_eg.DllExport",
+            "com.github._3F.DllExport",
+            string.Empty, //https://github.com/3F/DllExport/issues/47
+        ];
 
-        /// <summary>
-        /// Access to wizard configuration.
-        /// </summary>
-        public IWizardConfig Wizard
-        {
-            get;
-            set;
-        }
+        public IWizardConfig Wizard { get; set; } = cfg ?? throw new ArgumentNullException(nameof(cfg));
 
-        /// <summary>
-        /// Access to ddNS core.
-        /// </summary>
-        public IDDNS DDNS
-        {
-            get;
-            set;
-        }
+        public IDDNS DDNS { get; set; }
 
-        /// <summary>
-        /// Specific logger.
-        /// </summary>
-        public ISender Log
-        {
-            get;
-            set;
-        }
+        public ISender Log { get; set; }
 
-        /// <summary>
-        /// To use this target platform.
-        /// </summary>
-        public Platform Platform
-        {
-            get;
-            set;
-        }
+        public Platform Platform { get; set; }
 
-        /// <summary>
-        /// Settings for ILasm etc.
-        /// </summary>
-        public CompilerCfg Compiler
-        {
-            get;
-            set;
-        }
+        public CompilerCfg Compiler { get; set; }
 
-        /// <summary>
-        /// Access to Pre-Processing.
-        /// </summary>
-        public PreProc PreProc
-        {
-            get;
-            set;
-        }
+        public PreProc PreProc { get; set; }
 
-        /// <summary>
-        /// Access to Post-Processing.
-        /// </summary>
-        public PostProc PostProc
-        {
-            get;
-            set;
-        }
+        public PostProc PostProc { get; set; }
 
-        /// <summary>
-        /// Adds to top new namespace into Namespaces property.
-        /// </summary>
-        /// <param name="ns"></param>
-        /// <returns>true if added.</returns>
         public bool AddTopNamespace(string ns)
         {
-            if(!String.IsNullOrWhiteSpace(ns) && !Namespaces.Contains(ns)) {
+            if(!string.IsNullOrWhiteSpace(ns) && !Namespaces.Contains(ns))
+            {
                 Namespaces.Insert(0, ns);
                 return true;
             }
             return false;
         }
 
-        public UserConfig(IWizardConfig cfg)
+        public void UpdateDataFrom(IXProject xp)
         {
-            Wizard = cfg ?? throw new ArgumentNullException(nameof(cfg));
-
-            Namespaces = new List<string>() {
-                NS_DEFAULT_VALUE,
-                "net.r_eg.DllExport",
-                "com.github._3F.DllExport",
-                string.Empty, //https://github.com/3F/DllExport/issues/47
-            };
-        }
-
-        public UserConfig(IWizardConfig cfg, IXProject xp)
-            : this(cfg)
-        {
-            if(xp == null) {
-                return;
-            }
+            if(xp == null) return;
 
             Namespace   = GetValue(MSBuildProperties.DXP_NAMESPACE, xp);
             Platform    = GetPlatform(xp);
             UseCecil    = GetValue(MSBuildProperties.DXP_DDNS_CECIL, xp).ToBoolean();
 
-            var rawTimeout = GetValue(MSBuildProperties.DXP_TIMEOUT, xp);
+            string rawTimeout = GetValue(MSBuildProperties.DXP_TIMEOUT, xp);
 
-            Compiler = new CompilerCfg() {
+            Compiler = new()
+            {
                 genExpLib           = GetValue(MSBuildProperties.DXP_GEN_EXP_LIB, xp).ToBoolean(),
                 ordinalsBase        = GetValue(MSBuildProperties.DXP_ORDINALS_BASE, xp).ToInteger(),
                 ourILAsm            = GetValue(MSBuildProperties.DXP_OUR_ILASM, xp).ToBoolean(),
                 customILAsm         = GetUnevaluatedValue(MSBuildProperties.DXP_CUSTOM_ILASM, xp),
                 rSysObj             = GetValue(MSBuildProperties.DXP_SYSOBJ_REBASE, xp).ToBoolean(),
                 intermediateFiles   = GetValue(MSBuildProperties.DXP_INTERMEDIATE_FILES, xp).ToBoolean(),
-                timeout             = String.IsNullOrWhiteSpace(rawTimeout) ? CompilerCfg.TIMEOUT_EXEC : rawTimeout.ToInteger(),
+                timeout             = string.IsNullOrWhiteSpace(rawTimeout) ? CompilerCfg.TIMEOUT_EXEC : rawTimeout.ToInteger(),
                 peCheck             = (PeCheckType)GetValue(MSBuildProperties.DXP_PE_CHECK, xp).ToInteger(),
                 patches             = (PatchesType)GetValue(MSBuildProperties.DXP_PATCHES, xp).ToLongInteger()
             };
@@ -206,6 +109,12 @@ namespace net.r_eg.DllExport.Wizard
             );
         }
 
+        public UserConfig(IWizardConfig cfg, IXProject xp)
+            : this(cfg)
+        {
+            UpdateDataFrom(xp);
+        }
+
         public UserConfig(IConfigInitializer cfg)
             : this(cfg, null)
         {
@@ -215,7 +124,8 @@ namespace net.r_eg.DllExport.Wizard
         public UserConfig(IConfigInitializer cfg, IXProject project)
             : this(cfg?.Config, project)
         {
-            if(cfg?.DDNS != null) {
+            if(cfg?.DDNS != null)
+            {
                 NSBuffer    = cfg.DDNS.NSBuffer;
                 DDNS        = cfg.DDNS;
             }

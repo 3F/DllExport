@@ -74,11 +74,13 @@ namespace net.r_eg.DllExport.Wizard
         string MetaLib(bool evaluate, bool corlib = false);
 
         /// <summary>
-        /// To recover references with project file.
-        /// IWizardConfig.CfgStorage value can affect on type of this references.
+        /// To recover references in user project files.
         /// </summary>
+        /// <remarks>Note: the final type of references depends on <see cref="IWizardConfig.CfgStorage"/></remarks>
         /// <param name="id">Known identifier of the references.</param>
-        void Recover(string id);
+        /// <param name="type">The type of action that initiated the recovery process.</param>
+        /// <param name="xp">For non-<see cref="CfgStorageType.ProjectFiles"/> storage provides an additional way to deal with actual data to recover from it.</param>
+        void Recover(string id, ActionType type = ActionType.Recover, IXProject xp = null);
 
         /// <summary>
         /// To unset configured data from project if presented.

@@ -220,7 +220,7 @@ namespace net.r_eg.DllExport.Wizard
                     Log.send(this, $"Trying to recover '{file}' : '{id}'", Message.Level.Info);
                     UniqueProjectsBy(ActiveSlnFile)?
                             .Where(p => p.ProjectPath == file)
-                            .ForEach(p => p.Recover(id));
+                            .ForEach(p => p.Recover(id, type, xp));
                 }
             }
         }

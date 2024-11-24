@@ -70,9 +70,7 @@ namespace net.r_eg.DllExport.Wizard
         {
             get
             {
-                if(XProject == null) {
-                    return null;
-                }
+                if(XProject == null) return null;
 
                 return XProject.ProjectItem.project.path ??
                             MakeBasePath(XProject.ProjectFullPath, false);
@@ -114,21 +112,25 @@ namespace net.r_eg.DllExport.Wizard
             );
         }
 
-        public void Recover(string id)
+        public void Recover(string id, ActionType type = ActionType.Recover, IXProject xp = null)
         {
-            if(string.IsNullOrWhiteSpace(id)) {
-                throw new ArgumentNullException(nameof(id));
-            }
-            DxpIdent = id;
+            if(string.IsNullOrWhiteSpace(id)) throw new ArgumentNullException(nameof(id));
 
-            Reset(true);
-            ActionConfigure(true);
+            if(xp != null && type == ActionType.RecoverInit)
+            {
+                xp.Project.SetGlobalProperty(MSBuildProperties.DXP_ID, id);
+                xp.Reevaluate();
+                Config.UpdateDataFrom(xp);
+            }
+
+            DxpIdent = id;
+            ActionConfigure(force: true);
         }
 
         public void Unset()
         {
             Log.send(this, $"Trying to unset data from '{DxpIdent}'", Message.Level.Info);
-            Reset(true);
+            Reset(hardReset: true);
             Save();
         }
 
@@ -229,7 +231,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void ActionUpdate()
         {
-            Reset(false);
+            Reset(hardReset: false);
 
             if(Installed)
             {
@@ -242,7 +244,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void ActionConfigure(bool force = false)
         {
-            Reset(true);
+            Reset(hardReset: true);
 
             if(Config.Install || force)
             {
@@ -307,8 +309,8 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void CfgDDNS()
         {
-            CfgDDNS(false);
-            CfgDDNS(true);
+            CfgDDNS(corlib: false);
+            CfgDDNS(corlib: true);
         }
 
         protected void CfgDDNS(bool corlib)

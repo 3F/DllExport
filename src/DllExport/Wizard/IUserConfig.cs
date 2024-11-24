@@ -7,6 +7,7 @@
 
 using System.Collections.Generic;
 using net.r_eg.DllExport.NSBin;
+using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -79,5 +80,11 @@ namespace net.r_eg.DllExport.Wizard
         /// <param name="ns"></param>
         /// <returns>true if added.</returns>
         bool AddTopNamespace(string ns);
+
+        /// <summary>
+        /// Updates <see cref="IUserConfig"/> data using <see cref="IXProject"/>.
+        /// </summary>
+        /// <param name="xp"></param>
+        void UpdateDataFrom(IXProject xp);
     }
 }
