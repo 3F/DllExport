@@ -153,9 +153,9 @@ namespace net.r_eg.DllExport.UnitedTest
                 }
 
                 // https://github.com/3F/Conari/issues/22
-                using NativeString<TCharPtr> nsnew = new($"{ns} and You 👋");
+                //using NativeString<TCharPtr> nsnew = new($"{ns} and You 👋");
 
-                TCharPtr r = l.callme<TCharPtr>(nsnew, nstruct);
+                TCharPtr r = l.callme<TCharPtr>(l._T($"{ns} and You 👋"), nstruct);
                 Assert.Equal("Рад знакомству 🤝 どうぞよろしく", r);
             }
             finally

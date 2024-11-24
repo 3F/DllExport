@@ -1,18 +1,32 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\common.props" />
 
   <PropertyGroup>
     <TargetFramework>netstandard1.1</TargetFramework>
-
     <RootNamespace>net.r_eg.DllExport</RootNamespace>
     <AssemblyName>DllExport</AssemblyName>
-
     <DocumentationFile>$(OutDir)$(AssemblyName).xml</DocumentationFile>
+
+    <!--
+      MetaCor do NOT reference System.Net.Http and System.Text.RegularExpressions versions with vulnerabilities at the moment (and most likely never will be);
+      Otherwise TargetLatestRuntimePatchForNetStd11=true will link to the most up-to-date versions for this TFM
+    -->
+    <TargetLatestRuntimePatchForNetStd11 Condition="'$(TargetLatestRuntimePatchForNetStd11)'==''">false</TargetLatestRuntimePatchForNetStd11>
+    <NoWarn>NETSDK1215;$(NoWarn)</NoWarn> <!-- NETSDK1215 to keep most minimal tfm since we're META (no code and no reference from user's libraries) -->
   </PropertyGroup>
-  
+
   <ItemGroup>
     <Compile Include="..\MetaFx\AssemblyInfo.cs" />
     <Compile Include="..\MetaFx\DllExportAttribute.cs" />
+  </ItemGroup>
+  
+  <PropertyGroup Condition="'$(TargetLatestRuntimePatchForNetStd11)'!='true'"><NoWarn>NU1903;$(NoWarn)</NoWarn></PropertyGroup>
+  <ItemGroup Condition="'$(TargetLatestRuntimePatchForNetStd11)'=='true'">
+    <PackageReference Include="System.Net.Http" Version="4.3.4" />
+    <!-- FIXED: Package 'System.Net.Http' 4.3.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-7jgj-8wvc-jh57 -->
+    
+    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
+    <!-- FIXED: Package 'System.Text.RegularExpressions' 4.3.0 has a known high severity vulnerability, https://github.com/advisories/GHSA-cmhx-cq75-c4mj -->
   </ItemGroup>
 
 </Project>

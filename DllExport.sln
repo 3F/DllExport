@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MetaFx", "src\DllExport\Met
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Activator", "src\DllExport\Activator\Activator.csproj", "{9C75E9C4-5D81-4704-ADD1-F4B42B6267C8}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "etc", "etc", "{E623294B-0FEA-4FA2-BA15-2750FE503F50}"
 	ProjectSection(SolutionItems) = preProject
 		.release.version = .release.version
 		.version = .version
@@ -17,9 +17,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "root", "root", "{E623294B-0
 		AUTHORS.txt = AUTHORS.txt
 		build.bat = build.bat
 		changelog.txt = changelog.txt
+		src\DllExport\common.props = src\DllExport\common.props
 		LICENSE.txt = LICENSE.txt
 		Readme.md = Readme.md
+		src\redefine.props = src\redefine.props
 		tests.bat = tests.bat
+		src\DllExport\tests.props = src\DllExport\tests.props
+		src\versions.props = src\versions.props
 		vsSolutionBuildEvent.bat = vsSolutionBuildEvent.bat
 	EndProjectSection
 EndProject

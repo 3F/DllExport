@@ -4,7 +4,7 @@ set cfg=%~1
 if not defined cfg set cfg=Release
 
 setlocal
-    if exist "DllExport.bat" (
+    if exist "tests\a.bat" (
 
         cd tests
 
