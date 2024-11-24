@@ -219,7 +219,7 @@ set key=!arg[%idx%]!
         
         set wAction=!v!
         for %%g in (Restore, Configure, Update, Export, Recover, RecoverInit, Unset, Upgrade, Default) do (
-            if "!v!"=="%%g" goto continue
+            if /I "!v!"=="%%g" goto continue
         )
 
         echo Unknown -action !v!

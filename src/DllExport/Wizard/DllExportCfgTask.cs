@@ -11,6 +11,7 @@ using System.Reflection;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Wizard.Extensions;
+using net.r_eg.MvsSln.Core.SlnHandlers;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -21,47 +22,35 @@ namespace net.r_eg.DllExport.Wizard
 
         private UI.MsgForm uimsg;
         private readonly string toolDir = Environment.CurrentDirectory;
-        private readonly object sync = new object();
+        private readonly object sync = new();
 
         #region ITask properties
 
-        /// <inheritdoc cref="IWizardConfig.RootPath"/>
         public string RootPath { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.SlnDir"/>
         public string SlnDir { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.SlnFile"/>
         public string SlnFile { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.PkgPath"/>
         public string PkgPath { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.MetaLib"/>
         [Required]
         public string MetaLib { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.MetaCor"/>
         [Required]
         public string MetaCor { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.DxpTarget"/>
         [Required]
         public string DxpTarget { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.MgrArgs"/>
         public string MgrArgs { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.PkgVer"/>
         public string PkgVer { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.Proxy"/>
         public string Proxy { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.MsgGuiLevel"/>
         public int MsgGuiLevel { get; set; }
 
-        /// <inheritdoc cref="IWizardConfig.StoragePath"/>
         public string StoragePath { get; set; }
 
         /// <summary>
@@ -70,21 +59,7 @@ namespace net.r_eg.DllExport.Wizard
         [Required]
         public string Action
         {
-            set
-            {
-                if(string.IsNullOrWhiteSpace(value))
-                {
-                    Type = ActionType.Default;
-                    return;
-                }
-
-                Type = (ActionType)Enum.Parse
-                (
-                    typeof(ActionType),
-                    value.Trim(),
-                    false
-                );
-            }
+            set => Type = ParseEnum(value, or: ActionType.Default);
         }
 
         /// <summary>
@@ -92,21 +67,7 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public string Storage
         {
-            set
-            {
-                if(string.IsNullOrWhiteSpace(value))
-                {
-                    CfgStorage = CfgStorageType.Default;
-                    return;
-                }
-
-                CfgStorage = (CfgStorageType)Enum.Parse
-                (
-                    typeof(CfgStorageType), 
-                    value.Trim(), 
-                    true
-                );
-            }
+            set => CfgStorage = ParseEnum(value, or: CfgStorageType.Default);
         }
 
         /// <summary>
@@ -117,27 +78,25 @@ namespace net.r_eg.DllExport.Wizard
             set => Options = (DxpOptType)value;
         }
 
+        public string MsgLevel
+        {
+            set => MsgLevelLimit = ParseEnum(value, or: Message.Level.Trace);
+        }
+
         #endregion
 
-        /// <inheritdoc cref="IWizardConfig.Distributable"/>
         public bool Distributable => !string.IsNullOrWhiteSpace(PkgVer) && PkgVer[0] != '-';
 
-        /// <inheritdoc cref="IWizardConfig.PackageType"/>
         public string PackageType => (string.IsNullOrWhiteSpace(PkgVer) || PkgVer.Equals("actual", StringComparison.OrdinalIgnoreCase)) ? "offline" : PkgVer;
 
-        /// <inheritdoc cref="IWizardConfig.CfgStorage"/>
         public CfgStorageType CfgStorage { get; set; } = CfgStorageType.Default;
 
-        /// <inheritdoc cref="IWizardConfig.Options"/>
         public DxpOptType Options { get; protected set; }
 
-        /// <inheritdoc cref="IWizardConfig.Type"/>
         public ActionType Type { get; protected set; }
 
-        /// <summary>
-        /// Executes the msbuild task.
-        /// </summary>
-        /// <returns>true if the task successfully executed.</returns>
+        internal Message.Level MsgLevelLimit { get; set; }
+
         public override bool Execute()
         {
             UpdateMSBuildValues();
@@ -194,23 +153,31 @@ namespace net.r_eg.DllExport.Wizard
 
         protected virtual void ConWrite(string message, Message.Level level)
         {
-            if(level == Message.Level.Fatal) {
-                Console.ForegroundColor = ConsoleColor.Blue;
-            }
-            else if(level == Message.Level.Error) {
-                Console.ForegroundColor = ConsoleColor.Red;
-            }
-            else if(level == Message.Level.Warn) {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-            }
+            if(!IsLevelOrAbove(level, MsgLevelLimit)) return;
 
-            if(IsLevelOrAbove(level, Message.Level.Error)) {
+            Console.ForegroundColor = level switch
+            {
+                Message.Level.Fatal => ConsoleColor.Cyan,
+                Message.Level.Error => ConsoleColor.Red,
+                Message.Level.Warn => ConsoleColor.Yellow,
+                Message.Level.Debug => ConsoleColor.DarkGray,
+                Message.Level.Trace => ConsoleColor.DarkGray,
+                _ => ConsoleColor.Gray,
+            };
+
+            if(IsLevelOrAbove(level, Message.Level.Error))
+            {
                 Console.Error.WriteLine(message);
             }
-            else {
+            else
+            {
                 Console.WriteLine(message);
             }
-            Console.ResetColor();
+
+            if(Console.ForegroundColor != ConsoleColor.Gray)
+            {
+                Console.ForegroundColor = ConsoleColor.Gray;
+            }
         }
 
         private void UpdateMSBuildValues()
@@ -251,20 +218,50 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"Storage: '{CfgStorage}'", level);
             LSender.Send(this, $"StoragePath: '{StoragePath}'", level);
             LSender.Send(this, $"Action: '{Type}'", level);
+            LSender.Send(this, $"MsgLevel: '{MsgLevelLimit}'", level);
             LSender.Send(this, $"MsgGuiLevel: '{MsgGuiLevel}'", level);
         }
 
-        private bool IsLevelOrAbove(Message.Level lvl1, Message.Level lvl2)
+        private static T ParseEnum<T>(string input, T or = default, bool icase = true)
+        {
+            if(string.IsNullOrWhiteSpace(input)) return or;
+
+            return (T)Enum.Parse
+            (
+                typeof(T),
+                input.Trim(),
+                ignoreCase: icase
+            );
+        }
+
+        private static bool IsLevelOrAbove(Message.Level lvl1, Message.Level lvl2)
         {
             return ((int)lvl1) >= ((int)lvl2);
         }
 
+        private static bool IgnoreSender(object sender, Message.Level level) => sender switch
+        {
+            MvsSln.Core.SynchSubscribers<ISlnHandler> => true,
+            LProjectConfigurationPlatforms => IsLevelOrAbove(Message.Level.Debug, level),
+            _ => false
+        };
+
+        private static Message.Level ChangeLevel(Message.Level level, object sender) => sender switch
+        {
+            LSolutionConfigurationPlatforms => Message.Level.Trace,
+            ISlnHandler => level == Message.Level.Debug ? Message.Level.Trace : level,
+            _ => level
+        };
+
         private void OnMsg(object sender, Message e)
         {
-            var msg = $"[{e.stamp.ToString(PTN_TIME)}] [{e.type}] {e.content}";
+            if(IgnoreSender(sender, e.type)) return;
+            Message.Level level = ChangeLevel(e.type, sender);
 
-            uimsg?.AddMsg(msg, e.type);
-            ConWrite(msg, e.type);
+            string msg = $"[{e.stamp.ToString(PTN_TIME)}] [{level}] {e.content}";
+
+            uimsg?.AddMsg(msg, level);
+            ConWrite(msg, level);
         }
 
         #region IDisposable

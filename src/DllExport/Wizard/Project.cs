@@ -59,7 +59,7 @@ namespace net.r_eg.DllExport.Wizard
                 if(string.IsNullOrWhiteSpace(_dxpIdent))
                 {
                     _dxpIdent = Guid.NewGuid().ToString().ToUpperInvariant();
-                    Log.send(this, $"Generated new identifier: '{_dxpIdent}'", Message.Level.Debug);
+                    Log.send(this, $"Generated new identifier: '{_dxpIdent}'", Message.Level.Trace);
                 }
                 return _dxpIdent;
             }
@@ -215,7 +215,7 @@ namespace net.r_eg.DllExport.Wizard
             );
             AllocPlatformTargetIfNeeded(xproject);
 
-            Log.send(this, $"Identifier: {DxpIdent}", Message.Level.Info);
+            Log.send(this, $"{DxpIdent} - {ProjectPath}", Message.Level.Info);
         }
 
         protected void InstallGears() => gears.ForEach(g => g.Install());
@@ -316,14 +316,16 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void CfgDDNS(bool corlib)
         {
-            Config.DDNS.SetNamespace(
-                CopyLib(
+            Config.DDNS.SetNamespace
+            (
+                CopyLib
+                (
                     Path.Combine(Config.Wizard.PkgPath, GetMetaDll(corlib)), 
-                    MetaLib(true, corlib)
+                    MetaLib(evaluate: true, corlib)
                 ), 
                 Config.Namespace, 
                 Config.UseCecil,
-                false
+                preparing: false
             );
         }
 

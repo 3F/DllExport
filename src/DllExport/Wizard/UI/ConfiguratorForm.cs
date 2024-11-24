@@ -189,7 +189,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                 return;
             }
 
-            LSender.Send(this, $"Create {nameof(FilterLineControl)} panel");
+            LSender.Send(this, $"Create {nameof(FilterLineControl)} panel", MvsSln.Log.Message.Level.Trace);
 
             var panel = (FilterLineControl)extcfg.Value;
 
@@ -486,36 +486,36 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void comboBoxSln_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(_suspendCbSln) { return; }
+            if(_suspendCbSln) return;
 
             ((FilterLineControl)extcfg.Value).FilterText = string.Empty;
 
-            if(sender is ComboBox) 
+            if(sender is ComboBox box) 
             {
-                progressLine.StartTrainEffect(panelTop.Width);
-                RenderProjects((ComboBox)sender);
-                progressLine.StopAll();
+                ShowProgressLine(enabled: true);
+                RenderProjects(box);
+                ShowProgressLine(enabled: false);
             }
             prevSlnItemIndex = comboBoxSln.SelectedIndex;
         }
 
         private void btnApply_Click(object sender, EventArgs e)
         {
-            Task.Factory.StartNew(() => 
-            {
-                btnApply.UIAction(x => x.Enabled = false);
-                progressLine.StartTrainEffect(panelTop.Width);
-                void _stop() => progressLine.StopAll();
+            btnApply.Enabled = false;
+            ShowProgressLine(enabled: true);
 
-                if(Apply()) 
+            Task.Factory.StartNew(() =>
+            {
+                try
                 {
-                    this.UIAction(x => { _stop(); x.Close(); });
+                    if(Apply()) this.UIAction(x => x.Close());
+                    else btnApply.UIAction(x => x.Enabled = true);
                 }
-                else 
+                catch(Exception ex)
                 {
-                    _stop();
-                    btnApply.UIAction(x => x.Enabled = true);
+                    LSender.Send(this, $"{ex.Message}\n---\n{ex}", MvsSln.Log.Message.Level.Fatal);
                 }
+                ShowProgressLine(enabled: false);
             });
         }
 
