@@ -43,13 +43,42 @@
     <DllExportDefPlatform Condition="'$(DllExportDefPlatform)' == ''">AnyCPU</DllExportDefPlatform>
   </PropertyGroup>
 
+  <PropertyGroup>
+    <DllExportCopyToPublishDirectoryType Condition="'$(DllExportCopyToPublishDirectoryType)'==''">PreserveNewest</DllExportCopyToPublishDirectoryType>
+  </PropertyGroup>
   <ItemGroup Condition="'$(DllExportResolvePublish)'!='false'">
+
     <!-- https://github.com/3F/DllExport/issues/224#issuecomment-1546883382 -->
     <DllExportFilesToPublish
           Include="$(TargetDir)x86\*.*;$(TargetDir)x64\*.*"
           PlatformDir="$([System.IO.Directory]::GetParent(%(DllExportFilesToPublish.Directory)).Name)\" />
-    <ResolvedFileToPublish Include="@(DllExportFilesToPublish)" RelativePath="%(PlatformDir)%(Filename)%(Extension)" />
+    <ResolvedFileToPublish Include="@(DllExportFilesToPublish)" RelativePath="%(PlatformDir)%(Filename)%(Extension)" CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
+
+    <!-- F-262, for a single platform -->
+    <ResolvedFileToPublish Condition="'$(DllExportResolvePublishForSingle)'!='false'"
+                           Include="$(TargetPath)" RelativePath="%(Filename)%(Extension)" CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
+
   </ItemGroup>
+  <!-- fallback -->
+  <Target Condition="'$(DllExportResolvePublish)'!='false' AND '$(DllExportResolvePublishForSingle)'!='false'"
+          Name="DllExportComputeResolvedFilesToPublishList"
+          BeforeTargets="ComputeResolvedFilesToPublishList">
+
+    <PropertyGroup>
+      <CopyBuildOutputToPublishDirectory>false</CopyBuildOutputToPublishDirectory>
+    </PropertyGroup>
+
+    <!-- TODO: tl;dr @(IntermediateAssembly) includes the build product (.dll or .exe); so... do we have other cases where this is really necessary? -->
+    <ItemGroup Condition="'$(DllExportFallbackDontCopyBuildOutputToPublishDirectory)'!='false' AND '$(CopyBuildOutputToPublishDirectory)'=='false'">
+      <DllExportIntermediateAssemblyResolvedFileToPublish Include="@(IntermediateAssembly)" Condition="'%(Filename)%(Extension)'!='$(TargetFileName)'" />
+
+      <ResolvedFileToPublish Include="@(DllExportIntermediateAssemblyResolvedFileToPublish)">
+        <RelativePath>@(DllExportIntermediateAssemblyResolvedFileToPublish->'%(Filename)%(Extension)')</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+      </ResolvedFileToPublish>
+    </ItemGroup>
+
+  </Target>
 
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
