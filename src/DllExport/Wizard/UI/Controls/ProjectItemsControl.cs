@@ -18,7 +18,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     internal sealed partial class ProjectItemsControl: UserControl, IDisposable
     {
-        private readonly List<UProject> items = new List<UProject>();
+        private readonly List<UProject> items = [];
 
         private readonly Lazy<ProjectItemControl> empty;
 
@@ -212,7 +212,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
 
             Reset(true);
-            empty.Value?.Dispose();
+            if(empty.IsValueCreated && !empty.Value.IsDisposed)
+            {
+                empty.Value.Dispose();
+            }
 
             base.Dispose(disposing);
         }

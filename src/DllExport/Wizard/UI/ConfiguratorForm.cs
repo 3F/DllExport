@@ -71,7 +71,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             this.exec       = exec ?? throw new ArgumentNullException(nameof(exec));
 
             extcfg          = new Lazy<IExtCfg>(() => new FilterLineControl(this, exec));
-            caller          = new Caller(exec.Config.SlnDir);
+            caller          = new Caller(exec.Config.RootPath);
             pkgVer          = new PackageInfo(exec);
             confFormater    = new SimpleConfFormater(exec);
 
@@ -94,7 +94,11 @@ namespace net.r_eg.DllExport.Wizard.UI
             storage = new CfgStorage(exec, comboBoxStorage);
             storage.UpdateItem();
 
-            projectItems.Set(null); // TODO: this only when no projects in solution and only when initial start
+            if(dgvFilter.Rows.Count < 1)
+            {   // when there are no projects in the solution at the initial stage
+                btnApply.Enabled = false;
+                projectItems.Set(null);
+            }
         }
 
         private void UpdateListOfPackages()
@@ -236,24 +240,22 @@ namespace net.r_eg.DllExport.Wizard.UI
             return fdialog.FileName;
         }
 
-        private void RenderProjects(ComboBox box)
+        private bool RenderProjects(ComboBox box)
         {
-            if(box.Items.Count < 1) {
-                return;
-            }
+            if(box.Items.Count < 1) return false;
 
-            if(box.SelectedIndex != box.Items.Count - 1) {
+            if(box.SelectedIndex != box.Items.Count - 1)
+            {
                 RenderProjects(box.SelectedItem.ToString());
-                return;
+                return true;
             }
 
             string file = OpenFile();
             if(file == null 
                 || !file.TrimEnd().EndsWith(".sln", StringComparison.InvariantCultureIgnoreCase))
             {
-                DoSilentAction(() => box.SelectedIndex = prevSlnItemIndex);
                 EnableTabsWhenNoSln(false);
-                return;
+                return false;
             }
 
             DoSilentAction(() =>
@@ -268,6 +270,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             });
 
             RenderProjects(file);
+            return true;
         }
 
         private void RenderProjects(string sln)
@@ -493,7 +496,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             if(sender is ComboBox box) 
             {
                 ShowProgressLine(enabled: true);
-                RenderProjects(box);
+                btnApply.Enabled = RenderProjects(box);
                 ShowProgressLine(enabled: false);
             }
             prevSlnItemIndex = comboBoxSln.SelectedIndex;
