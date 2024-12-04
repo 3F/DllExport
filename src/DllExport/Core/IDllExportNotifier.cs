@@ -14,8 +14,39 @@ namespace net.r_eg.DllExport
     {
         event EventHandler<DllExportNotificationEventArgs> Notification;
 
+        /// <inheritdoc cref="Notify(int, string, string, SourceCodePosition?, SourceCodePosition?, string, object[])" />
         void Notify(int severity, string code, string message, params object[] values);
 
+        #region temp migration. TODO: enum /F-272
+
+        void NotifyError(string code, string message, params object[] values);
+
+        void NotifyWarn(string code, string message, params object[] values);
+
+        void NotifyHigh(string code, string message, params object[] values);
+
+        void Notify(string code, string message, params object[] values);
+
+        void NotifyLow(string code, string message, params object[] values);
+
+        #endregion
+
+        /// <param name="severity">
+        ///  2 = Error <br/>
+        ///  1 = Warning <br/>
+        ///  0 = Message High <br/>
+        /// -1 = Message Normal <br/>
+        /// -2 = Message Low <br/>
+        /// </param>
+        /// <param name="code"></param>
+        /// <param name="fileName"></param>
+        /// <param name="startPosition"></param>
+        /// <param name="endPosition"></param>
+        /// <param name="message"></param>
+        /// <param name="values"></param>
+        /// <remarks>
+        /// TODO: An original source code uses an integer values to encode `severity` arg; so ... either use related temp wrappers or migrate to enum asap
+        /// </remarks>
         void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values);
 
         void Notify(DllExportNotificationEventArgs e);

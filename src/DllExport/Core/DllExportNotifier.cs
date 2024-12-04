@@ -74,6 +74,20 @@ namespace net.r_eg.DllExport
             Notify(severity, code, fileName: null, startPosition: new(), endPosition: new(), message, values);
         }
 
+        #region temp migration. TODO: enum /F-272
+
+        public void NotifyError(string code, string message, params object[] values) => Notify(severity: 2, code, message, values);
+
+        public void NotifyWarn(string code, string message, params object[] values) => Notify(severity: 1, code, message, values);
+
+        public void NotifyHigh(string code, string message, params object[] values) => Notify(severity: 0, code, message, values);
+
+        public void Notify(string code, string message, params object[] values) => Notify(severity: -1, code, message, values);
+
+        public void NotifyLow(string code, string message, params object[] values) => Notify(severity: -2, code, message, values);
+
+        #endregion
+
         public void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values)
         {
             string msg = values?.Length > 0 ? string.Format(CultureInfo.InvariantCulture, message, values) : message;

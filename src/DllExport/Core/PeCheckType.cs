@@ -26,5 +26,11 @@ namespace net.r_eg.DllExport
         /// Will check existence of all planned exports (IL code) in actual PE32/PE32+ module.
         /// </summary>
         PeIl = 0x02,
+
+        /// <summary>
+        /// PE Check PE32 / PE32+
+        /// Will check module type for PE32 or PE32+ regarding selected architecture.
+        /// </summary>
+        Pe32orPlus = 0x04,
     }
 }

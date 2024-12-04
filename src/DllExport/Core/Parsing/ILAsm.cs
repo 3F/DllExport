@@ -294,65 +294,78 @@ namespace net.r_eg.DllExport.Parsing
         private int CheckPE(CpuPlatform cpu, string pefile)
         {
             int ret = 0;
+            if(InputValues.PeCheck == PeCheckType.None) return ret;
 
-            if(InputValues.PeCheck == PeCheckType.None) {
-                return ret;
-            }
+            using Conari.PE.PEFile pe = new(pefile);
 
-            using(var pe = new net.r_eg.Conari.PE.PEFile(pefile))
+            if((InputValues.PeCheck & (PeCheckType.Pe1to1 | PeCheckType.PeIl)) != 0)
             {
-                var ilMethods = Exports.ClassesByName.Values
-                                                    .SelectMany(c => c.Methods.Select(m => m.ExportName))
-                                                    .ToArray();
+                string[] ilMethods = Exports.ClassesByName.Values
+                                    .SelectMany(c => c.Methods.Select(m => m.ExportName))
+                                    .ToArray();
 
-                var peMethods = pe.ExportedProcNames.ToArray();
+                string[] peMethods = pe.ExportedProcNames.ToArray();
 
                 if((InputValues.PeCheck & PeCheckType.Pe1to1) == PeCheckType.Pe1to1)
                 {
-                    Notifier.Notify(-2, DllExportLogginCodes.PeCheck1to1, $"{nameof(PeCheckType.Pe1to1)} is activated.");
-                    if(!CheckPE1to1(ilMethods, peMethods, pefile)) {
-                        ret = -1;
-                    }
+                    Notifier.NotifyLow(DllExportLogginCodes.PeCheck1to1, Resources._0_is_activated, nameof(PeCheckType.Pe1to1));
+                    if(!CheckPe1to1(ilMethods, peMethods, pe)) ret = -1;
                 }
 
                 if((InputValues.PeCheck & PeCheckType.PeIl) == PeCheckType.PeIl)
                 {
-                    Notifier.Notify(-2, DllExportLogginCodes.PeCheckIl, $"{nameof(PeCheckType.PeIl)} is activated.");
-                    if(!CheckPEIl(ilMethods, peMethods, pefile)) {
-                        ret = -1;
-                    }
+                    Notifier.NotifyLow(DllExportLogginCodes.PeCheckIl, Resources._0_is_activated, nameof(PeCheckType.PeIl));
+                    if(!CheckPeIl(ilMethods, peMethods, pe)) ret = -1;
                 }
+            }
+
+            if((InputValues.PeCheck & PeCheckType.Pe32orPlus) == PeCheckType.Pe32orPlus)
+            {
+                Notifier.NotifyLow(DllExportLogginCodes.PeCheck32orPlus, Resources._0_is_activated, nameof(PeCheckType.Pe32orPlus));
+                if(!CheckPe32orPlus(cpu, pe)) ret = -1;
             }
 
             return ret;
         }
 
-        private bool CheckPE1to1(string[] ilMethods, string[] peMethods, string pefile)
+        private bool CheckPe1to1(string[] ilMethods, string[] peMethods, Conari.PE.PEFile pe)
         {
-            if(ilMethods.Length == peMethods.Length) {
-                return true;
-            }
+            if(ilMethods.Length == peMethods.Length) return true;
 
-            Notifier.Notify(
-                2, 
+            Notifier.NotifyError
+            (
                 DllExportLogginCodes.PeCheck1to1, 
-                $"The number ({peMethods.Length}) of exports from PE32/PE32+ module '{pefile}' is not equal to number ({ilMethods.Length}) from IL code."
+                $"The number ({peMethods.Length}) of exports from PE32/PE32+ module '{pe.FileName}' is not equal to number ({ilMethods.Length}) from IL code."
             );
             return false;
         }
 
-        private bool CheckPEIl(string[] ilMethods, string[] peMethods, string pefile)
+        private bool CheckPeIl(string[] ilMethods, string[] peMethods, Conari.PE.PEFile pe)
         {
-            var notFound = ilMethods.Except(peMethods).ToArray();
+            IEnumerable<string> notFound = ilMethods.Except(peMethods);
 
-            if(notFound.Length < 1) {
+            if(!notFound.Any()) return true;
+
+            Notifier.NotifyError
+            (
+                DllExportLogginCodes.PeCheckIl, 
+                $"Lost '{notFound.Count()}' entries from {pe.Magic} module '{pe.FileName}': {string.Join(" ; ", notFound.ToArray())}"
+            );
+            return false;
+        }
+
+        private bool CheckPe32orPlus(CpuPlatform cpu, Conari.PE.PEFile pe)
+        {
+            if((pe.Magic == Conari.PE.WinNT.Magic.PE64 && cpu == CpuPlatform.X64)
+                || (pe.Magic == Conari.PE.WinNT.Magic.PE32 && cpu == CpuPlatform.X86))
+            {
                 return true;
             }
 
-            Notifier.Notify(
-                2, 
-                DllExportLogginCodes.PeCheckIl, 
-                $"Something went wrong. We can't find '{notFound.Length}' exports from PE32/PE32+ module '{pefile}': {String.Join(" ; ", notFound)}"
+            Notifier.NotifyError
+            (
+                DllExportLogginCodes.PeCheck32orPlus, 
+                $"Module '{pe.FileName}' is '{pe.Magic}' while configuration is '{cpu}'"
             );
             return false;
         }

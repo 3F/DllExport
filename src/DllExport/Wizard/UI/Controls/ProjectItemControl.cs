@@ -91,7 +91,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         public CompilerCfg Compiler
         {
-            get => new CompilerCfg()
+            get => new()
             {
                 ordinalsBase        = (int)numOrdinal.Value,
                 genExpLib           = chkGenExpLib.Checked,
@@ -226,21 +226,18 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             PeCheckType peCheck = PeCheckType.None;
 
-            if(chkPECheck1to1.Checked) {
-                peCheck |= PeCheckType.Pe1to1;
-            }
-
-            if(chkPECheckIl.Checked) {
-                peCheck |= PeCheckType.PeIl;
-            }
+            if(chkPECheck1to1.Checked) peCheck |= PeCheckType.Pe1to1;
+            if(chkPECheckIl.Checked) peCheck |= PeCheckType.PeIl;
+            if(chkPECheck32.Checked) peCheck |= PeCheckType.Pe32orPlus;
 
             return peCheck;
         }
 
         private void SetPeCheckType(PeCheckType type)
         {
-            chkPECheck1to1.Checked  = (type & PeCheckType.Pe1to1) == PeCheckType.Pe1to1;
-            chkPECheckIl.Checked    = (type & PeCheckType.PeIl) == PeCheckType.PeIl;
+            chkPECheck1to1.Checked = (type & PeCheckType.Pe1to1) == PeCheckType.Pe1to1;
+            chkPECheckIl.Checked = (type & PeCheckType.PeIl) == PeCheckType.PeIl;
+            chkPECheck32.Checked = (type & PeCheckType.Pe32orPlus) == PeCheckType.Pe32orPlus;
         }
 
         private PatchesType GetPatchesType()
@@ -311,7 +308,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void LinkInfPatching_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/128");
 
-        private void LinkPeCheck_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/55");
+        private void LinkPe1to1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/55");
+
+        private void linkPeIl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/59");
+
+        private void linkObjUpdated_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/206");
 
         private void comboNS_TextUpdate(object sender, EventArgs e)
         {

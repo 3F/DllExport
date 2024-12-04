@@ -143,6 +143,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                         return;
                     }
 
+                    LSender.Send(this, $"(+) New version found: {remote}", MvsSln.Log.Message.Level.Info);
                     tabUpdating.UIBlinkText
                     (
                         _ANI_DELAY,

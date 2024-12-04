@@ -290,7 +290,7 @@ namespace net.r_eg.DllExport.Wizard
                 {
                     ordinalsBase    = 1,
                     timeout         = CompilerCfg.TIMEOUT_EXEC,
-                    peCheck         = PeCheckType.PeIl,
+                    peCheck         = PeCheckType.PeIl | PeCheckType.Pe32orPlus,
                     patches         = PatchesType.None,
                 },
                 PreProc     = new PreProc().Configure(),
