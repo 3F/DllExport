@@ -509,13 +509,14 @@ namespace net.r_eg.DllExport.Wizard
             if((Config.Wizard.Options & DxpOptType.NoMgr) == DxpOptType.NoMgr) return target;
 
             string ifManager = $"Exists('{GetDxpDirBased(manager)}')";
+            const string dxpNoRestore = $"'$({MSBuildProperties.DXP_NO_RESTORE})' != 'true' And ";
 
             var taskMsg = target.AddTask("Error");
-            taskMsg.Condition = $"!{ifManager}";
+            taskMsg.Condition = $"{dxpNoRestore}!{ifManager}";
             taskMsg.SetParameter("Text", $"{manager} was not found in {GetDxpDirBased()}; https://github.com/3F/DllExport");
 
             var taskExec = target.AddTask("Exec");
-            taskExec.Condition = $"({condition}) And {ifManager}";
+            taskExec.Condition = $"{dxpNoRestore}({condition}) And {ifManager}";
 
             string args;
             if(Config?.Wizard?.MgrArgs != null) 
@@ -524,7 +525,8 @@ namespace net.r_eg.DllExport.Wizard
                 args = args.Replace("%", "%%"); // part of issue 88, probably because of %(_data.FullPath) etc.
                 args = Regex.Replace(args, @"-force(?:\s|$)", "", RegexOptions.IgnoreCase); // user commands only
             }
-            else {
+            else
+            {
                 args = string.Empty;
             }
             taskExec.SetParameter("Command", $".\\{manager} {args} -action Restore");

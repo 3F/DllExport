@@ -571,7 +571,8 @@ exit /B %ERROR_FAILED%
     :: (1) - Input keys to core
     :: [2] - logo option if used
 
-    set _ic=!%~1!
+    :: do not use rsp due to possible https://github.com/3F/DllExport/issues/223
+    set _ic=!%~1! /noautorsp
 
     :: Note, `logo` can be overridden at the top level, for example in tests, etc.
     if not defined logo set "logo=%~2"

@@ -138,6 +138,8 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         public const string DXP_METALIB_FPATH = "DllExportMetaLibFullPath";
 
+        public const string DXP_NO_RESTORE = "DllExportNoRestore";
+
         public const string PRJ_TARGET_DIR = "TargetDir";
 
         public const string PRJ_TARGET_F = "TargetFileName";
