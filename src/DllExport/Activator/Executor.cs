@@ -11,54 +11,40 @@ using System.Collections.Generic;
 using Microsoft.Build.Execution;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
-using net.r_eg.DllExport;
 using net.r_eg.MvsSln.Core;
 
 namespace net.r_eg.DllExport.Activator
 {
-    internal class Executor: IPostProcExecutor
+    internal class Executor(TaskLoggingHelper log): IPostProcExecutor
     {
-        private readonly TaskLoggingHelper log;
+        private readonly TaskLoggingHelper log = log ?? throw new ArgumentNullException(nameof(log));
 
-        /// <summary>
-        /// Executes IXProject through MSBuild engine.
-        /// </summary>
-        /// <param name="xp"></param>
-        /// <param name="entrypoint">Initial target.</param>
-        /// <param name="properties">Additional properties that will be available when executing code.</param>
-        /// <returns>True if request was a complete success.</returns>
         public bool Execute(IXProject xp, string entrypoint, IDictionary<string, string> properties = null)
         {
-            if(xp == null) {
-                throw new ArgumentNullException(nameof(xp));
-            }
+            if(xp == null) throw new ArgumentNullException(nameof(xp));
 
             UpdateGlobalProperties(xp, properties);
 
-            var request = new BuildRequestData
+            BuildRequestData request = new
             (
                 xp.Project.CreateProjectInstance(),
-                new string[] { entrypoint ?? throw new ArgumentNullException(nameof(entrypoint)) }, 
+                [entrypoint ?? throw new ArgumentNullException(nameof(entrypoint))], 
                 new HostServices()
             );
 
-#if !NET40
-
-            using(BuildManager manager = new BuildManager(DllExportVersion.DXP)) {
-                return Build(manager, request, false);
+            // NOTE: Legacy BuildManager (like for netfx 4.0.30319) does not require disposing
+            // so we'll continue to use try/finally here to support both versions due to possible retargeting in future releases.
+            BuildManager buildManager = new(DllExportVersion.DXP);
+            try
+            {
+                bool status = Build(buildManager, request, silent: false);
+                log.LogMessage(MessageImportance.Low, $"{nameof(Executor)} {nameof(BuildManager)} = {status}");
+                return status;
             }
-
-#else
-
-            // 4.0.30319
-            return Build(new BuildManager(DllExportVersion.DXP), request, false);
-
-#endif
-        }
-
-        public Executor(TaskLoggingHelper log)
-        {
-            this.log = log ?? throw new ArgumentNullException(nameof(log));
+            finally
+            {
+                if(buildManager is IDisposable bm) bm.Dispose();
+            }
         }
 
         protected bool Build(BuildManager manager, BuildRequestData request, bool silent)
@@ -68,12 +54,11 @@ namespace net.r_eg.DllExport.Activator
                 new BuildParameters()
                 {
                     MaxNodeCount = 4,
-                    Loggers = new List<ILogger>() 
+                    Loggers =
+                    [new ExecutorLogger(log)
                     {
-                        new ExecutorLogger(log) {
-                            Verbosity = silent ? LoggerVerbosity.Quiet : LoggerVerbosity.Normal
-                        }
-                    }
+                        Verbosity = silent ? LoggerVerbosity.Quiet : LoggerVerbosity.Normal
+                    }]
                 },
                 request
             );
@@ -83,9 +68,7 @@ namespace net.r_eg.DllExport.Activator
 
         private void UpdateGlobalProperties(IXProject xp, IDictionary<string, string> properties)
         {
-            if(properties == null) {
-                return;
-            }
+            if(properties == null) return;
 
             foreach(var prop in properties) 
             {

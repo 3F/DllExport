@@ -128,7 +128,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         private void RemovePostProcTarget()
         {
-            Log.send(this, $"Trying to remove post-proc-target `{MSBuildTargets.DXP_POST_PROC}`");
+            Log.send(this, $"Attempt to delete post-proc-target `{MSBuildTargets.DXP_POST_PROC}`");
             while(prj.RemoveXmlTarget(MSBuildTargets.DXP_POST_PROC)) { }
         }
 

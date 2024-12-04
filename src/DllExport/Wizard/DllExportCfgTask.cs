@@ -249,6 +249,7 @@ namespace net.r_eg.DllExport.Wizard
         private static Message.Level ChangeLevel(Message.Level level, object sender) => sender switch
         {
             LSolutionConfigurationPlatforms => Message.Level.Trace,
+            LProjectConfigurationPlatforms => level == Message.Level.Info ? Message.Level.Trace : level,
             ISlnHandler => level == Message.Level.Debug ? Message.Level.Trace : level,
             _ => level
         };

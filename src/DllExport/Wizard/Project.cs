@@ -129,7 +129,7 @@ namespace net.r_eg.DllExport.Wizard
 
         public void Unset()
         {
-            Log.send(this, $"Trying to unset data from '{DxpIdent}'", Message.Level.Info);
+            Log.send(this, $"Attempt to unset data from '{DxpIdent}'", Message.Level.Info);
             Reset(hardReset: true);
             Save();
         }
@@ -304,8 +304,10 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         protected void Save()
         {
-            if(XProject?.ProjectFullPath != null && InternalError == null) {
+            if(XProject?.ProjectFullPath != null && InternalError == null)
+            {
                 XProject.Save();
+                Log.send(this, $"'{ProjectPath}' completed (Installed: {Config?.Install}) {Config?.Namespace} : {DxpIdent}", Message.Level.Info);
             }
         }
 
@@ -541,8 +543,8 @@ namespace net.r_eg.DllExport.Wizard
             t.SetParameter("Properties", "TargetFramework=$(TargetFramework)");
             t.AddOutputProperty("TargetOutputs", "DllExportMetaXBase");
 
-            var lib = MetaLib(false);
-            Log.send(this, $"Add meta library: '{lib}'", Message.Level.Info);
+            string lib = MakeBasePath(MetaLib(evaluate: false));
+            Log.send(this, $"'{ProjectPath}' add meta library: '{lib}'");
 
             target.AddItemGroup().AddItem
             (
@@ -550,7 +552,7 @@ namespace net.r_eg.DllExport.Wizard
                 $"DllExport, PublicKeyToken={METALIB_PK_TOKEN}",
                 new Dictionary<string, string>() 
                 {
-                    { "HintPath", MakeBasePath(lib) },
+                    { "HintPath", lib },
                     { "Private", false.ToString() },
                     { "SpecificVersion", false.ToString() }
                 }
@@ -570,13 +572,13 @@ namespace net.r_eg.DllExport.Wizard
             taskMsb.SetParameter("BuildInParallel", "true");
             taskMsb.SetParameter("UseResultsCache", "true");
             taskMsb.SetParameter("Projects", "$(MSBuildProjectFullPath)");
-            taskMsb.SetParameter("Properties", "DllExportRPkgDyn=true");
+            taskMsb.SetParameter("Properties", "Configuration=$(Configuration);DllExportRPkgDyn=true");
             taskMsb.SetParameter("Targets", "Build");
         }
 
         protected ProjectTargetElement AddTarget(string name)
         {
-            Log.send(this, $"Add '{name}' target", Message.Level.Info);
+            Log.send(this, $"'{ProjectPath}' add '{name}' target");
             return XProject.Project.Xml.AddTarget(name);
         }
 
@@ -589,19 +591,19 @@ namespace net.r_eg.DllExport.Wizard
                 }
 
                 if(PublicKeyTokenLimit && METALIB_PK_TOKEN.CmpPublicKeyTokenWith(refer.Assembly.PublicKeyToken)) {
-                    Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
+                    Log.send(this, $"Remove old reference pk:'{METALIB_PK_TOKEN}'");
                     XProject.RemoveItem(refer); // immediately modifies collection from XProject.GetReferences
                     continue;
                 }
 
                 // all obsolete packages - https://github.com/3F/DllExport/issues/65
                 if(!PublicKeyTokenLimit && refer.evaluated == "DllExport") {
-                    Log.send(this, $"Remove old reference no-pk:'{refer.evaluated}'", Message.Level.Info);
+                    Log.send(this, $"Remove old reference no-pk:'{refer.evaluated}'");
                     XProject.RemoveItem(refer);
                 }
             }
 
-            Log.send(this, $"Trying to remove {WZ_ID} PackageReference records", Message.Level.Info);
+            Log.send(this, $"Attempt to delete {WZ_ID} PackageReference records");
             foreach(var item in XProject.GetItems("PackageReference", UserConfig.PKG_ID).ToArray()) 
             {
                 if(item.isImported) {
@@ -617,19 +619,19 @@ namespace net.r_eg.DllExport.Wizard
 
             if(!pkgconf.IsNew) pkgconf.RemovePackage(UserConfig.PKG_ID);
 
-            Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'", Message.Level.Info);
+            Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'");
             while(XProject.RemoveImport(XProject.GetImport(DXP_TARGET, null))) { }
 
-            Log.send(this, $"Trying to remove old Import elements via pk:'{METALIB_PK_TOKEN}'", Message.Level.Info);
+            Log.send(this, $"Attempt to delete old Import elements via pk:'{METALIB_PK_TOKEN}'");
             while(XProject.RemoveImport(XProject.GetImport(null, METALIB_PK_TOKEN))) { }
 
-            Log.send(this, $"Trying to remove old restore-target: '{MSBuildTargets.DXP_PKG_R}'", Message.Level.Info);
+            Log.send(this, $"Attempt to delete old restore-target: '{MSBuildTargets.DXP_PKG_R}'");
             while(XProject.RemoveXmlTarget(MSBuildTargets.DXP_PKG_R)) { }
 
-            Log.send(this, $"Trying to remove dynamic `import` section: '{MSBuildTargets.DXP_R_DYN}'", Message.Level.Info);
+            Log.send(this, $"Attempt to delete dynamic `import` section: '{MSBuildTargets.DXP_R_DYN}'");
             while(XProject.RemoveXmlTarget(MSBuildTargets.DXP_R_DYN)) { }
 
-            Log.send(this, $"Trying to remove X_EXT_STORAGE Import elements: '{Guids.X_EXT_STORAGE}'", Message.Level.Info);
+            Log.send(this, $"Attempt to delete X_EXT_STORAGE Import elements: '{Guids.X_EXT_STORAGE}'");
             while(XProject.RemoveImport(XProject.GetImport(null, Guids.X_EXT_STORAGE))) { }
 
             if(string.IsNullOrWhiteSpace(Config?.Wizard.DxpTarget)) {
@@ -640,7 +642,7 @@ namespace net.r_eg.DllExport.Wizard
             var dxpTarget = Path.GetFileName(Config.Wizard.DxpTarget);
             if(DXP_TARGET.Equals(dxpTarget, StringComparison.InvariantCultureIgnoreCase))
             {
-                Log.send(this, $"Find and remove '{dxpTarget}' as an old .target file of the DllExport.", Message.Level.Info);
+                Log.send(this, $"Find and remove old DllExport's .target '{dxpTarget}'");
                 while(XProject.RemoveImport(XProject.GetImport(dxpTarget, null))) { }
             }
         }
@@ -660,7 +662,7 @@ namespace net.r_eg.DllExport.Wizard
                     MakeBasePath(Path.Combine(Config.Wizard.PkgPath, file), prefix: true)
                     : MakeBaseProjectPath(Path.Combine(Config.Wizard.RootPath, file));
 
-            Log.send(this, $"Add .targets: '{targets}':{id}", Message.Level.Info);
+            Log.send(this, $"'{ProjectPath}' add '{targets}':{id}");
 
             // we'll add inside ImportGroup because of: https://github.com/3F/DllExport/issues/77
             XProject.AddImport
@@ -718,7 +720,7 @@ namespace net.r_eg.DllExport.Wizard
         private void SetProperty(string name, string value)
         {
             if(!string.IsNullOrWhiteSpace(name)) {
-                Log.send(this, $"'{ProjectPath}' Schedule an adding property: '{name}':'{value}' ", Message.Level.Debug);
+                Log.send(this, $"'{ProjectPath}' Schedule: '{name}':'{value}' ", Message.Level.Debug);
                 ConfigProperties[name] = value;
             }
         }

@@ -164,7 +164,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         private void RemovePreProcTarget(bool hardReset)
         {
-            Log.send(this, $"Trying to remove pre-proc-targets: `{MSBuildTargets.DXP_PRE_PROC}`, `{MSBuildTargets.DXP_PRE_PROC_AFTER}`");
+            Log.send(this, $"Attempt to delete pre-proc-targets: `{MSBuildTargets.DXP_PRE_PROC}`, `{MSBuildTargets.DXP_PRE_PROC_AFTER}`");
             while(prj.RemoveXmlTarget(MSBuildTargets.DXP_PRE_PROC)) { }
             while(prj.RemoveXmlTarget(MSBuildTargets.DXP_PRE_PROC_AFTER)) { }
 

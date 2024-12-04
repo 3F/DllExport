@@ -12,7 +12,6 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -164,11 +163,17 @@ namespace net.r_eg.DllExport.Wizard
 
             // NOTE: ServicePointManager.SecurityProtocol = 0 may produce the following problem: An unexpected error occurred on a receive.
 
-            Enum.GetValues(typeof(SecurityProtocolType))
-                .Cast<SecurityProtocolType>()
-                .ForEach(s => ServicePointManager.SecurityProtocol |= s);
+            foreach(var s in Enum.GetValues(typeof(SecurityProtocolType)).Cast<SecurityProtocolType>())
+            {
+                try
+                {
+                    ServicePointManager.SecurityProtocol |= s;
+                }
+                catch(NotSupportedException) { /* due to possible restrictions configured in OS, etc. */ }
+            }
 
             ServicePointManager.SecurityProtocol &= ~(SecurityProtocolType)(0x30 | 0xC0 | 0x300); // drop support for ssl3 + tls1.0 + tls1.1
+            LSender.Send<PackageInfo>($"{nameof(ServicePointManager.SecurityProtocol)} = {ServicePointManager.SecurityProtocol}", Message.Level.Trace);
         }
     }
 }
