@@ -28,8 +28,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
-            this.linkObjUpdated = new System.Windows.Forms.LinkLabel();
-            this.chkKeepObjUpdated = new System.Windows.Forms.CheckBox();
+            this.linkRefreshObj = new System.Windows.Forms.LinkLabel();
+            this.chkRefreshObj = new System.Windows.Forms.CheckBox();
             this.chkNaNPatching = new System.Windows.Forms.CheckBox();
             this.linkInfPatching = new System.Windows.Forms.LinkLabel();
             this.linkSysObjRebase = new System.Windows.Forms.LinkLabel();
@@ -108,7 +108,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.linkExpLib.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkExpLib.AutoSize = true;
             this.linkExpLib.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkExpLib.Location = new System.Drawing.Point(247, 46);
+            this.linkExpLib.Location = new System.Drawing.Point(251, 50);
             this.linkExpLib.Name = "linkExpLib";
             this.linkExpLib.Size = new System.Drawing.Size(13, 13);
             this.linkExpLib.TabIndex = 5;
@@ -176,6 +176,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.rbPlatformAnyCPU.TabIndex = 2;
             this.toolTip.SetToolTip(this.rbPlatformAnyCPU, "(86+64) - Export for both platforms: x86 + x64.");
             this.rbPlatformAnyCPU.UseVisualStyleBackColor = true;
+            this.rbPlatformAnyCPU.CheckedChanged += new System.EventHandler(this.rbPlatformAnyCPU_CheckedChanged);
             // 
             // rbPlatformX64
             // 
@@ -191,8 +192,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             // groupCompiler
             // 
-            this.groupCompiler.Controls.Add(this.linkObjUpdated);
-            this.groupCompiler.Controls.Add(this.chkKeepObjUpdated);
+            this.groupCompiler.Controls.Add(this.linkExpLib);
+            this.groupCompiler.Controls.Add(this.linkRefreshObj);
+            this.groupCompiler.Controls.Add(this.chkRefreshObj);
             this.groupCompiler.Controls.Add(this.chkNaNPatching);
             this.groupCompiler.Controls.Add(this.linkInfPatching);
             this.groupCompiler.Controls.Add(this.linkSysObjRebase);
@@ -202,7 +204,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.groupCompiler.Controls.Add(this.chkCustomILAsm);
             this.groupCompiler.Controls.Add(this.linkOurILAsm);
             this.groupCompiler.Controls.Add(this.chkOurILAsm);
-            this.groupCompiler.Controls.Add(this.linkExpLib);
             this.groupCompiler.Controls.Add(this.linkOrdinals);
             this.groupCompiler.Controls.Add(this.chkGenExpLib);
             this.groupCompiler.Controls.Add(this.numOrdinal);
@@ -215,30 +216,30 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.groupCompiler.TabIndex = 9;
             this.groupCompiler.TabStop = false;
             // 
-            // linkObjUpdated
+            // linkRefreshObj
             // 
-            this.linkObjUpdated.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.linkObjUpdated.AutoSize = true;
-            this.linkObjUpdated.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkObjUpdated.Location = new System.Drawing.Point(234, 29);
-            this.linkObjUpdated.Name = "linkObjUpdated";
-            this.linkObjUpdated.Size = new System.Drawing.Size(13, 13);
-            this.linkObjUpdated.TabIndex = 18;
-            this.linkObjUpdated.TabStop = true;
-            this.linkObjUpdated.Text = "?";
-            this.linkObjUpdated.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkObjUpdated_LinkClicked);
+            this.linkRefreshObj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkRefreshObj.AutoSize = true;
+            this.linkRefreshObj.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.linkRefreshObj.Location = new System.Drawing.Point(275, 28);
+            this.linkRefreshObj.Name = "linkRefreshObj";
+            this.linkRefreshObj.Size = new System.Drawing.Size(13, 13);
+            this.linkRefreshObj.TabIndex = 18;
+            this.linkRefreshObj.TabStop = true;
+            this.linkRefreshObj.Text = "?";
+            this.linkRefreshObj.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkRefreshObj_LinkClicked);
             // 
-            // chkKeepObjUpdated
+            // chkRefreshObj
             // 
-            this.chkKeepObjUpdated.AutoSize = true;
-            this.chkKeepObjUpdated.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkKeepObjUpdated.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.chkKeepObjUpdated.Location = new System.Drawing.Point(10, 30);
-            this.chkKeepObjUpdated.Name = "chkKeepObjUpdated";
-            this.chkKeepObjUpdated.Size = new System.Drawing.Size(222, 17);
-            this.chkKeepObjUpdated.TabIndex = 17;
-            this.chkKeepObjUpdated.Text = "Keep intermediate module (obj) up to date.";
-            this.chkKeepObjUpdated.UseVisualStyleBackColor = true;
+            this.chkRefreshObj.AutoSize = true;
+            this.chkRefreshObj.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkRefreshObj.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.chkRefreshObj.Location = new System.Drawing.Point(10, 30);
+            this.chkRefreshObj.Name = "chkRefreshObj";
+            this.chkRefreshObj.Size = new System.Drawing.Size(253, 17);
+            this.chkRefreshObj.TabIndex = 17;
+            this.chkRefreshObj.Text = "Refresh intermediate module (obj) using modified.";
+            this.chkRefreshObj.UseVisualStyleBackColor = true;
             // 
             // chkNaNPatching
             // 
@@ -752,8 +753,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private System.Windows.Forms.LinkLabel linkPe1to1;
         private System.Windows.Forms.CheckBox chkNaNPatching;
         private System.Windows.Forms.CheckBox chkPECheck32;
-        private System.Windows.Forms.CheckBox chkKeepObjUpdated;
-        private System.Windows.Forms.LinkLabel linkObjUpdated;
+        private System.Windows.Forms.CheckBox chkRefreshObj;
+        private System.Windows.Forms.LinkLabel linkRefreshObj;
         private System.Windows.Forms.Label labelPeCheck;
         private System.Windows.Forms.LinkLabel linkPeIl;
     }

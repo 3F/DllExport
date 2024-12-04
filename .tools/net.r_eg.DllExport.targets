@@ -80,6 +80,11 @@
 
   </Target>
 
+  <Target Condition="'$(DllExportRefreshObj)'=='true'" Name="DllExportRefreshObjTarget" AfterTargets="DllExportMod">
+    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(IntermediateOutputPath)$(TargetFileName)"
+          OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" />
+  </Target>
+
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
       <DllExportPlatform Condition="'$(DllExportPlatform)' == '' Or '$(DllExportPlatform)' == 'Auto'">$(DllExportDefPlatform)</DllExportPlatform>

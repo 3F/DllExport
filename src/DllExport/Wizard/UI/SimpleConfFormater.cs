@@ -34,6 +34,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             sb.AppendLine($"Compiler.genExpLib: {prj.Config.Compiler.genExpLib}");
             sb.AppendLine($"Compiler.peCheck: {prj.Config.Compiler.peCheck}");
             sb.AppendLine($"Compiler.patches: {prj.Config.Compiler.patches}");
+            sb.AppendLine($"Compiler.refreshObj: {prj.Config.Compiler.refreshObj}");
             sb.AppendLine($"PreProc.Type: {prj.Config.PreProc.Type}");
             sb.AppendLine($"PreProc.Cmd: {prj.Config.PreProc.Cmd}");
             sb.AppendLine($"PostProc.Type: {prj.Config.PostProc.Type}");

@@ -11,17 +11,12 @@ using System.Drawing;
 using System.IO;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
-using net.r_eg.DllExport;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     internal sealed partial class ProjectItemControl: UserControl, IDisposable
     {
-        public IProject Project
-        {
-            get;
-            private set;
-        }
+        public IProject Project { get; private set; }
 
         public bool Installed
         {
@@ -32,7 +27,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         public string ProjectPath
         {
             get => textBoxProjectPath.Text;
-            set {
+            set
+            {
                 textBoxProjectPath.Text = value;
                 toolTip.SetToolTip(textBoxProjectPath, textBoxProjectPath.Text);
             }
@@ -48,33 +44,23 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// Function of the browse button.
         /// </summary>
         [Browsable(false)]
-        public Action<string> Browse
-        {
-            get;
-            set;
-        }
+        public Action<string> Browse { get; set; }
 
-        public ComboBox Namespaces
-        {
-            get => comboNS;
-        }
+        public ComboBox Namespaces => comboNS;
 
         /// <summary>
         /// Function to validate namespace after update, or null if not used.
         /// </summary>
         [Browsable(false)]
-        public Func<string, bool> NamespaceValidate
-        {
-            get;
-            set;
-        }
+        public Func<string, bool> NamespaceValidate { get; set; }
 
         public bool UseCecil
         {
             get => rbCecil.Checked;
             set
             {
-                if(value) {
+                if(value)
+                {
                     rbCecil.Checked = true;
                 }
                 else {
@@ -102,7 +88,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 timeout             = (int)numTimeout.Value,
                 peCheck             = GetPeCheckType(),
                 patches             = GetPatchesType(),
+                refreshObj          = chkRefreshObj.Checked,
             };
+
             set
             {
                 numOrdinal.Value        = value.ordinalsBase;
@@ -111,11 +99,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 chkRebaseSysObj.Checked = value.rSysObj;
                 numTimeout.Value        = value.timeout;
 
-                if(String.IsNullOrWhiteSpace(value.customILAsm)) {
+                if(string.IsNullOrWhiteSpace(value.customILAsm))
+                {
                     textBoxCustomILAsm.Text = CompilerCfg.PATH_CTM_ILASM;
                     chkCustomILAsm.Checked  = false;
                 }
-                else {
+                else
+                {
                     textBoxCustomILAsm.Text = value.customILAsm;
                     chkCustomILAsm.Checked  = true;
                 }
@@ -123,6 +113,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 chkIntermediateFiles.Checked = value.intermediateFiles;
                 SetPeCheckType(value.peCheck);
                 SetPatchesType(value.patches);
+                chkRefreshObj.Checked = value.refreshObj;
             }
         }
 
@@ -130,21 +121,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         /// Function to open url.
         /// </summary>
         [Browsable(false)]
-        public Action<string> OpenUrl
-        {
-            get;
-            set;
-        }
+        public Action<string> OpenUrl { get; set; }
 
-        public int Order
-        {
-            get;
-            set;
-        }
+        public int Order { get; set; }
 
         public void SetNamespace(string name, bool addIfNotExists = true)
         {
-            name = name?.Trim() ?? String.Empty;
+            name = name?.Trim() ?? string.Empty;
 
             if(addIfNotExists && !Namespaces.Items.Contains(name)) {
                 Namespaces.Items.Add(name);
@@ -154,9 +137,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         public bool LockIfError(string msg)
         {
-            if(msg == null) {
-                return false;
-            }
+            if(msg == null) return false;
 
             chkInstalled.Enabled    = false;
             textBoxIdent.Text       = "Project cannot be loaded:";
@@ -312,13 +293,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void linkPeIl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/59");
 
-        private void linkObjUpdated_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/206");
+        private void linkRefreshObj_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/206");
 
         private void comboNS_TextUpdate(object sender, EventArgs e)
         {
-            if(NamespaceValidate == null) {
-                return;
-            }
+            if(NamespaceValidate == null) return;
 
             if(!NamespaceValidate(comboNS.Text)) {
                 panelNScombo.BackColor = Color.FromArgb(234, 0, 0);
@@ -348,20 +327,24 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void chkOurILAsm_CheckedChanged(object sender, EventArgs e)
         {
-            if(chkOurILAsm.Checked) {
-                chkCustomILAsm.Checked = false;
-            }
+            if(chkOurILAsm.Checked) chkCustomILAsm.Checked = false;
 
             UpdateRebaseChk();
         }
 
+        private void rbPlatformAnyCPU_CheckedChanged(object sender, EventArgs e)
+        {
+            chkRefreshObj.Enabled = !rbPlatformAnyCPU.Checked;
+            if(rbPlatformAnyCPU.Checked) chkRefreshObj.Checked = false;
+        }
+
         private void menuItemLimitPKT_Click(object sender, EventArgs e)
         {
-            menuItemLimitPKT.Checked    = Project.PublicKeyTokenLimit
-                                        = !menuItemLimitPKT.Checked;
+            menuItemLimitPKT.Checked = Project.PublicKeyTokenLimit
+                                     = !menuItemLimitPKT.Checked;
 
-            chkInstalled.ForeColor = (Project.PublicKeyTokenLimit) ?
-                                        SystemColors.ControlText : Color.FromArgb(43, 145, 175);
+            chkInstalled.ForeColor = Project.PublicKeyTokenLimit ?
+                                     SystemColors.ControlText : Color.FromArgb(43, 145, 175);
         }
 
         #region disposing

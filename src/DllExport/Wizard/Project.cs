@@ -206,6 +206,7 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_TIMEOUT,
                 MSBuildProperties.DXP_PE_CHECK,
                 MSBuildProperties.DXP_PATCHES,
+                MSBuildProperties.DXP_REFRESH_OBJ,
                 MSBuildProperties.DXP_PLATFORM,
                 MSBuildProperties.DXP_PRE_PROC_TYPE,
                 MSBuildProperties.DXP_ILMERGE,
@@ -407,6 +408,9 @@ namespace net.r_eg.DllExport.Wizard
 
             SetProperty(MSBuildProperties.DXP_PATCHES, (long)Config.Compiler.patches);
             Log.send(this, $"Applied Patches: {Config.Compiler.patches}");
+
+            SetProperty(MSBuildProperties.DXP_REFRESH_OBJ, Config.Compiler.refreshObj);
+            Log.send(this, $"Refresh intermediate module (obj) using modified (bin): {Config.Compiler.refreshObj}");
         }
 
         protected void CfgCommonData(string dxpDir = null)

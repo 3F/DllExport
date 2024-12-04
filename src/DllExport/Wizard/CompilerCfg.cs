@@ -57,5 +57,10 @@ namespace net.r_eg.DllExport.Wizard
         /// Optional patches.
         /// </summary>
         public PatchesType patches;
+
+        /// <summary>
+        /// Refresh intermediate module (obj) using modified (bin).
+        /// </summary>
+        public bool refreshObj;
     }
 }
