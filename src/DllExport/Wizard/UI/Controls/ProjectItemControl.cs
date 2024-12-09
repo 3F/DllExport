@@ -293,7 +293,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void linkPeIl_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/59");
 
-        private void linkRefreshObj_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/206");
+        private void linkRefreshObj_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/206#issuecomment-2517253564");
 
         private void comboNS_TextUpdate(object sender, EventArgs e)
         {

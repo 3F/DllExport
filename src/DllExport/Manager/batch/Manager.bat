@@ -457,6 +457,9 @@ call :dbgprint "wAction = " wAction
 call :dbgprint "wMgrArgs = " wMgrArgs
 call :dbgprint "wzTarget = " wzTarget
 
+:: do not use rsp due to possible https://github.com/3F/DllExport/issues/223
+set argsWz=/nologo /noautorsp
+
 if not defined xmgrtest (
 
     if not exist !wzTarget! (
@@ -476,10 +479,10 @@ if not defined xmgrtest (
         )
 
         :: keep "!gMsbPath!" inside quotes because of removing in :loopargs
-        call "!gMsbPath!" !wzTarget! /nologo /v:m /m:4
+        call "!gMsbPath!" !wzTarget! !argsWz! /v:m /m:4
 
     ) else (
-        set _hmsbC=~x -cs !wzTarget! /nologo
+        set _hmsbC=~x -cs !wzTarget! !argsWz!
         call :invokeCore _hmsbC
     )
 )
@@ -496,7 +499,7 @@ if !ERRORLEVEL! NEQ 0 (
 if defined xmgrtest ( 
     echo Running Tests ... "!xmgrtest!"
 
-    set _hmsbC=~x -cs "!xmgrtest!" /nologo
+    set _hmsbC=~x -cs "!xmgrtest!" !argsWz!
     call :invokeCore _hmsbC
 
     exit /B !ERRORLEVEL!
@@ -571,8 +574,7 @@ exit /B %ERROR_FAILED%
     :: (1) - Input keys to core
     :: [2] - logo option if used
 
-    :: do not use rsp due to possible https://github.com/3F/DllExport/issues/223
-    set _ic=!%~1! /noautorsp
+    set _ic=!%~1!
 
     :: Note, `logo` can be overridden at the top level, for example in tests, etc.
     if not defined logo set "logo=%~2"

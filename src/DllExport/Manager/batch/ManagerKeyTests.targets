@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
+  <PropertyGroup>
+    <NoAutoRspInputArg>$([System.Environment]::CommandLine.Contains('/noautorsp'))</NoAutoRspInputArg>
+  </PropertyGroup>
+
   <Target Name="Build">
     <CallTarget Targets="vmap" />
     <CallTarget Targets="dataCaseBasic" Condition="'$(dataCase)' == 'basic'" />
@@ -51,6 +55,9 @@
 
     <Error Text="ngpath: $(dxpPackages) == $(DataSpecSymbols)\\" Condition="'$(dxpPackages)' != '$(DataSpecSymbols)\\'" />
     <Message Text="ngpath: $(dxpPackages) == $(DataSpecSymbols)\\" Importance="High" />
+
+    <Error Text="/noautorsp key is lost" Condition="'$(NoAutoRspInputArg)'!='True'" />
+    <Message Text="/noautorsp: $(NoAutoRspInputArg)" Importance="High" />
   </Target>
 
 </Project>
