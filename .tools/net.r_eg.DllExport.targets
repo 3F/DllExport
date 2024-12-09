@@ -119,7 +119,7 @@
       <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' AND '$(DebugSymbols)'=='true' AND '$(DebugType)'!='none'">DebugOptimize</DllExportEmitDebugSymbols>
       <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='false' AND '$(DebugSymbols)'=='true' AND '$(DebugType)'!='none'">Debug</DllExportEmitDebugSymbols>
       <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='false' AND '$(DebugSymbols)'=='false' AND '$(DebugType)'!='none'">DebugImpl</DllExportEmitDebugSymbols>
-      <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)'==''">$(DebugSymbols)</DllExportEmitDebugSymbols>
+      <DllExportEmitDebugSymbols Condition="'$(DllExportEmitDebugSymbols)'==''">$(DebugSymbols)</DllExportEmitDebugSymbols> <!-- legacy -->
     </PropertyGroup>
 
     <DllExportActivatorTask

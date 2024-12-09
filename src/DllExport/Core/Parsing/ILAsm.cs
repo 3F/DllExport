@@ -84,49 +84,20 @@ namespace net.r_eg.DllExport.Parsing
 
         private int Run(string outputFile, string ilSuffix, CpuPlatform cpu)
         {
-            StringBuilder stringBuilder = new StringBuilder(100);
-            foreach(string file in Directory.GetFiles(this.TempDirectory, "*.res"))
+            StringBuilder resource = new(100);
+            foreach(string rfile in Directory.GetFiles(TempDirectory, "*.res"))
             {
                 // TODO: ".  res" o_O
-                if(string.Equals(Path.GetExtension(file)?.Trim('.'), "res", StringComparison.OrdinalIgnoreCase))
+                if(string.Equals(Path.GetExtension(rfile)?.Trim('.'), "res", StringComparison.OrdinalIgnoreCase))
                 {
-                    stringBuilder.Append(" \"/resource=").Append(file).Append("\" ");
+                    resource.Append($" \"/resource={rfile}\" ");
                 }
-            }
-            string ressourceParam = stringBuilder.ToString();
-            if(string.IsNullOrEmpty(ressourceParam))
-            {
-                ressourceParam = " ";
-            }
-            string str1 = "";
-            if(string.Equals(this.InputValues.InputFileName, outputFile, StringComparison.OrdinalIgnoreCase))
-            {
-                string str2 = this.InputValues.InputFileName + ".bak";
-                int num = 1;
-                do
-                {
-                    str1 = str2 + (object)num;
-                    ++num;
-                }
-                while(File.Exists(str1));
-                File.Move(this.InputValues.InputFileName, str1);
             }
 
-            // https://github.com/3F/coreclr/blob/05afa4f81fdf671429b54467c64d65cde6b5fadc/src/debug/ildbsymlib/symwrite.cpp#L308
-            // Due to possible incorrect ISymUnmanagedWriter when exists initial pdb data for non-modified asm.
-            // \- Part of https://github.com/3F/DllExport/issues/90
-            File.Delete(Path.ChangeExtension(InputValues.InputFileName, ".pdb"));
-
-            try {
-                return this.RunCore(cpu, outputFile, ressourceParam, ilSuffix);
-            }
-            finally
+            return PrepareOutput(outputFile, InputValues.InputFileName, f =>
             {
-                if(!string.IsNullOrEmpty(str1) && File.Exists(str1))
-                {
-                    File.Delete(str1);
-                }
-            }
+                return EnsurePdb(f, () => RunCore(cpu, outputFile, resource.ToString(), ilSuffix));
+            });
         }
 
         private int RunCore(CpuPlatform cpu, string fileName, string ressourceParam, string ilSuffix)
@@ -474,6 +445,63 @@ namespace net.r_eg.DllExport.Parsing
                 DebugType.DebugImpl => "/DEBUG=IMPL",
                 _ => throw new NotImplementedException()
             };
+        }
+
+        private T EnsurePdb<T>(string inputModule, Func<T> action) where T : struct
+        {
+            string pdb = Path.ChangeExtension(inputModule, ".pdb");
+            string pdbt = Path.ChangeExtension(inputModule, ".pdbt");
+
+            if(File.Exists(pdb))
+            {
+                // Due to possible incorrect ISymUnmanagedWriter when exists initial pdb data for non-modified module.
+                // https://github.com/3F/coreclr/blob/05afa4f81fdf671429b54467c64d65cde6b5fadc/src/debug/ildbsymlib/symwrite.cpp#L308
+                // \- Part of https://github.com/3F/DllExport/issues/90
+
+                if(File.Exists(pdbt)) File.Delete(pdbt);
+                File.Move(pdb, pdbt);
+            }
+
+            try
+            {
+                return action?.Invoke() ?? default;
+            }
+            finally
+            {
+                if(!File.Exists(pdb)) // https://github.com/3F/DllExport/issues/23#issuecomment-263951782
+                {
+                    if(File.Exists(pdbt)) File.Move(pdbt, pdb);
+                }
+                else
+                {
+                    File.Delete(pdbt);
+                }
+            }
+        }
+
+        private T PrepareOutput<T>(string fullpath, string src, Func<string, T> action) where T: struct
+        {
+            string bak = null;
+            try
+            {
+                if(string.Equals(src, fullpath, StringComparison.OrdinalIgnoreCase))
+                {
+                    int num = 1;
+                    do
+                    {
+                        bak = $"{src}.bak{num}";
+                        ++num;
+                    }
+                    while(File.Exists(bak));
+                    File.Move(src, bak);
+                }
+
+                return action?.Invoke(src) ?? default;
+            }
+            finally
+            {
+                if(bak != null && File.Exists(bak)) File.Delete(bak);
+            }
         }
     }
 }
