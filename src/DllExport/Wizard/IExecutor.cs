@@ -8,6 +8,7 @@
 using System;
 using System.Collections.Generic;
 using net.r_eg.DllExport.NSBin;
+using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
@@ -25,6 +26,11 @@ namespace net.r_eg.DllExport.Wizard
         /// ddNS feature core.
         /// </summary>
         IDDNS DDNS { get; }
+
+        /// <summary>
+        /// Active environment according to <see cref="ActiveSlnFile"/>
+        /// </summary>
+        IEnvironment ActiveEnv { get; }
 
         /// <summary>
         /// Latest selected .sln file.

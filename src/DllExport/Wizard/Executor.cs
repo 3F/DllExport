@@ -33,6 +33,8 @@ namespace net.r_eg.DllExport.Wizard
 
         public IDDNS DDNS { get; set; } = new DDNS(Encoding.UTF8);
 
+        public IEnvironment ActiveEnv => GetEnv(ActiveSlnFile);
+
         public virtual string ActiveSlnFile
         {
             get => _activeSlnFile;
@@ -270,17 +272,22 @@ namespace net.r_eg.DllExport.Wizard
 
         protected IEnvironment GetEnv(string file)
         {
-            if(String.IsNullOrWhiteSpace(file)) {
-                return null;
-            }
+            if(string.IsNullOrWhiteSpace(file)) return null;
 
             if(!solutions.ContainsKey(file))
             {
-                var sln = new Sln(file, SlnItems.Projects 
-                                            | SlnItems.SolutionConfPlatforms 
-                                            | SlnItems.ProjectConfPlatforms);
+                solutions[file] = new DxpIsolatedEnv
+                (
+                    new Sln
+                    (
+                        file,
+                        SlnItems.Projects
+                            | SlnItems.SolutionConfPlatforms
+                            | SlnItems.ProjectConfPlatforms
+                    )
+                    .Result
+                );
 
-                solutions[file] = new DxpIsolatedEnv(sln.Result);
                 solutions[file].LoadMinimalProjects();
             }
 
