@@ -52,6 +52,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                             "TargetFramework",
                             "TargetFrameworks",
                             "TargetFrameworkVersion",
+                            "TargetFrameworkIdentifier",
                             "RootNamespace",
                             "AssemblyName",
                             "DebugType",

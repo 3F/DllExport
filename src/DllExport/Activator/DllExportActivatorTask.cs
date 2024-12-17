@@ -52,6 +52,12 @@ namespace net.r_eg.DllExport.Activator
             set => exportTask.TargetFrameworkVersion = value;
         }
 
+        public string TargetFrameworkIdentifier
+        {
+            get => exportTask.TargetFrameworkIdentifier;
+            set => exportTask.TargetFrameworkIdentifier = value;
+        }
+
         public string Platform
         {
             get => exportTask.Platform;

@@ -21,7 +21,7 @@ using net.r_eg.MvsSln;
 
 namespace net.r_eg.DllExport.Activator
 {
-    using TCallbackTool = Func<Version, string, string>;
+    using TCallbackTool = Func<TfmIdentifier, Version, string, string>;
 
     public class ExportTaskImplementation<TTask>: IInputValues, IServiceContainer, IServiceProvider where TTask : IDllExportTask, ITask
     {
@@ -57,6 +57,8 @@ namespace net.r_eg.DllExport.Activator
         }
 
         public string TargetFrameworkVersion { get; set; }
+
+        public string TargetFrameworkIdentifier { get; set; }
 
         public bool? SkipOnAnyCpu { get; set; }
 
@@ -511,7 +513,7 @@ namespace net.r_eg.DllExport.Activator
                                                             .MakeGenericMethod(targetDotNetFrameworkVersionType)
                                                             .Invoke(null, new object[] { method });
 
-            Func<string, int, string> getToolPath = ((n, v) => 
+            string getToolPath(string n, int v)
             {
                 try
                 {
@@ -521,22 +523,33 @@ namespace net.r_eg.DllExport.Activator
                 {
                     return null;
                 }
-            });
+            }
 
-            Func<string, int> getNum = delegate(string version) {
+            int getNum(string version)
+            {
                 return (int)Enum.Parse(targetDotNetFrameworkVersionType, version);
-            };
+            }
 
-            return ((version, toolName) => 
+            const string _V_LATEST = "Latest";
+
+            return (ident, version, toolName) => 
             {
                 int num;
 
                 // TargetDotNetFrameworkVersion Enumeration: https://msdn.microsoft.com/en-us/library/ms126273.aspx
-                try {
-                    num = getNum($"Version{version.Major}{version.Minor}");
+                try
+                {
+                    num = getNum
+                    (
+                        ident == TfmIdentifier.NETFramework
+                        ? $"{nameof(Version)}{version.Major}{version.Minor}"
+                        : nameof(Version) + _V_LATEST // latest released for current env
+                    );
                 }
-                catch(ArgumentException) {
-                    num = getNum("VersionLatest"); // try with latest released version
+                catch(ArgumentException)
+                {
+                    if(ident != TfmIdentifier.NETFramework) throw;
+                    num = getNum(nameof(Version) + _V_LATEST);
                 }
 
                 string path = getToolPath(toolName, num);
@@ -564,7 +577,7 @@ namespace net.r_eg.DllExport.Activator
                     return null;
                 }
                 return path;
-            });
+            };
         }
 
         protected Type GetToolLocationHelperTypeFromRegsitry()
@@ -708,39 +721,49 @@ namespace net.r_eg.DllExport.Activator
 
         private bool TryToGetToolDirForFxVersion(string toolFileName, TCallbackTool getToolPath, ref string toolDirectory)
         {
-            Version frameworkVersion = GetFrameworkVersion();
-            if(frameworkVersion.Major < 1) {
+            Version tfmVersion = GetTfmVersion(TargetFrameworkVersion);
+            TfmIdentifier tfmIdent = GetTfmIdentifier(TargetFrameworkIdentifier);
+
+            if(tfmIdent == TfmIdentifier.NETFramework && tfmVersion.Major < 1)
+            {
                 return false;
             }
 
             if(getToolPath != null)
             {
-                string path = getToolPath(frameworkVersion, toolFileName);
+                string path = getToolPath(tfmIdent, tfmVersion, toolFileName);
                 if(path != null && File.Exists(path))
                 {
                     toolDirectory = Path.GetDirectoryName(path);
                     return true;
                 }
-                this._ActualTask.Log.LogError(string.Format(Resources.ToolLocationHelperTypeName_could_not_find_1, (object)"Microsoft.Build.Utilities.ToolLocationHelper", (object)toolFileName));
+                _ActualTask.Log.LogError(string.Format(Resources.ToolLocationHelperTypeName_could_not_find_1, "Microsoft.Build.Utilities.ToolLocationHelper", toolFileName));
                 return false;
             }
-            if(!(frameworkVersion >= ExportTaskImplementation<TTask>._VersionUsingToolLocationHelper))
+
+            // TODO
+            if(!(tfmVersion >= _VersionUsingToolLocationHelper))
             {
                 return false;
             }
-            this._ActualTask.Log.LogError(string.Format(Resources.Cannot_get_a_reference_to_ToolLocationHelper, (object)"Microsoft.Build.Utilities.ToolLocationHelper"));
+
+            _ActualTask.Log.LogError(string.Format(Resources.Cannot_get_a_reference_to_ToolLocationHelper, "Microsoft.Build.Utilities.ToolLocationHelper"));
             return false;
         }
 
-        private Version GetFrameworkVersion()
+        private Version GetTfmVersion(string frameworkVersion)
         {
-            string frameworkVersion = this.TargetFrameworkVersion;
-            if(!ExportTaskImplementation<TTask>.PropertyHasValue(frameworkVersion))
-            {
-                return (Version)null;
-            }
+            if(!PropertyHasValue(frameworkVersion)) return null;
             return new Version(frameworkVersion.TrimStart('v', 'V'));
         }
+
+        private TfmIdentifier GetTfmIdentifier(string raw) => raw?.Trim(' ', '.').ToLowerInvariant() switch
+        {
+            "netcoreapp" => TfmIdentifier.NETCoreApp,
+            "netstandard" => TfmIdentifier.NETStandard,
+            null or "" or "netframework" => TfmIdentifier.NETFramework,
+            _ => TfmIdentifier.NETFramework, //TODO
+        };
 
         // FIXME: two different places (see IlDasm.Run) for the same thing ! be careful
         private bool ValidateSdkPath()

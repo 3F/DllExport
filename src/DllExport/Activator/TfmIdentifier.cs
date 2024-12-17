@@ -1,0 +1,29 @@
+﻿/*!
+ * Copyright (c) Robert Giesecke
+ * Copyright (c) Denis Kuzmin <x-3F@outlook.com> github/3F
+ * Copyright (c) DllExport contributors https://github.com/3F/DllExport/graphs/contributors
+ * Licensed under the MIT License (MIT).
+ * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
+*/
+
+namespace net.r_eg.DllExport.Activator
+{
+    internal enum TfmIdentifier
+    {
+        /// <summary>
+        /// TargetFrameworkIdentifier = ".NETFramework"
+        /// or TargetFrameworkIdentifier = "" (MSBuild 15 or less)
+        /// </summary>
+        NETFramework,
+
+        /// <summary>
+        /// TargetFrameworkIdentifier = ".NETStandard"
+        /// </summary>
+        NETStandard,
+
+        /// <summary>
+        /// TargetFrameworkIdentifier = ".NETCoreApp"
+        /// </summary>
+        NETCoreApp
+    }
+}

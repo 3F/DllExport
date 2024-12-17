@@ -136,6 +136,7 @@
       <DllExportLibToolPath Condition="'$(DllExportLibToolPath)'==''">$(DllExportVSRoot)VC\bin</DllExportLibToolPath>
       <DllExportLibToolDllPath Condition="'$(DllExportLibToolDllPath)'==''">$(DllExportVSBin)</DllExportLibToolDllPath>
       <DllExportTargetFrameworkVersion Condition="'$(DllExportTargetFrameworkVersion)'==''">$(TargetFrameworkVersion)</DllExportTargetFrameworkVersion>
+      <DllExportTargetFrameworkIdentifier Condition="'$(DllExportTargetFrameworkIdentifier)'==''">$(TargetFrameworkIdentifier)</DllExportTargetFrameworkIdentifier>
       <DllExportSdkPath Condition="'$(DllExportSdkPath)'==''">$(DllExportILAsmCustomPath);$(TargetFrameworkSDKToolsDirectory)</DllExportSdkPath>
       <DllExportSkipOnAnyCpu Condition="'$(DllExportSkipOnAnyCpu)'==''">$(NoDllExportsForAnyCpu)</DllExportSkipOnAnyCpu>
       <DllExportDDNSCecil Condition="'$(DllExportDDNSCecil)'==''">true</DllExportDDNSCecil>
@@ -177,6 +178,7 @@
           LibToolPath="$(DllExportLibToolPath)"
           LibToolDllPath="$(DllExportLibToolDllPath)"
           TargetFrameworkVersion="$(DllExportTargetFrameworkVersion)"
+          TargetFrameworkIdentifier="$(DllExportTargetFrameworkIdentifier)"
           SdkPath="$(DllExportSdkPath)"
           SkipOnAnyCpu="$(DllExportSkipOnAnyCpu)"
           OrdinalsBase="$(DllExportOrdinalsBase)"

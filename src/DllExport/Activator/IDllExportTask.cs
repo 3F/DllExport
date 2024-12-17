@@ -13,27 +13,14 @@ namespace net.r_eg.DllExport.Activator
 {
     public interface IDllExportTask: IInputValues, IServiceProvider
     {
-        TaskLoggingHelper Log
-        {
-            get;
-        }
+        TaskLoggingHelper Log { get; }
 
-        bool? SkipOnAnyCpu
-        {
-            get;
-            set;
-        }
+        bool? SkipOnAnyCpu { get; set; }
 
-        string TargetFrameworkVersion
-        {
-            get;
-            set;
-        }
+        string TargetFrameworkVersion { get; set; }
 
-        string Platform
-        {
-            get;
-            set;
-        }
+        string TargetFrameworkIdentifier { get; set; }
+
+        string Platform { get; set; }
     }
 }
