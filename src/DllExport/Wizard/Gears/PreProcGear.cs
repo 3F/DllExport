@@ -107,68 +107,70 @@ namespace net.r_eg.DllExport.Wizard.Gears
             )
             .Condition = "'%(RuntimeFrameworkName)'=='Microsoft.NETCore.App'";
 
-            var tCopy = target.AddTask("Copy");
-            tCopy.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
-            tCopy.SetParameter("DestinationFolder", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
-            tCopy.SetParameter("SkipUnchangedFiles", "true");
-            tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
-
             bool ignoreErr = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
-            ProjectTaskElement tExec;
 
-            if(corCmd != fxCmd)
+            target.AddTask("Copy", ignoreErr, t =>
             {
-                tExec = AddExecTask(target, fxCmd, "'$(IsNetCoreBased)'!='true'", ignoreErr);
-                        AddExecTask(target, corCmd, "'$(IsNetCoreBased)'=='true'", ignoreErr);
-            }
-            else
-            {
-                tExec = AddExecTask(target, fxCmd, null, ignoreErr);
-            }
+                t.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
+                t.SetParameter("DestinationFolder", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
+                t.SetParameter("SkipUnchangedFiles", "true");
+                t.SetParameter("OverwriteReadOnlyFiles", "true");
+            });
 
-            if((type & CmdType.DebugInfo) == CmdType.DebugInfo)
+            AddILMergeWrapper(target, ignoreErr, _=>
             {
-                AddPreProcAfterTarget(target, tExec);
-            }
+                if(corCmd != fxCmd)
+                {
+                    AddExecTask(target, fxCmd, "'$(IsNetCoreBased)'!='true'", ignoreErr);
+                    AddExecTask(target, corCmd, "'$(IsNetCoreBased)'=='true'", ignoreErr);
+                }
+                else
+                {
+                    AddExecTask(target, fxCmd, null, ignoreErr);
+                }
+            });
 
-            var tDelete = target.AddTask("Delete");
-            tDelete.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})");
-            tDelete.ContinueOnError = "true";
+            target.AddTask("Delete", continueOnError: true,
+                t => t.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})")
+            );
         }
 
-        private void AddPreProcAfterTarget(ProjectTargetElement ppTarget, ProjectTaskElement tExec)
+        private void AddILMergeWrapper(ProjectTargetElement target, bool continueOnError, Action<ProjectTargetElement> act)
         {
-            var tMove = ppTarget.AddTask("Move");
-            tMove.SetParameter("SourceFiles", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F}){ILMERGE_TMP}.dll");
-            tMove.SetParameter("DestinationFiles", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F})");
-            tMove.SetParameter("OverwriteReadOnlyFiles", "true");
-            tMove.ContinueOnError = tExec.ContinueOnError;
+            AddMoveTask(target, "$(TargetPath)", $"$(TargetDir){ILMERGE_TMP}\\$(TargetName).dll", continueOnError);
+            AddMoveTask(target, "$(TargetDir)$(TargetName).pdb", $"$(TargetDir){ILMERGE_TMP}\\$(TargetName).pdb", continueOnError);
 
-            var target = prj.AddTarget(MSBuildTargets.DXP_PRE_PROC_AFTER);
-            target.AfterTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = Id;
+            act?.Invoke(target);
+            target.AddTask("RemoveDir", continueOnError, t => t.SetParameter("Directories", "$(TargetDir)" + ILMERGE_TMP));
+        }
 
-            var tDelete = target.AddTask("Delete");
-            tDelete.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.PRJ_TARGET_F}){ILMERGE_TMP}.pdb");
-            tDelete.ContinueOnError = "true";
+        private void AddMoveTask(ProjectTargetElement target, string src, string dst, bool continueOnError)
+        {
+            target.AddTask("Move", continueOnError, t =>
+            {
+                t.SetParameter("SourceFiles", src);
+                t.SetParameter("DestinationFiles", dst);
+                t.SetParameter("OverwriteReadOnlyFiles", "true");
+            });
         }
 
         private ProjectTaskElement AddExecTask(ProjectTargetElement target, string cmd, string condition, bool continueOnError)
         {
-            var tExec = target.AddTask("Exec");
-            tExec.Condition = condition;
-            tExec.SetParameter("Command", cmd ?? throw new ArgumentNullException(nameof(cmd)));
-            tExec.SetParameter("WorkingDirectory", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
-            tExec.ContinueOnError = continueOnError.ToString().ToLower();
-
-            return tExec;
+            return target.AddTask("Exec", condition, continueOnError, t =>
+            {
+                t.SetParameter("Command", cmd ?? throw new ArgumentNullException(nameof(cmd)));
+                t.SetParameter("WorkingDirectory", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
+            });
         }
 
         private void RemovePreProcTarget(bool hardReset)
         {
             Log.send(this, $"Attempt to delete pre-proc-targets: `{MSBuildTargets.DXP_PRE_PROC}`, `{MSBuildTargets.DXP_PRE_PROC_AFTER}`");
             while(prj.RemoveXmlTarget(MSBuildTargets.DXP_PRE_PROC)) { }
+
+            #region unused since 1.8
             while(prj.RemoveXmlTarget(MSBuildTargets.DXP_PRE_PROC_AFTER)) { }
+            #endregion
 
             if(hardReset)
             {
@@ -183,8 +185,8 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & CmdType.ILMerge) == CmdType.ILMerge)
             {
-                return $"$(ILMergeConsolePath) {cmd} $(TargetFileName) /out:$(TargetFileName)" 
-                        + (((type & CmdType.DebugInfo) == 0) ? " /ndebug" : $"{ILMERGE_TMP}.dll");
+                return $"$(ILMergeConsolePath) {cmd} {ILMERGE_TMP}\\$(TargetName).dll /out:$(TargetFileName)" 
+                        + (((type & CmdType.DebugInfo) == 0) ? " /ndebug" : string.Empty);
             }
             return cmd;
         }

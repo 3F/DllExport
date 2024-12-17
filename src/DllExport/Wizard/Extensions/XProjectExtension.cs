@@ -125,5 +125,23 @@ namespace net.r_eg.DllExport.Wizard.Extensions
                     p.Value.If(v => v != null, v => group.SetProperty(p.Key, v))
                 )
         );
+
+        #region temp; update MvsSln
+
+        internal static ProjectTaskElement AddTask(this ProjectTargetElement target, string name, bool continueOnError, Action<ProjectTaskElement> act = null)
+        {
+            return target.AddTask(name, condition: null, continueOnError, act);
+        }
+
+        internal static ProjectTaskElement AddTask(this ProjectTargetElement target, string name, string condition, bool continueOnError, Action<ProjectTaskElement> act = null)
+        {
+            ProjectTaskElement task = target.AddTask(name);
+            if(condition != null) task.Condition = condition;
+            act?.Invoke(task);
+            task.ContinueOnError = continueOnError.ToString().ToLower();
+            return task;
+        }
+
+        #endregion
     }
 }

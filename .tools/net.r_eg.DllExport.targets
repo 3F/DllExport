@@ -49,33 +49,45 @@
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)'!=''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullName>
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)'==''">$(DllExportMetaLibAttr)</DllExportAttributeFullName>
 
-    <DllExportDefPlatform>$(PlatformTarget)</DllExportDefPlatform>
-    <DllExportDefPlatform Condition="'$(DllExportDefPlatform)'==''">AnyCPU</DllExportDefPlatform>
+    <DllExportDefPlatform>$(PlatformTarget.ToLower())</DllExportDefPlatform>
+    <DllExportDefPlatform Condition="'$(DllExportDefPlatform)'==''">anycpu</DllExportDefPlatform>
   </PropertyGroup>
 
   <PropertyGroup>
     <DllExportCopyToPublishDirectoryType Condition="'$(DllExportCopyToPublishDirectoryType)'==''">PreserveNewest</DllExportCopyToPublishDirectoryType>
   </PropertyGroup>
-  <ItemGroup Condition="'$(DllExportResolvePublish)'!='false'">
 
-    <!-- https://github.com/3F/DllExport/issues/224#issuecomment-1546883382 -->
-    <DllExportFilesToPublish
-          Include="$(TargetDir)x86\*.*;$(TargetDir)x64\*.*"
-          PlatformDir="$([System.IO.Directory]::GetParent(%(DllExportFilesToPublish.Directory)).Name)\" />
-    <ResolvedFileToPublish Include="@(DllExportFilesToPublish)" RelativePath="%(PlatformDir)%(Filename)%(Extension)" CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
-
-    <!-- F-262, for a single platform -->
-    <ResolvedFileToPublish Condition="'$(DllExportResolvePublishForSingle)'!='false'"
-                           Include="$(TargetPath)" RelativePath="%(Filename)%(Extension)" CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
-
-  </ItemGroup>
-  <!-- fallback -->
-  <Target Condition="'$(DllExportResolvePublish)'!='false' And '$(DllExportResolvePublishForSingle)'!='false'"
+  <Target Condition="'$(DllExportResolvePublish)'!='false' and '$(DllExportDefPlatform)'=='anycpu'"
           Name="DllExportComputeResolvedFilesToPublishList"
           BeforeTargets="ComputeResolvedFilesToPublishList">
+      <ItemGroup>
+        <!-- Regarding my old solution from https://github.com/3F/DllExport/issues/224#issuecomment-1546883382
+             either wildcards (*) is only ok for Visual Studio but problematic when building directly in MSBuild (empty Include) because yeah at that stage paths are not ready to be resolved;
+             or requires ::GetParent() workaround to use inside Targets like this.
+        -->
+        <DllExportFilesToPublish Include="$(TargetDir)x86\*" PlatformDir="x86\" />
+        <DllExportFilesToPublish Include="$(TargetDir)x64\*" PlatformDir="x64\" />
+        <ResolvedFileToPublish Include="@(DllExportFilesToPublish)" RelativePath="%(PlatformDir)%(Filename)%(Extension)"
+                               CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
+      </ItemGroup>
+  </Target>
+
+  <!-- F-262, for a single platform -->
+  <ItemGroup Condition="'$(DllExportResolvePublish)'!='false' And '$(DllExportDefPlatform)'!='anycpu' And '$(DllExportResolvePublishForSingle)'!='false'">
+    <ResolvedFileToPublish Include="$(TargetPath)" RelativePath="%(Filename)%(Extension)"
+                           CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
+
+    <ResolvedFileToPublish Include="$(TargetDir)$(TargetName).pdb" RelativePath="%(Filename)%(Extension)"
+                           CopyToPublishDirectory="$(DllExportCopyToPublishDirectoryType)" />
+  </ItemGroup>
+  <Target Condition="'$(DllExportResolvePublish)'!='false' And '$(DllExportResolvePublishForSingle)'!='false'"
+          Name="DllExportComputeResolvedFilesToPublishListFallback"
+          BeforeTargets="ComputeResolvedFilesToPublishList"
+          AfterTargets="DllExportComputeResolvedFilesToPublishList">
 
     <PropertyGroup>
       <CopyBuildOutputToPublishDirectory>false</CopyBuildOutputToPublishDirectory>
+      <CopyOutputSymbolsToPublishDirectory>false</CopyOutputSymbolsToPublishDirectory>
     </PropertyGroup>
 
     <!-- TODO: tl;dr @(IntermediateAssembly) includes the build product (.dll or .exe); so... do we have other cases where this is really necessary? -->
@@ -87,11 +99,23 @@
         <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       </ResolvedFileToPublish>
     </ItemGroup>
+    <!-- .pdb -->
+    <ItemGroup Condition="'$(DllExportFallbackDontCopyOutputSymbolsToPublishDirectory)'!='false' And '$(CopyOutputSymbolsToPublishDirectory)'=='false'">
+      <DllExportDebugSymbolsIntermediatePathResolvedFileToPublish Include="@(_DebugSymbolsIntermediatePath)" Condition="'%(Filename)'!='$(TargetName)'" />
 
+      <ResolvedFileToPublish Include="@(DllExportDebugSymbolsIntermediatePathResolvedFileToPublish)">
+        <RelativePath>@(DllExportDebugSymbolsIntermediatePathResolvedFileToPublish->'%(Filename)%(Extension)')</RelativePath>
+        <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        <ExcludeFromSingleFile Condition="'$(IncludeSymbolsInSingleFile)'!='true'">true</ExcludeFromSingleFile>
+      </ResolvedFileToPublish>
+    </ItemGroup>
   </Target>
 
-  <Target Condition="'$(DllExportRefreshObj)'=='true'" Name="DllExportRefreshObjTarget" AfterTargets="DllExportMod">
-    <Copy SourceFiles="$(TargetPath)" DestinationFiles="$(IntermediateOutputPath)$(TargetFileName)"
+  <Target Condition="'$(DllExportRefreshObj)'=='true'" Name="DllExportRefreshObjTarget" BeforeTargets="ComputeResolvedFilesToPublishList">
+    <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(IntermediateOutputPath)"
+          OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" />
+
+    <Copy SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFolder="$(IntermediateOutputPath)"
           OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" />
   </Target>
 
