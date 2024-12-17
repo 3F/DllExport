@@ -13,14 +13,12 @@ using MSBuildPostProc = net.r_eg.DllExport.Activator.PostProc;
 
 namespace net.r_eg.DllExport.Wizard.Gears
 {
-    internal sealed class PostProcGear: IProjectGear
+    internal sealed class PostProcGear(IProjectSvc prj): IProjectGear
     {
-        private readonly IProjectSvc prj;
+        private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
 
         private IUserConfig Config => prj.Config;
         private ISender Log => Config.Log;
-
-        private string Id => $"{Project.METALIB_PK_TOKEN}:PostProc";
 
         public void Install()
         {
@@ -31,11 +29,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             RemoveDerivativeTargets();
             RemovePostProcTarget();
-        }
-
-        public PostProcGear(IProjectSvc prj)
-        {
-            this.prj = prj ?? throw new ArgumentNullException(nameof(prj));
         }
 
         private void CfgPostProc(CmdType type)
@@ -51,7 +44,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             Log.send(this, $"Proc-Env: {Config.PostProc.ProcEnv}");
 
             var target = prj.AddTarget(MSBuildTargets.DXP_POST_PROC);
-            target.Label = Id;
+            target.Label = ID;
 
             if((type & CmdType.Custom) == CmdType.Custom)
             {
@@ -89,7 +82,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             var target = AllocateDerivativeTarget("For" + id);
 
             target.AfterTargets = MSBuildTargets.DXP_POST_PROC;
-            target.Label        = Id;
+            target.Label        = ID;
             target.Outputs      = $"%({GetDependentsTargetDir(type)}.Identity)";
 
             return target;
@@ -136,7 +129,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             foreach(var target in prj.XProject.Project.Xml.Targets)
             {
-                if((target.Label != Id && target.Label != Project.METALIB_PK_TOKEN) // METALIB_PK_TOKEN was for 1.7.3 or less
+                if((target.Label != ID && target.Label != Project.METALIB_PK_TOKEN) // METALIB_PK_TOKEN was for 1.7.3 or less
                     || target.Name == MSBuildTargets.DXP_POST_PROC
                     || !target.Name.StartsWith(GetDerivativeTargetName(null)))
                 {

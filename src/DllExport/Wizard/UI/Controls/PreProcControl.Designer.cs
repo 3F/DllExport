@@ -39,6 +39,7 @@
             this.chkIgnoreErrors = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.chkGenDebugInfo = new System.Windows.Forms.CheckBox();
+            this.chkLog = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // radioPreProcDisabled
@@ -159,10 +160,23 @@
             this.chkGenDebugInfo.Text = "Generate debug info";
             this.chkGenDebugInfo.UseVisualStyleBackColor = true;
             // 
+            // chkLog
+            // 
+            this.chkLog.AutoSize = true;
+            this.chkLog.Enabled = false;
+            this.chkLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkLog.Location = new System.Drawing.Point(186, 5);
+            this.chkLog.Name = "chkLog";
+            this.chkLog.Size = new System.Drawing.Size(41, 17);
+            this.chkLog.TabIndex = 29;
+            this.chkLog.Text = "Log";
+            this.chkLog.UseVisualStyleBackColor = true;
+            // 
             // PreProcControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.chkLog);
             this.Controls.Add(this.chkGenDebugInfo);
             this.Controls.Add(this.chkIgnoreErrors);
             this.Controls.Add(this.radioPreProcDisabled);
@@ -192,5 +206,6 @@
         private System.Windows.Forms.CheckBox chkIgnoreErrors;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox chkGenDebugInfo;
+        private System.Windows.Forms.CheckBox chkLog;
     }
 }

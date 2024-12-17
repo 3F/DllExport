@@ -12,20 +12,14 @@ namespace net.r_eg.DllExport.Wizard
     /// </summary>
     public sealed class PreProc
     {
+        internal const string ID = Project.METALIB_PK_TOKEN + ":" + nameof(PreProc);
+
         /// <summary>
         /// Never null command.
         /// </summary>
-        public string Cmd
-        {
-            get;
-            private set;
-        }
+        public string Cmd { get; private set; }
 
-        public CmdType Type
-        {
-            get;
-            private set;
-        }
+        public CmdType Type { get; private set; }
 
         [System.Flags]
         public enum CmdType: long
@@ -41,6 +35,8 @@ namespace net.r_eg.DllExport.Wizard
             DebugInfo   = 0x8,
 
             IgnoreErr   = 0x10,
+
+            Log         = 0x20,
         }
 
         public PreProc Configure(CmdType type = CmdType.None, string cmd = null)

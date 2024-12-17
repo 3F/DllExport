@@ -25,8 +25,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
 
-        private string Id => $"{Project.METALIB_PK_TOKEN}:PreProc";
-
         private IUserConfig Config => prj.Config;
         private IXProject XProject => prj.XProject;
         private ISender Log => Config.Log;
@@ -42,7 +40,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         public void Uninstall(bool hardReset)
         {
             RemovePreProcTarget(hardReset);
-            XProject.RemovePropertyGroups(p => p.Label == Id);
+            XProject.RemovePropertyGroups(p => p.Label == ID);
 
             prj.RemovePackageReferences("Conari")
                 .RemovePackageReferences("ilmerge");
@@ -98,7 +96,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             var target = prj.AddTarget(MSBuildTargets.DXP_PRE_PROC);
 
             target.BeforeTargets = MSBuildTargets.DXP_MAIN;
-            target.Label = Id;
+            target.Label = ID;
 
             target.AddPropertyGroup().SetProperty
             (
@@ -119,7 +117,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             AddILMergeWrapper(target, ignoreErr, _=>
             {
-                if(corCmd != fxCmd)
+                if((type & CmdType.ILMerge) == CmdType.ILMerge)
                 {
                     AddExecTask(target, fxCmd, "'$(IsNetCoreBased)'!='true'", ignoreErr);
                     AddExecTask(target, corCmd, "'$(IsNetCoreBased)'=='true'", ignoreErr);
@@ -185,8 +183,14 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & CmdType.ILMerge) == CmdType.ILMerge)
             {
-                return $"$(ILMergeConsolePath) {cmd} {ILMERGE_TMP}\\$(TargetName).dll /out:$(TargetFileName)" 
-                        + (((type & CmdType.DebugInfo) == 0) ? " /ndebug" : string.Empty);
+                StringBuilder ilm = new(100);
+                ilm.Append("$(ILMergeConsolePath) ");
+                ilm.Append(cmd);
+                ilm.Append(" " + ILMERGE_TMP);
+                ilm.Append("\\$(TargetName).dll /out:$(TargetFileName)");
+                if((type & CmdType.DebugInfo) == 0) ilm.Append(" /ndebug");
+                if((type & CmdType.Log) == CmdType.Log) ilm.Append(" /log:$(TargetFileName).ILMerge.log");
+                return ilm.ToString();
             }
             return cmd;
         }
@@ -203,7 +207,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             ProjectPropertyElement _Get() => XProject.Project.Xml.Properties
                                             .FirstOrDefault(p => 
                                                 p.Name == name 
-                                                && (p.Label == Id || p.Label == Project.METALIB_PK_TOKEN)
+                                                && (p.Label == ID || p.Label == Project.METALIB_PK_TOKEN)
                                              ); // METALIB_PK_TOKEN was for 1.7.3 or less
 
             var pp = _Get();
@@ -235,7 +239,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             public StringBuilder AppendCor(string value) => Cor.Append(GetArg(value));
 
-            private string GetArg(string value) => value + " ";
+            private string GetArg(string value) => string.IsNullOrWhiteSpace(value) ? string.Empty : value + " ";
         }
     }
 }

@@ -177,9 +177,16 @@ namespace net.r_eg.DllExport.Wizard
             if((type & PreProcType.Exec) == PreProcType.Exec)
             {
                 var tExec = xp?.Project.Xml?.Targets
-                            .FirstOrDefault(t => t.Name == MSBuildTargets.DXP_PRE_PROC && t.Label == Project.METALIB_PK_TOKEN)?
-                            .Tasks
-                            .FirstOrDefault(t => t.Name == "Exec");
+                    .FirstOrDefault
+                    (t =>
+                        t.Name == MSBuildTargets.DXP_PRE_PROC
+                        &&
+                        (
+                            t.Label == PreProc.ID
+                            || t.Label == Project.METALIB_PK_TOKEN // for 1.7.3 or less
+                        )
+                    )?
+                    .Tasks.FirstOrDefault(t => t.Name == "Exec");
 
                 if(tExec != null)
                 {

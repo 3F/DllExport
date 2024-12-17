@@ -15,6 +15,8 @@ namespace net.r_eg.DllExport.Wizard
     /// </summary>
     public sealed class PostProc
     {
+        internal const string ID = Project.METALIB_PK_TOKEN + ":" + nameof(PostProc);
+
         private const string ENV_SLN    = "$(" + MSBuildProperties.SLN_PATH + ")";
         private const string ENV_PRJ    = "$(" + MSBuildProperties.MSB_THIS_FULL_FPATH + ")";
 
@@ -37,26 +39,14 @@ namespace net.r_eg.DllExport.Wizard
         /// <summary>
         /// Never null environment.
         /// </summary>
-        public IList<string> ProcEnv
-        {
-            get;
-            private set;
-        }
+        public IList<string> ProcEnv { get; private set; }
 
         /// <summary>
         /// Never null command.
         /// </summary>
-        public string Cmd
-        {
-            get;
-            private set;
-        }
+        public string Cmd { get; private set; }
 
-        public CmdType Type
-        {
-            get;
-            private set;
-        }
+        public CmdType Type { get; private set; }
 
         public PostProc Configure(CmdType type = CmdType.None, string env = null, string cmd = null)
         {
