@@ -16,15 +16,14 @@ using static net.r_eg.DllExport.Wizard.PreProc;
 
 namespace net.r_eg.DllExport.Wizard.Gears
 {
-    internal sealed class PreProcGear: IProjectGear
+    internal sealed class PreProcGear(IProjectSvc prj): IProjectGear
     {
         private const string ILMERGE_TMP = ".ilm0";
 
         private readonly Version incConari = new("1.5.0");
         private readonly Version incILMerge = new("3.0.41");
 
-        private readonly IProjectSvc prj;
-        private ProjectPropertyGroupElement pgroup;
+        private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
 
         private string Id => $"{Project.METALIB_PK_TOKEN}:PreProc";
 
@@ -34,7 +33,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         public void Install()
         {
-            pgroup = XProject.GetOrAddPropertyGroup(Id);
             CfgPreProc(Config.PreProc.Type);
 
             // Since CmdType can remove or add any feature at the same time,
@@ -45,11 +43,9 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             RemovePreProcTarget(hardReset);
             XProject.RemovePropertyGroups(p => p.Label == Id);
-        }
 
-        public PreProcGear(IProjectSvc prj)
-        {
-            this.prj = prj ?? throw new ArgumentNullException(nameof(prj));
+            prj.RemovePackageReferences("Conari")
+                .RemovePackageReferences("ilmerge");
         }
 
         private void CfgPreProc(CmdType type)
@@ -57,22 +53,21 @@ namespace net.r_eg.DllExport.Wizard.Gears
             prj.SetProperty(MSBuildProperties.DXP_PRE_PROC_TYPE, (long)type);
             Log.send(this, $"Pre-Processing type: {type}");
 
-            if(type == CmdType.None) {
-                return;
-            }
+            if(type == CmdType.None) return;
 
-            var sb = new _MixStringBuilder(capacity: 40);
+            _FxCorArgBuilder sb = new(capacity: 100);
 
             if((type & CmdType.Conari) == CmdType.Conari)
             {
-                Log.send(this, $"Integrate Conari: {incConari}");
-                XProject.AddPackageIfNotExists("Conari", $"{incConari}");
-                sb.AppendBoth("Conari.dll ");
+                Log.send(this, $"Merge Conari: {incConari}");
+                XProject.AddPackageIfNotExists("Conari", $"{incConari}", prj.GetMeta(privateAssets: true));
+                sb.AppendBoth("Conari.dll");
 
-                // .NET Core
-                sb.AppendCor("Microsoft.CSharp.dll System.Reflection.Emit.dll ");
-                sb.AppendCor("System.Reflection.Emit.ILGeneration.dll System.Reflection.Emit.Lightweight.dll ");
-                OverrideCopyLocalLockFileAssemblies();
+#if F_CONARI_ADD_SYS_DLL
+                sb.AppendCor("Microsoft.CSharp.dll System.Reflection.Emit.dll");
+                sb.AppendCor("System.Reflection.Emit.ILGeneration.dll System.Reflection.Emit.Lightweight.dll");
+#endif
+                sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
             }
 
             if((type & CmdType.ILMerge) == CmdType.ILMerge)
@@ -80,17 +75,18 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 prj.SetProperty(MSBuildProperties.DXP_ILMERGE, Config.PreProc.Cmd);
                 Log.send(this, $"Merge modules via ILMerge {incILMerge}: {Config.PreProc.Cmd}");
 
-                XProject.AddPackageIfNotExists("ilmerge", $"{incILMerge}");
-                sb.AppendBoth($"{Config.PreProc.Cmd} ");
+                XProject.AddPackageIfNotExists("ilmerge", $"{incILMerge}", prj.GetMeta());
+                sb.AppendBoth(Config.PreProc.Cmd);
             }
 
             if((type & CmdType.Exec) == CmdType.Exec)
             {
                 Log.send(this, $"Pre-Processing command: {Config.PreProc.Cmd}");
-                sb.AppendBoth($"{Config.PreProc.Cmd} ");
+                sb.AppendBoth(Config.PreProc.Cmd);
             }
 
-            AddPreProcTarget(
+            AddPreProcTarget
+            (
                 FormatPreProcCmd(type, sb.Fx),
                 FormatPreProcCmd(type, sb.Cor),
                 type
@@ -103,6 +99,13 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             target.BeforeTargets = MSBuildTargets.DXP_MAIN;
             target.Label = Id;
+
+            target.AddPropertyGroup().SetProperty
+            (
+                MSBuildProperties._PATH_TO_RSLV_TARGET_PACK,
+                "@(ResolvedTargetingPack->'%(Path)\\ref\\%(TargetFramework)')"
+            )
+            .Condition = "'%(RuntimeFrameworkName)'=='Microsoft.NETCore.App'";
 
             var tCopy = target.AddTask("Copy");
             tCopy.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
@@ -125,7 +128,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & CmdType.DebugInfo) == CmdType.DebugInfo)
             {
-                OverrideDebugType();
                 AddPreProcAfterTarget(target, tExec);
             }
 
@@ -187,23 +189,11 @@ namespace net.r_eg.DllExport.Wizard.Gears
             return cmd;
         }
 
-        private void OverrideCopyLocalLockFileAssemblies()
-        {
-            var prop = pgroup.SetProperty(MSBuildProperties.PRJ_CP_LOCKFILE_ASM, "true");
-            prop.Condition = "$(TargetFramework.StartsWith('netc')) Or $(TargetFramework.StartsWith('nets'))";
-            prop.Label = Id;
-        }
-
+        #region obsolete since 1.8
         private bool RemoveCopyLocalLockFileAssemblies() => RemoveLabeledProperty(MSBuildProperties.PRJ_CP_LOCKFILE_ASM);
 
-        private void OverrideDebugType()
-        {
-            var prop = pgroup.SetProperty(MSBuildProperties.PRJ_DBG_TYPE, "pdbonly");
-            prop.Condition = "'$(DebugType)'!='full' And '$(DebugType)'!='pdbonly'";
-            prop.Label = Id;
-        }
-
         private bool RemoveOverridedDebugType() => RemoveLabeledProperty(MSBuildProperties.PRJ_DBG_TYPE);
+        #endregion
 
         private bool RemoveLabeledProperty(string name)
         {
@@ -232,25 +222,18 @@ namespace net.r_eg.DllExport.Wizard.Gears
             return _Get() != null;
         }
 
-        private sealed class _MixStringBuilder
+        private sealed class _FxCorArgBuilder(int capacity)
         {
-            public StringBuilder Fx { get; private set; }
-            public StringBuilder Cor { get; private set; }
+            public StringBuilder Fx { get; } = new StringBuilder(capacity);
+            public StringBuilder Cor { get; } = new StringBuilder(capacity);
 
-            public void AppendBoth(string value)
-            {
-                AppendFx(value);
-                AppendCor(value);
-            }
+            public void AppendBoth(string value) { AppendFx(value); AppendCor(value); }
 
-            public StringBuilder AppendFx(string value) => Fx.Append(value);
-            public StringBuilder AppendCor(string value) => Cor.Append(value);
+            public StringBuilder AppendFx(string value) => Fx.Append(GetArg(value));
 
-            public _MixStringBuilder(int capacity)
-            {
-                Fx  = new StringBuilder(capacity);
-                Cor = new StringBuilder(capacity);
-            }
+            public StringBuilder AppendCor(string value) => Cor.Append(GetArg(value));
+
+            private string GetArg(string value) => value + " ";
         }
     }
 }

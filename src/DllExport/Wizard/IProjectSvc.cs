@@ -5,7 +5,10 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
+using System;
+using System.Collections.Generic;
 using Microsoft.Build.Construction;
+using net.r_eg.MvsSln.Projects;
 
 namespace net.r_eg.DllExport.Wizard
 {
@@ -22,5 +25,9 @@ namespace net.r_eg.DllExport.Wizard
         void SetProperty(string name, int val);
 
         void SetProperty(string name, long val);
+
+        IProjectSvc RemovePackageReferences(string id, Func<Item, bool> opt = null, bool wzstrict = true);
+
+        IEnumerable<KeyValuePair<string, string>> GetMeta(bool privateAssets = false, bool hide = false);
     }
 }

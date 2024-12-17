@@ -22,6 +22,7 @@
 
   <PropertyGroup>
     <DefineConstants Condition="'$(DllExportFeatureActivatorIsolatedTask)'=='true'">FEATURE_ACTIVATOR_ISOLATED_TASK;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(DllExportFeatureConariNetCoreAddSysDll)'=='true'">F_CONARI_ADD_SYS_DLL;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -42,35 +42,13 @@ namespace net.r_eg.DllExport.Wizard.Extensions
             return xp?.GetProperty(name, localScope).unevaluated;
         }
 
-        /// <summary>
-        /// Get unique identifier for project (not instance).
-        /// TODO: MvsSln should provide similar PId with v2.0.1+
-        /// </summary>
-        /// <param name="xp"></param>
-        /// <returns></returns>
-        public static Guid GetPId(this IXProject xp)
+        public static void AddPackageIfNotExists(this IXProject xp, string id, string version, IEnumerable<KeyValuePair<string, string>> meta = null)
         {
-            if(xp == null) {
-                return Guid.Empty;
-            }
+            if(xp == null) throw new ArgumentNullException(nameof(xp));
 
-            var pItem = xp.ProjectItem;
-            return (
-                pItem.project.pGuid
-                    + pItem.projectConfig 
-                    + pItem.solutionConfig
-            )
-            .Guid();
-        }
-
-        public static void AddPackageIfNotExists(this IXProject xp, string id, string version)
-        {
-            if(xp == null) {
-                throw new ArgumentNullException(nameof(xp)); 
-            }
-
-            if(xp.GetFirstPackageReference(id ?? throw new ArgumentNullException(nameof(id))).parentItem == null) {
-                xp.AddPackageReference(id, version);
+            if(xp.GetFirstPackageReference(id ?? throw new ArgumentNullException(nameof(id))).parentItem == null)
+            {
+                xp.AddPackageReference(id, version, meta);
             }
         }
 

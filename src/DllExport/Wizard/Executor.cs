@@ -261,7 +261,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected IProject GetProject(IXProject xp)
         {
-            var pid = xp.GetPId();
+            Guid pid = xp.PId;
 
             if(!pcache.ContainsKey(pid)) {
                 pcache[pid] = new Project(xp, this);

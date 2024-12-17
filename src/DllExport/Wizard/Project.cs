@@ -162,6 +162,8 @@ namespace net.r_eg.DllExport.Wizard
         void IProjectSvc.SetProperty(string name, bool val) => SetProperty(name, val);
         void IProjectSvc.SetProperty(string name, int val) => SetProperty(name, val);
         void IProjectSvc.SetProperty(string name, long val) => SetProperty(name, val);
+        IProjectSvc IProjectSvc.RemovePackageReferences(string id, Func<Item, bool> opt, bool wzstrict) => RemovePackageReferences(id, opt, wzstrict);
+        IEnumerable<KeyValuePair<string, string>> IProjectSvc.GetMeta(bool privateAssets, bool hide) => Meta.Get(privateAssets, hide);
 
         #endregion
 
@@ -472,7 +474,7 @@ namespace net.r_eg.DllExport.Wizard
             var rst = AddRestoreDxp
             (
                 MSBuildTargets.DXP_PKG_R, 
-                $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' Or !Exists('{dxpTarget}') Or !Exists('{gCacheDir}')",
+                $"'$({MSBuildTargets.DXP_MAIN_FLAG})'!='true' Or !Exists('{dxpTarget}') Or !Exists('{gCacheDir}')",
                 UserConfig.MGR_FILE
             );
 
@@ -480,7 +482,7 @@ namespace net.r_eg.DllExport.Wizard
             AddDynRestore
             (
                 MSBuildTargets.DXP_R_DYN, 
-                $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true' And '$(DllExportRPkgDyn)' != 'false'"
+                $"'$({MSBuildTargets.DXP_MAIN_FLAG})'!='true' And '$(DllExportRPkgDyn)'!='false'"
             );
         }
 
@@ -497,7 +499,7 @@ namespace net.r_eg.DllExport.Wizard
             (
                 UserConfig.PKG_ID,
                 version,
-                new Dictionary<string, string>() { { "Visible", "false" }, { WZ_ID, "1" } } // VS2010 etc
+                Meta.Get(hide: true /*VS2010 etc*/)
             );
         }
 
@@ -509,7 +511,7 @@ namespace net.r_eg.DllExport.Wizard
             if((Config.Wizard.Options & DxpOptType.NoMgr) == DxpOptType.NoMgr) return target;
 
             string ifManager = $"Exists('{GetDxpDirBased(manager)}')";
-            const string dxpNoRestore = $"'$({MSBuildProperties.DXP_NO_RESTORE})' != 'true' And ";
+            const string dxpNoRestore = $"'$({MSBuildProperties.DXP_NO_RESTORE})'!='true' And ";
 
             var taskMsg = target.AddTask("Error");
             taskMsg.Condition = $"{dxpNoRestore}!{ifManager}";
@@ -539,7 +541,7 @@ namespace net.r_eg.DllExport.Wizard
         protected void AddRestoreFirstPhase(ProjectTargetElement target, string dxpTarget)
         {
             var t = target.AddTask("MSBuild");
-            t.Condition = $"'$({MSBuildTargets.DXP_MAIN_FLAG})' != 'true'";
+            t.Condition = $"'$({MSBuildTargets.DXP_MAIN_FLAG})'!='true'";
             t.SetParameter("Projects", dxpTarget);
             t.SetParameter("Targets", "DllExportMetaXBaseTarget");
             t.SetParameter("Properties", "TargetFramework=$(TargetFramework)");
@@ -606,19 +608,7 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             Log.send(this, $"Attempt to delete {WZ_ID} PackageReference records");
-            foreach(var item in XProject.GetItems("PackageReference", UserConfig.PKG_ID).ToArray()) 
-            {
-                if(item.isImported) {
-                    continue;
-                }
-
-                if(item.meta?.ContainsKey(WZ_ID) == true && item.meta[WZ_ID].evaluated == "1"
-                    || Config?.Wizard.CfgStorage == CfgStorageType.TargetsFile) 
-                {
-                    XProject.RemoveItem(item);
-                }
-            }
-
+            RemovePackageReferences(UserConfig.PKG_ID, _=> Config?.Wizard.CfgStorage == CfgStorageType.TargetsFile);
             if(!pkgconf.IsNew) pkgconf.RemovePackage(UserConfig.PKG_ID);
 
             Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'");
@@ -701,6 +691,21 @@ namespace net.r_eg.DllExport.Wizard
             return prefix ? GetDxpDirBased(ret) : ret;
         }
 
+        protected Project RemovePackageReferences(string id, Func<Item, bool> opt = null, bool wzstrict = true)
+        {
+            foreach(Item item in XProject.GetPackageReferences().Where(p => !p.isImported && p.evaluated == id).ToArray()) 
+            {
+                if(!wzstrict
+                    || item.meta?.GetOrDefault(WZ_ID).evaluated == "1"
+                    || opt?.Invoke(item) == true)
+                {
+                    Log.send(this, $"{nameof(RemovePackageReferences)} {item.evaluated} {item.Assembly.Info.Version}", Message.Level.Trace);
+                    XProject.RemoveItem(item);
+                }
+            }
+            return this;
+        }
+
         private void AllocPlatformTargetIfNeeded(IXProject xp)
         {
             foreach(var pg in xp.Project.Xml.PropertyGroups)
@@ -761,6 +766,20 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             return corlib ? cfg.MetaCor : cfg.MetaLib;
+        }
+
+        private static class Meta
+        {
+            private static readonly KeyValuePair<string, string> wz = new(WZ_ID, "1");
+            private static readonly KeyValuePair<string, string> privateAssets = new("PrivateAssets", "all");
+            private static readonly KeyValuePair<string, string> noVisible = new("Visible", "false");
+
+            public static IEnumerable<KeyValuePair<string, string>> Get(bool privateAssets = false, bool hide = false)
+            {
+                if(privateAssets) yield return Meta.privateAssets;
+                if(hide) yield return noVisible;
+                yield return wz;
+            }
         }
 
         private static string GetDxpDirBased(string path = null) => $"$({MSBuildProperties.DXP_DIR}){path}";

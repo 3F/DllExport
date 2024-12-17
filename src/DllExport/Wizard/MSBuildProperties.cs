@@ -153,5 +153,7 @@ namespace net.r_eg.DllExport.Wizard
         public const string SLN_PATH = "SolutionPath";
 
         public const string MSB_THIS_FULL_FPATH = "MSBuildThisFileFullPath";
+
+        public const string _PATH_TO_RSLV_TARGET_PACK = "_PathToResolvedTargetingPack";
     }
 }
