@@ -49,8 +49,9 @@ namespace net.r_eg.DllExport.PeViewer
 
         public ArgImp GetArg(string name)
         {
-            if(String.IsNullOrWhiteSpace(name) || !Map.ContainsKey(name)) {
-                return new ArgImp();
+            if(string.IsNullOrWhiteSpace(name) || !Map.ContainsKey(name))
+            {
+                return default;
             }
             return Map[name];
         }
@@ -74,6 +75,21 @@ namespace net.r_eg.DllExport.PeViewer
 
             value = ret.value;
             return ret.defined;
+        }
+
+        public bool Find(out string value, params string[] argnames)
+        {
+            foreach(string arg in argnames)
+            {
+                ArgImp ret = GetArg(arg);
+                if(ret.defined)
+                {
+                    value = ret.value;
+                    return true;
+                }
+            }
+            value = null;
+            return false;
         }
 
         public string GetValue(string argname) => GetArg(argname).value;

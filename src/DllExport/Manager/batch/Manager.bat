@@ -90,7 +90,7 @@ set "dxpDebug="
 set "buildInfo="
 set "gMsbPath="
 set "pkgLink="
-set "peExpList="
+set "peVcmd="
 set "kForce="
 set "mgrUp="
 set "proxy="
@@ -167,7 +167,7 @@ echo -force                - Aggressive behavior, e.g. like removing pkg when up
 echo -no-mgr               - Do not use %~n0 for automatic restore the remote package.
 echo -mgr-up               - Updates %~n0 to version from '-dxp-version'.
 echo -wz-target {path}     - Relative path to entrypoint wrapper of the main wizard.
-echo -pe-exp-list {module} - To list all available exports from PE32/PE32+ module.
+echo -pe {args}            - To work with PE32/PE32+ module. -pe -help
 echo -eng                  - Try to use english language for all build messages.
 echo -GetNuTool {args}     - Access to GetNuTool (built-in) https://github.com/3F/GetNuTool
 echo -debug                - To show additional information.
@@ -184,7 +184,7 @@ echo -------
 echo %~n0 -action Configure -force -pkg-link https://host/v1.7.4.nupkg
 echo %~n0 -action Restore -sln-file "Conari.sln"
 echo %~n0 -proxy guest:1234@10.0.2.15:7428 -action Configure
-echo %~n0 -pe-exp-list bin\Debug\regXwild.dll
+echo %~n0 -pe -list-all -hex -i bin\regXwild.dll
 echo.
 echo %~n0 -mgr-up -dxp-version 1.7.4
 echo %~n0 -action Upgrade -dxp-version 1.7.4
@@ -304,7 +304,8 @@ set key=!arg[%idx%]!
         goto continue
     ) else if [!key!]==[-pe-exp-list] ( set /a "idx+=1" & call :eval arg[!idx!] v
         
-        set peExpList=!v!
+        :: -pe-exp-list is obsolete since 1.8
+        set peVcmd=-list -pemodule "!v!"
 
         goto continue
     ) else if [!key!]==[-eng] ( 
@@ -323,6 +324,11 @@ set key=!arg[%idx%]!
         call :ktoolinit -hMSBuild 9
         set /a EXIT_CODE=!ERRORLEVEL! & goto endpoint
 
+    ) else if [!key!]==[-pe] (
+
+        set peVcmd=1
+
+        goto action
     ) else if [!key!]==[-version] ( 
 
         @echo $-version-$  %__dxp_pv%
@@ -431,11 +437,12 @@ if not exist !wzTarget! (
     call :invokeCore _gntC "no"
 )
 
-if defined peExpList (
-    "!wPkgPath!\\tools\\PeViewer.exe" -list -pemodule "!peExpList!"
+if defined peVcmd (
 
-    set /a EXIT_CODE=%ERRORLEVEL%
-    goto endpoint
+    if !peVcmd! NEQ 1 set esc=-pe!peVcmd!
+    call :ktoolinit -pe 3
+
+    set /a EXIT_CODE=!ERRORLEVEL! & goto endpoint
 )
 
 if defined buildInfo (
@@ -554,6 +561,10 @@ set /a klen=%~2
             if defined khMSBuild (
 
                 call :invokeCore kargs
+
+            ) else if defined peVcmd (
+
+                call "!wPkgPath!\\tools\\PeViewer" !kargs!
 
             ) else (
 

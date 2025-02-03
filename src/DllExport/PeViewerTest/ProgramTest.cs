@@ -15,10 +15,13 @@ namespace net.r_eg.DllExport.PeViewerTest
 {
     public class ProgramTest
     {
-        [Fact]
-        public void KeyListTest1()
+        [Theory]
+        [InlineData("-pemodule")]
+        [InlineData("-i")]
+        public void KeyListTest1(string keyFile)
         {
-            AssertArgs($"-list -pemodule \"{Assets.PrjNetfxRuntime}\"", pe => pe.Export.Names);
+            AssertArgs($"-list {keyFile} \"{Assets.PrjNetfxRuntime}\"", pe => pe.Export.Names);
+            AssertEmpty($"-list {keyFile} \"{Assets.PkgPeViewer}\"");
         }
 
         [Theory]
@@ -28,10 +31,11 @@ namespace net.r_eg.DllExport.PeViewerTest
         {
             AssertArgs
             (
-                $"-list-addr {(hex ? "-hex" : "")} -pemodule \"{Assets.PrjNetfxRuntime}\"",
+                $"-list-addr {GetHex(hex)} -pemodule \"{Assets.PrjNetfxRuntime}\"",
                 pe => pe.Export.Addresses,
                 hex
             );
+            AssertEmpty($"-list-addr {GetHex(hex)} -pemodule \"{Assets.PkgPeViewer}\"");
         }
 
         [Theory]
@@ -41,10 +45,11 @@ namespace net.r_eg.DllExport.PeViewerTest
         {
             AssertArgs
             (
-                $"{(hex ? "-hex" : "")} -list-ord -pemodule \"{Assets.PrjNetfxRuntime}\"",
+                $"{GetHex(hex)} -list-ord -pemodule \"{Assets.PrjNetfxRuntime}\"",
                 pe => pe.Export.NameOrdinals,
                 hex
             );
+            AssertEmpty($"{GetHex(hex)} -list-ord -pemodule \"{Assets.PkgPeViewer}\"");
         }
 
         [Theory]
@@ -54,10 +59,44 @@ namespace net.r_eg.DllExport.PeViewerTest
         {
             AssertArgs
             (
-                $"-magic -pemodule \"{Assets.PrjNetfxRuntime}\" {(hex ? "-hex" : "")}",
+                $"-magic -pemodule \"{Assets.PrjNetfxRuntime}\" {GetHex(hex)}",
                 pe => new ushort[] { (ushort)pe.Magic },
                 hex
             );
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void KeyNumFunctionsTest1(bool hex)
+        {
+            AssertArgs
+            (
+                $"-num-functions -i \"{Assets.PrjNetfxRuntime}\" {GetHex(hex)}",
+                pe => new[] { pe.DExport.NumberOfFunctions },
+                hex
+            );
+
+            AssertArgs
+            (
+                $"-num-functions {GetHex(hex)} -i \"{Assets.PkgPeViewer}\"",
+                pe => new[] { 0 },
+                hex
+            );
+        }
+
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void KeyBaseTest1(bool hex)
+        {
+            AssertArgs
+            (
+                $"-base -i \"{Assets.PrjNetfxRuntime}\" {GetHex(hex)}",
+                pe => new[] { pe.DExport.Base },
+                hex
+            );
+            AssertEmpty($"-base -i \"{Assets.PkgPeViewer}\"");
         }
 
         [Fact]
@@ -99,6 +138,10 @@ namespace net.r_eg.DllExport.PeViewerTest
             Tools.RunPeViewer($"-pemodule {pemodule} -list", out string stderr);
             Assert.Contains($"Module '{pemodule}' is not found.", stderr);
         }
+
+        private static string GetHex(bool hex) => hex ? "-hex" : string.Empty;
+
+        private static void AssertEmpty(string args) => Assert.Equal(string.Empty, Tools.RunPeViewer(args));
 
         private void AssertArgs(string args, Func<IPE, IEnumerable> list, bool hex = false)
         {

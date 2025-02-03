@@ -18,12 +18,16 @@ namespace net.r_eg.DllExport.PeViewer
     {
         internal static readonly Dictionary<string, bool> Switches = new()
         {
+            { "-i", true },
             { "-pemodule", true },
             { "-list", false },
             { "-list-addr", false },
             { "-hex", false },
             { "-list-ord", false },
+            { "-list-all", false },
             { "-magic", false },
+            { "-num-functions", false },
+            { "-base", false },
             { "-version", false },
             { "-h", false },
             { "-help", false },
@@ -70,31 +74,57 @@ namespace net.r_eg.DllExport.PeViewer
                 CmdHelp(map); return;
             }
 
-            map.Is("-pemodule", out string file);
+            map.Find(out string file, "-pemodule", "-i");
+
+            bool hex = map.Is("-hex");
+
+            if(map.Is("-list-all"))
+            {
+                CmdEx(file, x =>
+                    PrintAll
+                    (
+                        x.Export.NameOrdinals.Select(o => o + x.DExport.Base),
+                        x.Export.Names,
+                        x.Export.Addresses,
+                        hex
+                    )
+                );
+                return;
+            }
 
             if(map.Is("-list"))
             {
-                CmdPe(file, x => Print(x.Export.Names)); return;
+                CmdEx(file, x => Print(x.Export.Names)); return;
             }
 
             if(map.Is("-list-addr"))
             {
-                CmdPe(file, x => Print(x.Export.Addresses, map.Is("-hex"))); return;
+                CmdEx(file, x => Print(x.Export.Addresses, hex)); return;
             }
 
             if(map.Is("-list-ord"))
             {
-                CmdPe(file, x => Print(x.Export.NameOrdinals, map.Is("-hex"))); return;
+                CmdEx(file, x => Print(x.Export.NameOrdinals, hex)); return;
             }
 
             if(map.Is("-magic"))
             {
-                CmdPe(file, x => PrintStr((ushort)x.Magic, map.Is("-hex"))); return;
+                CmdPe(file, x => PrintStr((ushort)x.Magic, hex)); return;
+            }
+
+            if(map.Is("-num-functions"))
+            {
+                CmdPe(file, x => PrintStr(x.DExport.NumberOfFunctions, hex)); return;
+            }
+
+            if(map.Is("-base"))
+            {
+                CmdEx(file, x => PrintStr(x.DExport.Base, hex)); return;
             }
 
             throw new NotSupportedException
             (
-                $"Unsupported keys: {string.Join(" ; ", map.AHelper.Used)} "
+                $"Invalid or Incomplete command: {string.Join(" ; ", map.AHelper.Used)} "
             );
         }
 
@@ -104,11 +134,13 @@ namespace net.r_eg.DllExport.PeViewer
             foreach(string cmd in map.CommandsPrintVersion) Msg($"  {cmd}");
         }
 
-        private void CmdPe(string pemodule, Action<PEFile> act)
+        private void CmdEx(string pemodule, Action<PEFile> act) => CmdPe(pemodule, act, check: true);
+
+        private void CmdPe(string pemodule, Action<PEFile> act, bool check = false)
         {
             if(pemodule == null)
             {
-                throw new ArgumentNullException($"-{nameof(pemodule)}");
+                throw new Exception("Missing key to load module.");
             }
 
             if(!File.Exists(pemodule))
@@ -117,7 +149,10 @@ namespace net.r_eg.DllExport.PeViewer
             }
 
             using PEFile pe = new(pemodule);
-            act?.Invoke(pe);
+            if(!check || pe.DExport.NumberOfFunctions > 0)
+            {
+                act?.Invoke(pe);
+            }
         }
 
         private void Print(IEnumerable list, bool hex = false)
@@ -128,6 +163,18 @@ namespace net.r_eg.DllExport.PeViewer
         private void PrintStr(object data, bool hex = false)
         {
             Msg(hex ? $"0x{data:x8}" : data.ToString());
+        }
+
+        private void PrintAll(IEnumerable ords, IEnumerable names, IEnumerable addrs, bool hex = false)
+        {
+            IEnumerator eOrds = ords.GetEnumerator();
+            IEnumerator eNames = names.GetEnumerator();
+            IEnumerator eAddrs = addrs.GetEnumerator();
+
+            while(eOrds.MoveNext() && eNames.MoveNext() && eAddrs.MoveNext())
+            {
+                Msg($"{eOrds.Current} {eNames.Current} {(hex ? $"0x{eAddrs.Current:x8}" : eAddrs.Current)}");
+            }
         }
 
         private void CheckUnknown(ArgsMapper map)
