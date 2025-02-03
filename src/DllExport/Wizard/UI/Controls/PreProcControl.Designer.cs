@@ -32,12 +32,13 @@
             this.radioPreProcDisabled = new System.Windows.Forms.RadioButton();
             this.linkPreProc = new System.Windows.Forms.LinkLabel();
             this.linkAboutConari = new System.Windows.Forms.LinkLabel();
-            this.txtPreProc = new System.Windows.Forms.TextBox();
+            this.txtPreProc = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
             this.radioRawExec = new System.Windows.Forms.RadioButton();
             this.radioILMerge = new System.Windows.Forms.RadioButton();
             this.chkMergeConari = new System.Windows.Forms.CheckBox();
             this.chkIgnoreErrors = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
+            this.radioILRepack = new System.Windows.Forms.RadioButton();
             this.chkGenDebugInfo = new System.Windows.Forms.CheckBox();
             this.chkLog = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
@@ -77,7 +78,7 @@
             this.linkAboutConari.TabIndex = 23;
             this.linkAboutConari.TabStop = true;
             this.linkAboutConari.Text = "Conari";
-            this.toolTip1.SetToolTip(this.linkAboutConari, "Adds Conari inside final module for easy access to unmanaged features");
+            this.toolTip1.SetToolTip(this.linkAboutConari, "Add Conari inside final module for easy access to unmanaged features");
             this.linkAboutConari.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.LinkAboutConari_LinkClicked);
             // 
             // txtPreProc
@@ -86,6 +87,8 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.txtPreProc.BackColor = System.Drawing.SystemColors.Control;
+            this.txtPreProc.BackgroundCaption = "";
+            this.txtPreProc.BackgroundCaptionAlpha = 60;
             this.txtPreProc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPreProc.Enabled = false;
             this.txtPreProc.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -116,10 +119,11 @@
             this.radioILMerge.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.radioILMerge.Location = new System.Drawing.Point(25, 27);
             this.radioILMerge.Name = "radioILMerge";
-            this.radioILMerge.Size = new System.Drawing.Size(155, 17);
+            this.radioILMerge.Size = new System.Drawing.Size(63, 17);
             this.radioILMerge.TabIndex = 19;
-            this.radioILMerge.Text = "Merge modules via ILMerge";
-            this.toolTip1.SetToolTip(this.radioILMerge, "Separated by a whitespace char: Module1 Module2 ...");
+            this.radioILMerge.Text = "ILMerge";
+            this.toolTip1.SetToolTip(this.radioILMerge, "Merge modules via ILMerge; arguments and/or modules must separated by a whitespac" +
+        "e:\r\nModule1 Module2 /arg1 ...");
             this.radioILMerge.UseVisualStyleBackColor = true;
             this.radioILMerge.CheckedChanged += new System.EventHandler(this.RadioILMerge_CheckedChanged);
             // 
@@ -132,7 +136,7 @@
             this.chkMergeConari.Size = new System.Drawing.Size(66, 17);
             this.chkMergeConari.TabIndex = 18;
             this.chkMergeConari.Text = "Integrate";
-            this.toolTip1.SetToolTip(this.chkMergeConari, "Adds Conari inside final module for easy access to unmanaged features");
+            this.toolTip1.SetToolTip(this.chkMergeConari, "Add Conari inside final module for easy access to unmanaged features");
             this.chkMergeConari.UseVisualStyleBackColor = true;
             this.chkMergeConari.CheckedChanged += new System.EventHandler(this.ChkMergeConari_CheckedChanged);
             // 
@@ -147,6 +151,20 @@
             this.chkIgnoreErrors.TabIndex = 26;
             this.chkIgnoreErrors.Text = "Ignore errors";
             this.chkIgnoreErrors.UseVisualStyleBackColor = true;
+            // 
+            // radioILRepack
+            // 
+            this.radioILRepack.AutoSize = true;
+            this.radioILRepack.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.radioILRepack.Location = new System.Drawing.Point(94, 27);
+            this.radioILRepack.Name = "radioILRepack";
+            this.radioILRepack.Size = new System.Drawing.Size(71, 17);
+            this.radioILRepack.TabIndex = 30;
+            this.radioILRepack.Text = "ILRepack";
+            this.toolTip1.SetToolTip(this.radioILRepack, "Merge modules via ILRepack; arguments and/or modules must separated by a whitespa" +
+        "ce:\r\nModule1 Module2 /arg1 ...");
+            this.radioILRepack.UseVisualStyleBackColor = true;
+            this.radioILRepack.CheckedChanged += new System.EventHandler(this.radioILRepack_CheckedChanged);
             // 
             // chkGenDebugInfo
             // 
@@ -176,6 +194,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.radioILRepack);
             this.Controls.Add(this.chkLog);
             this.Controls.Add(this.chkGenDebugInfo);
             this.Controls.Add(this.chkIgnoreErrors);
@@ -199,7 +218,7 @@
         private System.Windows.Forms.RadioButton radioPreProcDisabled;
         private System.Windows.Forms.LinkLabel linkPreProc;
         private System.Windows.Forms.LinkLabel linkAboutConari;
-        private System.Windows.Forms.TextBox txtPreProc;
+        private net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt txtPreProc;
         private System.Windows.Forms.RadioButton radioRawExec;
         private System.Windows.Forms.RadioButton radioILMerge;
         private System.Windows.Forms.CheckBox chkMergeConari;
@@ -207,5 +226,6 @@
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.CheckBox chkGenDebugInfo;
         private System.Windows.Forms.CheckBox chkLog;
+        private System.Windows.Forms.RadioButton radioILRepack;
     }
 }

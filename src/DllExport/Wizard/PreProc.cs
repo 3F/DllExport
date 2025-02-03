@@ -37,6 +37,8 @@ namespace net.r_eg.DllExport.Wizard
             IgnoreErr   = 0x10,
 
             Log         = 0x20,
+
+            ILRepack    = 0x40,
         }
 
         public PreProc Configure(CmdType type = CmdType.None, string cmd = null)

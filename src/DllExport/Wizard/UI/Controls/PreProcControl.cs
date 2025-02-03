@@ -36,8 +36,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             if(type == CmdType.None) { radioPreProcDisabled.Checked = true; return; }
 
-            if((type & CmdType.ILMerge) == CmdType.ILMerge) { radioILMerge.Checked = true; }
-            if((type & CmdType.Exec) == CmdType.Exec)       { radioRawExec.Checked = true; }
+            if((type & CmdType.ILMerge) == CmdType.ILMerge)     radioILMerge.Checked = true;
+            if((type & CmdType.ILRepack) == CmdType.ILRepack)   radioILRepack.Checked = true;
+            if((type & CmdType.Exec) == CmdType.Exec)           radioRawExec.Checked = true;
 
             chkMergeConari.Checked  = (type & CmdType.Conari) == CmdType.Conari;
             chkIgnoreErrors.Checked = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
@@ -49,13 +50,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             CmdType ret = CmdType.None;
 
-            if(radioILMerge.Checked) { ret = CmdType.ILMerge; }
-            if(radioRawExec.Checked) { ret = CmdType.Exec; }
+            if(radioILMerge.Checked)    ret = CmdType.ILMerge;
+            if(radioILRepack.Checked)   ret = CmdType.ILRepack;
+            if(radioRawExec.Checked)    ret = CmdType.Exec;
 
-            if(chkMergeConari.Checked)  { ret |= CmdType.Conari; }
-            if(chkIgnoreErrors.Checked) { ret |= CmdType.IgnoreErr; }
-            if(chkGenDebugInfo.Checked) { ret |= CmdType.DebugInfo; }
-            if(chkLog.Checked)          { ret |= CmdType.Log; }
+            if(chkMergeConari.Checked)  ret |= CmdType.Conari;
+            if(chkIgnoreErrors.Checked) ret |= CmdType.IgnoreErr;
+            if(chkGenDebugInfo.Checked) ret |= CmdType.DebugInfo;
+            if(chkLog.Checked)          ret |= CmdType.Log;
 
             return ret;
         }
@@ -77,17 +79,26 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void ChkMergeConari_CheckedChanged(object sender, EventArgs e)
         {
-            if(chkMergeConari.Checked) radioILMerge.Checked = true;
+            if(!chkMergeConari.Checked || radioILMerge.Checked || radioILRepack.Checked) return;
+            radioILMerge.Checked = true; // use ILMerge by default for Conari because ILMerge is about 2+ times faster than ILRepack -_-
         }
 
         private void RadioPreProcDisabled_CheckedChanged(object sender, EventArgs e) => SetUIMergeConari(SetUIPreProcCmd(radioPreProcDisabled.Checked));
+
         private void RadioRawExec_CheckedChanged(object sender, EventArgs e) => SetUIMergeConari(radioRawExec.Checked);
+
         private void LinkAboutConari_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/wiki/Quick-start#when-conari-can-help-you".OpenUrl();
+
         private void LinkPreProc_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/issues/40".OpenUrl();
+
+        private void radioILRepack_CheckedChanged(object sender, EventArgs e) => RadioILMerge_CheckedChanged(sender, e);
+
         private void RadioILMerge_CheckedChanged(object sender, EventArgs e)
         {
-            chkLog.Enabled = chkGenDebugInfo.Checked = chkGenDebugInfo.Enabled = radioILMerge.Checked;
-            if(!radioILMerge.Checked) chkLog.Checked = false;
+            chkLog.Enabled = chkGenDebugInfo.Checked = chkGenDebugInfo.Enabled = radioILMerge.Checked || radioILRepack.Checked;
+            if(!radioILMerge.Checked || !radioILRepack.Checked) chkLog.Checked = false;
+
+            txtPreProc.BackgroundCaption = chkLog.Enabled ? "Module1 Module2 /arg1 ..." : string.Empty;
         }
     }
 }

@@ -169,7 +169,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected string GetPreProcCmd(PreProcType type, IXProject xp)
         {
-            if((type & PreProcType.ILMerge) == PreProcType.ILMerge)
+            if((type & (PreProcType.ILMerge | PreProcType.ILRepack)) != 0)
             {
                 return GetUnevaluatedValue(MSBuildProperties.DXP_ILMERGE, xp);
             }

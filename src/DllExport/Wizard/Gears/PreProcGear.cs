@@ -6,11 +6,13 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Microsoft.Build.Construction;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
+using net.r_eg.MvsSln.Extensions;
 using net.r_eg.MvsSln.Log;
 using static net.r_eg.DllExport.Wizard.PreProc;
 
@@ -21,7 +23,12 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private const string ILMERGE_TMP = ".ilm0";
 
         private readonly Version incConari = new("1.5.0");
-        private readonly Version incILMerge = new("3.0.41");
+
+        private readonly Dictionary<CmdType, _MergeTool> mTool = new()
+        {
+            { CmdType.ILMerge, new("ilmerge", new("3.0.41"), "$(ILMergeConsolePath)") },
+            { CmdType.ILRepack, new("ILRepack", new("2.0.36"), "$(ILRepack)") }
+        };
 
         private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
 
@@ -42,8 +49,11 @@ namespace net.r_eg.DllExport.Wizard.Gears
             RemovePreProcTarget(hardReset);
             XProject.RemovePropertyGroups(p => p.Label == ID);
 
-            prj.RemovePackageReferences("Conari")
-                .RemovePackageReferences("ilmerge");
+            prj.RemovePackageReferences("Conari");
+            foreach(_MergeTool tool in mTool.Values)
+            {
+                prj.RemovePackageReferences(tool.name);
+            }
         }
 
         private void CfgPreProc(CmdType type)
@@ -68,12 +78,13 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
             }
 
-            if((type & CmdType.ILMerge) == CmdType.ILMerge)
+            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
             {
+                _MergeTool tool = GetMergeTool(type);
                 prj.SetProperty(MSBuildProperties.DXP_ILMERGE, Config.PreProc.Cmd);
-                Log.send(this, $"Merge modules via ILMerge {incILMerge}: {Config.PreProc.Cmd}");
+                Log.send(this, $"Merge modules via {tool.name} {tool.version}: {Config.PreProc.Cmd}");
 
-                XProject.AddPackageIfNotExists("ilmerge", $"{incILMerge}", prj.GetMeta());
+                XProject.AddPackageIfNotExists(tool.name, $"{tool.version}", prj.GetMeta());
                 sb.AppendBoth(Config.PreProc.Cmd);
             }
 
@@ -117,7 +128,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             AddILMergeWrapper(target, ignoreErr, _=>
             {
-                if((type & CmdType.ILMerge) == CmdType.ILMerge)
+                if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
                 {
                     AddExecTask(target, fxCmd, "'$(IsNetCoreBased)'!='true'", ignoreErr);
                     AddExecTask(target, corCmd, "'$(IsNetCoreBased)'=='true'", ignoreErr);
@@ -181,15 +192,16 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             string cmd = sb?.ToString().TrimEnd();
 
-            if((type & CmdType.ILMerge) == CmdType.ILMerge)
+            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
             {
+                _MergeTool tool = GetMergeTool(type);
                 StringBuilder ilm = new(100);
-                ilm.Append("$(ILMergeConsolePath) ");
+                ilm.Append($"{tool.exe} ");
                 ilm.Append(cmd);
                 ilm.Append(" " + ILMERGE_TMP);
                 ilm.Append("\\$(TargetName).dll /out:$(TargetFileName)");
                 if((type & CmdType.DebugInfo) == 0) ilm.Append(" /ndebug");
-                if((type & CmdType.Log) == CmdType.Log) ilm.Append(" /log:$(TargetFileName).ILMerge.log");
+                if((type & CmdType.Log) == CmdType.Log) ilm.Append($" /log:$(TargetFileName).{tool.name}.log");
                 return ilm.ToString();
             }
             return cmd;
@@ -226,6 +238,16 @@ namespace net.r_eg.DllExport.Wizard.Gears
             }
 
             return _Get() != null;
+        }
+
+        private _MergeTool GetMergeTool(CmdType type)
+            => mTool.GetOrDefault(type & (CmdType.ILMerge | CmdType.ILRepack));
+
+        private readonly struct _MergeTool(string name, Version v, string exe)
+        {
+            public readonly string name = name;
+            public readonly Version version = v;
+            public readonly string exe = exe;
         }
 
         private sealed class _FxCorArgBuilder(int capacity)
