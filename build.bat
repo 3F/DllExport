@@ -1,9 +1,10 @@
 :: build [[configuration] | [# [option [keys]]]
 :: https://github.com/3F/DllExport
 @echo off & if "%~1"=="#" (
-    if "%~2"=="coreclr-ilasm" ( if "%~3"=="" echo -x64& echo -x86& echo -all -x86 -x64& exit /B0
-        if not exist src\coreclr\.gitignore call git submodule update --init --recursive coreclr
-        setlocal & cd src\coreclr & build-s %3 %4 %5 %6 -release
+    if "%~2"=="ilasm" ( if "%~3"=="" echo -x64& echo -x86& exit /B0
+        if not exist src\coreclr\.gitignore call git submodule update --init src/coreclr
+        if "%~3"=="-x86" set "_dxpILAsmBinX=86"
+        setlocal & cd src\coreclr & build.ilasm %3 -release
 
     ) else if /I "%~2"=="CI" (
         shift & shift & setlocal

@@ -126,7 +126,7 @@ goto commands
 echo.
 echo .NET DllExport $-version-$
 echo Copyright (c) 2009-2015  Robert Giesecke
-echo Copyright (c) 2016-2024  Denis Kuzmin ^<x-3F@outlook.com^> github/3F
+echo Copyright (c) 2016-2025  Denis Kuzmin ^<x-3F@outlook.com^> github/3F
 echo.
 echo MIT License
 echo https://github.com/3F/DllExport

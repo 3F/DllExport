@@ -22,7 +22,7 @@ Based on *UnmanagedExports* that was created by Robert Giesecke. His [page](http
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
-Copyright (c) 2016-2024  Denis Kuzmin <x-3F@outlook.com> github/3F
+Copyright (c) 2016-2025  Denis Kuzmin <x-3F@outlook.com> github/3F
 ```
 
 > [ ***[Quick start](https://github.com/3F/DllExport/wiki/Quick-start)*** ] [ [Examples: C++, C#, Java, ...](https://github.com/3F/DllExport/wiki/Examples) ] 
