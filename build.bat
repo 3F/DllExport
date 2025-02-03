@@ -1,5 +1,4 @@
-:: build [[configuration] | [# [option [keys]]]
-:: https://github.com/3F/DllExport
+::! https://github.com/3F/DllExport
 @echo off & if "%~1"=="#" (
     if "%~2"=="ilasm" ( if "%~3"=="" echo -x64& echo -x86& exit /B0
         if not exist src\coreclr\.gitignore call git submodule update --init src/coreclr
@@ -10,8 +9,12 @@
         shift & shift & setlocal
             cd .tools & call netfx4sdk -mode sys || call netfx4sdk -mode pkg
         endlocal
-
     ) else if "%~2"=="" ( call .tools\hMSBuild ~x -GetNuTool & exit /B0 ) else goto err
+
+) else if "%~1"=="" (
+    echo.&echo %~n0 {configuration} ^| # [option and keys]
+    echo.&echo %~n0 Release &echo %~n0 # &echo %~n0 # CI Release &echo %~n0 # ilasm -x64
+    exit /B 0
 )
 
 set reltype=%~1

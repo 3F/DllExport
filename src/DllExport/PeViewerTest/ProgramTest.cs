@@ -128,7 +128,10 @@ namespace net.r_eg.DllExport.PeViewerTest
         public void FailedKeysTest1()
         {
             Tools.RunPeViewer("-pemodule -not-real", out string stderr);
-            Assert.Contains("Unsupported keys:", stderr);
+            Assert.Contains("Invalid or Incomplete command: -pemodule", stderr);
+
+            Tools.RunPeViewer("-pemodule \"\" -not-real", out stderr);
+            Assert.Contains("?-> -not-real", stderr);
         }
 
         [Fact]
