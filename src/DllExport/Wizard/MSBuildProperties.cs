@@ -134,6 +134,16 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_PROC_ENV = "DllExportProcEnv";
 
         /// <summary>
+        /// .assembly extern ...
+        /// </summary>
+        public const string DXP_ILASM_EXTERN_ASM = "DllExportILAsmExternAsm";
+
+        /// <summary>
+        /// .typeref ...
+        /// </summary>
+        public const string DXP_ILASM_TYPEREF = "DllExportILAsmTypeRef";
+
+        /// <summary>
         /// Meta library full path to file.
         /// </summary>
         public const string DXP_METALIB_FPATH = "DllExportMetaLibFullPath";

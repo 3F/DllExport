@@ -15,11 +15,12 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.Parsing.Actions;
 
 namespace net.r_eg.DllExport.Parsing
 {
-    public sealed class IlParser: HasServiceProvider
+    public sealed class IlParser(IServiceProvider serviceProvider): HasServiceProvider(serviceProvider)
     {
         [Localizable(false)]
         private static readonly string[] _DefaultMethodAttributes =
@@ -48,19 +49,9 @@ namespace net.r_eg.DllExport.Parsing
 
         private HashSet<string> _MethodAttributes;
 
-        public string DllExportAttributeAssemblyName
-        {
-            get {
-                return this.Exports.DllExportAttributeAssemblyName;
-            }
-        }
+        public string DllExportAttributeAssemblyName => Exports.DllExportAttributeAssemblyName;
 
-        public string DllExportAttributeFullName
-        {
-            get {
-                return this.Exports.DllExportAttributeFullName;
-            }
-        }
+        public string DllExportAttributeFullName => Exports.DllExportAttributeFullName;
 
         public string DllExportAttributeIlAsmFullName
         {
@@ -82,29 +73,13 @@ namespace net.r_eg.DllExport.Parsing
             }
         }
 
-        public IInputValues InputValues
-        {
-            get;
-            set;
-        }
+        public IInputValues InputValues { get; set; }
 
-        public AssemblyExports Exports
-        {
-            get;
-            set;
-        }
+        public AssemblyExports Exports { get; set; }
 
-        public string TempDirectory
-        {
-            get;
-            set;
-        }
+        public string TempDirectory { get; set; }
 
-        public bool ProfileActions
-        {
-            get;
-            set;
-        }
+        public bool ProfileActions { get; set; }
 
         public HashSet<string> MethodAttributes
         {
@@ -114,150 +89,169 @@ namespace net.r_eg.DllExport.Parsing
             }
         }
 
-        public IlParser(IServiceProvider serviceProvider)
-        : base(serviceProvider)
-        {
-        }
-
         public IEnumerable<string> GetLines(CpuPlatform cpu)
         {
-            using(this.GetNotifier().CreateContextName((object)this, Resources.ParseILContextName))
+            using IDisposable _ = GetNotifier().CreateContextName(context: this, Resources.ParseILContextName);
+            
+            Dictionary<ParserState, IParserStateAction> actionsByState = ParserStateAction.GetActionsByState(this);
+            List<string> lines = new(1_000_000); // TODO: 
+
+            ParserStateValues state = new(cpu, lines) { State = ParserState.Normal };
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            string dst = Path.Combine(TempDirectory, InputValues.FileName + ".il");
+            using(StreamReader sreader = new(new FileStream(dst, FileMode.Open), Encoding.Unicode))
             {
-                Dictionary<ParserState, IParserStateAction> actionsByState = IlParser.ParserStateAction.GetActionsByState(this);
-                List<string> stringList1 = new List<string>(1000000);
-                ParserStateValues state = new ParserStateValues(cpu, (IList<string>)stringList1) {
-                    State = ParserState.Normal
+                while(!sreader.EndOfStream) lines.Add(sreader.ReadLine());
+            }
+
+            void _ExecAction(IParserStateAction action, string trimmed)
+            {
+                using(GetNotifier().CreateContextName(action, action.GetType().Name))
+                    action.Execute(state, trimmed);
+            }
+            Action<IParserStateAction, string> _Execute = _ExecAction;
+
+            if(ProfileActions)
+            {
+                _Execute = (action, trimmed) =>
+                {
+                    Stopwatch swCore = Stopwatch.StartNew();
+                    _ExecAction(action, trimmed);
+                    swCore.Stop();
+                    action.Milliseconds += swCore.ElapsedMilliseconds;
                 };
-                Stopwatch stopwatch1 = Stopwatch.StartNew();
+            }
 
-                var dest = Path.Combine(TempDirectory, InputValues.FileName + ".il");
-                using(var sreader = new StreamReader(new FileStream(dest, FileMode.Open), Encoding.Unicode))
-                {
-                    while(!sreader.EndOfStream) {
-                        stringList1.Add(sreader.ReadLine());
-                    }
-                }
+            Dictionary<string, int> usedScopeNames = [];
+            for(int idx = 0; idx < lines.Count; ++idx)
+            {
+                state.InputPosition = idx;
+                string line = lines[idx];
 
-                Action<IParserStateAction, string> action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
-                    string name = action.GetType().Name;
-                    using(this.GetNotifier().CreateContextName((object)action, name))
-                        action.Execute(state, trimmedLine);
-                });
-                if(this.ProfileActions)
-                {
-                    Action<IParserStateAction, string> executeActionCore = action1;
-                    action1 = (Action<IParserStateAction, string>)((action, trimmedLine) => {
-                        Stopwatch stopwatch = Stopwatch.StartNew();
-                        executeActionCore(action, trimmedLine);
-                        stopwatch.Stop();
-                        action.Milliseconds += stopwatch.ElapsedMilliseconds;
-                    });
-                }
-                Dictionary<string, int> usedScopeNames = new Dictionary<string, int>();
-                for(int index = 0; index < stringList1.Count; ++index)
-                {
-                    state.InputPosition = index;
-                    string str1 = stringList1[index];
-                    IlParsingUtils.ParseIlSnippet(str1, ParsingDirection.Forward, (Func<IlParsingUtils.IlSnippetLocation, bool>)(current => {
-                        if(!current.WithinString && (int)current.CurrentChar == 93 && (current.LastIdentifier != null && !usedScopeNames.ContainsKey(current.LastIdentifier)))
+                IlParsingUtils.ParseIlSnippet
+                (
+                    line,
+                    ParsingDirection.Forward,
+                    current =>
+                    {
+                        if(!current.WithinString && current.CurrentChar == ']'
+                            && current.LastIdentifier != null && !usedScopeNames.ContainsKey(current.LastIdentifier))
                         {
                             usedScopeNames.Add(current.LastIdentifier, usedScopeNames.Count);
                         }
                         return true;
-                    }), (Action<IlParsingUtils.IlSnippetFinalizaton>)null);
-                    string str2 = str1?.Trim();
-                    state.AddLine = true;
-                    IParserStateAction parserStateAction;
-                    if(!actionsByState.TryGetValue(state.State, out parserStateAction))
-                    {
-                        this.GetNotifier().Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, (object)state.State);
-                    }
-                    else
-                    {
-                        action1(parserStateAction, str2);
-                    }
-                    if(state.AddLine)
-                    {
-                        state.Result.Add(str1);
-                    }
-                }
-                List<string> stringList2 = state.Result;
-                if(state.ExternalAssemlyDeclarations.Count > 0)
+                    },
+                    finalization: null
+                );
+
+                state.AddLine = true;
+
+                if(!actionsByState.TryGetValue(state.State, out IParserStateAction parserStateAction))
                 {
-                    stringList2 = new List<string>(state.Result.Count);
-                    stringList2.AddRange((IEnumerable<string>)state.Result);
-                    List<ExternalAssemlyDeclaration> assemlyDeclarationList = new List<ExternalAssemlyDeclaration>(state.ExternalAssemlyDeclarations.Count);
-                    Dictionary<string, int> foundAliases = new Dictionary<string, int>();
-                    foreach(string inputText in stringList2)
-                    {
-                        if(inputText.Length >= 3 && inputText.Contains("["))
-                            IlParsingUtils.ParseIlSnippet(inputText, ParsingDirection.Forward, (Func<IlParsingUtils.IlSnippetLocation, bool>)(current => {
-                                if(current.WithinScope && !current.WithinString && (current.LastIdentifier != null && !foundAliases.ContainsKey(current.LastIdentifier)))
-                                {
-                                    foundAliases.Add(current.LastIdentifier, foundAliases.Count);
-                                }
-                                return true;
-                            }), (Action<IlParsingUtils.IlSnippetFinalizaton>)null);
-                    }
-                    foreach(ExternalAssemlyDeclaration assemlyDeclaration in (IEnumerable<ExternalAssemlyDeclaration>)state.ExternalAssemlyDeclarations)
-                    {
-                        if(!foundAliases.ContainsKey(assemlyDeclaration.AliasName))
-                        {
-                            assemlyDeclarationList.Add(assemlyDeclaration);
-                        }
-                    }
-                    if(assemlyDeclarationList.Count > 0)
-                    {
-                        assemlyDeclarationList.Reverse();
-                        foreach(ExternalAssemlyDeclaration assemlyDeclaration in assemlyDeclarationList)
-                        {
-                            int num1 = 0;
-                            int num2 = -1;
-                            for(int inputLineIndex = assemlyDeclaration.InputLineIndex; inputLineIndex < stringList2.Count; ++inputLineIndex)
-                            {
-                                string str = stringList2[inputLineIndex].TrimStart();
-                                if(str == "{")
-                                {
-                                    ++num1;
-                                }
-                                else if(str == "}")
-                                {
-                                    if(num1 == 1)
-                                    {
-                                        num2 = inputLineIndex;
-                                        break;
-                                    }
-                                    --num1;
-                                }
-                            }
-                            if(num2 > -1)
-                            {
-                                this.GetNotifier().Notify(-2, DllExportLogginCodes.RemovingReferenceToDllExportAttributeAssembly, string.Format(Resources.Deleting_reference_to_0_, (object)assemlyDeclaration.AssemblyName, assemlyDeclaration.AliasName != assemlyDeclaration.AssemblyName ? (object)string.Format(Resources.AssemblyAlias, (object)assemlyDeclaration.AliasName) : (object)""));
-                                stringList2.RemoveRange(assemlyDeclaration.InputLineIndex, num2 - assemlyDeclaration.InputLineIndex + 1);
-                            }
-                        }
-                    }
+                    GetNotifier().Notify(2, DllExportLogginCodes.NoParserActionError, Resources.No_action_for_parser_state_0_, state.State);
                 }
-
-                EmitMSCorlib(stringList2, state);
-
-                stopwatch1.Stop();
-                this.GetNotifier().Notify(-2, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, (object)stringList1.Count, (object)stopwatch1.ElapsedMilliseconds);
-                if(this.ProfileActions)
+                else
                 {
-                    foreach(KeyValuePair<ParserState, IParserStateAction> keyValuePair in actionsByState)
-                    {
-                        this.GetNotifier().Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, (object)keyValuePair.Key, (object)keyValuePair.Value.Milliseconds);
-                    }
+                    _Execute(parserStateAction, line?.Trim());
                 }
 
-                return stringList2;
+                if(state.AddLine) state.Result.Add(line);
             }
+
+            CleanExternalAssemlyDeclarations(state);
+
+#if F_LEGACY_EMIT_MSCORLIB
+            EmitMsCorlib(state);
+#endif
+
+            stopwatch.Stop();
+            GetNotifier().Notify(-2, "EXPPERF02", Resources.Parsing_0_lines_of_IL_took_1_ms_, lines.Count, stopwatch.ElapsedMilliseconds);
+            if(ProfileActions)
+            {
+                foreach(KeyValuePair<ParserState, IParserStateAction> keyValuePair in actionsByState)
+                    GetNotifier().Notify(-1, "EXPPERF03", Resources.Parsing_action_0_took_1_ms, keyValuePair.Key, keyValuePair.Value.Milliseconds);
+            }
+
+            return state.Result;
         }
 
         internal IDllExportNotifier GetNotifier()
             => (IDllExportNotifier)ServiceProvider.GetService(typeof(IDllExportNotifier));
 
+        private void CleanExternalAssemlyDeclarations(ParserStateValues state)
+        {
+            if(state.ExternalAssemlyDeclarations.Count < 1) return;
+
+            List<ExternalAssemlyDeclaration> declarations = new(state.ExternalAssemlyDeclarations.Count);
+            Dictionary<string, int> aliases = [];
+
+            foreach(string line in state.Result)
+            {
+                if(line.Length >= 3 && line.Contains("["))
+                    IlParsingUtils.ParseIlSnippet
+                    (
+                        line,
+                        ParsingDirection.Forward,
+                        current =>
+                        {
+                            if(current.WithinScope && !current.WithinString
+                                && current.LastIdentifier != null && !aliases.ContainsKey(current.LastIdentifier))
+                            {
+                                aliases.Add(current.LastIdentifier, aliases.Count);
+                            }
+                            return true;
+                        },
+                        finalization: null
+                    );
+            }
+
+            foreach(ExternalAssemlyDeclaration decl in state.ExternalAssemlyDeclarations)
+            {
+                if(!aliases.ContainsKey(decl.AliasName)) declarations.Add(decl);
+            }
+
+            if(declarations.Count < 1) return;
+
+            declarations.Reverse();
+            foreach(ExternalAssemlyDeclaration decl in declarations)
+            {
+                int bLeft = 0, bRight = -1;
+                for(int idx = decl.InputLineIndex; idx < state.Result.Count; ++idx)
+                {
+                    string line = state.Result[idx].TrimStart();
+                    if(line == "{")
+                    {
+                        ++bLeft;
+                    }
+                    else if(line == "}")
+                    {
+                        if(bLeft == 1) { bRight = idx; break; }
+                        --bLeft;
+                    }
+                }
+
+                if(bRight > -1)
+                {
+                    GetNotifier().Notify
+                    (
+                        -2,
+                        DllExportLogginCodes.RemovingReferenceToDllExportAttributeAssembly,
+                        string.Format
+                        (
+                            Resources.Deleting_reference_to_0_,
+                            decl.AssemblyName,
+                            decl.AliasName != decl.AssemblyName
+                                ? string.Format(Resources.AssemblyAlias, decl.AliasName)
+                                : string.Empty
+                        )
+                    );
+                    state.Result.RemoveRange(decl.InputLineIndex, bRight - decl.InputLineIndex + 1);
+                }
+            }
+        }
+
+#if F_LEGACY_EMIT_MSCORLIB
         /// <summary>
         /// Read my note in https://github.com/3F/DllExport/issues/90
         /// 
@@ -274,33 +268,32 @@ namespace net.r_eg.DllExport.Parsing
         /// <param name="il"></param>
         /// <param name="state"></param>
         /// <returns></returns>
-        private bool EmitMSCorlib(List<string> il, ParserStateValues state)
+        private bool EmitMsCorlib(ParserStateValues state)
         {
-            if(state.ExternalAssemlyDeclarations.Count < 1) {
-                return false;
-            }
+            if(state.ExternalAssemlyDeclarations.Count < 1) return false;
 
             const string _EASM = "mscorlib";
 
-            if(state.ExternalAssemlyDeclarations.Any(x => x.AssemblyName == _EASM)) {
+            if(state.ExternalAssemlyDeclarations.Any(x => x.AssemblyName == _EASM))
+            {
                 return false;
             }
 
-            il.InsertRange
+            state.Result.InsertRange
             (
                 state.ExternalAssemlyDeclarations[0].InputLineIndex, 
-                new []
-                {
+                [
                     $".assembly extern '{_EASM}'",
                     "{",
                     "  .publickeytoken = (B7 7A 5C 56 19 34 E0 89 ) ",
                     "  .ver 4:0:0:0",
                     "}"
-                }
+                ]
             );
 
             return true;
         }
+#endif // F_LEGACY_EMIT_MSCORLIB
 
         private HashSet<string> GetMethodAttributes()
         {
@@ -533,37 +526,20 @@ namespace net.r_eg.DllExport.Parsing
 
             public static Dictionary<ParserState, IParserStateAction> GetActionsByState(IlParser parser)
             {
-                Dictionary<ParserState, IParserStateAction> dictionary = new Dictionary<ParserState, IParserStateAction>()
+                AssemblyParserAction assemblyParser = new(parser.InputValues);
+                Dictionary<ParserState, IParserStateAction> dictionary = new()
                 {
-                {
-                    ParserState.ClassDeclaration,
-                    (IParserStateAction) new ClassDeclarationParserAction()
-                },
-                {
-                    ParserState.Class,
-                    (IParserStateAction) new ClassParserAction()
-                },
-                {
-                    ParserState.DeleteExportAttribute,
-                    (IParserStateAction) new DeleteExportAttributeParserAction()
-                },
-                {
-                    ParserState.MethodDeclaration,
-                    (IParserStateAction) new MethodDeclarationParserAction()
-                },
-                {
-                    ParserState.Method,
-                    (IParserStateAction) new MethodParserAction()
-                },
-                {
-                    ParserState.MethodProperties,
-                    (IParserStateAction) new MethodPropertiesParserAction()
-                },
-                {
-                    ParserState.Normal,
-                    (IParserStateAction) new NormalParserAction()
-                }
-            };
+                    { ParserState.ClassDeclaration, new ClassDeclarationParserAction() },
+                    { ParserState.Class, new ClassParserAction() },
+                    { ParserState.DeleteExportAttribute, new DeleteExportAttributeParserAction() },
+                    { ParserState.MethodDeclaration, new MethodDeclarationParserAction() },
+                    { ParserState.Method, new MethodParserAction() },
+                    { ParserState.MethodProperties, new MethodPropertiesParserAction() },
+                    { ParserState.Normal, new NormalParserAction(parser.InputValues) },
+                    { ParserState.AssemblyDeclaration, assemblyParser },
+                    { ParserState.Assembly, assemblyParser },
+                };
+
                 foreach(IParserStateAction parserStateAction in dictionary.Values)
                 {
                     parserStateAction.Parser = parser;

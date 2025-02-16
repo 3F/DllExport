@@ -8,6 +8,7 @@
     <AssemblyName>DllExport</AssemblyName>
 
     <DocumentationFile>$(OutDir)$(AssemblyName).xml</DocumentationFile>
+    <SuppressIncludeDllExportVersion>false</SuppressIncludeDllExportVersion>
   </PropertyGroup>
 
 </Project>

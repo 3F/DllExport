@@ -14,5 +14,9 @@ namespace net.r_eg.DllExport.Activator
         long PatchesRaw { set; }
 
         int PeCheckRaw { set; }
+
+        string AssemblyExternDirectivesRaw { set; }
+
+        string TypeRefDirectivesRaw { set; }
     }
 }

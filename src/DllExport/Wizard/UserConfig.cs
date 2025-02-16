@@ -8,6 +8,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.MvsSln.Core;
@@ -64,6 +66,10 @@ namespace net.r_eg.DllExport.Wizard
 
         public PostProc PostProc { get; set; }
 
+        public List<ILAsm.AssemblyExternDirective> AssemblyExternDirectives { get; set; }
+
+        public List<ILAsm.TypeRefDirective> TypeRefDirectives { get; set; }
+
         public bool AddTopNamespace(string ns)
         {
             if(!string.IsNullOrWhiteSpace(ns) && !Namespaces.Contains(ns))
@@ -108,6 +114,52 @@ namespace net.r_eg.DllExport.Wizard
                 GetPostProcEnv(postType, xp),
                 GetPostProcCmd(postType, xp)
             );
+
+            AssemblyExternDirectives = new List<AssemblyExternDirective>
+            (
+                GetValue(MSBuildProperties.DXP_ILASM_EXTERN_ASM, xp).Deserialize<AssemblyExternDirective>()
+            );
+
+            TypeRefDirectives = new List<TypeRefDirective>
+            (
+                GetValue(MSBuildProperties.DXP_ILASM_TYPEREF, xp).Deserialize<TypeRefDirective>()
+            );
+        }
+
+        public bool ValidateAssemblyExternDirectives(Func<string, bool> onFailed)
+        {
+            if(AssemblyExternDirectives == null || onFailed == null || AssemblyExternDirectives.Count < 1) return true;
+
+            static string _At(int index) => $"at #{index + 1} position";
+            for(int i = 0; i < AssemblyExternDirectives.Count; ++i)
+            {
+                AssemblyExternDirective d = AssemblyExternDirectives[i];
+
+                if(string.IsNullOrWhiteSpace(d.Name))
+                    return onFailed($".assembly extern 'name' is not defined {_At(i)}");
+
+                if(!Regex.IsMatch(d.Version, @"\d+:\d+:\d+:\d+"))
+                    return onFailed($"Incorrect 'version' format {_At(i)}");
+
+                if(!Regex.IsMatch(d.Publickeytoken, @"^[0-9A-F\s]+$", RegexOptions.IgnoreCase))
+                    return onFailed($"Incorrect '.publickeytoken' format {_At(i)}");
+            }
+            return true;
+        }
+
+        public bool ValidateTypeRefDirectives(Func<string, bool> onFailed)
+        {
+            if(TypeRefDirectives == null || onFailed == null || TypeRefDirectives.Count < 1) return true;
+
+            static string _At(int index) => $"at #{index + 1} position";
+            for(int i = 0; i < TypeRefDirectives.Count; ++i)
+            {
+                TypeRefDirective d = TypeRefDirectives[i];
+
+                if(string.IsNullOrWhiteSpace(d.ResolutionScope) && !d.Assert && !d.Deny)
+                    return onFailed($"ResolutionScope is not defined {_At(i)}");
+            }
+            return true;
         }
 
         public UserConfig(IWizardConfig cfg, IXProject xp)

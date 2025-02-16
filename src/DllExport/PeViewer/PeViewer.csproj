@@ -6,6 +6,7 @@
     <OutputType>Exe</OutputType>
     <RootNamespace>net.r_eg.DllExport.PeViewer</RootNamespace>
     <AssemblyName>PeViewer</AssemblyName>
+    <SuppressIncludeDllExportVersion>false</SuppressIncludeDllExportVersion>
   </PropertyGroup>
 
   <ItemGroup>

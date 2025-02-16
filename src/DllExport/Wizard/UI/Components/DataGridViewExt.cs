@@ -17,6 +17,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
 {
     internal class DataGridViewExt: DataGridView
     {
+        public event EventHandler<MovingRowArgs> DragDropSortedRow = (sender, e) => { };
+
+        public sealed class MovingRowArgs: EventArgs { public int from, to; }
+
         /// <summary>
         /// Custom column: for work with numeric formats with standard TextBoxCell 
         /// </summary>
@@ -38,6 +42,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
         public bool NumberingForRowsHeader { get; set; }
 
         /// <summary>
+        /// Allows sorting with Drag 'n' Drop
+        /// </summary>
+        public bool DragDropSortable
+        {
+            get => dragDropSortable;
+            set
+            {
+                dragDropSortable = value;
+                setupSortable(value);
+            }
+        }
+        protected bool dragDropSortable = false;
+
+        /// <summary>
         /// Always one row selected
         /// </summary>
         public bool AlwaysSelected { get; set; }
@@ -46,6 +64,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
         /// Support AlwaysSelected
         /// </summary>
         protected int lastSelectedRowIndex = 0;
+
+        /// <summary>
+        /// Support drag 'n' drop for sortable rows
+        /// </summary>
+        protected MovingRowArgs ddSort = new();
 
         protected readonly SolidBrush sbBlack = new(Color.Black);
 
@@ -89,6 +112,78 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
             if(!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
             {
                 e.Handled = true;
+            }
+        }
+
+        protected void onSortableDragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
+
+        protected void onSortableDragDrop(object sender, DragEventArgs e)
+        {
+            Point point = PointToClient(new Point(e.X, e.Y));
+            ddSort.to = HitTest(point.X, point.Y).RowIndex;
+
+            if(e.Effect != DragDropEffects.Move || ddSort.to == -1 || Rows.Count < 1 || Rows[ddSort.to].IsNewRow)
+            {
+                return;
+            }
+            e.Effect = DragDropEffects.None;
+
+            Rows.RemoveAt(ddSort.from);
+            Rows.Insert(ddSort.to, (DataGridViewRow)e.Data.GetData(typeof(DataGridViewRow)));
+            ClearSelection();
+            Rows[ddSort.to].Selected = true;
+
+            DragDropSortedRow(this, ddSort);
+        }
+
+        protected void onSortableMouseMove(object sender, MouseEventArgs e)
+        {
+            if((e.Button & MouseButtons.Left) == MouseButtons.Left)
+            {
+                if(ddSort.from == -1 || Rows.Count < 1 || Rows[ddSort.from].IsNewRow) return;
+                DoDragDrop(Rows[ddSort.from], DragDropEffects.Move);
+            }
+        }
+
+        protected void onSortableMouseDown(object sender, MouseEventArgs e)
+        {
+            ddSort.from = HitTest(e.X, e.Y).RowIndex;
+        }
+
+        protected void setupSortable(bool enabled)
+        {
+            if(enabled)
+            {
+                AllowDrop = true;
+                enableSortEvents();
+                return;
+            }
+            disableSortEvents();
+        }
+
+        protected void enableSortEvents()
+        {
+            lock(_eLock)
+            {
+                disableSortEvents();
+                DragOver   += onSortableDragOver;
+                DragDrop   += onSortableDragDrop;
+                MouseMove  += onSortableMouseMove;
+                MouseDown  += onSortableMouseDown;
+            }
+        }
+
+        protected void disableSortEvents()
+        {
+            lock(_eLock)
+            {
+                DragOver   -= onSortableDragOver;
+                DragDrop   -= onSortableDragDrop;
+                MouseMove  -= onSortableMouseMove;
+                MouseDown  -= onSortableMouseDown;
             }
         }
 

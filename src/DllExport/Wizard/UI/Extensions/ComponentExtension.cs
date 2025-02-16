@@ -10,6 +10,7 @@
 
 using System;
 using System.Windows.Forms;
+using net.r_eg.DllExport.Wizard.UI.Components;
 
 #if NET40
 using System.Drawing;
@@ -36,6 +37,16 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
         public static int GetValueUsingDpi(this Control src, int value, float size = 96)
         {
             return (int)Math.Ceiling(value / size * src.GetSysDpi());
+        }
+
+        internal static void RemoveRow(this DataGridViewExt dgv, DataGridViewCellEventArgs e, DataGridViewButtonColumn btn)
+        {
+            if(e.RowIndex == -1 || e.ColumnIndex == -1) return;
+
+            if(e.ColumnIndex == dgv.Columns.IndexOf(btn) && e.RowIndex < dgv.Rows.Count - 1)
+            {
+                dgv.Rows.Remove(dgv.Rows[e.RowIndex]);
+            }
         }
     }
 }

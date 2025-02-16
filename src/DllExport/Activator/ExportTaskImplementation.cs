@@ -17,6 +17,7 @@ using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using Microsoft.Win32;
 using net.r_eg.DllExport.Extensions;
+using net.r_eg.DllExport.ILAsm;
 using net.r_eg.MvsSln;
 
 namespace net.r_eg.DllExport.Activator
@@ -194,6 +195,18 @@ namespace net.r_eg.DllExport.Activator
         {
             get => _Values.PeCheck;
             set => _Values.PeCheck = value;
+        }
+
+        public List<AssemblyExternDirective> AssemblyExternDirectives
+        {
+            get => _Values.AssemblyExternDirectives;
+            set => _Values.AssemblyExternDirectives = value;
+        }
+
+        public List<TypeRefDirective> TypeRefDirectives
+        {
+            get => _Values.TypeRefDirectives;
+            set => _Values.TypeRefDirectives = value;
         }
 
         public string DllExportAttributeFullName

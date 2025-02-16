@@ -40,6 +40,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
             ctrl.ResumeDraw();
         }
 
+        public static void Suspend(this Control ctrl, Action action)
+        {
+            ctrl.Pause();
+            action?.Invoke();
+            ctrl.Resume();
+        }
+
         public static void Dispose(this Control.ControlCollection controls)
         {
             object[] ctrls = new object[controls.Count];

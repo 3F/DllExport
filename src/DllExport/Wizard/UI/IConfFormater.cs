@@ -5,10 +5,14 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
+using System;
+
 namespace net.r_eg.DllExport.Wizard.UI
 {
     internal interface IConfFormater
     {
+        string ParseIfNeeded(IProject prj, Action onParse = null);
+
         string Parse(IProject project);
     }
 }

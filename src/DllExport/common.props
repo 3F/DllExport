@@ -10,6 +10,9 @@
     <RootObjDir>bin\obj\</RootObjDir>
     <RootAssetsDir>bin\assets\</RootAssetsDir>
 
+    <DllExportFeatureLegacyEmitMsCorlib>true</DllExportFeatureLegacyEmitMsCorlib> <!-- TODO: false; no longer needed after 3F's IL Assembler 9.3.0+ release -->
+    <SuppressIncludeDllExportVersion>true</SuppressIncludeDllExportVersion>
+
     <OsUnixLike>false</OsUnixLike>
     <OsUnixLike Condition="$([MSBuild]::IsOsUnixLike())">true</OsUnixLike>
 
@@ -23,6 +26,7 @@
   <PropertyGroup>
     <DefineConstants Condition="'$(DllExportFeatureActivatorIsolatedTask)'=='true'">FEATURE_ACTIVATOR_ISOLATED_TASK;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(DllExportFeatureConariNetCoreAddSysDll)'=='true'">F_CONARI_ADD_SYS_DLL;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(DllExportFeatureLegacyEmitMsCorlib)'=='true'">F_LEGACY_EMIT_MSCORLIB;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>

@@ -6,6 +6,9 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
+using System.Collections.Generic;
+using net.r_eg.DllExport.ILAsm;
+
 namespace net.r_eg.DllExport
 {
     public interface IInputValues
@@ -47,6 +50,10 @@ namespace net.r_eg.DllExport
         PatchesType Patches { get; set; }
 
         PeCheckType PeCheck { get; set; }
+
+        List<AssemblyExternDirective> AssemblyExternDirectives { get; set; }
+
+        List<TypeRefDirective> TypeRefDirectives { get; set; }
 
         string MethodAttributes { get; set; }
 

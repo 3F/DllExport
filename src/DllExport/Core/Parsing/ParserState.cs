@@ -18,5 +18,7 @@ namespace net.r_eg.DllExport.Parsing
         MethodProperties,
         Method,
         DeleteExportAttribute,
+        AssemblyDeclaration,
+        Assembly,
     }
 }

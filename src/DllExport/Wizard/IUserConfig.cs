@@ -5,6 +5,7 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
+using System;
 using System.Collections.Generic;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.MvsSln.Core;
@@ -75,6 +76,16 @@ namespace net.r_eg.DllExport.Wizard
         PostProc PostProc { get; set; }
 
         /// <summary>
+        /// Custom .assembly extern ... configurations
+        /// </summary>
+        List<ILAsm.AssemblyExternDirective> AssemblyExternDirectives { get; set; }
+
+        /// <summary>
+        /// Custom .typeref ... configurations
+        /// </summary>
+        List<ILAsm.TypeRefDirective> TypeRefDirectives { get; set; }
+
+        /// <summary>
         /// Adds to top new namespace into Namespaces property.
         /// </summary>
         /// <param name="ns"></param>
@@ -86,5 +97,19 @@ namespace net.r_eg.DllExport.Wizard
         /// </summary>
         /// <param name="xp"></param>
         void UpdateDataFrom(IXProject xp);
+
+        /// <summary>
+        /// Validate <see cref="AssemblyExternDirectives"/> directives.
+        /// </summary>
+        /// <param name="onFailed">Execute action if the directive is invalid.</param>
+        /// <returns>true if all directives are valid.</returns>
+        bool ValidateAssemblyExternDirectives(Func<string, bool> onFailed);
+
+        /// <summary>
+        /// Validate <see cref="TypeRefDirectives"/> directives.
+        /// </summary>
+        /// <param name="onFailed">Execute action if the directive is invalid.</param>
+        /// <returns>true if all directives are valid.</returns>
+        bool ValidateTypeRefDirectives(Func<string, bool> onFailed);
     }
 }

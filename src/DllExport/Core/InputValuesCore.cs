@@ -7,8 +7,10 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.Parsing;
 
 namespace net.r_eg.DllExport
@@ -54,6 +56,10 @@ namespace net.r_eg.DllExport
         public PatchesType Patches { get; set; }
 
         public PeCheckType PeCheck { get; set; }
+
+        public List<AssemblyExternDirective> AssemblyExternDirectives { get; set; }
+
+        public List<TypeRefDirective> TypeRefDirectives { get; set; }
 
         public string MethodAttributes { get; set; }
 

@@ -18,6 +18,21 @@ namespace net.r_eg.DllExport.Wizard.UI
     {
         protected readonly IExecutor exec = exec ?? throw new ArgumentNullException(nameof(exec));
 
+        protected Dictionary<string, string> cache = [];
+
+        public string ParseIfNeeded(IProject prj, Action onParse = null)
+        {
+            if(prj == null) return string.Empty;
+
+            string id = prj.DxpIdent;
+            if(!cache.ContainsKey(id))
+            {
+                onParse?.Invoke();
+                cache[id] = Parse(prj);
+            }
+            return cache[id];
+        }
+
         public string Parse(IProject prj)
         {
             if(prj == null) return string.Empty;
@@ -44,8 +59,11 @@ namespace net.r_eg.DllExport.Wizard.UI
                 Append
                 (
                     exec.ActiveEnv.Sln.ProjectItemsConfigs
-                        .Where(p => p.project == prj.XProject.ProjectItem.project)
-                        .Select(p => p.projectConfig.Configuration),
+                        .Where(p =>
+                            (p.projectConfig.IncludeInBuild || p.projectConfig.IncludeInDeploy)
+                                && p.project == prj.XProject.ProjectItem.project
+                        )
+                        .Select(p => p.projectConfig.Configuration).Distinct(),
                     [
                             "SignAssembly",
                             "PlatformTarget",
@@ -87,7 +105,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             });
         }
 
-        protected virtual string GetFrame(Action<StringBuilder> builder, int capacity = 200)
+        protected virtual string GetFrame(Action<StringBuilder> builder, int capacity = 4096)
         {
             StringBuilder sb = new(capacity);
 

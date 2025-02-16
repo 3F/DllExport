@@ -7,11 +7,13 @@
 */
 
 using System;
+using System.Collections.Generic;
 using System.Resources;
 using System.Security.Permissions;
 using Microsoft.Build.Framework;
 using Microsoft.Build.Utilities;
 using net.r_eg.DllExport.Extensions;
+using net.r_eg.DllExport.ILAsm;
 
 namespace net.r_eg.DllExport.Activator
 {
@@ -241,6 +243,28 @@ namespace net.r_eg.DllExport.Activator
         public int PeCheckRaw
         {
             set => PeCheck = (PeCheckType)value;
+        }
+
+        public List<AssemblyExternDirective> AssemblyExternDirectives
+        {
+            get => exportTask.AssemblyExternDirectives;
+            set => exportTask.AssemblyExternDirectives = value;
+        }
+
+        public string AssemblyExternDirectivesRaw
+        {
+            set => AssemblyExternDirectives = new(value.Deserialize<AssemblyExternDirective>());
+        }
+
+        public List<TypeRefDirective> TypeRefDirectives
+        {
+            get => exportTask.TypeRefDirectives;
+            set => exportTask.TypeRefDirectives = value;
+        }
+
+        public string TypeRefDirectivesRaw
+        {
+            set => TypeRefDirectives = new(value.Deserialize<TypeRefDirective>());
         }
 
         public string DllExportAttributeFullName

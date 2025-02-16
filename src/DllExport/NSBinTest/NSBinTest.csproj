@@ -6,6 +6,7 @@
     <TargetFrameworks>$(DllExportTestTFMs)</TargetFrameworks>
     <RootNamespace>net.r_eg.DllExport.NSBinTest</RootNamespace>
     <AssemblyName>net.r_eg.DllExport.NSBinTest</AssemblyName>
+    <SuppressIncludeDllExportVersion>false</SuppressIncludeDllExportVersion>
   </PropertyGroup>
 
   <ItemGroup>

@@ -35,20 +35,23 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private CfgStorage storage;
         private FileDialog fdialog;
-        private readonly Icons icons = new Icons();
+        private readonly Icons icons = new();
         private readonly Caller caller;
         private readonly PackageInfo pkgVer;
         private readonly IConfFormater confFormater;
         private volatile int prevSlnItemIndex = 0;
-        private volatile int prevPrjIndex = -1;
+        private volatile int selectedProjectIndex = -1;
         private volatile bool _suspendCbSln;
         private readonly string updaterInitName;
+        private readonly Color cGreen = Color.FromArgb(111, 145, 6);
+        private readonly Color cRed = Color.FromArgb(168, 47, 17);
         private CancellationTokenSource ctsUpdater;
         private Task tUpdater;
-        private readonly object sync = new object();
+        private readonly object sync = new();
 
         private string UpdToVersion => cbPackages.Text.Trim();
         private string CmdUpdate => $".\\{UserConfig.MGR_NAME} -action Upgrade -dxp-version ";
+        private IProject SelectedProject => GetProject(selectedProjectIndex);
 
         /// <summary>
         /// To apply filter for rendered projects.
@@ -58,12 +61,8 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         public void ShowProgressLine(bool enabled)
         {
-            if(enabled) {
-                progressLine.StartTrainEffect(panelTop.Width, 40, 50);
-            }
-            else {
-                progressLine.StopAll();
-            }
+            if(enabled) progressLine.StartTrainEffect(panelTop.Width, 40, 50);
+            else progressLine.StopAll();
         }
 
         public ConfiguratorForm(IExecutor exec)
@@ -315,10 +314,8 @@ namespace net.r_eg.DllExport.Wizard.UI
                 );
 
                 dgvFilter.Rows[n].Cells[1].ToolTipText = prj.XProject.ProjectItem.project.EpType.ToString();
-                dgvFilter.Rows[n].Cells[0].Style.BackColor = (prj.Installed)? Color.FromArgb(111, 145, 6) 
-                                                                            : Color.FromArgb(168, 47, 17);
+                dgvFilter.Rows[n].Cells[0].Style.BackColor = prj.Installed ? cGreen : cRed;
             });
-
             EnableTabsWhenNoSln(dgvFilter.Rows.Count > 0);
         }
 
@@ -331,20 +328,24 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private bool SaveProjects(IEnumerable<IProject> projects)
         {
-            foreach(var prj in projects)
+            foreach(IProject prj in projects)
             {
-                if(!DDNS.IsValidNS(prj.Config.Namespace)) 
-                {
-                    this.ForegroundAction(_=> MessageBox.Show(
-                        $"{prj.ProjectPath}\n\n>> Namespace: '{prj.Config.Namespace}'", "Fix data before continue", 0, MessageBoxIcon.Warning
-                    ));
-                    return false;
-                }
+                if(!DDNS.IsValidNS(prj.Config.Namespace))
+                    return Alert(prj, $"{nameof(prj.Config.Namespace)}: '{prj.Config.Namespace}'");
+
+                if(!prj.Config.ValidateTypeRefDirectives(m => Alert(prj, "Types->" + m))) return false;
+                if(!prj.Config.ValidateAssemblyExternDirectives(m => Alert(prj, "Asm->" + m))) return false;
 
                 exec.TargetsFileIfCfg?.Configure(ActionType.Configure, prj);
                 prj.Configure(ActionType.Configure);
             }
             return true;
+        }
+
+        private bool Alert(IProject prj, string text)
+        {
+            this.ForegroundAction(_ => MessageBox.Show($"{prj.ProjectPath}\n\n>> " + text, "Fix data before continue", 0, MessageBoxIcon.Warning));
+            return false;
         }
 
         private void DoSilentAction(Action act)
@@ -395,6 +396,9 @@ namespace net.r_eg.DllExport.Wizard.UI
         {
             LoadPostProcProperties(prj);
 
+            asmControl.Export(prj.Config.AssemblyExternDirectives);
+            typeRefControl.Export(prj.Config.TypeRefDirectives);
+
             preProcControl.Export(prj.Config.PreProc);
             postProcControl.Export(prj.Config.PostProc);
             //TODO: to change processing of projectItems to this way
@@ -403,21 +407,20 @@ namespace net.r_eg.DllExport.Wizard.UI
         private void UpdateRefAfter(IProject prj)
         {
             //TODO: multiple controls are obsolete now because of new layout in 1.7+
-            projectItems.Pause();
-            projectItems.Set(prj);
-            projectItems.Resume();
+            projectItems.Suspend(() => projectItems.Set(prj));
 
             preProcControl.Render(prj.Config.PreProc);
             postProcControl.Render(prj.Config.PostProc);
 
-            txtCfgData.Text = confFormater.Parse(prj);
+            asmControl.Render(prj.Config.AssemblyExternDirectives);
+            typeRefControl.Render(prj.Config.TypeRefDirectives);
+
+            UpdateDataTab(tabCtrl.SelectedTab, prj);
         }
 
         private IProject GetProject(int index)
         {
-            if(index == -1 || index >= dgvFilter.RowCount) {
-                return null;
-            }
+            if(index == -1 || index >= dgvFilter.RowCount) return null;
 
             string path = dgvFilter.Rows[index].Cells[gcPath.Name].Value.ToString();
             return GetProjects(exec.ActiveSlnFile).FirstOrDefault(p => p.ProjectPath == path);
@@ -425,10 +428,8 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void UpdateRefBefore()
         {
-            IProject prevPrj = GetProject(prevPrjIndex);
-            if(prevPrj != null) {
-                UpdateRefBefore(prevPrj);
-            }
+            IProject prj = SelectedProject;
+            if(prj != null) UpdateRefBefore(prj);
         }
 
         private bool Apply()
@@ -447,6 +448,15 @@ namespace net.r_eg.DllExport.Wizard.UI
         }
 
         private void EnableTabsWhenNoSln(bool status) => ((Control)tabCfgDxp).Enabled = status;
+
+        private void UpdateDataTab(TabPage tab, IProject prj)
+        {
+            if(tab.Name == tabData.Name)
+            {
+                txtCfgData.Text = confFormater.ParseIfNeeded(prj, () => ShowProgressLine(enabled: true));
+                ShowProgressLine(enabled: false);
+            }
+        }
 
         private string GetBuildInfo()
         {
@@ -529,15 +539,20 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private void dgvFilter_RowEnter(object sender, DataGridViewCellEventArgs e)
         {
+            ShowProgressLine(enabled: true);
             UpdateRefBefore();
 
             IProject prj = GetProject(e.RowIndex);
-            if(prj != null) 
+            if(prj != null)
             {
                 UpdateRefAfter(prj);
-                prevPrjIndex = e.RowIndex;
+                selectedProjectIndex = e.RowIndex;
             }
+            ShowProgressLine(enabled: false);
         }
+
+        private void tabCtrl_Selected(object sender, TabControlEventArgs e)
+            => UpdateDataTab(e.TabPage, SelectedProject);
 
         private void dgvFilter_KeyDown(object sender, KeyEventArgs e)
         {

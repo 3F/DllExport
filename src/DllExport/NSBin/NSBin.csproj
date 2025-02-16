@@ -5,6 +5,7 @@
     <TargetFramework>$(DllExportTFM)</TargetFramework>
     <RootNamespace>net.r_eg.DllExport.NSBin</RootNamespace>
     <AssemblyName>net.r_eg.DllExport.NSBin</AssemblyName>
+    <SuppressIncludeDllExportVersion>false</SuppressIncludeDllExportVersion>
   </PropertyGroup>
 
   <ItemGroup>

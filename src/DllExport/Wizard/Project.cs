@@ -11,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.Build.Construction;
+using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.NSBin;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.Gears;
@@ -214,7 +215,9 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_ILMERGE,
                 MSBuildProperties.DXP_POST_PROC_TYPE,
                 MSBuildProperties.DXP_PROC_ENV,
-                MSBuildProperties.DXP_DIR
+                MSBuildProperties.DXP_DIR,
+                MSBuildProperties.DXP_ILASM_EXTERN_ASM,
+                MSBuildProperties.DXP_ILASM_TYPEREF
             );
             AllocPlatformTargetIfNeeded(xproject);
 
@@ -415,6 +418,14 @@ namespace net.r_eg.DllExport.Wizard
 
             SetProperty(MSBuildProperties.DXP_REFRESH_OBJ, Config.Compiler.refreshObj);
             Log.send(this, $"Refresh intermediate module (obj) using modified (bin): {Config.Compiler.refreshObj}");
+
+            string asmExterns = Config.AssemblyExternDirectives.Serialize();
+            SetProperty(MSBuildProperties.DXP_ILASM_EXTERN_ASM, asmExterns);
+            Log.send(this, $"Custom .assembly extern ... : {asmExterns}");
+
+            string typerefs = Config.TypeRefDirectives.Serialize();
+            SetProperty(MSBuildProperties.DXP_ILASM_TYPEREF, typerefs);
+            Log.send(this, $"Custom .typeref ... : {typerefs}");
         }
 
         protected void CfgCommonData(string dxpDir = null)

@@ -7,6 +7,8 @@
     <AssemblyName>DllExport</AssemblyName>
     <DocumentationFile>$(OutDir)$(AssemblyName).xml</DocumentationFile>
 
+    <SuppressIncludeDllExportVersion>false</SuppressIncludeDllExportVersion>
+
     <!--
       MetaCor do NOT reference System.Net.Http and System.Text.RegularExpressions versions with vulnerabilities at the moment (and most likely never will be);
       Otherwise TargetLatestRuntimePatchForNetStd11=true will link to the most up-to-date versions for this TFM

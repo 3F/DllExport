@@ -55,11 +55,16 @@
             this.tabCtrl = new System.Windows.Forms.TabControl();
             this.tabCfgDxp = new System.Windows.Forms.TabPage();
             this.projectItems = new net.r_eg.DllExport.Wizard.UI.Controls.ProjectItemsControl();
-            this.tabPreProc = new System.Windows.Forms.TabPage();
-            this.preProcControl = new net.r_eg.DllExport.Wizard.UI.Controls.PreProcControl();
             this.tabData = new System.Windows.Forms.TabPage();
             this.labelStorage = new System.Windows.Forms.Label();
             this.txtCfgData = new System.Windows.Forms.TextBox();
+            this.tabPreProc = new System.Windows.Forms.TabPage();
+            this.preProcControl = new net.r_eg.DllExport.Wizard.UI.Controls.PreProcControl();
+            this.tabTypes = new System.Windows.Forms.TabPage();
+            this.typeRefControl = new net.r_eg.DllExport.Wizard.UI.Controls.TypeRefControl();
+            this.tabAsm = new System.Windows.Forms.TabPage();
+            this.asmControl = new net.r_eg.DllExport.Wizard.UI.Controls.AsmControl();
+            this.tabRef = new System.Windows.Forms.TabPage();
             this.tabPostProc = new System.Windows.Forms.TabPage();
             this.postProcControl = new net.r_eg.DllExport.Wizard.UI.Controls.PostProcControl();
             this.tabUpdating = new System.Windows.Forms.TabPage();
@@ -83,8 +88,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).BeginInit();
             this.tabCtrl.SuspendLayout();
             this.tabCfgDxp.SuspendLayout();
-            this.tabPreProc.SuspendLayout();
             this.tabData.SuspendLayout();
+            this.tabPreProc.SuspendLayout();
+            this.tabTypes.SuspendLayout();
+            this.tabAsm.SuspendLayout();
             this.tabPostProc.SuspendLayout();
             this.tabUpdating.SuspendLayout();
             this.panelUpdVerTop.SuspendLayout();
@@ -236,6 +243,7 @@
             dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.dgvFilter.DefaultCellStyle = dataGridViewCellStyle1;
             this.dgvFilter.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgvFilter.DragDropSortable = false;
             this.dgvFilter.EditMode = System.Windows.Forms.DataGridViewEditMode.EditProgrammatically;
             this.dgvFilter.Location = new System.Drawing.Point(0, 0);
             this.dgvFilter.Margin = new System.Windows.Forms.Padding(0);
@@ -297,8 +305,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabCtrl.Appearance = System.Windows.Forms.TabAppearance.Buttons;
             this.tabCtrl.Controls.Add(this.tabCfgDxp);
-            this.tabCtrl.Controls.Add(this.tabPreProc);
             this.tabCtrl.Controls.Add(this.tabData);
+            this.tabCtrl.Controls.Add(this.tabPreProc);
+            this.tabCtrl.Controls.Add(this.tabTypes);
+            this.tabCtrl.Controls.Add(this.tabAsm);
+            this.tabCtrl.Controls.Add(this.tabRef);
             this.tabCtrl.Controls.Add(this.tabPostProc);
             this.tabCtrl.Controls.Add(this.tabUpdating);
             this.tabCtrl.Controls.Add(this.tabBuildInfo);
@@ -309,6 +320,7 @@
             this.tabCtrl.SelectedIndex = 0;
             this.tabCtrl.Size = new System.Drawing.Size(450, 283);
             this.tabCtrl.TabIndex = 0;
+            this.tabCtrl.Selected += new System.Windows.Forms.TabControlEventHandler(this.tabCtrl_Selected);
             // 
             // tabCfgDxp
             // 
@@ -337,25 +349,6 @@
             this.projectItems.Size = new System.Drawing.Size(448, 274);
             this.projectItems.TabIndex = 2;
             // 
-            // tabPreProc
-            // 
-            this.tabPreProc.Controls.Add(this.preProcControl);
-            this.tabPreProc.Location = new System.Drawing.Point(4, 25);
-            this.tabPreProc.Name = "tabPreProc";
-            this.tabPreProc.Size = new System.Drawing.Size(442, 253);
-            this.tabPreProc.TabIndex = 4;
-            this.tabPreProc.Text = "Pre-processing";
-            this.tabPreProc.UseVisualStyleBackColor = true;
-            // 
-            // preProcControl
-            // 
-            this.preProcControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.preProcControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.preProcControl.Location = new System.Drawing.Point(0, 0);
-            this.preProcControl.Name = "preProcControl";
-            this.preProcControl.Size = new System.Drawing.Size(442, 253);
-            this.preProcControl.TabIndex = 0;
-            // 
             // tabData
             // 
             this.tabData.Controls.Add(this.labelStorage);
@@ -363,7 +356,7 @@
             this.tabData.Controls.Add(this.txtCfgData);
             this.tabData.Location = new System.Drawing.Point(4, 25);
             this.tabData.Name = "tabData";
-            this.tabData.Size = new System.Drawing.Size(442, 253);
+            this.tabData.Size = new System.Drawing.Size(442, 254);
             this.tabData.TabIndex = 3;
             this.tabData.Text = "Data";
             this.tabData.UseVisualStyleBackColor = true;
@@ -393,14 +386,82 @@
             this.txtCfgData.Size = new System.Drawing.Size(436, 219);
             this.txtCfgData.TabIndex = 13;
             // 
+            // tabPreProc
+            // 
+            this.tabPreProc.Controls.Add(this.preProcControl);
+            this.tabPreProc.Location = new System.Drawing.Point(4, 25);
+            this.tabPreProc.Name = "tabPreProc";
+            this.tabPreProc.Size = new System.Drawing.Size(442, 254);
+            this.tabPreProc.TabIndex = 4;
+            this.tabPreProc.Text = "Pre-processing";
+            this.tabPreProc.UseVisualStyleBackColor = true;
+            // 
+            // preProcControl
+            // 
+            this.preProcControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.preProcControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.preProcControl.Location = new System.Drawing.Point(0, 0);
+            this.preProcControl.Name = "preProcControl";
+            this.preProcControl.Size = new System.Drawing.Size(442, 254);
+            this.preProcControl.TabIndex = 0;
+            // 
+            // tabTypes
+            // 
+            this.tabTypes.Controls.Add(this.typeRefControl);
+            this.tabTypes.Location = new System.Drawing.Point(4, 25);
+            this.tabTypes.Name = "tabTypes";
+            this.tabTypes.Size = new System.Drawing.Size(442, 254);
+            this.tabTypes.TabIndex = 6;
+            this.tabTypes.Text = "Types";
+            this.tabTypes.UseVisualStyleBackColor = true;
+            // 
+            // typeRefControl
+            // 
+            this.typeRefControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.typeRefControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.typeRefControl.Location = new System.Drawing.Point(0, 0);
+            this.typeRefControl.Margin = new System.Windows.Forms.Padding(0);
+            this.typeRefControl.Name = "typeRefControl";
+            this.typeRefControl.Size = new System.Drawing.Size(442, 254);
+            this.typeRefControl.TabIndex = 0;
+            // 
+            // tabAsm
+            // 
+            this.tabAsm.Controls.Add(this.asmControl);
+            this.tabAsm.Location = new System.Drawing.Point(4, 25);
+            this.tabAsm.Name = "tabAsm";
+            this.tabAsm.Size = new System.Drawing.Size(442, 254);
+            this.tabAsm.TabIndex = 7;
+            this.tabAsm.Text = "Asm";
+            this.tabAsm.UseVisualStyleBackColor = true;
+            // 
+            // asmControl
+            // 
+            this.asmControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.asmControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.asmControl.Location = new System.Drawing.Point(0, 0);
+            this.asmControl.Margin = new System.Windows.Forms.Padding(0);
+            this.asmControl.Name = "asmControl";
+            this.asmControl.Size = new System.Drawing.Size(442, 254);
+            this.asmControl.TabIndex = 0;
+            // 
+            // tabRef
+            // 
+            this.tabRef.Location = new System.Drawing.Point(4, 25);
+            this.tabRef.Name = "tabRef";
+            this.tabRef.Size = new System.Drawing.Size(442, 254);
+            this.tabRef.TabIndex = 8;
+            this.tabRef.Text = "Ref";
+            this.tabRef.UseVisualStyleBackColor = true;
+            // 
             // tabPostProc
             // 
             this.tabPostProc.Controls.Add(this.postProcControl);
             this.tabPostProc.Location = new System.Drawing.Point(4, 25);
             this.tabPostProc.Name = "tabPostProc";
-            this.tabPostProc.Size = new System.Drawing.Size(442, 253);
+            this.tabPostProc.Size = new System.Drawing.Size(442, 254);
             this.tabPostProc.TabIndex = 5;
-            this.tabPostProc.Text = "Post-processing";
+            this.tabPostProc.Text = "Post";
             this.tabPostProc.UseVisualStyleBackColor = true;
             // 
             // postProcControl
@@ -410,7 +471,7 @@
             this.postProcControl.Location = new System.Drawing.Point(0, 0);
             this.postProcControl.Margin = new System.Windows.Forms.Padding(0);
             this.postProcControl.Name = "postProcControl";
-            this.postProcControl.Size = new System.Drawing.Size(442, 253);
+            this.postProcControl.Size = new System.Drawing.Size(442, 254);
             this.postProcControl.TabIndex = 0;
             // 
             // tabUpdating
@@ -421,7 +482,7 @@
             this.tabUpdating.Location = new System.Drawing.Point(4, 25);
             this.tabUpdating.Name = "tabUpdating";
             this.tabUpdating.Padding = new System.Windows.Forms.Padding(3);
-            this.tabUpdating.Size = new System.Drawing.Size(442, 253);
+            this.tabUpdating.Size = new System.Drawing.Size(442, 254);
             this.tabUpdating.TabIndex = 2;
             this.tabUpdating.Text = "Updater";
             this.tabUpdating.UseVisualStyleBackColor = true;
@@ -484,9 +545,9 @@
             this.tabBuildInfo.Location = new System.Drawing.Point(4, 25);
             this.tabBuildInfo.Name = "tabBuildInfo";
             this.tabBuildInfo.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBuildInfo.Size = new System.Drawing.Size(442, 253);
+            this.tabBuildInfo.Size = new System.Drawing.Size(442, 254);
             this.tabBuildInfo.TabIndex = 1;
-            this.tabBuildInfo.Text = "Build info";
+            this.tabBuildInfo.Text = "# info";
             // 
             // labelSrcMit
             // 
@@ -584,9 +645,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.dgvFilter)).EndInit();
             this.tabCtrl.ResumeLayout(false);
             this.tabCfgDxp.ResumeLayout(false);
-            this.tabPreProc.ResumeLayout(false);
             this.tabData.ResumeLayout(false);
             this.tabData.PerformLayout();
+            this.tabPreProc.ResumeLayout(false);
+            this.tabTypes.ResumeLayout(false);
+            this.tabAsm.ResumeLayout(false);
             this.tabPostProc.ResumeLayout(false);
             this.tabUpdating.ResumeLayout(false);
             this.tabUpdating.PerformLayout();
@@ -636,5 +699,10 @@
         private Controls.PreProcControl preProcControl;
         private System.Windows.Forms.TabPage tabPostProc;
         private Controls.PostProcControl postProcControl;
+        private System.Windows.Forms.TabPage tabTypes;
+        private System.Windows.Forms.TabPage tabAsm;
+        private Controls.TypeRefControl typeRefControl;
+        private Controls.AsmControl asmControl;
+        private System.Windows.Forms.TabPage tabRef;
     }
 }

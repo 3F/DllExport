@@ -9,20 +9,25 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using net.r_eg.DllExport.ILAsm;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
     [ParserStateAction(ParserState.Normal)]
-    public sealed class NormalParserAction: IlParser.ParserStateAction
+    public sealed class NormalParserAction(IInputValues input): IlParser.ParserStateAction
     {
+        private readonly IInputValues inputValues = input;
+
         public override void Execute(ParserStateValues state, string trimmedLine)
         {
             if(trimmedLine.StartsWith(".corflags", StringComparison.Ordinal))
             {
-                state.Result.Add(string.Format((IFormatProvider)CultureInfo.InvariantCulture, ".corflags 0x{0}", new object[1]
-                {
-                (object) Utilities.GetCoreFlagsForPlatform(state.Cpu).ToString("X8", (IFormatProvider) CultureInfo.InvariantCulture)
-                }));
+                state.Result.Add(string.Format
+                (
+                    CultureInfo.InvariantCulture,
+                    ".corflags 0x{0}",
+                    Utilities.GetCoreFlagsForPlatform(state.Cpu).ToString("X8", CultureInfo.InvariantCulture)
+                ));
                 state.AddLine = false;
             }
             else if(trimmedLine.StartsWith(".class", StringComparison.Ordinal))
@@ -31,21 +36,29 @@ namespace net.r_eg.DllExport.Parsing.Actions
                 state.AddLine = true;
                 state.ClassDeclaration = trimmedLine;
             }
+            else if(trimmedLine.StartsWith(".assembly '"))
+            {
+                EmitCustomExternalAssemlies(state);
+                //
+                state.State = ParserState.AssemblyDeclaration;
+                state.AddLine = true;
+            }
             else
             {
-                string assemblyName;
-                string aliasName;
-                if(!this.IsExternalAssemblyReference(trimmedLine, out assemblyName, out aliasName))
-                {
-                    return;
-                }
-                state.RegisterMsCorelibAlias(assemblyName, aliasName);
+                if(!IsExternalAssemblyReference(trimmedLine, out string assemblyName, out string aliasName)) return;
+                state.RegisterExternalAssemlyAlias(assemblyName, aliasName);
             }
         }
 
-        private bool IsExportAttributeAssemblyReference(string trimmedLine)
+        private void EmitCustomExternalAssemlies(ParserStateValues state)
         {
-            return trimmedLine.StartsWith(".assembly extern '" + this.DllExportAttributeAssemblyName + "'", StringComparison.Ordinal);
+            if(inputValues?.AssemblyExternDirectives?.Count > 0)
+            {
+                foreach(AssemblyExternDirective decl in inputValues.AssemblyExternDirectives)
+                {
+                    state.Result.AddRange(decl.Format());
+                }
+            }
         }
 
         private bool IsExternalAssemblyReference(string trimmedLine, out string assemblyName, out string aliasName)
