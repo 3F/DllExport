@@ -331,6 +331,8 @@
           "#[IO copy.file(\"$(OutDir:MetaFx)*.dll\", \"$(odir)/tools/raw/lib/net20/\", true)]",
           "#[IO copy.file(\"$(OutDir:MetaCor)*.dll\", \"$(odir)/tools/raw/lib/netstd/\", true)]",
           "",
+          "#[IO copy.directory(\"$(dirsrc)DllExport/clrtypes\", \"$(odir)/tools/clrtypes\", true)]",
+          "",
           "##[IO copy.file(\".tools/build.targets\", \"$(odir)/build/net/DllExport.targets\", true)]",
           "",
           "#[IO copy.file({",

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using net.r_eg.DllExport.ILAsm;
 using net.r_eg.MvsSln.Extensions;
 
 namespace net.r_eg.DllExport.Wizard.UI
@@ -56,6 +57,10 @@ namespace net.r_eg.DllExport.Wizard.UI
                 sb.AppendLine($"PostProc.Type: {prj.Config.PostProc.Type}");
                 sb.AppendLine($"PostProc.ProcEnv: {prj.Config.PostProc.GetProcEnvAsString()}");
                 sb.AppendLine($"PostProc.Cmd: {prj.Config.PostProc.Cmd}");
+                sb.AppendLine($"AssemblyExternDirectives: {prj.Config.AssemblyExternDirectives.Serialize()}");
+                sb.AppendLine($"TypeRefDirectives: {prj.Config.TypeRefDirectives.Serialize()}");
+                sb.AppendLine($"TypeRefOptions: {prj.Config.TypeRefOptions}");
+                sb.AppendLine($"RefPackages: {prj.Config.RefPackages.Serialize()}");
                 Append
                 (
                     exec.ActiveEnv.Sln.ProjectItemsConfigs

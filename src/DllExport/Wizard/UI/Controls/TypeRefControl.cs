@@ -19,11 +19,17 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private const string KW_ASSERT = "assert";
         private const string KW_AT = "at";
 
+        private const string INTERPOLATED_STRING_HANDLER = "System.Runtime.CompilerServices.DefaultInterpolatedStringHandler";
+
         public TypeRefControl() => InitializeComponent();
 
-        internal void Export(List<ILAsm.TypeRefDirective> directives)
+        internal void Export(IUserConfig config)
         {
+            config.TypeRefOptions = GetTypeRefOptions();
+
+            List<ILAsm.TypeRefDirective> directives = config.TypeRefDirectives;
             if(directives == null) return;
+
             directives.Clear();
             directives.Capacity = dgvList.Rows.Count;
 
@@ -45,24 +51,57 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             }
         }
 
-        internal void Render(List<ILAsm.TypeRefDirective> directives)
+        internal void Render(IUserConfig config)
         {
+            SetTypeRefOptions(config.TypeRefOptions);
+
+            List<ILAsm.TypeRefDirective> directives = config.TypeRefDirectives;
             dgvList.Suspend(() =>
             {
                 dgvList.Rows.Clear();
                 if(directives == null) return;
 
                 foreach(ILAsm.TypeRefDirective d in directives)
-                {
-                    string scopeType;
-                    if(d.Deny) scopeType = KW_DENY;
-                    else if(d.Assert) scopeType = KW_ASSERT;
-                    else scopeType = KW_AT;
-
-                    int idx = dgvList.Rows.Add(d.Name, d.Any, scopeType, d.ResolutionScope);
-                    DisableColumns(dgvList.Rows[idx]);
-                }
+                    AddRow(d.Name, d.Any, d.Deny, d.Assert, d.ResolutionScope);
             });
+        }
+
+        private TypeRefOptions GetTypeRefOptions()
+        {
+            TypeRefOptions opt = TypeRefOptions.None;
+
+            if(chkInterpolation.Checked) opt |= TypeRefOptions.DefaultInterpolatedStringHandler;
+
+            return opt;
+        }
+
+        private void SetTypeRefOptions(TypeRefOptions opt)
+        {
+            chkInterpolation.Checked = (opt & TypeRefOptions.DefaultInterpolatedStringHandler) == TypeRefOptions.DefaultInterpolatedStringHandler;
+        }
+
+        private void AddRow(string name, bool any, bool deny, bool assert, string scope = null)
+        {
+            int idx = dgvList.Rows.Add(name, any, GetScopeType(deny, assert), scope);
+            DisableColumns(dgvList.Rows[idx]);
+        }
+
+        private int FindTypeInRows(string name)
+        {
+            int index = -1;
+            foreach(DataGridViewRow row in dgvList.Rows)
+            {
+                if(row.IsNewRow) continue;
+                if((string)row.Cells[colType.Name].Value == name) return row.Index;
+            }
+            return index;
+        }
+
+        private string GetScopeType(bool deny, bool assert)
+        {
+            if(deny) return KW_DENY;
+            else if(assert) return KW_ASSERT;
+            return KW_AT;
         }
 
         private void DisableColumns(DataGridViewRow row)
@@ -98,6 +137,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(e.RowIndex == -1) return;
             DataGridViewCell scope = dgvList.Rows[e.RowIndex].Cells[colScopeType.Name];
             if(string.IsNullOrEmpty((string)scope.Value)) scope.Value = KW_AT;
+        }
+
+        private void chkInterpolation_CheckedChanged(object sender, EventArgs e)
+        {
+            if(chkInterpolation.Checked && FindTypeInRows(INTERPOLATED_STRING_HANDLER) == -1)
+            {
+                AddRow(INTERPOLATED_STRING_HANDLER, any: false, deny: false, assert: true);
+            }
         }
     }
 }

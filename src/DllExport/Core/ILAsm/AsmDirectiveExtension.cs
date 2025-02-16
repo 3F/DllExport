@@ -16,8 +16,13 @@ namespace net.r_eg.DllExport.ILAsm
     {
         public static string Serialize(this IEnumerable<AsmDirectiveAbstract> src)
         {
+            if(src == null) return null;
+
             StringBuilder sb = new();
-            foreach(AsmDirectiveAbstract directive in src) sb.Append(directive.Serialize());
+            foreach(AsmDirectiveAbstract directive in src)
+            {
+                sb.Append(directive.Serialize());
+            }
             return sb.ToString();
         }
 
@@ -25,6 +30,7 @@ namespace net.r_eg.DllExport.ILAsm
             where T : AsmDirectiveAbstract, new()
         {
             if(string.IsNullOrWhiteSpace(serialized)) yield break;
+
             foreach(string raw in serialized.Split([';'], StringSplitOptions.RemoveEmptyEntries))
             {
                 if(string.IsNullOrWhiteSpace(raw)) continue;

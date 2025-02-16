@@ -86,6 +86,17 @@ namespace net.r_eg.DllExport.Wizard
         List<ILAsm.TypeRefDirective> TypeRefDirectives { get; set; }
 
         /// <summary>
+        /// Options for .typeref like $-interpolation using predefined stub implementation etc.
+        /// </summary>
+        TypeRefOptions TypeRefOptions { get; set; }
+
+        /// <summary>
+        /// List of package references to provide the specified assemblies along with the module being modified
+        /// at the pre-processing stage.
+        /// </summary>
+        List<RefPackage> RefPackages { get; set; }
+
+        /// <summary>
         /// Adds to top new namespace into Namespaces property.
         /// </summary>
         /// <param name="ns"></param>
@@ -111,5 +122,12 @@ namespace net.r_eg.DllExport.Wizard
         /// <param name="onFailed">Execute action if the directive is invalid.</param>
         /// <returns>true if all directives are valid.</returns>
         bool ValidateTypeRefDirectives(Func<string, bool> onFailed);
+
+        /// <summary>
+        /// Validate <see cref="RefPackages"/> records.
+        /// </summary>
+        /// <param name="onFailed">Execute action if record is invalid.</param>
+        /// <returns>true if all records are valid.</returns>
+        bool ValidateRefPackages(Func<string, bool> onFailed);
     }
 }

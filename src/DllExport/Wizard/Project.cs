@@ -164,7 +164,7 @@ namespace net.r_eg.DllExport.Wizard
         void IProjectSvc.SetProperty(string name, int val) => SetProperty(name, val);
         void IProjectSvc.SetProperty(string name, long val) => SetProperty(name, val);
         IProjectSvc IProjectSvc.RemovePackageReferences(string id, Func<Item, bool> opt, bool wzstrict) => RemovePackageReferences(id, opt, wzstrict);
-        IEnumerable<KeyValuePair<string, string>> IProjectSvc.GetMeta(bool privateAssets, bool hide) => Meta.Get(privateAssets, hide);
+        IEnumerable<KeyValuePair<string, string>> IProjectSvc.GetMeta(bool privateAssets, bool hide, bool generatePath) => Meta.Get(privateAssets, hide, generatePath);
 
         #endregion
 
@@ -217,7 +217,9 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_PROC_ENV,
                 MSBuildProperties.DXP_DIR,
                 MSBuildProperties.DXP_ILASM_EXTERN_ASM,
-                MSBuildProperties.DXP_ILASM_TYPEREF
+                MSBuildProperties.DXP_ILASM_TYPEREF,
+                MSBuildProperties.DXP_REF_PACKAGES,
+                MSBuildProperties.DXP_TYPEREF_OPTIONS
             );
             AllocPlatformTargetIfNeeded(xproject);
 
@@ -426,6 +428,13 @@ namespace net.r_eg.DllExport.Wizard
             string typerefs = Config.TypeRefDirectives.Serialize();
             SetProperty(MSBuildProperties.DXP_ILASM_TYPEREF, typerefs);
             Log.send(this, $"Custom .typeref ... : {typerefs}");
+
+            SetProperty(MSBuildProperties.DXP_TYPEREF_OPTIONS, (long)Config.TypeRefOptions);
+            Log.send(this, $"Options for .typeref: {Config.TypeRefOptions}");
+
+            string refPackages = Config.RefPackages.Serialize();
+            SetProperty(MSBuildProperties.DXP_REF_PACKAGES, refPackages);
+            Log.send(this, $"Package references at the pre-processing stage ... : {refPackages}");
         }
 
         protected void CfgCommonData(string dxpDir = null)
@@ -704,7 +713,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected Project RemovePackageReferences(string id, Func<Item, bool> opt = null, bool wzstrict = true)
         {
-            foreach(Item item in XProject.GetPackageReferences().Where(p => !p.isImported && p.evaluated == id).ToArray()) 
+            foreach(Item item in XProject.GetPackageReferences().Where(p => !p.isImported && (id == null || p.evaluated == id)).ToArray()) 
             {
                 if(!wzstrict
                     || item.meta?.GetOrDefault(WZ_ID).evaluated == "1"
@@ -784,11 +793,16 @@ namespace net.r_eg.DllExport.Wizard
             private static readonly KeyValuePair<string, string> wz = new(WZ_ID, "1");
             private static readonly KeyValuePair<string, string> privateAssets = new("PrivateAssets", "all");
             private static readonly KeyValuePair<string, string> noVisible = new("Visible", "false");
+            private static readonly KeyValuePair<string, string> generatePath = new("GeneratePathProperty", "true");
 
-            public static IEnumerable<KeyValuePair<string, string>> Get(bool privateAssets = false, bool hide = false)
+            public static IEnumerable<KeyValuePair<string, string>> Get
+            (
+                bool privateAssets = false, bool hide = false, bool generatePath = false
+            )
             {
                 if(privateAssets) yield return Meta.privateAssets;
                 if(hide) yield return noVisible;
+                if(generatePath) yield return Meta.generatePath;
                 yield return wz;
             }
         }

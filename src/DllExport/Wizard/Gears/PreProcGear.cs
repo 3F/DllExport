@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Microsoft.Build.Construction;
@@ -54,6 +55,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             {
                 prj.RemovePackageReferences(tool.name);
             }
+            prj.RemovePackageReferences(id: null, wzstrict: true);
         }
 
         private void CfgPreProc(CmdType type)
@@ -64,6 +66,8 @@ namespace net.r_eg.DllExport.Wizard.Gears
             if(type == CmdType.None) return;
 
             _FxCorArgBuilder sb = new(capacity: 100);
+
+            sb.AppendBoth(Path.Combine(ILMERGE_TMP, "$(TargetName).dll")); //F-315, keep it first
 
             if((type & CmdType.Conari) == CmdType.Conari)
             {
@@ -76,6 +80,17 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 sb.AppendCor("System.Reflection.Emit.ILGeneration.dll System.Reflection.Emit.Lightweight.dll");
 #endif
                 sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
+            }
+
+            if((type & CmdType.MergeRefPkg) == CmdType.MergeRefPkg)
+            {
+                foreach(RefPackage rp in Config.RefPackages)
+                {
+                    Log.send(this, $"Merge [Ref]: {rp.Name} {rp.Version}");
+                    // NOTE: PrivateAssets cannot guarantee delivery of assemblies because some packages contains `_._` stubs
+                    XProject.AddPackageIfNotExists(rp.Name, rp.Version, prj.GetMeta(generatePath: true));
+                    sb.AppendBoth(rp.Name + ".dll");
+                }
             }
 
             if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
@@ -118,13 +133,21 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             bool ignoreErr = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
 
-            target.AddTask("Copy", ignoreErr, t =>
+            if((type & CmdType.MergeRefPkg) == CmdType.MergeRefPkg)
             {
-                t.SetParameter("SourceFiles", $"$({MSBuildProperties.DXP_METALIB_FPATH})");
-                t.SetParameter("DestinationFolder", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
-                t.SetParameter("SkipUnchangedFiles", "true");
-                t.SetParameter("OverwriteReadOnlyFiles", "true");
-            });
+                foreach(RefPackage rp in Config.RefPackages)
+                {
+                    string src = $"$(Pkg{rp.Name.Trim().Replace('.', '_')})";
+                    src = !rp.HasPath
+                        ? src = Path.Combine(src, "lib", rp.TfmOrPath, rp.Name + ".dll")
+                        : Path.Combine(src, rp.TfmOrPath ?? rp.Name + ".dll");
+
+                    Log.send(this, $"[Ref] Add Copy Task for {rp.Name}:  {src}", Message.Level.Trace);
+                    AddCopyTo(target, src, "$(TargetDir)", ignoreErr);
+                }
+            }
+
+            AddCopyTo(target, $"$({MSBuildProperties.DXP_METALIB_FPATH})", $"$({MSBuildProperties.PRJ_TARGET_DIR})", ignoreErr);
 
             AddILMergeWrapper(target, ignoreErr, _=>
             {
@@ -146,21 +169,11 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         private void AddILMergeWrapper(ProjectTargetElement target, bool continueOnError, Action<ProjectTargetElement> act)
         {
-            AddMoveTask(target, "$(TargetPath)", $"$(TargetDir){ILMERGE_TMP}\\$(TargetName).dll", continueOnError);
-            AddMoveTask(target, "$(TargetDir)$(TargetName).pdb", $"$(TargetDir){ILMERGE_TMP}\\$(TargetName).pdb", continueOnError);
+            AddMoveAs(target, "$(TargetPath)", $"$(TargetDir){ILMERGE_TMP}\\$(TargetName).dll", continueOnError);
+            AddMoveAs(target, "$(TargetDir)$(TargetName).pdb", $"$(TargetDir){ILMERGE_TMP}\\$(TargetName).pdb", continueOnError);
 
             act?.Invoke(target);
             target.AddTask("RemoveDir", continueOnError, t => t.SetParameter("Directories", "$(TargetDir)" + ILMERGE_TMP));
-        }
-
-        private void AddMoveTask(ProjectTargetElement target, string src, string dst, bool continueOnError)
-        {
-            target.AddTask("Move", continueOnError, t =>
-            {
-                t.SetParameter("SourceFiles", src);
-                t.SetParameter("DestinationFiles", dst);
-                t.SetParameter("OverwriteReadOnlyFiles", "true");
-            });
         }
 
         private ProjectTaskElement AddExecTask(ProjectTargetElement target, string cmd, string condition, bool continueOnError)
@@ -169,6 +182,27 @@ namespace net.r_eg.DllExport.Wizard.Gears
             {
                 t.SetParameter("Command", cmd ?? throw new ArgumentNullException(nameof(cmd)));
                 t.SetParameter("WorkingDirectory", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
+            });
+        }
+
+        private void AddCopyTo(ProjectTargetElement target, string src, string dstFolder, bool ignoreErr)
+            => AddCopyOrMoveTask(copy: true, target, src, dstFolder, ignoreErr);
+
+        private void AddMoveAs(ProjectTargetElement target, string src, string dstFiles, bool ignoreErr)
+             => AddCopyOrMoveTask(copy: false, target, src, dstFiles, ignoreErr);
+
+        private void AddCopyOrMoveTask(bool copy, ProjectTargetElement target, string src, string dst, bool ignoreErr)
+        {
+            target.AddTask(copy ? "Copy" : "Move", ignoreErr, t =>
+            {
+                t.SetParameter("SourceFiles", src);
+                if(copy)
+                {
+                    t.SetParameter("DestinationFolder", dst);
+                    t.SetParameter("SkipUnchangedFiles", "true");
+                }
+                else t.SetParameter("DestinationFiles", dst);
+                t.SetParameter("OverwriteReadOnlyFiles", "true");
             });
         }
 
@@ -198,8 +232,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 StringBuilder ilm = new(100);
                 ilm.Append($"{tool.exe} ");
                 ilm.Append(cmd);
-                ilm.Append(" " + ILMERGE_TMP);
-                ilm.Append("\\$(TargetName).dll /out:$(TargetFileName)");
+                ilm.Append(" /out:$(TargetFileName)");
                 if((type & CmdType.DebugInfo) == 0) ilm.Append(" /ndebug");
                 if((type & CmdType.Log) == CmdType.Log) ilm.Append($" /log:$(TargetFileName).{tool.name}.log");
                 return ilm.ToString();

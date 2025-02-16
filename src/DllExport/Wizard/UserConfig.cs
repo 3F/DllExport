@@ -70,6 +70,10 @@ namespace net.r_eg.DllExport.Wizard
 
         public List<ILAsm.TypeRefDirective> TypeRefDirectives { get; set; }
 
+        public TypeRefOptions TypeRefOptions { get; set; }
+
+        public List<RefPackage> RefPackages { get; set; }
+
         public bool AddTopNamespace(string ns)
         {
             if(!string.IsNullOrWhiteSpace(ns) && !Namespaces.Contains(ns))
@@ -116,14 +120,15 @@ namespace net.r_eg.DllExport.Wizard
             );
 
             AssemblyExternDirectives = new List<AssemblyExternDirective>
-            (
-                GetValue(MSBuildProperties.DXP_ILASM_EXTERN_ASM, xp).Deserialize<AssemblyExternDirective>()
-            );
+                (GetValue(MSBuildProperties.DXP_ILASM_EXTERN_ASM, xp).Deserialize<AssemblyExternDirective>());
 
             TypeRefDirectives = new List<TypeRefDirective>
-            (
-                GetValue(MSBuildProperties.DXP_ILASM_TYPEREF, xp).Deserialize<TypeRefDirective>()
-            );
+                (GetValue(MSBuildProperties.DXP_ILASM_TYPEREF, xp).Deserialize<TypeRefDirective>());
+
+            TypeRefOptions = (TypeRefOptions)GetValue(MSBuildProperties.DXP_TYPEREF_OPTIONS, xp).ToLongInteger();
+
+            RefPackages = new List<RefPackage>
+                (GetValue(MSBuildProperties.DXP_REF_PACKAGES, xp).Deserialize<RefPackage>());
         }
 
         public bool ValidateAssemblyExternDirectives(Func<string, bool> onFailed)
@@ -138,10 +143,10 @@ namespace net.r_eg.DllExport.Wizard
                 if(string.IsNullOrWhiteSpace(d.Name))
                     return onFailed($".assembly extern 'name' is not defined {_At(i)}");
 
-                if(!Regex.IsMatch(d.Version, @"\d+:\d+:\d+:\d+"))
+                if(d.Version == null || !Regex.IsMatch(d.Version, @"\d+:\d+:\d+:\d+"))
                     return onFailed($"Incorrect 'version' format {_At(i)}");
 
-                if(!Regex.IsMatch(d.Publickeytoken, @"^[0-9A-F\s]+$", RegexOptions.IgnoreCase))
+                if(d.Publickeytoken == null || !Regex.IsMatch(d.Publickeytoken, @"^[0-9A-F\s]+$", RegexOptions.IgnoreCase))
                     return onFailed($"Incorrect '.publickeytoken' format {_At(i)}");
             }
             return true;
@@ -158,6 +163,24 @@ namespace net.r_eg.DllExport.Wizard
 
                 if(string.IsNullOrWhiteSpace(d.ResolutionScope) && !d.Assert && !d.Deny)
                     return onFailed($"ResolutionScope is not defined {_At(i)}");
+            }
+            return true;
+        }
+
+        public bool ValidateRefPackages(Func<string, bool> onFailed)
+        {
+            if(RefPackages == null || onFailed == null || RefPackages.Count < 1) return true;
+
+            static string _At(int index) => $"at #{index + 1} position";
+            for(int i = 0; i < RefPackages.Count; ++i)
+            {
+                RefPackage r = RefPackages[i];
+
+                if(r.Name == null || !Regex.IsMatch(r.Name, /*nuget core based rule:*/@"^\w+(?:[_.-]\w+)*$"))
+                    return onFailed($"Incorrect package name {_At(i)}");
+
+                if(string.IsNullOrWhiteSpace(r.TfmOrPath))
+                    return onFailed($"Tfm or path is not defined {_At(i)}");
             }
             return true;
         }

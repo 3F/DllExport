@@ -335,6 +335,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 
                 if(!prj.Config.ValidateTypeRefDirectives(m => Alert(prj, "Types->" + m))) return false;
                 if(!prj.Config.ValidateAssemblyExternDirectives(m => Alert(prj, "Asm->" + m))) return false;
+                if(!prj.Config.ValidateRefPackages(m => Alert(prj, "Ref->" + m))) return false;
 
                 exec.TargetsFileIfCfg?.Configure(ActionType.Configure, prj);
                 prj.Configure(ActionType.Configure);
@@ -397,7 +398,8 @@ namespace net.r_eg.DllExport.Wizard.UI
             LoadPostProcProperties(prj);
 
             asmControl.Export(prj.Config.AssemblyExternDirectives);
-            typeRefControl.Export(prj.Config.TypeRefDirectives);
+            typeRefControl.Export(prj.Config);
+            refControl.Export(prj.Config.RefPackages);
 
             preProcControl.Export(prj.Config.PreProc);
             postProcControl.Export(prj.Config.PostProc);
@@ -413,7 +415,8 @@ namespace net.r_eg.DllExport.Wizard.UI
             postProcControl.Render(prj.Config.PostProc);
 
             asmControl.Render(prj.Config.AssemblyExternDirectives);
-            typeRefControl.Render(prj.Config.TypeRefDirectives);
+            typeRefControl.Render(prj.Config);
+            refControl.Render(prj.Config.RefPackages);
 
             UpdateDataTab(tabCtrl.SelectedTab, prj);
         }

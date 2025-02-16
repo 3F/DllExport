@@ -41,6 +41,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if((type & CmdType.Exec) == CmdType.Exec)           radioRawExec.Checked = true;
 
             chkMergeConari.Checked  = (type & CmdType.Conari) == CmdType.Conari;
+            chkMergeRef.Checked     = (type & CmdType.MergeRefPkg) == CmdType.MergeRefPkg;
             chkIgnoreErrors.Checked = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
             chkGenDebugInfo.Checked = (type & CmdType.DebugInfo) == CmdType.DebugInfo;
             chkLog.Checked          = (type & CmdType.Log) == CmdType.Log;
@@ -55,6 +56,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(radioRawExec.Checked)    ret = CmdType.Exec;
 
             if(chkMergeConari.Checked)  ret |= CmdType.Conari;
+            if(chkMergeRef.Checked)     ret |= CmdType.MergeRefPkg;
             if(chkIgnoreErrors.Checked) ret |= CmdType.IgnoreErr;
             if(chkGenDebugInfo.Checked) ret |= CmdType.DebugInfo;
             if(chkLog.Checked)          ret |= CmdType.Log;
@@ -62,9 +64,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             return ret;
         }
 
-        private void SetUIMergeConari(bool disabled)
+        private void SetUIMergeDep(bool disabled)
         {
-            if(disabled) chkMergeConari.Checked = false;
+            if(disabled) chkMergeRef.Checked = chkMergeConari.Checked = false;
         }
 
         private bool SetUIPreProcCmd(bool disabled)
@@ -83,9 +85,15 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             radioILMerge.Checked = true; // use ILMerge by default for Conari because ILMerge is about 2+ times faster than ILRepack -_-
         }
 
-        private void RadioPreProcDisabled_CheckedChanged(object sender, EventArgs e) => SetUIMergeConari(SetUIPreProcCmd(radioPreProcDisabled.Checked));
+        private void ChkMergeRef_CheckedChanged(object sender, EventArgs e)
+        {
+            if(!chkMergeRef.Checked || radioILMerge.Checked || radioILRepack.Checked) return;
+            radioILRepack.Checked = true; // use ILRepack by default in order to get a common modern support for all user [Ref] assemblies
+        }
 
-        private void RadioRawExec_CheckedChanged(object sender, EventArgs e) => SetUIMergeConari(radioRawExec.Checked);
+        private void RadioPreProcDisabled_CheckedChanged(object sender, EventArgs e) => SetUIMergeDep(SetUIPreProcCmd(radioPreProcDisabled.Checked));
+
+        private void RadioRawExec_CheckedChanged(object sender, EventArgs e) => SetUIMergeDep(radioRawExec.Checked);
 
         private void LinkAboutConari_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/wiki/Quick-start#when-conari-can-help-you".OpenUrl();
 

@@ -46,12 +46,20 @@
     <DllExportOurILAsmPath Condition="'$(DllExportOurILAsmPath)'==''">$(DllExportRootPkg)$(DllExportToolsPath)coreclr\</DllExportOurILAsmPath>
     <DllExportILAsmCustomPath Condition="'$(DllExportILAsmCustomPath)'==''"></DllExportILAsmCustomPath>
 
+    <DllExportTypeRefOptions Condition="'$(DllExportTypeRefOptions)'==''"></DllExportTypeRefOptions>
+    <DllExportOptClrTypesPath Condition="'$(DllExportOptClrTypesPath)'==''">$(DllExportRootPkg)$(DllExportToolsPath)clrtypes\</DllExportOptClrTypesPath>
+
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)'!=''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullName>
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)'==''">$(DllExportMetaLibAttr)</DllExportAttributeFullName>
 
     <DllExportDefPlatform>$(PlatformTarget.ToLower())</DllExportDefPlatform>
     <DllExportDefPlatform Condition="'$(DllExportDefPlatform)'==''">anycpu</DllExportDefPlatform>
+
   </PropertyGroup>
+
+  <ItemGroup Condition="'$(DllExportTypeRefOptions)'!='' Or '$(DllExportTypeRefOptions)'&gt;'0'">
+    <Compile Condition="'$([MSBuild]::BitwiseAnd($(DllExportTypeRefOptions), 1))'=='1'" Include="$(DllExportOptClrTypesPath)DefaultInterpolatedStringHandler\.cs" Visible="false" InProject="false" />
+  </ItemGroup>
 
   <PropertyGroup>
     <DllExportCopyToPublishDirectoryType Condition="'$(DllExportCopyToPublishDirectoryType)'==''">PreserveNewest</DllExportCopyToPublishDirectoryType>
@@ -151,6 +159,7 @@
       <DllExportPatches Condition="'$(DllExportPatches)'==''"></DllExportPatches>
       <DllExportILAsmExternAsm Condition="'$(DllExportILAsmExternAsm)'==''"></DllExportILAsmExternAsm>
       <DllExportILAsmTypeRef Condition="'$(DllExportILAsmTypeRef)'==''"></DllExportILAsmTypeRef>
+      <DllExportRefPackages Condition="'$(DllExportRefPackages)'==''"></DllExportRefPackages>
     </PropertyGroup>
 
     <PropertyGroup Label="EmitDebugSymbols" Condition="'$(DllExportEmitDebugSymbols)'==''">

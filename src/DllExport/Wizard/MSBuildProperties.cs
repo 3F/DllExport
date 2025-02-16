@@ -136,12 +136,26 @@ namespace net.r_eg.DllExport.Wizard
         /// <summary>
         /// .assembly extern ...
         /// </summary>
+        /// <remarks>Serialized array.</remarks>
         public const string DXP_ILASM_EXTERN_ASM = "DllExportILAsmExternAsm";
 
         /// <summary>
         /// .typeref ...
         /// </summary>
+        /// <remarks>Serialized array.</remarks>
         public const string DXP_ILASM_TYPEREF = "DllExportILAsmTypeRef";
+
+        /// <summary>
+        /// Package references at the pre-processing stage.
+        /// </summary>
+        /// <remarks>Serialized array.</remarks>
+        public const string DXP_REF_PACKAGES = "DllExportRefPackages";
+
+        /// <summary>
+        /// Additional features for .typeref like supporting $ interpolation using predefined stub implementation etc.
+        /// </summary>
+        /// <remarks>Flags.</remarks>
+        public const string DXP_TYPEREF_OPTIONS = "DllExportTypeRefOptions";
 
         /// <summary>
         /// Meta library full path to file.

@@ -79,6 +79,7 @@
             this.lnk3F = new System.Windows.Forms.LinkLabel();
             this.labelSrc = new System.Windows.Forms.Label();
             this.txtBuildInfo = new System.Windows.Forms.TextBox();
+            this.refControl = new net.r_eg.DllExport.Wizard.UI.Controls.RefControl();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).BeginInit();
             this.splitCon.Panel1.SuspendLayout();
@@ -92,6 +93,7 @@
             this.tabPreProc.SuspendLayout();
             this.tabTypes.SuspendLayout();
             this.tabAsm.SuspendLayout();
+            this.tabRef.SuspendLayout();
             this.tabPostProc.SuspendLayout();
             this.tabUpdating.SuspendLayout();
             this.panelUpdVerTop.SuspendLayout();
@@ -447,6 +449,7 @@
             // 
             // tabRef
             // 
+            this.tabRef.Controls.Add(this.refControl);
             this.tabRef.Location = new System.Drawing.Point(4, 25);
             this.tabRef.Name = "tabRef";
             this.tabRef.Size = new System.Drawing.Size(442, 254);
@@ -619,6 +622,15 @@
             this.txtBuildInfo.Size = new System.Drawing.Size(436, 207);
             this.txtBuildInfo.TabIndex = 12;
             // 
+            // refControl
+            // 
+            this.refControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.refControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.refControl.Location = new System.Drawing.Point(0, 0);
+            this.refControl.Name = "refControl";
+            this.refControl.Size = new System.Drawing.Size(442, 254);
+            this.refControl.TabIndex = 0;
+            // 
             // ConfiguratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -650,6 +662,7 @@
             this.tabPreProc.ResumeLayout(false);
             this.tabTypes.ResumeLayout(false);
             this.tabAsm.ResumeLayout(false);
+            this.tabRef.ResumeLayout(false);
             this.tabPostProc.ResumeLayout(false);
             this.tabUpdating.ResumeLayout(false);
             this.tabUpdating.PerformLayout();
@@ -704,5 +717,6 @@
         private Controls.TypeRefControl typeRefControl;
         private Controls.AsmControl asmControl;
         private System.Windows.Forms.TabPage tabRef;
+        private Controls.RefControl refControl;
     }
 }

@@ -39,6 +39,8 @@ namespace net.r_eg.DllExport.Wizard
             Log         = 0x20,
 
             ILRepack    = 0x40,
+
+            MergeRefPkg = 0x80,
         }
 
         public PreProc Configure(CmdType type = CmdType.None, string cmd = null)

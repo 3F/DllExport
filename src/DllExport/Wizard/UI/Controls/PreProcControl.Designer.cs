@@ -39,6 +39,7 @@
             this.chkIgnoreErrors = new System.Windows.Forms.CheckBox();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             this.radioILRepack = new System.Windows.Forms.RadioButton();
+            this.chkMergeRef = new System.Windows.Forms.CheckBox();
             this.chkGenDebugInfo = new System.Windows.Forms.CheckBox();
             this.chkLog = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
@@ -166,6 +167,19 @@
             this.radioILRepack.UseVisualStyleBackColor = true;
             this.radioILRepack.CheckedChanged += new System.EventHandler(this.radioILRepack_CheckedChanged);
             // 
+            // chkMergeRef
+            // 
+            this.chkMergeRef.AutoSize = true;
+            this.chkMergeRef.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.chkMergeRef.Location = new System.Drawing.Point(186, 5);
+            this.chkMergeRef.Name = "chkMergeRef";
+            this.chkMergeRef.Size = new System.Drawing.Size(146, 17);
+            this.chkMergeRef.TabIndex = 31;
+            this.chkMergeRef.Text = "Integrate [Ref] assemblies";
+            this.toolTip1.SetToolTip(this.chkMergeRef, "All defined assemblies in [Ref] tab");
+            this.chkMergeRef.UseVisualStyleBackColor = true;
+            this.chkMergeRef.CheckedChanged += new System.EventHandler(this.ChkMergeRef_CheckedChanged);
+            // 
             // chkGenDebugInfo
             // 
             this.chkGenDebugInfo.AutoSize = true;
@@ -183,7 +197,7 @@
             this.chkLog.AutoSize = true;
             this.chkLog.Enabled = false;
             this.chkLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkLog.Location = new System.Drawing.Point(186, 5);
+            this.chkLog.Location = new System.Drawing.Point(274, 51);
             this.chkLog.Name = "chkLog";
             this.chkLog.Size = new System.Drawing.Size(41, 17);
             this.chkLog.TabIndex = 29;
@@ -194,6 +208,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.chkMergeRef);
             this.Controls.Add(this.radioILRepack);
             this.Controls.Add(this.chkLog);
             this.Controls.Add(this.chkGenDebugInfo);
@@ -227,5 +242,6 @@
         private System.Windows.Forms.CheckBox chkGenDebugInfo;
         private System.Windows.Forms.CheckBox chkLog;
         private System.Windows.Forms.RadioButton radioILRepack;
+        private System.Windows.Forms.CheckBox chkMergeRef;
     }
 }

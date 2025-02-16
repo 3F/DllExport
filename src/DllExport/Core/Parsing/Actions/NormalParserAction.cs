@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
 using net.r_eg.DllExport.ILAsm;
 
 namespace net.r_eg.DllExport.Parsing.Actions
@@ -63,32 +64,34 @@ namespace net.r_eg.DllExport.Parsing.Actions
 
         private bool IsExternalAssemblyReference(string trimmedLine, out string assemblyName, out string aliasName)
         {
-            assemblyName = (string)null;
-            aliasName = (string)null;
-            if(trimmedLine.Length < ".assembly extern ".Length || !trimmedLine.StartsWith(".assembly extern ", StringComparison.Ordinal))
+            const string _ASM_EXT_D = ".assembly extern ";
+            assemblyName = aliasName = null;
+
+            if(trimmedLine.Length < _ASM_EXT_D.Length || !trimmedLine.StartsWith(_ASM_EXT_D, StringComparison.Ordinal))
             {
                 return false;
             }
-            List<string> identifiers = new List<string>();
-            IlParsingUtils.ParseIlSnippet(trimmedLine.Substring(".assembly extern ".Length), ParsingDirection.Forward, (Func<IlParsingUtils.IlSnippetLocation, bool>)(current => {
-                if(!current.WithinString && (int)current.CurrentChar == 39 && current.LastIdentifier != null)
+
+            List<string> identifiers = [];
+            IlParsingUtils.ParseIlSnippet
+            (
+                trimmedLine.Substring(_ASM_EXT_D.Length),
+                ParsingDirection.Forward,
+                current =>
                 {
-                    identifiers.Add(current.LastIdentifier);
-                    if(identifiers.Count > 1)
+                    if(!current.WithinString && current.CurrentChar == '\'' && current.LastIdentifier != null)
                     {
-                        return false;
+                        identifiers.Add(current.LastIdentifier);
+                        if(identifiers.Count > 1) return false;
                     }
-                }
-                return true;
-            }), (Action<IlParsingUtils.IlSnippetFinalizaton>)null);
-            if(identifiers.Count == 0)
-            {
-                return false;
-            }
-            if(identifiers.Count > 0)
-            {
-                assemblyName = identifiers[0];
-            }
+                    return true;
+                },
+                finalization: null
+            );
+
+            if(identifiers.Count < 1) return false;
+            
+            assemblyName = identifiers[0];
             aliasName = identifiers.Count > 1 ? identifiers[1] : identifiers[0];
             return true;
         }

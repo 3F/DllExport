@@ -33,6 +33,7 @@
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
             this.toolTip = new System.Windows.Forms.ToolTip(this.components);
+            this.chkInterpolation = new System.Windows.Forms.CheckBox();
             this.panelMain = new System.Windows.Forms.Panel();
             this.linkTypeRef = new System.Windows.Forms.LinkLabel();
             this.dgvList = new net.r_eg.DllExport.Wizard.UI.Components.DataGridViewExt();
@@ -41,9 +42,26 @@
             this.colScopeType = new System.Windows.Forms.DataGridViewComboBoxColumn();
             this.colScope = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colDelTyperef = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.panelTop = new System.Windows.Forms.Panel();
+            this.labelExtra = new System.Windows.Forms.Label();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvList)).BeginInit();
+            this.panelTop.SuspendLayout();
             this.SuspendLayout();
+            // 
+            // chkInterpolation
+            // 
+            this.chkInterpolation.AutoSize = true;
+            this.chkInterpolation.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkInterpolation.Location = new System.Drawing.Point(43, 3);
+            this.chkInterpolation.Name = "chkInterpolation";
+            this.chkInterpolation.Size = new System.Drawing.Size(147, 17);
+            this.chkInterpolation.TabIndex = 0;
+            this.chkInterpolation.Text = "$ interpolation for .NET 6+";
+            this.toolTip.SetToolTip(this.chkInterpolation, "Through DefaultInterpolatedStringHandler(.NET 6.0+) stub; Or use other implementa" +
+        "tion via .typeref ...");
+            this.chkInterpolation.UseVisualStyleBackColor = true;
+            this.chkInterpolation.CheckedChanged += new System.EventHandler(this.chkInterpolation_CheckedChanged);
             // 
             // panelMain
             // 
@@ -51,15 +69,17 @@
             this.panelMain.Controls.Add(this.dgvList);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelMain.Location = new System.Drawing.Point(0, 0);
+            this.panelMain.Margin = new System.Windows.Forms.Padding(0);
             this.panelMain.Name = "panelMain";
-            this.panelMain.Size = new System.Drawing.Size(460, 114);
+            this.panelMain.Padding = new System.Windows.Forms.Padding(0, 29, 0, 0);
+            this.panelMain.Size = new System.Drawing.Size(462, 180);
             this.panelMain.TabIndex = 32;
             // 
             // linkTypeRef
             // 
             this.linkTypeRef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkTypeRef.AutoSize = true;
-            this.linkTypeRef.Location = new System.Drawing.Point(445, 1);
+            this.linkTypeRef.Location = new System.Drawing.Point(447, 30);
             this.linkTypeRef.Name = "linkTypeRef";
             this.linkTypeRef.Size = new System.Drawing.Size(13, 13);
             this.linkTypeRef.TabIndex = 3;
@@ -93,7 +113,7 @@
             this.dgvList.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvList.DragDropSortable = true;
             this.dgvList.EditMode = System.Windows.Forms.DataGridViewEditMode.EditOnEnter;
-            this.dgvList.Location = new System.Drawing.Point(0, 0);
+            this.dgvList.Location = new System.Drawing.Point(0, 29);
             this.dgvList.Margin = new System.Windows.Forms.Padding(0);
             this.dgvList.MultiSelect = false;
             this.dgvList.Name = "dgvList";
@@ -103,7 +123,7 @@
             dataGridViewCellStyle3.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(36)))), ((int)(((byte)(47)))));
             this.dgvList.RowsDefaultCellStyle = dataGridViewCellStyle3;
             this.dgvList.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvList.Size = new System.Drawing.Size(460, 114);
+            this.dgvList.Size = new System.Drawing.Size(462, 151);
             this.dgvList.StandardTab = true;
             this.dgvList.TabIndex = 2;
             this.dgvList.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvList_CellClick);
@@ -163,17 +183,40 @@
             this.colDelTyperef.UseColumnTextForButtonValue = true;
             this.colDelTyperef.Width = 18;
             // 
+            // panelTop
+            // 
+            this.panelTop.Controls.Add(this.labelExtra);
+            this.panelTop.Controls.Add(this.chkInterpolation);
+            this.panelTop.Dock = System.Windows.Forms.DockStyle.Top;
+            this.panelTop.Location = new System.Drawing.Point(0, 0);
+            this.panelTop.Margin = new System.Windows.Forms.Padding(0, 0, 0, 29);
+            this.panelTop.Name = "panelTop";
+            this.panelTop.Size = new System.Drawing.Size(462, 29);
+            this.panelTop.TabIndex = 4;
+            // 
+            // labelExtra
+            // 
+            this.labelExtra.AutoSize = true;
+            this.labelExtra.Location = new System.Drawing.Point(3, 5);
+            this.labelExtra.Name = "labelExtra";
+            this.labelExtra.Size = new System.Drawing.Size(34, 13);
+            this.labelExtra.TabIndex = 1;
+            this.labelExtra.Text = "Extra:";
+            // 
             // TypeRefControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.panelTop);
             this.Controls.Add(this.panelMain);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.Name = "TypeRefControl";
-            this.Size = new System.Drawing.Size(460, 114);
+            this.Size = new System.Drawing.Size(462, 180);
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvList)).EndInit();
+            this.panelTop.ResumeLayout(false);
+            this.panelTop.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -188,5 +231,8 @@
         private System.Windows.Forms.DataGridViewComboBoxColumn colScopeType;
         private System.Windows.Forms.DataGridViewTextBoxColumn colScope;
         private System.Windows.Forms.DataGridViewButtonColumn colDelTyperef;
+        private System.Windows.Forms.Panel panelTop;
+        private System.Windows.Forms.CheckBox chkInterpolation;
+        private System.Windows.Forms.Label labelExtra;
     }
 }
