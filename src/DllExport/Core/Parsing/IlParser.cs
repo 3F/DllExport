@@ -15,7 +15,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.Parsing.Actions;
 
 namespace net.r_eg.DllExport.Parsing
@@ -46,6 +45,8 @@ namespace net.r_eg.DllExport.Parsing
             "reqsecobj",
             "pinvokeimpl"
         ];
+
+        private static readonly ExternalAssemlyDeclaration _AsmExternDllExport = new("DllExport", "83 37 22 4C 9A D9 E3 56");
 
         private HashSet<string> _MethodAttributes;
 
@@ -182,8 +183,10 @@ namespace net.r_eg.DllExport.Parsing
         private void CleanExternalAssemlyDeclarations(ParserStateValues state)
         {
             if(state.ExternalAssemlyDeclarations.Count < 1) return;
+            List<ExternalAssemlyDeclaration> unused = new(state.ExternalAssemlyDeclarations.Count);
 
-            List<ExternalAssemlyDeclaration> declarations = new(state.ExternalAssemlyDeclarations.Count);
+#if F_ORIGIN_DEL_UNUSED_ASM_EXTERN // F-320
+
             Dictionary<string, int> aliases = [];
 
             foreach(string line in state.Result)
@@ -208,14 +211,23 @@ namespace net.r_eg.DllExport.Parsing
 
             foreach(ExternalAssemlyDeclaration decl in state.ExternalAssemlyDeclarations)
             {
-                if(!aliases.ContainsKey(decl.AliasName)) declarations.Add(decl);
+                if(!aliases.ContainsKey(decl.AliasName)) unused.Add(decl);
             }
 
-            if(declarations.Count < 1) return;
+            if(unused.Count < 1) return;
+            unused.Reverse();
 
-            declarations.Reverse();
-            foreach(ExternalAssemlyDeclaration decl in declarations)
+#else
+            foreach(var ead in state.ExternalAssemlyDeclarations.Reverse<ExternalAssemlyDeclaration>())
             {
+                if(ead == _AsmExternDllExport) unused.Add(ead); // possibly several
+                //...
+            }
+#endif
+            foreach(ExternalAssemlyDeclaration decl in unused)
+            {
+                if(decl.InputLineIndex < 0) continue;
+
                 int bLeft = 0, bRight = -1;
                 for(int idx = decl.InputLineIndex; idx < state.Result.Count; ++idx)
                 {
@@ -527,10 +539,14 @@ namespace net.r_eg.DllExport.Parsing
             public static Dictionary<ParserState, IParserStateAction> GetActionsByState(IlParser parser)
             {
                 AssemblyParserAction assemblyParser = new(parser.InputValues);
+                ClassExternParserAction classExternParser = new();
+
                 Dictionary<ParserState, IParserStateAction> dictionary = new()
                 {
                     { ParserState.ClassDeclaration, new ClassDeclarationParserAction() },
                     { ParserState.Class, new ClassParserAction() },
+                    { ParserState.ClassExtern, classExternParser },
+                    { ParserState.ClassExternForwarder, classExternParser },
                     { ParserState.DeleteExportAttribute, new DeleteExportAttributeParserAction() },
                     { ParserState.MethodDeclaration, new MethodDeclarationParserAction() },
                     { ParserState.Method, new MethodParserAction() },
@@ -538,6 +554,7 @@ namespace net.r_eg.DllExport.Parsing
                     { ParserState.Normal, new NormalParserAction(parser.InputValues) },
                     { ParserState.AssemblyDeclaration, assemblyParser },
                     { ParserState.Assembly, assemblyParser },
+                    { ParserState.AssemblyExtern, new AssemblyExternParserAction() },
                 };
 
                 foreach(IParserStateAction parserStateAction in dictionary.Values)

@@ -13,13 +13,11 @@ using net.r_eg.DllExport.Extensions;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    public sealed class ParserStateValues
+    public sealed class ParserStateValues(CpuPlatform cpu, IList<string> inputLines)
     {
         private readonly List<string> _Result = [];
-        private readonly List<ExternalAssemlyDeclaration> _ExternalAssemlyDeclarations = [];
-        private readonly IList<ExternalAssemlyDeclaration> _ReadonlyExternalAssemlyDeclarations;
-        private readonly CpuPlatform _Cpu;
-        private readonly ReadOnlyCollection<string> _InputLines;
+        private readonly CpuPlatform _Cpu = cpu;
+        private readonly ReadOnlyCollection<string> _InputLines = new(inputLines);
 
         public readonly Stack<string> ClassNames = new();
         public readonly MethodStateValues Method = new();
@@ -37,14 +35,7 @@ namespace net.r_eg.DllExport.Parsing.Actions
 
         public List<string> Result => _Result;
 
-        public IList<ExternalAssemlyDeclaration> ExternalAssemlyDeclarations => _ReadonlyExternalAssemlyDeclarations;
-
-        public ParserStateValues(CpuPlatform cpu, IList<string> inputLines)
-        {
-            _Cpu = cpu;
-            _InputLines = new ReadOnlyCollection<string>(inputLines);
-            _ReadonlyExternalAssemlyDeclarations = _ExternalAssemlyDeclarations.AsReadOnly();
-        }
+        internal List<ExternalAssemlyDeclaration> ExternalAssemlyDeclarations { get; } = [];
 
         public SourceCodeRange GetRange()
         {
@@ -60,10 +51,10 @@ namespace net.r_eg.DllExport.Parsing.Actions
             return null;
         }
 
-        public ExternalAssemlyDeclaration RegisterExternalAssemlyAlias(string assemblyName, string alias)
+        internal ExternalAssemlyDeclaration RegisterExternalAssemlyAlias(string assemblyName, string alias)
         {
             ExternalAssemlyDeclaration assemlyDeclaration = new(Result.Count, assemblyName, alias);
-            _ExternalAssemlyDeclarations.Add(assemlyDeclaration);
+            ExternalAssemlyDeclarations.Add(assemlyDeclaration);
             return assemlyDeclaration;
         }
 

@@ -12,7 +12,6 @@ using System.Text.RegularExpressions;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.Class)]
     public sealed class ClassParserAction: IlParser.ParserStateAction
     {
         public override void Execute(ParserStateValues state, string trimmedLine)

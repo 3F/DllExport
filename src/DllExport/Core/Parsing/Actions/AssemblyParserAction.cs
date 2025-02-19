@@ -10,7 +10,6 @@ using net.r_eg.DllExport.ILAsm;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.Assembly)]
     public sealed class AssemblyParserAction(IInputValues input): IlParser.ParserStateAction
     {
         private readonly IInputValues inputValues = input;

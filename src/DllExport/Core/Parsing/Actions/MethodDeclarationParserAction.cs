@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.MethodDeclaration)]
     public sealed class MethodDeclarationParserAction: IlParser.ParserStateAction
     {
         private static readonly Regex _CilManagedRegex = new Regex("\\b(?:cil|managed)\\b", RegexOptions.Compiled);

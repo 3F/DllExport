@@ -10,7 +10,6 @@ using System;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.MethodProperties)]
     public sealed class MethodPropertiesParserAction: IlParser.ParserStateAction
     {
         public override void Execute(ParserStateValues state, string trimmedLine)

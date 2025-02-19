@@ -29,6 +29,7 @@
     <DefineConstants Condition="'$(DllExportFeatureConariNetCoreAddSysDll)'=='true'">F_CONARI_ADD_SYS_DLL;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(DllExportFeatureLegacyEmitMsCorlib)'=='true'">F_LEGACY_EMIT_MSCORLIB;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(DllExportFeatureILAsmCvresUseFx)'=='true'">F_ILASM_CVRES_USE_FX;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(DllExportFeatureOriginDelUnusedAsmExtern)'=='true'">F_ORIGIN_DEL_UNUSED_ASM_EXTERN;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>

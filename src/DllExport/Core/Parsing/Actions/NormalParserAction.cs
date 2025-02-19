@@ -9,12 +9,10 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using net.r_eg.DllExport.ILAsm;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.Normal)]
     public sealed class NormalParserAction(IInputValues input): IlParser.ParserStateAction
     {
         private readonly IInputValues inputValues = input;
@@ -31,6 +29,18 @@ namespace net.r_eg.DllExport.Parsing.Actions
                 ));
                 state.AddLine = false;
             }
+            else if(trimmedLine.StartsWith(".class extern forwarder ", StringComparison.Ordinal))
+            {
+                state.State = ParserState.ClassExternForwarder;
+                state.AddLine = true;
+                state.ClassDeclaration = trimmedLine;
+            }
+            else if(trimmedLine.StartsWith(".class extern ", StringComparison.Ordinal))
+            {
+                state.State = ParserState.ClassExtern;
+                state.AddLine = true;
+                state.ClassDeclaration = trimmedLine;
+            }
             else if(trimmedLine.StartsWith(".class", StringComparison.Ordinal))
             {
                 state.State = ParserState.ClassDeclaration;
@@ -44,10 +54,10 @@ namespace net.r_eg.DllExport.Parsing.Actions
                 state.State = ParserState.AssemblyDeclaration;
                 state.AddLine = true;
             }
-            else
+            else if(IsExternalAssemblyReference(trimmedLine, out string assemblyName, out string aliasName))
             {
-                if(!IsExternalAssemblyReference(trimmedLine, out string assemblyName, out string aliasName)) return;
                 state.RegisterExternalAssemlyAlias(assemblyName, aliasName);
+                state.State = ParserState.AssemblyExtern;
             }
         }
 

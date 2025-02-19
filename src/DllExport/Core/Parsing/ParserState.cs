@@ -11,14 +11,29 @@ namespace net.r_eg.DllExport.Parsing
     public enum ParserState
     {
         Normal,
+
         ClassDeclaration,
+
         Class,
+
+        ClassExtern,
+
+        ClassExternForwarder,
+
         DeleteExportDependency,
+
         MethodDeclaration,
+
         MethodProperties,
+
         Method,
+
         DeleteExportAttribute,
+
         AssemblyDeclaration,
+
         Assembly,
+
+        AssemblyExtern,
     }
 }

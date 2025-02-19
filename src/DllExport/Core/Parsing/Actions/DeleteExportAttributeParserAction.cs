@@ -12,7 +12,6 @@ using System.Text;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.DeleteExportAttribute)]
     public sealed class DeleteExportAttributeParserAction: IlParser.ParserStateAction
     {
         public override void Execute(ParserStateValues state, string trimmedLine)

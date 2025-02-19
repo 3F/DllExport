@@ -11,7 +11,6 @@ using System.Text;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    [ParserStateAction(ParserState.ClassDeclaration)]
     public sealed class ClassDeclarationParserAction: IlParser.ParserStateAction
     {
         public override void Execute(ParserStateValues state, string trimmedLine)
