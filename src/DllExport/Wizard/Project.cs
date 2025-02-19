@@ -741,14 +741,15 @@ namespace net.r_eg.DllExport.Wizard
 
         private void AllocateProperties(params string[] names)
         {
-            foreach(string name in names) ConfigProperties[name] = null;
+            foreach(string name in names) ConfigProperties[name] = string.Empty;
         }
 
         private void SetProperty(string name, string value)
         {
-            if(!string.IsNullOrWhiteSpace(name)) {
+            if(!string.IsNullOrWhiteSpace(name))
+            {
                 Log.send(this, $"'{ProjectPath}' Schedule: '{name}':'{value}' ", Message.Level.Debug);
-                ConfigProperties[name] = value;
+                ConfigProperties[name] = value ?? string.Empty;
             }
         }
 

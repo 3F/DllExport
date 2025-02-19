@@ -275,7 +275,7 @@ namespace net.r_eg.DllExport.Parsing
                                     .SelectMany(c => c.Methods.Select(m => m.ExportName))
                                     .ToArray();
 
-                string[] peMethods = pe.ExportedProcNames.ToArray();
+                string[] peMethods = pe.DExport.NumberOfFunctions > 0 ? pe.ExportedProcNames.ToArray() : [];
 
                 if((InputValues.PeCheck & PeCheckType.Pe1to1) == PeCheckType.Pe1to1)
                 {

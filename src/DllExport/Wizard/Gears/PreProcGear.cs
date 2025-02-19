@@ -23,12 +23,11 @@ namespace net.r_eg.DllExport.Wizard.Gears
     {
         private const string ILMERGE_TMP = ".ilm0";
 
-        private readonly Version incConari = new("1.5.0");
-
-        private readonly Dictionary<CmdType, _MergeTool> mTool = new()
+        private readonly Dictionary<CmdType, _ToolOrLib> mTool = new()
         {
             { CmdType.ILMerge, new("ilmerge", new("3.0.41"), "$(ILMergeConsolePath)") },
-            { CmdType.ILRepack, new("ILRepack", new("2.0.36"), "$(ILRepack)") }
+            { CmdType.ILRepack, new("ILRepack", new("2.0.36"), "$(ILRepack)") },
+            { CmdType.Conari, new("Conari", new("1.5.0")) },
         };
 
         private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
@@ -50,8 +49,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             RemovePreProcTarget(hardReset);
             XProject.RemovePropertyGroups(p => p.Label == ID);
 
-            prj.RemovePackageReferences("Conari");
-            foreach(_MergeTool tool in mTool.Values)
+            foreach(_ToolOrLib tool in mTool.Values)
             {
                 prj.RemovePackageReferences(tool.name);
             }
@@ -69,11 +67,12 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             sb.AppendBoth(Path.Combine(ILMERGE_TMP, "$(TargetName).dll")); //F-315, keep it first
 
-            if((type & CmdType.Conari) == CmdType.Conari)
+            if(type.HasFlag(CmdType.Conari))
             {
-                Log.send(this, $"Merge Conari: {incConari}");
-                XProject.AddPackageIfNotExists("Conari", $"{incConari}", prj.GetMeta(privateAssets: true));
-                sb.AppendBoth("Conari.dll");
+                _ToolOrLib lib = GetLib(CmdType.Conari);
+                Log.send(this, $"Merge {lib.name}: {lib.version}");
+                XProject.AddPackageIfNotExists(lib.name, $"{lib.version}", prj.GetMeta(privateAssets: true));
+                sb.AppendBoth(lib.module);
 
 #if F_CONARI_ADD_SYS_DLL
                 sb.AppendCor("Microsoft.CSharp.dll System.Reflection.Emit.dll");
@@ -82,7 +81,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
             }
 
-            if((type & CmdType.MergeRefPkg) == CmdType.MergeRefPkg)
+            if(type.HasFlag(CmdType.MergeRefPkg))
             {
                 foreach(RefPackage rp in Config.RefPackages)
                 {
@@ -95,7 +94,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
             {
-                _MergeTool tool = GetMergeTool(type);
+                _ToolOrLib tool = GetMergeTool(type);
                 prj.SetProperty(MSBuildProperties.DXP_ILMERGE, Config.PreProc.Cmd);
                 Log.send(this, $"Merge modules via {tool.name} {tool.version}: {Config.PreProc.Cmd}");
 
@@ -103,7 +102,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 sb.AppendBoth(Config.PreProc.Cmd);
             }
 
-            if((type & CmdType.Exec) == CmdType.Exec)
+            if(type.HasFlag(CmdType.Exec))
             {
                 Log.send(this, $"Pre-Processing command: {Config.PreProc.Cmd}");
                 sb.AppendBoth(Config.PreProc.Cmd);
@@ -133,7 +132,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             bool ignoreErr = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
 
-            if((type & CmdType.MergeRefPkg) == CmdType.MergeRefPkg)
+            if(type.HasFlag(CmdType.MergeRefPkg))
             {
                 foreach(RefPackage rp in Config.RefPackages)
                 {
@@ -162,9 +161,13 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 }
             });
 
-            target.AddTask("Delete", continueOnError: true,
-                t => t.SetParameter("Files", $"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})")
-            );
+            StringBuilder fDel = new(capacity: 60);
+            fDel.Append($"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})");
+            if(type.HasFlag(CmdType.Conari))
+            {
+                fDel.Append($";$({MSBuildProperties.PRJ_TARGET_DIR}){GetLib(CmdType.Conari).module}");
+            }
+            target.AddTask("Delete", continueOnError: true, t => t.SetParameter("Files", fDel.ToString()));
         }
 
         private void AddILMergeWrapper(ProjectTargetElement target, bool continueOnError, Action<ProjectTargetElement> act)
@@ -228,9 +231,9 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
             {
-                _MergeTool tool = GetMergeTool(type);
+                _ToolOrLib tool = GetMergeTool(type);
                 StringBuilder ilm = new(100);
-                ilm.Append($"{tool.exe} ");
+                ilm.Append($"{tool.module} ");
                 ilm.Append(cmd);
                 ilm.Append(" /out:$(TargetFileName)");
                 if((type & CmdType.DebugInfo) == 0) ilm.Append(" /ndebug");
@@ -273,14 +276,16 @@ namespace net.r_eg.DllExport.Wizard.Gears
             return _Get() != null;
         }
 
-        private _MergeTool GetMergeTool(CmdType type)
+        private _ToolOrLib GetMergeTool(CmdType type)
             => mTool.GetOrDefault(type & (CmdType.ILMerge | CmdType.ILRepack));
 
-        private readonly struct _MergeTool(string name, Version v, string exe)
+        private _ToolOrLib GetLib(CmdType type) => mTool.GetOrDefault(type);
+
+        private readonly struct _ToolOrLib(string name, Version v, string module = null)
         {
             public readonly string name = name;
             public readonly Version version = v;
-            public readonly string exe = exe;
+            public readonly string module = module ?? name + ".dll";
         }
 
         private sealed class _FxCorArgBuilder(int capacity)
