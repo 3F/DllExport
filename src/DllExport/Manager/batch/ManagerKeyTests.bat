@@ -144,8 +144,16 @@ set exec=%mgrFile% -tests "ManagerKeyTests.targets" -pkg-link "..\..\DllExport.$
 
     ::_______ ------ ______________________________________
 
-    call a startTest "-action Default -pe-exp-list `bin\Debug\regXwild.dll`" || goto x
-        call a findInStreamOrFail "peExpList: bin\Debug\regXwild.dll" || goto x
+    call a startTest "-pe-exp-list `bin\Debug\regXwild.dll`" || goto x
+        call a msgOrFailAt 1 "Module 'bin\Debug\regXwild.dll' is not found" || goto x
+    call a completeTest
+    ::_____________________________________________________
+
+
+    ::_______ ------ ______________________________________
+
+    call a startTest "-pe -list-addr -hex -i `bin\Debug\regXwild.dll`" || goto x
+        call a msgOrFailAt 1 "Module 'bin\Debug\regXwild.dll' is not found" || goto x
     call a completeTest
     ::_____________________________________________________
 

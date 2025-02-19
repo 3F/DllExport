@@ -1,12 +1,12 @@
 # [.NET DllExport](https://github.com/3F/DllExport)
 
-*.NET DllExport* with .NET Core support (a.k.a. ***3F**/DllExport* a.k.a. *DllExport.**bat***)
+*.NET DllExport* with .NET Core support (aka ***3F**/DllExport* aka *DllExport.**bat***)
 
 [![Build status](https://ci.appveyor.com/api/projects/status/hh2oxibqoi6wrdnc/branch/master?svg=true)](https://ci.appveyor.com/project/3Fs/dllexport-ix27o/branch/master)
 [![Release](https://img.shields.io/github/release/3F/DllExport.svg)](https://github.com/3F/DllExport/releases/latest)
 [![License](https://img.shields.io/badge/License-MIT-74A5C2.svg)](https://github.com/3F/DllExport/blob/master/LICENSE.txt)
 
-[`DllExport`](https://3F.github.io/DllExport/releases/latest/manager/)` -action Configure` [[?](#how-to-get-dllexport)]
+[`DllExport`](https://3F.github.io/DllExport/releases/latest/manager/)`-action Configure` [[?](#how-to-get-dllexport)]
 
 ```csharp
 [DllExport("Init", CallingConvention.Cdecl)]
@@ -117,7 +117,7 @@ HRESULT Assembler::CreateExportDirectory()
     EATEntry               *pEATE;
     unsigned                i, L, ordBase = 0xFFFFFFFF, Ldllname;
     ...
-    ~ now we're ready to miracles ~
+    ~ now we're ready to miracles ~ vtfxup thunk stubs and ~...
 ```
 
 Read also my brief explanations here: [AssemblyRef encoding](https://github.com/3F/DllExport/issues/125#issuecomment-561245575) / [about mscoree](https://github.com/3F/DllExport/issues/45#issuecomment-317802099) / [DllMain & the export-table](https://github.com/3F/DllExport/issues/5#issuecomment-240697109) / [DllExport.dll](https://github.com/3F/DllExport/issues/28#issuecomment-281957212) / [ordinals](https://github.com/3F/DllExport/issues/8#issuecomment-245228065) ...
@@ -152,25 +152,32 @@ Call *build.bat* to build final binaries like `DllExport.<version>.nupkg`, Manag
 
 Note, this relies on [vsSolutionBuildEvent](https://github.com/3F/vsSolutionBuildEvent) scripting **if** you're using Visual Studio **IDE**.
 
-### Modified Assembler ILAsm on CoreCLR
+### Modified IL Assembler
 
 We're using **[3F's](https://github.com/3F) modified versions** specially for *.NET DllExport* project
 * https://github.com/3F/coreclr
 
 This helps to avoid some problems [like this](https://github.com/3F/DllExport/issues/125#issuecomment-561245575), or [this](https://github.com/3F/DllExport/issues/17), and more ...
 
-To build minimal version (it will not include all components as for original coreclr repo):
+To build minimal version:
 
-Restore git submodule or use repo: https://github.com/3F/coreclr.git
-
-```bash
-git submodule update --init --recursive
+```batch
+.\build # ilasm -x64
 ```
 
-Make sure that you have installed [CMake](https://cmake.org/download/), then:
+Make sure you have installed [CMake](https://cmake.org/download/) before build.
 
-```bash
-build-s -all -x86 -x64 Release
+To build assembler and use exactly this compiled version with *DllExport*, command like:
+
+```batch
+.\build # ilasm -x64 & .\build Release
 ```
 
-Note, you can also get the compiled via [![NuGet package](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
+Alternatively you can get official compiled versions via [![NuGet](https://img.shields.io/nuget/v/ILAsm.svg)](https://www.nuget.org/packages/ILAsm/)
+
+Or like:
+
+```batch
+:: ILAsm/9.3.0
+.tools\gnt ILAsm & .\build Release
+```

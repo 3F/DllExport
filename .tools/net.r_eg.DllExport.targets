@@ -11,6 +11,11 @@
     <IsNetCoreBased Condition="$(_tfmlower.StartsWith('netc')) Or $(_tfmlower.StartsWith('nets')) Or ('$(_tfmlower)'!='' And $([System.Char]::IsDigit($(_tfmlower[3]))) And '$(_tfmlower[3])' &gt;= '5')">true</IsNetCoreBased>
   </PropertyGroup>
 
+  <PropertyGroup Label="Bitwise values">
+    <DllExportPreProcType Condition="'$(DllExportPreProcType)'==''">0</DllExportPreProcType>
+    <DllExportTypeRefOptions Condition="'$(DllExportTypeRefOptions)'==''">0</DllExportTypeRefOptions>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(IsNetCoreBased)'=='true' And '$(DllExportPreProcType)'!='0'">
     <CopyLocalLockFileAssemblies Condition="'$([MSBuild]::BitwiseAnd($(DllExportPreProcType), 2))'=='2' And ('$(NoForceCopyLocalLockFileAssemblies)'!='true')">true</CopyLocalLockFileAssemblies> <!-- PreProc: CmdType.Conari = 0x2, -->
     <DebugType Condition="$([MSBuild]::BitwiseAnd($(DllExportPreProcType), 8))==8 And ('$(DebugType)'!='full' And '$(DebugType)'!='pdbonly')">pdbonly</DebugType> <!-- CmdType.DebugInfo = 0x8, -->
@@ -46,7 +51,6 @@
     <DllExportOurILAsmPath Condition="'$(DllExportOurILAsmPath)'==''">$(DllExportRootPkg)$(DllExportToolsPath)coreclr\</DllExportOurILAsmPath>
     <DllExportILAsmCustomPath Condition="'$(DllExportILAsmCustomPath)'==''"></DllExportILAsmCustomPath>
 
-    <DllExportTypeRefOptions Condition="'$(DllExportTypeRefOptions)'==''"></DllExportTypeRefOptions>
     <DllExportOptClrTypesPath Condition="'$(DllExportOptClrTypesPath)'==''">$(DllExportRootPkg)$(DllExportToolsPath)clrtypes\</DllExportOptClrTypesPath>
 
     <DllExportAttributeFullName Condition="'$(DllExportNamespace)'!=''">$(DllExportNamespace).$(DllExportMetaLibAttr)</DllExportAttributeFullName>

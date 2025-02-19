@@ -10,6 +10,7 @@
     <RootObjDir>bin\obj\</RootObjDir>
     <RootAssetsDir>bin\assets\</RootAssetsDir>
 
+    <DllExportFeatureILAsmCvresUseFx>true</DllExportFeatureILAsmCvresUseFx> <!-- TODO: false; let's not disturb the original logic from 3F's IL Assembler 9.3.0 -->
     <DllExportFeatureLegacyEmitMsCorlib>true</DllExportFeatureLegacyEmitMsCorlib> <!-- TODO: false; no longer needed after 3F's IL Assembler 9.3.0+ release -->
     <SuppressIncludeDllExportVersion>true</SuppressIncludeDllExportVersion>
 
@@ -27,6 +28,7 @@
     <DefineConstants Condition="'$(DllExportFeatureActivatorIsolatedTask)'=='true'">FEATURE_ACTIVATOR_ISOLATED_TASK;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(DllExportFeatureConariNetCoreAddSysDll)'=='true'">F_CONARI_ADD_SYS_DLL;$(DefineConstants)</DefineConstants>
     <DefineConstants Condition="'$(DllExportFeatureLegacyEmitMsCorlib)'=='true'">F_LEGACY_EMIT_MSCORLIB;$(DefineConstants)</DefineConstants>
+    <DefineConstants Condition="'$(DllExportFeatureILAsmCvresUseFx)'=='true'">F_ILASM_CVRES_USE_FX;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
 
   <PropertyGroup>

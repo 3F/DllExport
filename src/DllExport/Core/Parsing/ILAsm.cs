@@ -416,14 +416,16 @@ namespace net.r_eg.DllExport.Parsing
                 return string.Empty;
             }
 
-            var sb = new StringBuilder();
+            StringBuilder sb = new();
+
+#if F_ILASM_CVRES_USE_FX // 3F's ILAsm 9.3+ fully automates the process of choosing the suitable converter
 
             // https://github.com/3F/coreclr/issues/2
-            // Our custom ILAsm 4.5.1+ may automatically detect cvtres if the path is not presented at all
             if(!string.IsNullOrWhiteSpace(InputValues.FrameworkPath)) 
             {
                 sb.Append($" /CVRES=\"{InputValues.FrameworkPath}/\"");
             }
+#endif
 
             if(InputValues.SysObjRebase)
             {

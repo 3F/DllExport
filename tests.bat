@@ -1,16 +1,19 @@
 @echo off
 
-set cfg=%~1
-if not defined cfg set cfg=Release
-
+if "%~1"=="PublicRelease" ( set "config=Release" ) else set config=%~1
 setlocal
     if exist "tests\a.bat" (
 
         cd tests
 
-    ) else if exist "bin\%cfg%\raw\" (
+    ) else if not defined config (
 
-        cd bin\%cfg%\raw\tests
+        echo.&echo %~n0 Debug&echo %~n0 Release
+        exit /B 0
+
+    ) else if exist "bin\%config%\raw\" (
+
+        cd bin\%config%\raw\tests
 
     ) else goto buildError
 
@@ -22,5 +25,5 @@ endlocal
 exit /B 0
 
 :buildError
-    echo. Tests cannot be started for '%cfg%' configuration. Use `%~nx0 ^<config^>` or check your build first. >&2
+    echo. Tests cannot be started for '%config%' configuration. Use `%~nx0 ^<config^>` or check your build first. >&2
 exit /B 1
