@@ -7,6 +7,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DllExport", "DllExport", "{
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "NetfxAsset", "src\DllExport\assets\NetfxAsset\NetfxAsset.csproj", "{4D13A153-4DE3-4342-B447-F2DB081B2981}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreAsset", "src\DllExport\assets\NetCoreAsset\NetCoreAsset.csproj", "{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net5OrLessAsset", "src\DllExport\assets\Net5OrLessAsset\Net5OrLessAsset.csproj", "{B7BCCDB1-394C-452E-82C4-E30CF245B175}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,12 +21,22 @@ Global
 		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D13A153-4DE3-4342-B447-F2DB081B2981}.Release|Any CPU.Build.0 = Release|Any CPU
+		{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{4D13A153-4DE3-4342-B447-F2DB081B2981} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
+		{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
+		{B7BCCDB1-394C-452E-82C4-E30CF245B175} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1ED17F28-E550-4B00-8DF9-BD43241EEA55}

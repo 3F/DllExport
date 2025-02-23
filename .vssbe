@@ -52,12 +52,12 @@
         "Command__": [
           "#[( !(#[IO exists.file(\"$(dirsrc)MvsSln/MvsSln.sln\")]) )",
           "{",
-          "    #[File call(\"git\", \"submodule update --init --recursive $(dirsrc)MvsSln\", 300)]",
+          "    #[File call(\"git\", \"submodule update --init --recursive $(dirsrc)MvsSln\", 0)]",
           "}]",
           "",
           "#[( !(#[IO exists.file(\"$(dirsrc)hMSBuild/hMSBuild.sln\")]) )",
           "{",
-          "    #[File call(\"git\", \"submodule update --init --recursive $(dirsrc)hMSBuild\", 300)]",
+          "    #[File call(\"git\", \"submodule update --init --recursive $(dirsrc)hMSBuild\", 0)]",
           "}]",
           "",
           "",
@@ -72,7 +72,7 @@
           "}]",
           "",
           "Call restore target to update nodes due to different options like MvsSlnFeatureHuid=true etc.",
-          "#[File scall(\".tools\\hMSBuild.bat\", \"~x ~c $(Configuration) -t:restore DllExport.sln\", 200)]"
+          "#[File scall(\".tools\\hMSBuild.bat\", \"~x ~c $(Configuration) -t:restore DllExport.sln\", 0)]"
         ]
       }
     },
@@ -185,7 +185,7 @@
           "#[\" ",
           "    Checking of the git to define sha1, branch name, etc.",
           "\"]",
-          "#[var isGit = #[IO cmd(\"git rev-parse 2>&1\")]]",
+          "#[var isGit = #[IO cmd(\"git rev-parse 2>&1\", 120)]]",
           "#[( $(isGit) == \"\" )",
           "{",
           "    #[var bSha1 = #[IO sout(\"git\", \"rev-parse --short HEAD\")]]",
@@ -455,7 +455,7 @@
         "Type": "Script",
         "Command__": [
           "#[IO writeLine(STDOUT): Build hMSBuild and GetNuTool ...]",
-          "#[IO call(\"cmd\", \"/C cd $(dirsrc)hMSBuild & build\", 300)]",
+          "#[IO call(\"cmd\", \"/C cd $(dirsrc)hMSBuild & build\", 0)]",
           "",
           "#[var frontend = $(dirsrc)DllExport\\\\Manager\\\\batch\\\\Manager.bat]",
           "",
@@ -1026,14 +1026,14 @@
           "#[try",
           "{",
           "    #[IO writeLine(STDOUT):",
-          "        #[IO cmd(\"copy /Y/B $(dxpWZ)+\\\"$(embdCore)\\\" $(dxpWZ)\")]",
+          "        #[IO cmd(\"copy /Y/B $(dxpWZ)+\\\"$(embdCore)\\\" $(dxpWZ)\", 0)]",
           "     ]",
           "}",
           "catch(err, msg)",
           "{",
           "    #[IO write(STDOUT): Try `type` ... ]",
           "    ",
-          "    #[IO cmd(\"type \\\"$(embdCore)\\\">>$(dxpWZ)\")]",
+          "    #[IO cmd(\"type \\\"$(embdCore)\\\">>$(dxpWZ)\", 0)]",
           "    #[IO writeLine(STDOUT): ok]",
           "",
           "}]",
@@ -1136,7 +1136,7 @@
           "",
           "Note: 1.5 and 1.6 contains bug if used 1.2.3-alpha, 1.2.3-beta-2, 1.2.3-rc ...",
           "##[NuGet gnt.raw(\"/t:pack /p:ngin=\\\"$(odir)\\\" /p:ngout=\\\"$(dbin)\\\"\")] ",
-          "#[IO cmd(\".tools\\gnt.bat /t:pack /p:ngin=\\\"$(SolutionDir)$(odir)\\\" /p:ngout=\\\"$(SolutionDir)$(dbin)\\\"\", 400)]",
+          "#[IO cmd(\".tools\\gnt.bat /t:pack /p:ngin=\\\"$(SolutionDir)$(odir)\\\" /p:ngout=\\\"$(SolutionDir)$(dbin)\\\"\", 0)]",
           "",
           "#[( $(cfgname) != \"Debug\" )",
           "{",
@@ -1180,7 +1180,7 @@
           "#[$(dbgPkgDir = \"$(dbin.Replace('/', '\\'))packages\\\\\")]",
           "",
           "#[IO copy.directory(\"\", \"$(dbgPkgDir)\", true)]",
-          "#[IO scall(\"cmd\", \"/C mklink /J $(dbgPkgDir)DllExport.$(pVerRel) $(odir.Replace('/', '\\'))\")]"
+          "#[IO scall(\"cmd\", \"/C mklink /J $(dbgPkgDir)DllExport.$(pVerRel) $(odir.Replace('/', '\\'))\", 0)]"
         ]
       }
     },
@@ -1192,17 +1192,27 @@
         "$type": "net.r_eg.vsSBE.Events.ModeScript, vsSolutionBuildEvent",
         "Type": "Script",
         "Command__": [
-          "#[try",
+          "F-326",
+          "Do NOT use mklink because Assets are blocking the build process by using DllExport assemblies at restoring stage",
+          "",
+          "#[(! #[File exists.directory(\"$(RootAssetsDir)\\DllExport\")] )",
           "{",
-          "    #[IO delete.directory(\"$(RootAssetsDir)\", true)]",
-          "} catch{ F-53, SobaScript }]",
+          "    #[IO copy.directory(\"\", \"$(RootAssetsDir)\", true)]",
+          "    #[IO copy.directory(\"$(odir)\", \"$(RootAssetsDir)\\DllExport\", true)]",
+          "}",
+          "else",
+          "{",
+          "    #[try",
+          "    {",
+          "        #[IO delete.files({ \"$(RootAssetsDir)\\DllExport\\tools\\net.r_eg.DllExport.dll\" })]",
+          "        ",
+          "        #[IO delete.directory(\"$(RootAssetsDir)\\DllExport\", true)]",
+          "        #[IO copy.directory(\"$(odir)\", \"$(RootAssetsDir)\\DllExport\", true)]",
+          "    } catch { this is possible only by terminating MSBuild.exe processes before new build }]",
+          "}]",
           "",
-          "#[IO copy.directory(\"\", \"$(RootAssetsDir)\", true)]",
-          "#[IO scall(\"cmd\", \"/C mklink /J $(RootAssetsDir)\\DllExport $(odir.Replace('/', '\\'))\")]",
-          "",
-          "",
-          "#[File scall(\"DllExport.bat\", \"-packages $(RootAssetsDir) -dxp-version actual -action Restore >nul\", 60)]",
-          "#[File scall(\".tools\\hMSBuild.bat\", \"~x ~c $(cfgname) ~p \\\"$(Platform)\\\" assets.sln -t:restore -t:build /p:RootAssetsDir=$(RootAssetsDir) >nul\", 200)]"
+          "#[IO call(\"cmd\", \"/C DllExport -packages $(RootAssetsDir) -dxp-version actual -action Restore & .tools\\hMSBuild ~x ~c $(cfgname) ~p \\\"$(Platform)\\\" assets.sln -t:restore -t:build /p:RootAssetsDir=$(RootAssetsDir)\", 0)]",
+          ""
         ]
       }
     }

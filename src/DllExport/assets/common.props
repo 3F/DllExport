@@ -4,6 +4,9 @@
   <PropertyGroup>
     <Configuration Condition="'$(Configuration)'=='PublicRelease' or '$(Configuration)'==''">Release</Configuration>
 
+    <NetCoreAssetTFMs Condition="'$(NetCoreAssetTFMs)'==''">net9.0;net8.0;net7.0;net6.0</NetCoreAssetTFMs>
+    <Net5OrLessAssetTFMs Condition="'$(Net5OrLessAssetTFMs)'==''">net5.0;netcoreapp3.1;netstandard2.1;netstandard2.0</Net5OrLessAssetTFMs>
+
     <RootOutDir>$(RootAssetsDir)$(Configuration)\prj\</RootOutDir>
     <RootObjDir>$(RootAssetsDir)$(Configuration)\obj\</RootObjDir>
 
@@ -15,8 +18,8 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <OutPrjDir>$(RootOutDir)$(MSBuildProjectName)\</OutPrjDir>
-    <ObjPrjDir>$(RootObjDir)$(MSBuildProjectName)\</ObjPrjDir>
+    <OutPrjDir>$(RootOutDir)$(MSBuildProjectName)\$(TargetFramework)\</OutPrjDir>
+    <ObjPrjDir>$(RootObjDir)$(MSBuildProjectName)\$(TargetFramework)\</ObjPrjDir>
 
     <OutDir>$([MSBuild]::Escape($([System.IO.Path]::GetFullPath(`$([System.IO.Path]::Combine(`$(SolutionDir)`, `$(OutPrjDir)`))`))))</OutDir>
     <OutputPath>$(OutDir)</OutputPath>

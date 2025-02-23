@@ -26,6 +26,10 @@ namespace net.r_eg.DllExport.UnitedTest._svc
 
         internal const string PRJ_NETFX = "NetfxAsset";
 
+        internal const string PRJ_NETCORE = "NetCoreAsset";
+
+        internal const string PRJ_NET5_OR_LESS = "Net5OrLessAsset";
+
         internal static PeMagic MagicAtThis => Is64bit ? PeMagic.PE64 : PeMagic.PE32;
 
         /// <summary>
@@ -70,11 +74,20 @@ namespace net.r_eg.DllExport.UnitedTest._svc
             ROOT
         ));
 
-        internal static string GetDllPath(string project) => GetDllPath(project, string.Empty);
-
         internal static string GetDllPath(string project, string arch)
         {
-            return Path.Combine(GetPathToPrj(project), arch, $"{project}.dll");
+            return Path.Combine(GetPathToPrj(project), arch, project + ".dll");
+        }
+
+        internal static string GetNetCoreDll(string tfm, string arch = null)
+            => GetDllFor(PRJ_NETCORE, tfm, arch);
+
+        internal static string GetNet5OrLessDll(string tfm, string arch = null)
+            => GetDllFor(PRJ_NET5_OR_LESS, tfm, arch);
+
+        internal static string GetDllFor(string project, string tfm, string arch = null)
+        {
+            return Path.Combine(GetPathToPrj(project), tfm, arch ?? (Is64bit ? X64 : X86), project + ".dll");
         }
 
         internal static string GetPathToPrj(string name) => GetPathTo("prj", name);
