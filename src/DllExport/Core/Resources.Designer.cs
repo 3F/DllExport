@@ -214,6 +214,15 @@ namespace net.r_eg.DllExport {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Incorrect {0}: Must be {1} aligned. Int64. Hexadecimal / Decimal..
+        /// </summary>
+        internal static string Incorrect_0_Must_be_1_aligned {
+            get {
+                return ResourceManager.GetString("Incorrect_0_Must_be_1_aligned", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input assembly does not exist..
         /// </summary>
         internal static string Input_assembly_does_not_exist {

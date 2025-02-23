@@ -29,6 +29,15 @@ namespace net.r_eg.DllExport.Parsing.Actions
                 ));
                 state.AddLine = false;
             }
+            else if(trimmedLine.StartsWith(".imagebase ", StringComparison.Ordinal))
+            {
+                if(inputValues.ImageBase == -1) state.AddLine = true;
+                else
+                {
+                    state.Result.Add(".imagebase 0x" + inputValues.ImageBase.ToString("X8"));
+                    state.AddLine = false;
+                }
+            }
             else if(trimmedLine.StartsWith(".class extern forwarder ", StringComparison.Ordinal))
             {
                 state.State = ParserState.ClassExternForwarder;

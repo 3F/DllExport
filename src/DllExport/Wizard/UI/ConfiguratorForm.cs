@@ -336,6 +336,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                 if(!prj.Config.ValidateTypeRefDirectives(m => Alert(prj, "Types->" + m))) return false;
                 if(!prj.Config.ValidateAssemblyExternDirectives(m => Alert(prj, "Asm->" + m))) return false;
                 if(!prj.Config.ValidateRefPackages(m => Alert(prj, "Ref->" + m))) return false;
+                if(!prj.Config.ValidateImageBase(m => Alert(prj, "Options->" + m))) return false;
 
                 exec.TargetsFileIfCfg?.Configure(ActionType.Configure, prj);
                 prj.Configure(ActionType.Configure);

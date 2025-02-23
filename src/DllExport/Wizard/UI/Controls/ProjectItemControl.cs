@@ -79,10 +79,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             get => new()
             {
+                imageBase           = txtImageBase.Text.Trim(),
+                imageBaseStep       = txtImageBaseStep.Text.Trim(),
                 ordinalsBase        = (int)numOrdinal.Value,
                 genExpLib           = chkGenExpLib.Checked,
                 ourILAsm            = chkOurILAsm.Checked,
-                customILAsm         = chkCustomILAsm.Checked ? textBoxCustomILAsm.Text : null,
+                customILAsm         = chkCustomILAsm.Checked ? txtCustomILAsm.Text : null,
                 rSysObj             = chkRebaseSysObj.Checked,
                 intermediateFiles   = chkIntermediateFiles.Checked,
                 timeout             = (int)numTimeout.Value,
@@ -93,6 +95,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
             set
             {
+                txtImageBase.Text       = value.imageBase;
+                txtImageBaseStep.Text   = value.imageBaseStep;
                 numOrdinal.Value        = value.ordinalsBase;
                 chkGenExpLib.Checked    = value.genExpLib;
                 chkOurILAsm.Checked     = value.ourILAsm;
@@ -101,12 +105,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
                 if(string.IsNullOrWhiteSpace(value.customILAsm))
                 {
-                    textBoxCustomILAsm.Text = CompilerCfg.PATH_CTM_ILASM;
+                    txtCustomILAsm.Text = CompilerCfg.PATH_CTM_ILASM;
                     chkCustomILAsm.Checked  = false;
                 }
                 else
                 {
-                    textBoxCustomILAsm.Text = value.customILAsm;
+                    txtCustomILAsm.Text = value.customILAsm;
                     chkCustomILAsm.Checked  = true;
                 }
 
@@ -251,33 +255,18 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void btnBrowse_Click(object sender, EventArgs e)
         {
-            var path = Project.XProject?.ProjectItem.project.fullPath;
-            if(!String.IsNullOrWhiteSpace(path)) {
+            string path = Project.XProject?.ProjectItem.project.fullPath;
+            if(!string.IsNullOrWhiteSpace(path))
+            {
                 Browse?.Invoke(Path.GetDirectoryName(path));
             }
         }
 
-        private void numOrdinal_KeyDown(object sender, KeyEventArgs e)
-        {
-            if(e.KeyValue >= '0' && e.KeyValue <= '9') {
-                return;
-            }
+        private void numOrdinal_KeyDown(object sender, KeyEventArgs e) => e.AllowKeysOnly(x => x.IsDigitsOrControl());
 
-            switch(e.KeyCode)
-            {
-                case Keys.Left:
-                case Keys.Right:
-                case Keys.Up:
-                case Keys.Down:
-                case Keys.Back:
-                case Keys.Delete: {
-                    return;
-                }
-            }
+        private void txtImageBase_KeyDown(object sender, KeyEventArgs e) => e.AllowKeysOnly(x => x.IsHexDigitsOrControl());
 
-            e.SuppressKeyPress = true;
-            e.Handled = true;
-        }
+        private void txtImageBaseStep_KeyDown(object sender, KeyEventArgs e) => e.AllowKeysOnly(x => x.IsHexDigitsOrControl());
 
         private void linkOrdinals_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => OpenUrl?.Invoke("https://github.com/3F/DllExport/issues/11#issuecomment-250907940");
 
@@ -316,10 +305,10 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             if(chkCustomILAsm.Checked) {
                 chkOurILAsm.Checked = false;
-                textBoxCustomILAsm.ForeColor = SystemColors.WindowText;
+                txtCustomILAsm.ForeColor = SystemColors.WindowText;
             }
             else {
-                textBoxCustomILAsm.ForeColor = Color.DarkGray;
+                txtCustomILAsm.ForeColor = Color.DarkGray;
             }
 
             UpdateRebaseChk();

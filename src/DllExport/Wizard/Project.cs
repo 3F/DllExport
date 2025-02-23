@@ -198,6 +198,8 @@ namespace net.r_eg.DllExport.Wizard
                 MSBuildProperties.DXP_ID,
                 MSBuildProperties.DXP_METALIB_NAME,
                 MSBuildProperties.DXP_NAMESPACE,
+                MSBuildProperties.DXP_IMAGE_BASE,
+                MSBuildProperties.DXP_IMAGE_BASE_STEP,
                 MSBuildProperties.DXP_ORDINALS_BASE,
                 MSBuildProperties.DXP_SKIP_ANYCPU,
                 MSBuildProperties.DXP_DDNS_CECIL,
@@ -387,6 +389,15 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void CfgCompiler()
         {
+            if(!string.IsNullOrEmpty(Config.Compiler.imageBase))
+            {
+                SetProperty(MSBuildProperties.DXP_IMAGE_BASE, Config.Compiler.imageBase);
+                Log.send(this, $"Set new ImageBase: {Config.Compiler.imageBase}");
+
+                SetProperty(MSBuildProperties.DXP_IMAGE_BASE_STEP, Config.Compiler.imageBaseStep);
+                Log.send(this, $"Set step for ImageBase: {Config.Compiler.imageBaseStep}");
+            }
+
             SetProperty(MSBuildProperties.DXP_ORDINALS_BASE, Config.Compiler.ordinalsBase);
             Log.send(this, $"The Base for ordinals: {Config.Compiler.ordinalsBase}");
 

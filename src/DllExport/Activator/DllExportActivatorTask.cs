@@ -187,6 +187,17 @@ namespace net.r_eg.DllExport.Activator
             set => exportTask.SdkPath = value;
         }
 
+        public long ImageBase
+        {
+            get => exportTask.ImageBase;
+            set => exportTask.ImageBase = value;
+        }
+
+        public string ImageBaseRaw
+        {
+            set => ImageBase = InputValuesCore.ParseImageBaseNoThrow(value);
+        }
+
         public int OrdinalsBase
         {
             get => exportTask.OrdinalsBase;

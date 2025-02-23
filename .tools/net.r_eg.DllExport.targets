@@ -131,6 +131,24 @@
           OverwriteReadOnlyFiles="true" SkipUnchangedFiles="true" />
   </Target>
 
+
+  <!-- Support DllExportImageBase for multiple platforms (TargetFrameworks) /F-324 -->
+  <ItemGroup Condition="'$(DisableDllExportImageBaseMultiplePlatforms)'!='true' And '$(TargetFrameworks)'!=''">
+    <TfmsXItems Include="$(TargetFrameworks)">
+      <Index>$([MSBuild]::Subtract($(TargetFrameworks.Substring(0, $(TargetFrameworks.IndexOf('%(Identity)'))).Split(';').Length), 1))</Index>
+    </TfmsXItems>
+  </ItemGroup>
+  <Target Name="DllExportImageBaseMultiplePlatforms" BeforeTargets="DllExportMod" Condition="'$(DisableDllExportImageBaseMultiplePlatforms)'!='true' And '$(DllExportImageBase)'!='' And '$(DllExportImageBaseStep)'!='' And '$(TargetFrameworks)'!=''">
+    <PropertyGroup>
+      <DllExportImageBase Condition="$(DllExportImageBase.Contains('x'))==false">$(DllExportImageBase)</DllExportImageBase>
+      <DllExportImageBase Condition="$(DllExportImageBase.Contains('x'))==true">$([System.Convert]::ToInt64($(DllExportImageBase), 16))</DllExportImageBase>
+      <DllExportImageBaseStep Condition="$(DllExportImageBaseStep.Contains('x'))==false">$(DllExportImageBaseStep)</DllExportImageBaseStep>
+      <DllExportImageBaseStep Condition="$(DllExportImageBaseStep.Contains('x'))==true">$([System.Convert]::ToInt64($(DllExportImageBaseStep), 16))</DllExportImageBaseStep>
+      <DllExportImageBase Condition="'%(TfmsXItems.Identity)'=='$(TargetFramework)'">$([MSBuild]::Add($(DllExportImageBase), $([MSBuild]::Multiply(%(TfmsXItems.Index), $(DllExportImageBaseStep)))))</DllExportImageBase>
+    </PropertyGroup>
+  </Target>
+
+
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
       <DllExportModExecuted>false</DllExportModExecuted>
@@ -154,6 +172,7 @@
       <DllExportDDNSCecil Condition="'$(DllExportDDNSCecil)'==''">true</DllExportDDNSCecil>
       <DllExportOurILAsm Condition="'$(DllExportOurILAsm)'==''">false</DllExportOurILAsm>
       <DllExportSysObjRebase Condition="'$(DllExportSysObjRebase)'==''">false</DllExportSysObjRebase>
+      <DllExportImageBase Condition="'$(DllExportImageBase)'==''">-1</DllExportImageBase>
       <DllExportOrdinalsBase Condition="'$(DllExportOrdinalsBase)'==''">1</DllExportOrdinalsBase>
       <DllExportGenExpLib Condition="'$(DllExportGenExpLib)'==''">false</DllExportGenExpLib>
       <DllExportOurILAsmPath Condition="'$(DllExportOurILAsm)'!='true'"></DllExportOurILAsmPath>
@@ -196,6 +215,7 @@
           TargetFrameworkIdentifier="$(DllExportTargetFrameworkIdentifier)"
           SdkPath="$(DllExportSdkPath)"
           SkipOnAnyCpu="$(DllExportSkipOnAnyCpu)"
+          ImageBaseRaw="$(DllExportImageBase)"
           OrdinalsBase="$(DllExportOrdinalsBase)"
           GenExpLib="$(DllExportGenExpLib)"
           OurILAsmPath="$(DllExportOurILAsmPath)"

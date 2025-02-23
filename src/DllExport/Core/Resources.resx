@@ -238,4 +238,7 @@
   <data name="_0_is_activated" xml:space="preserve">
     <value>{0} is activated.</value>
   </data>
+  <data name="Incorrect_0_Must_be_1_aligned" xml:space="preserve">
+    <value>Incorrect {0}: Must be {1} aligned. Int64. Hexadecimal / Decimal.</value>
+  </data>
 </root>

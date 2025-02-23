@@ -44,6 +44,8 @@ namespace net.r_eg.DllExport.Wizard.UI
                 sb.AppendLine($"Project type: {prj.XProject.ProjectItem.project.EpType}");
                 sb.AppendLine($"Storage: {prj.Config.Wizard.CfgStorage}");
                 sb.AppendLine($"Compiler.Platform: {prj.Config.Platform}");
+                sb.AppendLine($"Compiler.imageBase: {prj.Config.Compiler.imageBase}");
+                sb.AppendLine($"Compiler.imageBaseStep: {prj.Config.Compiler.imageBaseStep}");
                 sb.AppendLine($"Compiler.ordinalsBase: {prj.Config.Compiler.ordinalsBase}");
                 sb.AppendLine($"Compiler.rSysObj: {prj.Config.Compiler.rSysObj}");
                 sb.AppendLine($"Compiler.ourILAsm: {prj.Config.Compiler.ourILAsm}");

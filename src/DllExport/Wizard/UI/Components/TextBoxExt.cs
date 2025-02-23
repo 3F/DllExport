@@ -14,19 +14,31 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
     {
         private const int WM_PAINT = 0x000F;
 
+        private SolidBrush solidBrush;
+
+        private Font font;
+
+        private StringFormat stringFormat;
+
         public string BackgroundCaption { get; set; }
 
         public int BackgroundCaptionAlpha { get; set; } = 60;
 
+        public bool FontBold { get; set; }
+
         protected void DrawString(string str, int alpha)
         {
-            using(Graphics g = CreateGraphics())
+            solidBrush ??= new SolidBrush(Color.FromArgb(alpha, ForeColor));
+            font ??= FontBold ? new(Font, FontStyle.Bold) : Font;
+
+            stringFormat ??= new StringFormat
             {
-                g.DrawString(str, Font, new SolidBrush(Color.FromArgb(alpha, ForeColor)), ClientRectangle, new StringFormat
-                {
-                    Alignment = StringAlignment.Near
-                });
-            }
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center,
+            };
+
+            using Graphics g = CreateGraphics();
+            g.DrawString(str, font, solidBrush, ClientRectangle, stringFormat);
         }
 
         protected override void WndProc(ref Message m)
@@ -40,6 +52,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
                     DrawString(BackgroundCaption, BackgroundCaptionAlpha);
                 }
             }
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            solidBrush?.Dispose();
+            if(FontBold) font?.Dispose();
+            stringFormat?.Dispose();
+            base.Dispose(disposing);
         }
     }
 }

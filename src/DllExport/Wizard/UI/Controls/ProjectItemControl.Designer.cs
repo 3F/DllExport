@@ -28,12 +28,15 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
             this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
+            this.txtImageBaseStep = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
+            this.txtImageBase = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
             this.linkRefreshObj = new System.Windows.Forms.LinkLabel();
             this.chkRefreshObj = new System.Windows.Forms.CheckBox();
             this.chkNaNPatching = new System.Windows.Forms.CheckBox();
             this.linkInfPatching = new System.Windows.Forms.LinkLabel();
             this.linkSysObjRebase = new System.Windows.Forms.LinkLabel();
             this.chkRebaseSysObj = new System.Windows.Forms.CheckBox();
+            this.txtCustomILAsm = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
             this.chkIntermediateFiles = new System.Windows.Forms.CheckBox();
             this.chkCustomILAsm = new System.Windows.Forms.CheckBox();
             this.chkInfPatching = new System.Windows.Forms.CheckBox();
@@ -65,7 +68,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.labelPeCheck = new System.Windows.Forms.Label();
             this.linkPe1to1 = new System.Windows.Forms.LinkLabel();
             this.labelTimeout = new System.Windows.Forms.Label();
-            this.textBoxCustomILAsm = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
             ((System.ComponentModel.ISupportInitialize)(this.numOrdinal)).BeginInit();
             this.groupCompiler.SuspendLayout();
             this.groupPlatform.SuspendLayout();
@@ -121,7 +123,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.linkOrdinals.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkOrdinals.AutoSize = true;
             this.linkOrdinals.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkOrdinals.Location = new System.Drawing.Point(211, 9);
+            this.linkOrdinals.Location = new System.Drawing.Point(297, 9);
             this.linkOrdinals.Name = "linkOrdinals";
             this.linkOrdinals.Size = new System.Drawing.Size(13, 13);
             this.linkOrdinals.TabIndex = 4;
@@ -144,14 +146,14 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // numOrdinal
             // 
             this.numOrdinal.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.numOrdinal.Location = new System.Drawing.Point(10, 8);
+            this.numOrdinal.Location = new System.Drawing.Point(240, 7);
             this.numOrdinal.Maximum = new decimal(new int[] {
-            10000000,
+            -1,
             0,
             0,
             0});
             this.numOrdinal.Name = "numOrdinal";
-            this.numOrdinal.Size = new System.Drawing.Size(84, 20);
+            this.numOrdinal.Size = new System.Drawing.Size(53, 20);
             this.numOrdinal.TabIndex = 2;
             this.numOrdinal.KeyDown += new System.Windows.Forms.KeyEventHandler(this.numOrdinal_KeyDown);
             // 
@@ -159,11 +161,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             this.labelOrdinals.AutoSize = true;
             this.labelOrdinals.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelOrdinals.Location = new System.Drawing.Point(99, 11);
+            this.labelOrdinals.Location = new System.Drawing.Point(169, 10);
             this.labelOrdinals.Name = "labelOrdinals";
-            this.labelOrdinals.Size = new System.Drawing.Size(110, 13);
+            this.labelOrdinals.Size = new System.Drawing.Size(67, 13);
             this.labelOrdinals.TabIndex = 1;
-            this.labelOrdinals.Text = "The Base for ordinals.";
+            this.labelOrdinals.Text = "OrdinalBase:";
             // 
             // rbPlatformAnyCPU
             // 
@@ -192,6 +194,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             // 
             // groupCompiler
             // 
+            this.groupCompiler.Controls.Add(this.txtImageBaseStep);
+            this.groupCompiler.Controls.Add(this.txtImageBase);
             this.groupCompiler.Controls.Add(this.linkExpLib);
             this.groupCompiler.Controls.Add(this.linkRefreshObj);
             this.groupCompiler.Controls.Add(this.chkRefreshObj);
@@ -199,7 +203,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.groupCompiler.Controls.Add(this.linkInfPatching);
             this.groupCompiler.Controls.Add(this.linkSysObjRebase);
             this.groupCompiler.Controls.Add(this.chkRebaseSysObj);
-            this.groupCompiler.Controls.Add(this.textBoxCustomILAsm);
+            this.groupCompiler.Controls.Add(this.txtCustomILAsm);
             this.groupCompiler.Controls.Add(this.chkIntermediateFiles);
             this.groupCompiler.Controls.Add(this.chkCustomILAsm);
             this.groupCompiler.Controls.Add(this.linkOurILAsm);
@@ -216,12 +220,43 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.groupCompiler.TabIndex = 9;
             this.groupCompiler.TabStop = false;
             // 
+            // txtImageBaseStep
+            // 
+            this.txtImageBaseStep.BackgroundCaption = "Step";
+            this.txtImageBaseStep.BackgroundCaptionAlpha = 50;
+            this.txtImageBaseStep.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtImageBaseStep.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtImageBaseStep.FontBold = true;
+            this.txtImageBaseStep.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.txtImageBaseStep.Location = new System.Drawing.Point(102, 8);
+            this.txtImageBaseStep.Name = "txtImageBaseStep";
+            this.txtImageBaseStep.Size = new System.Drawing.Size(63, 20);
+            this.txtImageBaseStep.TabIndex = 20;
+            this.toolTip.SetToolTip(this.txtImageBaseStep, "Step for ImageBase in multiple targeting.\r\nMust be 0x10000 aligned.");
+            this.txtImageBaseStep.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtImageBaseStep_KeyDown);
+            // 
+            // txtImageBase
+            // 
+            this.txtImageBase.BackgroundCaption = "ImageBase";
+            this.txtImageBase.BackgroundCaptionAlpha = 50;
+            this.txtImageBase.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtImageBase.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtImageBase.FontBold = true;
+            this.txtImageBase.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.txtImageBase.Location = new System.Drawing.Point(10, 8);
+            this.txtImageBase.Name = "txtImageBase";
+            this.txtImageBase.Size = new System.Drawing.Size(89, 20);
+            this.txtImageBase.TabIndex = 19;
+            this.toolTip.SetToolTip(this.txtImageBase, "Custom ImageBase to mix platforms for host app etc.\r\nMust be 0x10000 aligned.\r\nE." +
+        "g. 0x10000000 ; 0x400000");
+            this.txtImageBase.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtImageBase_KeyDown);
+            // 
             // linkRefreshObj
             // 
             this.linkRefreshObj.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.linkRefreshObj.AutoSize = true;
             this.linkRefreshObj.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.linkRefreshObj.Location = new System.Drawing.Point(275, 28);
+            this.linkRefreshObj.Location = new System.Drawing.Point(275, 31);
             this.linkRefreshObj.Name = "linkRefreshObj";
             this.linkRefreshObj.Size = new System.Drawing.Size(13, 13);
             this.linkRefreshObj.TabIndex = 18;
@@ -289,6 +324,19 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.chkRebaseSysObj.TabIndex = 12;
             this.chkRebaseSysObj.Text = "Rebase System Object: System.Runtime > mscorlib";
             this.chkRebaseSysObj.UseVisualStyleBackColor = true;
+            // 
+            // txtCustomILAsm
+            // 
+            this.txtCustomILAsm.BackgroundCaption = null;
+            this.txtCustomILAsm.BackgroundCaptionAlpha = 60;
+            this.txtCustomILAsm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtCustomILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtCustomILAsm.FontBold = false;
+            this.txtCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
+            this.txtCustomILAsm.Location = new System.Drawing.Point(103, 88);
+            this.txtCustomILAsm.Name = "txtCustomILAsm";
+            this.txtCustomILAsm.Size = new System.Drawing.Size(204, 20);
+            this.txtCustomILAsm.TabIndex = 9;
             // 
             // chkIntermediateFiles
             // 
@@ -665,18 +713,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.labelTimeout.TabIndex = 11;
             this.labelTimeout.Text = "Processing Limit (ms)";
             // 
-            // textBoxCustomILAsm
-            // 
-            this.textBoxCustomILAsm.BackgroundCaption = null;
-            this.textBoxCustomILAsm.BackgroundCaptionAlpha = 60;
-            this.textBoxCustomILAsm.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.textBoxCustomILAsm.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.textBoxCustomILAsm.ForeColor = System.Drawing.Color.DarkGray;
-            this.textBoxCustomILAsm.Location = new System.Drawing.Point(103, 88);
-            this.textBoxCustomILAsm.Name = "textBoxCustomILAsm";
-            this.textBoxCustomILAsm.Size = new System.Drawing.Size(204, 20);
-            this.textBoxCustomILAsm.TabIndex = 9;
-            // 
             // ProjectItemControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -734,7 +770,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private System.Windows.Forms.Panel panelStatus;
         private System.Windows.Forms.CheckBox chkIntermediateFiles;
         private System.Windows.Forms.NumericUpDown numTimeout;
-        private TextBoxExt textBoxCustomILAsm;
+        private TextBoxExt txtCustomILAsm;
         private System.Windows.Forms.CheckBox chkCustomILAsm;
         private System.Windows.Forms.GroupBox groupTimeout;
         private System.Windows.Forms.Label labelBackgroundNS;
@@ -757,5 +793,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private System.Windows.Forms.LinkLabel linkRefreshObj;
         private System.Windows.Forms.Label labelPeCheck;
         private System.Windows.Forms.LinkLabel linkPeIl;
+        private TextBoxExt txtImageBase;
+        private TextBoxExt txtImageBaseStep;
     }
 }

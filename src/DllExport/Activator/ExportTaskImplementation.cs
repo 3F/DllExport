@@ -149,6 +149,12 @@ namespace net.r_eg.DllExport.Activator
             set => _Values.SdkPath = value;
         }
 
+        public long ImageBase
+        {
+            get => _Values.ImageBase;
+            set => _Values.ImageBase = value;
+        }
+
         public int OrdinalsBase
         {
             get => _Values.OrdinalsBase;

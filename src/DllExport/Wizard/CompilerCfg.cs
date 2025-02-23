@@ -13,6 +13,16 @@ namespace net.r_eg.DllExport.Wizard
         public const int TIMEOUT_EXEC = 30_000;
 
         /// <summary>
+        /// Custom ImageBase. Must be 0x10000 aligned.
+        /// </summary>
+        public string imageBase;
+
+        /// <summary>
+        /// ImageBase step. Must be 0x10000 aligned.
+        /// </summary>
+        public string imageBaseStep;
+
+        /// <summary>
         /// Base for ordinals.
         /// </summary>
         public int ordinalsBase;

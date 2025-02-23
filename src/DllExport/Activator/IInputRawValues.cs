@@ -11,6 +11,8 @@ namespace net.r_eg.DllExport.Activator
 {
     public interface IInputRawValues: IInputValues
     {
+        string ImageBaseRaw { set; }
+
         long PatchesRaw { set; }
 
         int PeCheckRaw { set; }

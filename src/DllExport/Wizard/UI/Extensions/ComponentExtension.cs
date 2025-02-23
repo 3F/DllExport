@@ -48,5 +48,43 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
                 dgv.Rows.Remove(dgv.Rows[e.RowIndex]);
             }
         }
+
+        internal static bool IsDigitsOrControl(this KeyEventArgs e)
+        {
+            if((e.KeyValue >= '0' && e.KeyValue <= '9')
+                || (e.KeyCode >= Keys.NumPad0 && e.KeyCode <= Keys.NumPad9)
+                || (e.KeyCode >= Keys.Left && e.KeyCode <= Keys.Down)
+                || e.KeyCode == Keys.Home
+                || e.KeyCode == Keys.End)
+            {
+                return true;
+            }
+
+            return e.KeyCode switch
+            {
+                Keys.Back or Keys.Delete => true,
+                _ => false,
+            };
+        }
+
+        internal static bool IsHexDigitsOrControl(this KeyEventArgs e)
+        {
+            if(e.IsDigitsOrControl()
+                || (e.KeyValue >= 'A' && e.KeyValue <= 'F')
+                || (e.KeyValue >= 'a' && e.KeyValue <= 'f')
+                || e.KeyValue == 'x'
+                || e.KeyValue == 'X')
+            {
+                return true;
+            }
+            return false;
+        }
+
+        internal static void AllowKeysOnly(this KeyEventArgs e, Func<KeyEventArgs, bool> predicate)
+        {
+            if(predicate(e)) return;
+            e.SuppressKeyPress = true;
+            e.Handled = true;
+        }
     }
 }

@@ -35,6 +35,8 @@ namespace net.r_eg.DllExport
 
         string SdkPath { get; set; }
 
+        long ImageBase { get; set; }
+
         int OrdinalsBase { get; set; }
 
         bool GenExpLib { get; set; }

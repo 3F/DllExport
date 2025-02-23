@@ -129,5 +129,12 @@ namespace net.r_eg.DllExport.Wizard
         /// <param name="onFailed">Execute action if record is invalid.</param>
         /// <returns>true if all records are valid.</returns>
         bool ValidateRefPackages(Func<string, bool> onFailed);
+
+        /// <summary>
+        /// Validate <see cref="CompilerCfg.imageBase"/> and <see cref="CompilerCfg.imageBaseStep"/>.
+        /// </summary>
+        /// <param name="onFailed">Execute action if value is invalid.</param>
+        /// <returns>true if both <see cref="CompilerCfg.imageBase"/> and <see cref="CompilerCfg.imageBaseStep"/> meets all the requirements.</returns>
+        bool ValidateImageBase(Func<string, bool> onFailed);
     }
 }

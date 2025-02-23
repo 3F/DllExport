@@ -27,6 +27,16 @@ namespace net.r_eg.DllExport.Wizard
         public const string DXP_NAMESPACE = "DllExportNamespace";
 
         /// <summary>
+        /// Control ImageBase. Optional.
+        /// </summary>
+        public const string DXP_IMAGE_BASE = "DllExportImageBase";
+
+        /// <summary>
+        /// Step for ImageBase in multiple targeting. Optional.
+        /// </summary>
+        public const string DXP_IMAGE_BASE_STEP = "DllExportImageBaseStep";
+
+        /// <summary>
         /// https://github.com/3F/DllExport/issues/11#issuecomment-250907940
         /// </summary>
         public const string DXP_ORDINALS_BASE = "DllExportOrdinalsBase";

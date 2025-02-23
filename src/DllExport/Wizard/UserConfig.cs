@@ -7,6 +7,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
 using net.r_eg.DllExport.ILAsm;
@@ -96,6 +97,8 @@ namespace net.r_eg.DllExport.Wizard
 
             Compiler = new()
             {
+                imageBase           = GetUnevaluatedValue(MSBuildProperties.DXP_IMAGE_BASE, xp)?.Trim(),
+                imageBaseStep       = GetUnevaluatedValue(MSBuildProperties.DXP_IMAGE_BASE_STEP, xp)?.Trim(),
                 genExpLib           = GetValue(MSBuildProperties.DXP_GEN_EXP_LIB, xp).ToBoolean(),
                 ordinalsBase        = GetValue(MSBuildProperties.DXP_ORDINALS_BASE, xp).ToInteger(),
                 ourILAsm            = GetValue(MSBuildProperties.DXP_OUR_ILASM, xp).ToBoolean(),
@@ -183,6 +186,25 @@ namespace net.r_eg.DllExport.Wizard
                     return onFailed($"Tfm or path is not defined {_At(i)}");
             }
             return true;
+        }
+
+        public bool ValidateImageBase(Func<string, bool> onFailed)
+        {
+            if(string.IsNullOrEmpty(Compiler.imageBase) && string.IsNullOrEmpty(Compiler.imageBaseStep))
+                return true; //accept as the default values
+
+            if(string.IsNullOrEmpty(Compiler.imageBase) && !string.IsNullOrEmpty(Compiler.imageBaseStep))
+            {
+                return onFailed($"Step cannot be configured for empty ImageBase");
+            }
+
+            if(!string.IsNullOrEmpty(Compiler.imageBaseStep) && (InputValuesCore.ParseImageBaseNoThrow(Compiler.imageBaseStep) == -1))
+            {
+                return onFailed(string.Format(Resources.Incorrect_0_Must_be_1_aligned, "step for ImageBase", "0x10000"));
+            }
+
+            return (InputValuesCore.ParseImageBaseNoThrow(Compiler.imageBase) != -1)
+                    || onFailed(string.Format(Resources.Incorrect_0_Must_be_1_aligned, nameof(Compiler.imageBase), "0x10000"));
         }
 
         public UserConfig(IWizardConfig cfg, IXProject xp)

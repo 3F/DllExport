@@ -8,7 +8,9 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.Parsing;
@@ -40,6 +42,8 @@ namespace net.r_eg.DllExport
         public string RootDirectory { get; set; }
 
         public string SdkPath { get; set; }
+
+        public long ImageBase { get; set; }
 
         public int OrdinalsBase { get; set; }
 
@@ -131,6 +135,19 @@ namespace net.r_eg.DllExport
                 return;
             }
             this.OutputFileName = this.InputFileName;
+        }
+
+        /// <returns>-1 if incorrect or empty or null</returns>
+        public static long ParseImageBaseNoThrow(string input)
+        {
+            if(string.IsNullOrWhiteSpace(input)) return -1;
+
+            if(!input.Contains("0x")
+                || !long.TryParse(input.Substring(2), NumberStyles.HexNumber, CultureInfo.CurrentCulture, out long imageBase))
+            {
+                if(!long.TryParse(input, out imageBase)) return -1;
+            }
+            return (imageBase & 0xFFFF) == 0 && imageBase > 0 ? imageBase : -1;
         }
     }
 }
