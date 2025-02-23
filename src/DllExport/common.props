@@ -10,8 +10,6 @@
     <RootObjDir>bin\obj\</RootObjDir>
     <RootAssetsDir>bin\assets\</RootAssetsDir>
 
-    <DllExportFeatureILAsmCvresUseFx>true</DllExportFeatureILAsmCvresUseFx> <!-- TODO: false; let's not disturb the original logic from 3F's IL Assembler 9.3.0 -->
-    <DllExportFeatureLegacyEmitMsCorlib>true</DllExportFeatureLegacyEmitMsCorlib> <!-- TODO: false; no longer needed after 3F's IL Assembler 9.3.0+ release -->
     <SuppressIncludeDllExportVersion>true</SuppressIncludeDllExportVersion>
 
     <OsUnixLike>false</OsUnixLike>

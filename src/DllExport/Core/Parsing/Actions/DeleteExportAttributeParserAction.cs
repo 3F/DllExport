@@ -8,6 +8,7 @@
 
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 
 namespace net.r_eg.DllExport.Parsing.Actions
@@ -36,7 +37,10 @@ namespace net.r_eg.DllExport.Parsing.Actions
 
             stringBuilder.Append(".method ").Append(state.Method.Attributes?.Trim()).Append(" ");
             stringBuilder.Append(state.Method.Result?.Trim());
-            stringBuilder.Append(" modopt(['mscorlib']'").Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append("') ");
+
+            string convBase = state.ExternalAssemlyDeclarations.FirstOrDefault()?.AliasName ?? "mscorlib";
+            stringBuilder.Append($" modopt(['{convBase}']'")
+                .Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append("') ");
 
             if(!String.IsNullOrEmpty(state.Method.ResultAttributes)) {
                 stringBuilder.Append(" ").Append(state.Method.ResultAttributes);
