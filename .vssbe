@@ -428,7 +428,6 @@
           "{",
           "    #[IO copy.file(",
           "    {",
-          "        \"packages/ILAsm/bin/Win.x86/*.dll\",",
           "        \"packages/ILAsm/bin/Win.x86/*.exe\",",
           "        \"packages/ILAsm/*.txt\",",
           "        \"packages/ILAsm/*.md\"",
