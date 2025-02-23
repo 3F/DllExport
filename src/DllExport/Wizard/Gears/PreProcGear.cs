@@ -161,11 +161,16 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 }
             });
 
-            StringBuilder fDel = new(capacity: 60);
+            StringBuilder fDel = new(capacity: 120);
             fDel.Append($"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})");
             if(type.HasFlag(CmdType.Conari))
             {
                 fDel.Append($";$({MSBuildProperties.PRJ_TARGET_DIR}){GetLib(CmdType.Conari).module}");
+            }
+            if(type.HasFlag(CmdType.MergeRefPkg))
+            {
+                foreach(RefPackage rp in Config.RefPackages)
+                    fDel.Append($";$({MSBuildProperties.PRJ_TARGET_DIR}){rp.Name + ".dll"}");
             }
             target.AddTask("Delete", continueOnError: true, t => t.SetParameter("Files", fDel.ToString()));
         }

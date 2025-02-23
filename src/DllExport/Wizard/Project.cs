@@ -286,9 +286,7 @@ namespace net.r_eg.DllExport.Wizard
 
         protected IUserConfig GetUserConfig(IXProject project, IConfigInitializer cfg)
         {
-            if(Installed) {
-                return new UserConfig(cfg, project);
-            }
+            if(Installed) return new UserConfig(cfg, project);
 
             return new UserConfig(cfg)
             {
@@ -301,6 +299,10 @@ namespace net.r_eg.DllExport.Wizard
                     peCheck         = PeCheckType.PeIl | PeCheckType.Pe32orPlus,
                     patches         = PatchesType.None,
                 },
+                AssemblyExternDirectives = [],
+                TypeRefDirectives = [],
+                TypeRefOptions = TypeRefOptions.None,
+                RefPackages = [],
                 PreProc     = new PreProc().Configure(),
                 PostProc    = new PostProc().Configure(null),
             };

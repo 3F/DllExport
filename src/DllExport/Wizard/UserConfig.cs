@@ -108,17 +108,6 @@ namespace net.r_eg.DllExport.Wizard
                 refreshObj          = GetValue(MSBuildProperties.DXP_REFRESH_OBJ, xp).ToBoolean(),
             };
 
-            var preType = (PreProcType)GetValue(MSBuildProperties.DXP_PRE_PROC_TYPE, xp).ToLongInteger();
-            PreProc = new PreProc().Configure(preType, GetPreProcCmd(preType, xp));
-
-            var postType = (PostProcType)GetValue(MSBuildProperties.DXP_POST_PROC_TYPE, xp).ToLongInteger();
-            PostProc = new PostProc().Configure
-            (
-                postType,
-                GetPostProcEnv(postType, xp),
-                GetPostProcCmd(postType, xp)
-            );
-
             AssemblyExternDirectives = new List<AssemblyExternDirective>
                 (GetValue(MSBuildProperties.DXP_ILASM_EXTERN_ASM, xp).Deserialize<AssemblyExternDirective>());
 
@@ -129,6 +118,17 @@ namespace net.r_eg.DllExport.Wizard
 
             RefPackages = new List<RefPackage>
                 (GetValue(MSBuildProperties.DXP_REF_PACKAGES, xp).Deserialize<RefPackage>());
+
+            var preType = (PreProcType)GetValue(MSBuildProperties.DXP_PRE_PROC_TYPE, xp).ToLongInteger();
+            PreProc = new PreProc().Configure(preType, GetPreProcCmd(preType, xp));
+
+            var postType = (PostProcType)GetValue(MSBuildProperties.DXP_POST_PROC_TYPE, xp).ToLongInteger();
+            PostProc = new PostProc().Configure
+            (
+                postType,
+                GetPostProcEnv(postType, xp),
+                GetPostProcCmd(postType, xp)
+            );
         }
 
         public bool ValidateAssemblyExternDirectives(Func<string, bool> onFailed)
