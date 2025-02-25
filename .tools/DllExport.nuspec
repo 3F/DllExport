@@ -5,27 +5,29 @@
     <version>$-version-$</version>
     <title>.NET DllExport</title>
     <authors>github.com/3F/DllExport</authors>
-    <license type="file">License.txt</license>
+    <license type="file">LICENSE.txt</license>
     <owners>reg</owners>
     <licenseUrl>https://aka.ms/deprecateLicenseUrl</licenseUrl>
     <projectUrl>https://github.com/3F/DllExport</projectUrl>
     <repository type="git" url="https://github.com/3F/DllExport" />
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <description>
-        Open source project .NET DllExport with .NET Core support (aka 3F/DllExport aka DllExport.bat)
-        https://github.com/3F/DllExport
+    <description>Open source .NET DllExport with .NET Core support (aka 3F/DllExport aka DllExport.bat) https://github.com/3F/DllExport
         
         🚀 Quick start: https://github.com/3F/DllExport/wiki/Quick-start
+
         🔖 Examples. Unmanaged C++ / C# / Java: https://youtu.be/QXMj9-8XJnY
         🧪 Demo: https://github.com/3F/Examples/tree/master/DllExport/BasicExport
-
-        ===
-        gnt DllExport/$-version-$
-        https://github.com/3F/GetNuTool
+        
+            * https://github.com/3F/DllExport/tree/master/src/DllExport/assets
+              https://github.com/3F/DllExport/tree/master/src/DllExport/UnitedTest
 
         ===
         DllExport -dxp-version $-version-$
         https://3F.github.io/DllExport/releases/latest/manager/
+
+        ===
+        gnt DllExport/$-version-$
+        https://github.com/3F/GetNuTool
 
 {build_info}</description>
     <summary>.NET DllExport with .NET Core support (aka 3F/DllExport aka DllExport.bat)</summary>

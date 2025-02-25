@@ -2,7 +2,159 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
-[v1.7.4] 2021.01.02
+[1.8] 2025.02.25
+
+    * NEW: Extends support for .NET 9, .NET 8, .NET 7,
+           .NET 6, .NET 5, netcoreapp3.1, netstandard2.1, ...
+           Issues: #219, #193, #132, #239
+
+    * NEW: Custom `.typref ...` & `.assembly extern ...` in the Wizard
+           using modern 3F's IL Assembler 9.3+
+
+    * NEW: Support $-interpolation in modern .NET 9-6, Span, Memory, ...
+           configure in the Wizard.
+
+    * NEW: New [Ref] packages control and related options.
+
+    * NEW: ImageBase + step control in multiple targeting.
+           configure in the Wizard.
+
+    * NEW: New `DllExport -pe` keys:
+              -list-addr, -list-ord, -list-all
+              -magic, -num-functions, -base
+
+    * NEW: Official ILRepack support in Pre-processing; 2.0.39
+           https://github.com/gluck/il-repack/releases/tag/2.0.39
+
+    * NEW: New PE Check option to control PE32/PE32+ arch.
+
+    * NEW: -action RecoverInit in addition to -action Recover;
+           Recover to initial setup using predefined/exported data.
+
+    * NEW: Option to refresh intermediate module (obj) using modified. Issue #206.
+
+    * NEW: x86+x64 copy support for `Publish` targets. Related issue #224.
+           `DllExportResolvePublish` property to control it.
+
+    * FIXED: Crashes or empty exports if code contains `.class extern forwarder` declarations.
+
+    * FIXED: error: syntax error at token '.' in .interfaceimpl type... Issue: #205.
+
+    * FIXED: Post-Proc: possible "The given key was not present in the dictionary."
+
+    * FIXED: Fixed Pre-Proc ILMerge for netcore.
+
+    * FIXED: Fix copying to own directory for "Provide x86+x64 assemblies"
+             when no active dependencies.
+
+    * FIXED: Pre-Proc: fixed edit Exec raw command in the Wizard.
+
+    * FIXED: Fixed possible Incorrect RVA: 0 when PE Check is on.
+
+    * FIXED: Fixed -action Export: Parameter "unevaluatedValue" cannot be null.
+
+    * FIXED: Fixed Post-Proc DllExportDirX64 & DllExportDirX86 properties.
+
+    * FIXED: DllExportResolvePublish support for a single platform
+             Related issue #235 or like.
+
+    * FIXED: Failed to write to log file ... because it is being used by another process. Issue #223.
+
+    * CHANGED: Execute `-action Restore` in case of loss of generated meta
+             for the cases like ImplicitUsings=true etc.
+             It will probably help with problems like #184.
+
+    * CHANGED: Improved support for nested projects using $(DllExportDir) etc.
+
+    * CHANGED: Improved managing `PlatformTarget` when applying the configuration.
+
+    * CHANGED: Improved TargetFrameworks multi-targeting support. ImageBase can be configured separately.
+
+    * CHANGED: Improved IsNetCoreBased logic for modern tfms.
+
+    * CHANGED: Improved cleaning logic at Pre-processing stage to delete correctly DllExport.Dll, Conari.dll
+               and other assemblies from TargetDir when merging using [Ref] etc.
+
+    * CHANGED: `DllExport -action keys` are no longer case sensitive.
+
+    * CHANGED: Adds /PDB /OPTIMIZE and other types of PDB generation.
+                Automatic option is relied on DebugType + Optimize + DebugSymbols properties:
+                * Optimize: Optimize long instructions to short
+                * PdbOptimize: +Create the PDB file without enabling debug info tracking
+                * DebugOptimize: Enable JIT optimization, create PDB file, use implicit sequence points
+                * Debug: Disable JIT optimization, create PDB file, use sequence points from PDB
+                * DebugImpl: Disable JIT optimization, create PDB file, use implicit sequence points
+                * Legacy True/False: Debug or Optimize
+
+    * CHANGED: Updated .PDB deletion logic according to ISymUnmanagedWriter problem.
+
+    * CHANGED: Use `wDxpMsgLevel` environment variable to control message level.
+           
+    * CHANGED: Full integration with modern hMSBuild 2.4.1+
+               https://github.com/3F/hMSBuild
+               ```
+               DllExport -hMSBuild -help
+               ```
+               
+               GetNuTool now through hMSBuild engine:
+               ```
+               DllExport -hMSBuild -GetNuTool ...
+               ```
+
+    * CHANGED: `DllExport -pe-exp-list` marked as obsolete;
+               Use new `-pe` instead.
+               ```
+               DllExport -pe -help
+               ```
+
+    * CHANGED: +Log option for IlMerge & ILRepack in the Wizard.
+
+    * CHANGED: Changed `-action Upgrade` logic same to `-action Configure`
+
+    * CHANGED: Make all paths relative as `$(DllExportDir)..\` in configured project files.
+
+    * CHANGED: Updated wrapper in offline version
+               `offline.DllExport.1.8...zip` https://www.nuget.org/packages/DllExport/1.8
+
+    * CHANGED: Added netfx4sdk 1.2 helper to build using legacy tfm
+               https://github.com/3F/netfx4sdk
+
+    * CHANGED: Updated
+               * ILAsm 9.3.0
+                 https://github.com/3F/coreclr/releases/tag/9.3.0
+                 
+               * ILMerge 3.0.41
+                 https://www.nuget.org/packages/ilmerge/3.0.41
+                 
+               * Cecil 0.11.6
+                 https://github.com/jbevain/cecil/releases/tag/0.11.6
+
+               * Conari 1.5.0
+                 https://github.com/3F/Conari/releases/tag/1.5
+                 
+               * MvsSln 2.7 with enabled Huid implementation
+                 https://github.com/3F/MvsSln/issues/51#issuecomment-2156752275
+
+    * NOTE: Tests for net9.0;net8.0;net7.0;net6.0;net5.0;netcoreapp3.1;netstandard2.1;netstandard2.0;net472;...
+            can be found in official repo https://github.com/3F/DllExport
+
+            ~ https://github.com/3F/DllExport/tree/master/src/DllExport/assets
+              https://github.com/3F/DllExport/tree/master/src/DllExport/UnitedTest
+
+    * NOTE: To upgrade to 1.8:
+            DllExport -mgr-up -dxp-version 1.8
+            or
+            DllExport -action Upgrade -dxp-version 1.8
+
+    * NOTE: official manager can be found here:
+            https://3F.github.io/DllExport/releases/latest/manager/
+            or here:
+            * https://github.com/3F/DllExport/releases/tag/1.8
+            * https://www.nuget.org/packages/DllExport/1.8
+            
+
+
+[1.7.4] 2021.01.02
 
     * FIXED: Basic project integration stuck on adding property message. Issue #175.
              Modern VS/MSBuild 16.8+
