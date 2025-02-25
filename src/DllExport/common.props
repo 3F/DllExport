@@ -10,6 +10,7 @@
     <RootObjDir>bin\obj\</RootObjDir>
     <RootAssetsDir>bin\assets\</RootAssetsDir>
 
+    <DllExportFeatureLegacyEmitMsCorlib>true</DllExportFeatureLegacyEmitMsCorlib> <!-- temporarily keep it for backward compatibility /F-337 -->
     <SuppressIncludeDllExportVersion>true</SuppressIncludeDllExportVersion>
 
     <OsUnixLike>false</OsUnixLike>

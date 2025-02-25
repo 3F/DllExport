@@ -38,7 +38,11 @@ namespace net.r_eg.DllExport.Parsing.Actions
             stringBuilder.Append(".method ").Append(state.Method.Attributes?.Trim()).Append(" ");
             stringBuilder.Append(state.Method.Result?.Trim());
 
+#if F_LEGACY_EMIT_MSCORLIB
+            string convBase = "mscorlib";
+#else
             string convBase = state.ExternalAssemlyDeclarations.FirstOrDefault()?.AliasName ?? "mscorlib";
+#endif
             stringBuilder.Append($" modopt(['{convBase}']'")
                 .Append(AssemblyExports.ConventionTypeNames[exportMethod.CallingConvention]).Append("') ");
 
