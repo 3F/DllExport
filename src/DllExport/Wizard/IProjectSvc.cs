@@ -28,6 +28,8 @@ namespace net.r_eg.DllExport.Wizard
 
         IProjectSvc RemovePackageReferences(string id, Func<Item, bool> opt = null, bool wzstrict = true);
 
+        IProjectSvc RemovePackageReferences(Func<Item, bool> opt, bool wzstrict = true);
+
         IEnumerable<KeyValuePair<string, string>> GetMeta
         (
             bool privateAssets = false, bool hide = false, bool generatePath = false

@@ -53,7 +53,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             {
                 prj.RemovePackageReferences(tool.name);
             }
-            prj.RemovePackageReferences(id: null, wzstrict: true);
+            prj.RemovePackageReferences(i => i.evaluated != UserConfig.PKG_ID);
         }
 
         private void CfgPreProc(CmdType type)

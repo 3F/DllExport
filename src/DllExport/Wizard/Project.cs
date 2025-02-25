@@ -135,25 +135,13 @@ namespace net.r_eg.DllExport.Wizard
             Save();
         }
 
-        public virtual bool Configure(ActionType type)
+        public virtual bool Configure(ActionType type) => type switch
         {
-            switch(type) {
-                case ActionType.Restore: {
-                    ActionRestore();
-                    break;
-                }
-                case ActionType.Update: {
-                    ActionUpdate();
-                    break;
-                }
-                case ActionType.Configure: {
-                    ActionConfigure();
-                    break;
-                }
-            }
-
-            return true;
-        }
+            ActionType.Restore => ActionRestore(),
+            ActionType.Update => ActionUpdate(),
+            ActionType.Configure => ActionConfigure(),
+            _ => true,
+        };
 
         #region IProjectSvc
 
@@ -164,6 +152,7 @@ namespace net.r_eg.DllExport.Wizard
         void IProjectSvc.SetProperty(string name, int val) => SetProperty(name, val);
         void IProjectSvc.SetProperty(string name, long val) => SetProperty(name, val);
         IProjectSvc IProjectSvc.RemovePackageReferences(string id, Func<Item, bool> opt, bool wzstrict) => RemovePackageReferences(id, opt, wzstrict);
+        IProjectSvc IProjectSvc.RemovePackageReferences(Func<Item, bool> opt, bool wzstrict) => RemovePackageReferences(id: null, opt, wzstrict);
         IEnumerable<KeyValuePair<string, string>> IProjectSvc.GetMeta(bool privateAssets, bool hide, bool generatePath) => Meta.Get(privateAssets, hide, generatePath);
 
         #endregion
@@ -232,28 +221,26 @@ namespace net.r_eg.DllExport.Wizard
 
         protected void UninstallGears(bool hardReset) => gears.ForEach(g => g.Uninstall(hardReset));
 
-        protected void ActionRestore()
+        protected bool ActionRestore()
         {
             if(Installed)
             {
                 CfgDDNS();
             }
+            return true;
         }
 
-        protected void ActionUpdate()
+        protected bool ActionUpdate()
         {
-            Reset(hardReset: false);
-
             if(Installed)
             {
                 CfgDDNS();
-                ActionStorage(Config.Wizard.CfgStorage);
+                ActionConfigure(force: true);
             }
-
-            Save();
+            return true;
         }
 
-        protected void ActionConfigure(bool force = false)
+        protected bool ActionConfigure(bool force = false)
         {
             Reset(hardReset: true);
 
@@ -272,6 +259,7 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             Save();
+            return true;
         }
 
         protected void ActionStorage(CfgStorageType type)
@@ -496,7 +484,7 @@ namespace net.r_eg.DllExport.Wizard
         {
             string dxpTarget = AddImport(Config.Wizard.DxpTarget, dxpDirBased: true, METALIB_PK_TOKEN);
 
-            if(Config.Wizard.Distributable 
+            if(Config.Wizard.Distributable
                 && XProject.GetFirstPackageReference(UserConfig.PKG_ID).parentItem == null)
             {
                 AddDllExportRef(Config.Wizard.PkgVer);
@@ -525,7 +513,6 @@ namespace net.r_eg.DllExport.Wizard
             if(!pkgconf.IsNew)
             {
                 pkgconf.AddOrUpdatePackage(UserConfig.PKG_ID, version, "net40");
-                return;
             }
 
             XProject.AddPackageReference
@@ -641,7 +628,7 @@ namespace net.r_eg.DllExport.Wizard
             }
 
             Log.send(this, $"Attempt to delete {WZ_ID} PackageReference records");
-            RemovePackageReferences(UserConfig.PKG_ID, _=> Config?.Wizard.CfgStorage == CfgStorageType.TargetsFile);
+            RemovePackageReferences(UserConfig.PKG_ID);
             if(!pkgconf.IsNew) pkgconf.RemovePackage(UserConfig.PKG_ID);
 
             Log.send(this, $"Remove old Import elements:'{DXP_TARGET}'");
@@ -728,9 +715,9 @@ namespace net.r_eg.DllExport.Wizard
         {
             foreach(Item item in XProject.GetPackageReferences().Where(p => !p.isImported && (id == null || p.evaluated == id)).ToArray()) 
             {
+                if(opt?.Invoke(item) == false) continue;
                 if(!wzstrict
-                    || item.meta?.GetOrDefault(WZ_ID).evaluated == "1"
-                    || opt?.Invoke(item) == true)
+                    || item.meta?.GetOrDefault(WZ_ID).evaluated == "1")
                 {
                     Log.send(this, $"{nameof(RemovePackageReferences)} {item.evaluated} {item.Assembly.Info.Version}", Message.Level.Trace);
                     XProject.RemoveItem(item);
@@ -772,7 +759,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private string CopyLib(string src, string dest)
         {
-            if(!File.Exists(src)) throw new FileNotFoundException();
+            if(!File.Exists(src)) throw new FileNotFoundException(nameof(src), src);
             if(string.IsNullOrWhiteSpace(dest)) throw new DirectoryNotFoundException();
 
             var dir = Path.GetDirectoryName(dest);
