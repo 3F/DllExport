@@ -26,7 +26,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private readonly Dictionary<CmdType, _ToolOrLib> mTool = new()
         {
             { CmdType.ILMerge, new("ilmerge", new("3.0.41"), "$(ILMergeConsolePath)") },
-            { CmdType.ILRepack, new("ILRepack", new("2.0.36"), "$(ILRepack)") },
+            { CmdType.ILRepack, new("ILRepack", new("2.0.39"), "$(ILRepack)") },
             { CmdType.Conari, new("Conari", new("1.5.0")) },
         };
 

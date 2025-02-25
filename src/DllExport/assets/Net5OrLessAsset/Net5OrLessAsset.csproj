@@ -38,7 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ILRepack">
-      <Version>2.0.36</Version>
+      <Version>2.0.39</Version>
       <Wz>1</Wz>
     </PackageReference>
     <PackageReference Include="System.Memory">
