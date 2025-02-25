@@ -546,6 +546,10 @@ namespace net.r_eg.DllExport.Wizard
                 args = Regex.Replace(Config.Wizard.MgrArgs, @"-action\s\w+", "", RegexOptions.IgnoreCase);
                 args = args.Replace("%", "%%"); // part of issue 88, probably because of %(_data.FullPath) etc.
                 args = Regex.Replace(args, @"-force(?:\s|$)", "", RegexOptions.IgnoreCase); // user commands only
+
+                // make all paths relative as `$(DllExportDir)..` /F-334
+                if(!string.IsNullOrEmpty(Config.Wizard.RootPath) && !string.IsNullOrEmpty(Config.Wizard.SlnDir))
+                    args = args.Replace(Config.Wizard.SlnDir, GetDxpDirBased(Config.Wizard.RootPath.MakeRelativePath(Config.Wizard.SlnDir)));
             }
             else
             {
