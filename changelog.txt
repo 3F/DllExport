@@ -10,6 +10,7 @@
 
     * NEW: Custom `.typref ...` & `.assembly extern ...` in the Wizard
            using modern 3F's IL Assembler 9.3+
+           https://github.com/3F/coreclr?tab=readme-ov-file#typeref-custom-definitions
 
     * NEW: Support $-interpolation in modern .NET 9-6, Span, Memory, ...
            configure in the Wizard.
@@ -114,7 +115,7 @@
     * CHANGED: Make all paths relative as `$(DllExportDir)..\` in configured project files.
 
     * CHANGED: Updated wrapper in offline version
-               `offline.DllExport.1.8...zip` https://www.nuget.org/packages/DllExport/1.8
+               `offline.DllExport.1.8...zip` https://github.com/3F/DllExport/releases/tag/1.8
 
     * CHANGED: Added netfx4sdk 1.2 helper to build using legacy tfm
                https://github.com/3F/netfx4sdk
@@ -141,10 +142,10 @@
             ~ https://github.com/3F/DllExport/tree/master/src/DllExport/assets
               https://github.com/3F/DllExport/tree/master/src/DllExport/UnitedTest
 
-    * NOTE: To upgrade to 1.8:
-            DllExport -mgr-up -dxp-version 1.8
+    * NOTE: To upgrade from older versions:
+            DllExport -mgr-up -dxp-version 1.8.0
             or
-            DllExport -action Upgrade -dxp-version 1.8
+            DllExport -action Upgrade -dxp-version 1.8.0
 
     * NOTE: official manager can be found here:
             https://3F.github.io/DllExport/releases/latest/manager/
@@ -152,6 +153,7 @@
             * https://github.com/3F/DllExport/releases/tag/1.8
             * https://www.nuget.org/packages/DllExport/1.8
             
+    * NOTE: Symbols (PDB) are available through GitHub Releases in offline version.
 
 
 [1.7.4] 2021.01.02
