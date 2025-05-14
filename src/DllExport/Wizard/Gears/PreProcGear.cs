@@ -57,7 +57,8 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             _FxCorArgBuilder sb = new(capacity: 100);
 
-            sb.AppendBoth(Path.Combine(ILMERGE_TMP, "$(TargetName).dll")); //F-315, keep it first
+            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+                sb.AppendBoth(Path.Combine(ILMERGE_TMP, "$(TargetName).dll")); //F-315, keep it first
 
             if(type.HasFlag(CmdType.Conari))
             {

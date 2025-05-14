@@ -34,7 +34,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
             stringFormat ??= new StringFormat
             {
                 Alignment = StringAlignment.Near,
-                LineAlignment = StringAlignment.Center,
+                LineAlignment = Multiline ? StringAlignment.Far : StringAlignment.Center,
             };
 
             using Graphics g = CreateGraphics();

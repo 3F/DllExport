@@ -93,7 +93,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void RadioPreProcDisabled_CheckedChanged(object sender, EventArgs e) => SetUIMergeDep(SetUIPreProcCmd(radioPreProcDisabled.Checked));
 
-        private void RadioRawExec_CheckedChanged(object sender, EventArgs e) => SetUIMergeDep(radioRawExec.Checked);
+        private void RadioRawExec_CheckedChanged(object sender, EventArgs e)
+        {
+            SetUIMergeDep(radioRawExec.Checked);
+            txtPreProc.BackgroundCaption = txtPreProc.Enabled ? "... $(TargetName).dll ..." : string.Empty;
+            txtPreProc.Refresh();
+        }
 
         private void LinkAboutConari_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) => "https://github.com/3F/DllExport/wiki/Quick-start#when-conari-can-help-you".OpenUrl();
 
@@ -107,6 +112,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(!radioILMerge.Checked || !radioILRepack.Checked) chkLog.Checked = false;
 
             txtPreProc.BackgroundCaption = chkLog.Enabled ? "Module1 Module2 /arg1 ..." : string.Empty;
+            txtPreProc.Refresh();
         }
     }
 }
