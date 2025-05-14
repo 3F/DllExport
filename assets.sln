@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreAsset", "src\DllExpo
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Net5OrLessAsset", "src\DllExport\assets\Net5OrLessAsset\Net5OrLessAsset.csproj", "{B7BCCDB1-394C-452E-82C4-E30CF245B175}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NetCoreRefAsset", "src\DllExport\assets\NetCoreRefAsset\NetCoreRefAsset.csproj", "{DD3DC793-DFE3-4322-84EB-A0A83DBC0066}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -29,6 +31,10 @@ Global
 		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B7BCCDB1-394C-452E-82C4-E30CF245B175}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DD3DC793-DFE3-4322-84EB-A0A83DBC0066}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DD3DC793-DFE3-4322-84EB-A0A83DBC0066}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DD3DC793-DFE3-4322-84EB-A0A83DBC0066}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DD3DC793-DFE3-4322-84EB-A0A83DBC0066}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -37,6 +43,7 @@ Global
 		{4D13A153-4DE3-4342-B447-F2DB081B2981} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
 		{66C30FCE-9A9C-4607-93AF-F2BC7DAB3BCC} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
 		{B7BCCDB1-394C-452E-82C4-E30CF245B175} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
+		{DD3DC793-DFE3-4322-84EB-A0A83DBC0066} = {7EFE776C-2D5C-487B-81F3-14D53D6F7099}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {1ED17F28-E550-4B00-8DF9-BD43241EEA55}

@@ -28,6 +28,8 @@ namespace net.r_eg.DllExport.UnitedTest._svc
 
         internal const string PRJ_NETCORE = "NetCoreAsset";
 
+        internal const string PRJ_NETCORE_REF = "NetCoreRefAsset";
+
         internal const string PRJ_NET5_OR_LESS = "Net5OrLessAsset";
 
         internal static PeMagic MagicAtThis => Is64bit ? PeMagic.PE64 : PeMagic.PE32;
@@ -81,6 +83,9 @@ namespace net.r_eg.DllExport.UnitedTest._svc
 
         internal static string GetNetCoreDll(string tfm, string arch = null)
             => GetDllFor(PRJ_NETCORE, tfm, arch);
+
+        internal static string GetNetCoreRefDll(string tfm, string arch = null)
+            => GetDllFor(PRJ_NETCORE_REF, tfm, arch);
 
         internal static string GetNet5OrLessDll(string tfm, string arch = null)
             => GetDllFor(PRJ_NET5_OR_LESS, tfm, arch);

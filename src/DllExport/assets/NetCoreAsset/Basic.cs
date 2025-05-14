@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Reflection;
+using System.Text;
 using com.github._3F.DllExport;
 
 namespace NetCoreAsset
@@ -78,5 +79,17 @@ namespace NetCoreAsset
 
             return Math.PI;
         }
+
+#if DLLEXPORT_REF_NOMERGE
+        static Basic()
+        {
+            string dir = Path.GetDirectoryName(typeof(Basic).Assembly.Location)!;
+            Assembly? _Get(string input, string asm)
+                => input.StartsWith(asm + ",") ? Assembly.LoadFrom(Path.Combine(dir, asm + ".dll")) : null;
+
+            AppDomain.CurrentDomain.AssemblyResolve += (s, a) => _Get(a.Name, "System.Memory");
+            AppDomain.CurrentDomain.AssemblyResolve += (s, a) => _Get(a.Name, "System.Runtime.CompilerServices.Unsafe");
+        }
+#endif
     }
 }

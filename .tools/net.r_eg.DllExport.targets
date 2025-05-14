@@ -148,6 +148,10 @@
     </PropertyGroup>
   </Target>
 
+  <ItemGroup>
+    <RefPkgsDestinationFolders Include="$(TargetDir)\x86;$(TargetDir)\x64" Condition="'$(DllExportDefPlatform)'=='anycpu'" />
+    <RefPkgsDestinationFolders Include="$(TargetDir)" Condition="'$(DllExportDefPlatform)'!='anycpu' Or '$([MSBuild]::BitwiseAnd($(DllExportPreProcType), 128))'!='0'" />
+  </ItemGroup>
 
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>

@@ -48,12 +48,14 @@
       <Wz>1</Wz>
     </PackageReference>
   </ItemGroup>
+  <Target Name="DllExportRefProc" BeforeTargets="DllExportPreProc;DllExportMod" Label="8337224c9ad9e356:Ref">
+    <Copy SourceFiles="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" DestinationFolder="%(RefPkgsDestinationFolders.Identity)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="false" />
+    <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="%(RefPkgsDestinationFolders.Identity)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="false" />
+  </Target>
   <Target Name="DllExportPreProc" BeforeTargets="DllExportMod" Label="8337224c9ad9e356:PreProc">
     <PropertyGroup>
       <_PathToResolvedTargetingPack Condition="'%(RuntimeFrameworkName)'=='Microsoft.NETCore.App'">@(ResolvedTargetingPack->'%(Path)\ref\%(TargetFramework)')</_PathToResolvedTargetingPack>
     </PropertyGroup>
-    <Copy SourceFiles="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
-    <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Copy SourceFiles="$(DllExportMetaLibFullPath)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir).ilm0\$(TargetName).dll" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir).ilm0\$(TargetName).pdb" OverwriteReadOnlyFiles="true" ContinueOnError="true" />

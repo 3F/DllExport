@@ -19,13 +19,17 @@ namespace net.r_eg.DllExport.UnitedTest
         private readonly ITestOutputHelper output = output;
 
         [Theory]
-        [InlineData("net9.0")]
-        [InlineData("net8.0")]
-        [InlineData("net7.0")]
-        [InlineData("net6.0")]
-        public void TouchTest1(string tfm)
+        [InlineData("net9.0", false)]
+        [InlineData("net8.0", false)]
+        [InlineData("net7.0", false)]
+        [InlineData("net6.0", false)]
+        [InlineData("net9.0", true)]
+        [InlineData("net8.0", true)]
+        [InlineData("net7.0", true)]
+        [InlineData("net6.0", true)]
+        public void TouchTest1(string tfm, bool refasm)
         {
-            string dll = Assets.GetNetCoreDll(tfm);
+            string dll = refasm ? Assets.GetNetCoreRefDll(tfm) : Assets.GetNetCoreDll(tfm);
             if(File.Exists(dll)) // some TFMs can be excluded from the build
             {
                 using dynamic l = new ConariX(dll);

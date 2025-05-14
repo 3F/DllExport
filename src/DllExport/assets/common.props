@@ -30,7 +30,7 @@
     <IsPackable>false</IsPackable>
     <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
     <Configurations>Debug;Release</Configurations>
-    <NoWarn>1701;1702;CS1591;IDE1006</NoWarn>
+    <NoWarn>1701;1702;CS1591;IDE1006;CA1835</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">

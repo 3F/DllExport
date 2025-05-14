@@ -38,7 +38,7 @@ namespace net.r_eg.DllExport.Wizard
 
         private const string WZ_ID = "Wz";
 
-        private readonly IEnumerable<IProjectGear> gears;
+        private readonly IEnumerable<ProjectGearAbstract> gears;
         private readonly PackagesConfig pkgconf;
         private string _dxpIdent;
 
@@ -170,6 +170,7 @@ namespace net.r_eg.DllExport.Wizard
 
             gears =
             [
+                new RefPackagesGear(this),
                 new PreProcGear(this),
                 new PostProcGear(this),
             ];
@@ -432,10 +433,6 @@ namespace net.r_eg.DllExport.Wizard
 
             SetProperty(MSBuildProperties.DXP_TYPEREF_OPTIONS, (long)Config.TypeRefOptions);
             Log.send(this, $"Options for .typeref: {Config.TypeRefOptions}");
-
-            string refPackages = Config.RefPackages.Serialize();
-            SetProperty(MSBuildProperties.DXP_REF_PACKAGES, refPackages);
-            Log.send(this, $"Package references at the pre-processing stage ... : {refPackages}");
         }
 
         protected void CfgCommonData(string dxpDir = null)

@@ -5,7 +5,6 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
-using System;
 using Microsoft.Build.Construction;
 using net.r_eg.MvsSln.Log;
 using static net.r_eg.DllExport.Wizard.PostProc;
@@ -13,19 +12,14 @@ using MSBuildPostProc = net.r_eg.DllExport.Activator.PostProc;
 
 namespace net.r_eg.DllExport.Wizard.Gears
 {
-    internal sealed class PostProcGear(IProjectSvc prj): IProjectGear
+    internal sealed class PostProcGear(IProjectSvc prj): ProjectGearAbstract(prj)
     {
-        private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
-
-        private IUserConfig Config => prj.Config;
-        private ISender Log => Config.Log;
-
-        public void Install()
+        public override void Install()
         {
             CfgPostProc(Config.PostProc.Type);
         }
 
-        public void Uninstall(bool hardReset)
+        public override void Uninstall(bool hardReset)
         {
             RemoveDerivativeTargets();
             RemovePostProcTarget();
@@ -100,13 +94,10 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
         private void NewTasksCopyDependentsTargetDir(ProjectTargetElement target, CmdType type, string src, string dst)
         {
-            ProjectTaskElement tCopy = target.AddTask("Copy");
             string dependentsTargetDir = GetDependentsTargetDir(type);
 
-            tCopy.SetParameter("SourceFiles", src);
-            tCopy.SetParameter("DestinationFolder", $@"%({dependentsTargetDir}.Identity){dst}");
-            tCopy.Condition = $"'%({dependentsTargetDir}.Identity)'!=''";
-            tCopy.SetParameter("OverwriteReadOnlyFiles", "true");
+            AddCopyTo(target, src, $@"%({dependentsTargetDir}.Identity){dst}", ignoreErr: false)
+                .Condition = $"'%({dependentsTargetDir}.Identity)'!=''";
         }
 
         private ProjectTargetElement AllocateDerivativeTarget(string name) => prj.AddTarget(GetDerivativeTargetName(name));

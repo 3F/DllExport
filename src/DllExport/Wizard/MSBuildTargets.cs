@@ -15,6 +15,11 @@ namespace net.r_eg.DllExport.Wizard
         internal const string DXP_PKG_R = "DllExportRestorePkg";
 
         /// <summary>
+        /// [Ref] processing
+        /// </summary>
+        internal const string DXP_REF_PROC = "DllExportRefProc";
+
+        /// <summary>
         /// Pre-Processing.
         /// https://github.com/3F/DllExport/pull/146
         /// </summary>

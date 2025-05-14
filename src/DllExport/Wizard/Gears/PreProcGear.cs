@@ -12,14 +12,12 @@ using System.Linq;
 using System.Text;
 using Microsoft.Build.Construction;
 using net.r_eg.DllExport.Wizard.Extensions;
-using net.r_eg.MvsSln.Core;
 using net.r_eg.MvsSln.Extensions;
-using net.r_eg.MvsSln.Log;
 using static net.r_eg.DllExport.Wizard.PreProc;
 
 namespace net.r_eg.DllExport.Wizard.Gears
 {
-    internal sealed class PreProcGear(IProjectSvc prj): IProjectGear
+    internal sealed class PreProcGear(IProjectSvc prj): ProjectGearAbstract(prj)
     {
         private const string ILMERGE_TMP = ".ilm0";
 
@@ -30,13 +28,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             { CmdType.Conari, new("Conari", new("1.5.0")) },
         };
 
-        private readonly IProjectSvc prj = prj ?? throw new ArgumentNullException(nameof(prj));
-
-        private IUserConfig Config => prj.Config;
-        private IXProject XProject => prj.XProject;
-        private ISender Log => Config.Log;
-
-        public void Install()
+        public override void Install()
         {
             CfgPreProc(Config.PreProc.Type);
 
@@ -44,7 +36,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             XProject.RemoveEmptyPropertyGroups(); // we'll also need to release its possible empty container
         }
 
-        public void Uninstall(bool hardReset)
+        public override void Uninstall(bool hardReset)
         {
             RemovePreProcTarget(hardReset);
             XProject.RemovePropertyGroups(p => p.Label == ID);
@@ -84,12 +76,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             if(type.HasFlag(CmdType.MergeRefPkg))
             {
                 foreach(RefPackage rp in Config.RefPackages)
-                {
-                    Log.send(this, $"Merge [Ref]: {rp.Name} {rp.Version}");
-                    // NOTE: PrivateAssets cannot guarantee delivery of assemblies because some packages contains `_._` stubs
-                    XProject.AddPackageIfNotExists(rp.Name, rp.Version, prj.GetMeta(generatePath: true));
                     sb.AppendBoth(rp.Name + ".dll");
-                }
             }
 
             if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
@@ -132,20 +119,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             bool ignoreErr = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
 
-            if(type.HasFlag(CmdType.MergeRefPkg))
-            {
-                foreach(RefPackage rp in Config.RefPackages)
-                {
-                    string src = $"$(Pkg{rp.Name.Trim().Replace('.', '_')})";
-                    src = !rp.HasPath
-                        ? src = Path.Combine(src, "lib", rp.TfmOrPath, rp.Name + ".dll")
-                        : Path.Combine(src, rp.TfmOrPath ?? rp.Name + ".dll");
-
-                    Log.send(this, $"[Ref] Add Copy Task for {rp.Name}:  {src}", Message.Level.Trace);
-                    AddCopyTo(target, src, "$(TargetDir)", ignoreErr);
-                }
-            }
-
             AddCopyTo(target, $"$({MSBuildProperties.DXP_METALIB_FPATH})", $"$({MSBuildProperties.PRJ_TARGET_DIR})", ignoreErr);
 
             AddILMergeWrapper(target, ignoreErr, _=>
@@ -182,36 +155,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             act?.Invoke(target);
             target.AddTask("RemoveDir", continueOnError, t => t.SetParameter("Directories", "$(TargetDir)" + ILMERGE_TMP));
-        }
-
-        private ProjectTaskElement AddExecTask(ProjectTargetElement target, string cmd, string condition, bool continueOnError)
-        {
-            return target.AddTask("Exec", condition, continueOnError, t =>
-            {
-                t.SetParameter("Command", cmd ?? throw new ArgumentNullException(nameof(cmd)));
-                t.SetParameter("WorkingDirectory", $"$({MSBuildProperties.PRJ_TARGET_DIR})");
-            });
-        }
-
-        private void AddCopyTo(ProjectTargetElement target, string src, string dstFolder, bool ignoreErr)
-            => AddCopyOrMoveTask(copy: true, target, src, dstFolder, ignoreErr);
-
-        private void AddMoveAs(ProjectTargetElement target, string src, string dstFiles, bool ignoreErr)
-             => AddCopyOrMoveTask(copy: false, target, src, dstFiles, ignoreErr);
-
-        private void AddCopyOrMoveTask(bool copy, ProjectTargetElement target, string src, string dst, bool ignoreErr)
-        {
-            target.AddTask(copy ? "Copy" : "Move", ignoreErr, t =>
-            {
-                t.SetParameter("SourceFiles", src);
-                if(copy)
-                {
-                    t.SetParameter("DestinationFolder", dst);
-                    t.SetParameter("SkipUnchangedFiles", "true");
-                }
-                else t.SetParameter("DestinationFiles", dst);
-                t.SetParameter("OverwriteReadOnlyFiles", "true");
-            });
         }
 
         private void RemovePreProcTarget(bool hardReset)

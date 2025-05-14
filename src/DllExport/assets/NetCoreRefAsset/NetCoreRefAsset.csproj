@@ -1,19 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <Import Project="..\common.props" />
   <PropertyGroup>
-    <TargetFrameworks>$(Net5OrLessAssetTFMs)</TargetFrameworks>
+    <TargetFrameworks>$(NetCoreAssetTFMs)</TargetFrameworks>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
-    <SuppressTfmSupportBuildWarnings>true</SuppressTfmSupportBuildWarnings>
+    <DefineConstants>DLLEXPORT_REF_NOMERGE;$(DefineConstants)</DefineConstants>
   </PropertyGroup>
   <PropertyGroup>
-    <DllExportIdent>93E0F771-CF47-4FC7-B861-D676EA67C601</DllExportIdent>
+    <DllExportIdent>13833EBA-FF1A-4F54-8A34-4251B02F0762</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
     <DllExportNamespace>com.github._3F.DllExport</DllExportNamespace>
     <DllExportDDNSCecil>true</DllExportDDNSCecil>
     <DllExportSkipOnAnyCpu>false</DllExportSkipOnAnyCpu>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <DllExportImageBase>0x2000000</DllExportImageBase>
+    <DllExportImageBase>0x10000000</DllExportImageBase>
     <DllExportImageBaseStep>0x400000</DllExportImageBaseStep>
     <DllExportOrdinalsBase>1</DllExportOrdinalsBase>
     <DllExportGenExpLib>false</DllExportGenExpLib>
@@ -25,11 +25,10 @@
     <DllExportPatches>0</DllExportPatches>
     <DllExportRefreshObj>false</DllExportRefreshObj>
     <DllExportILAsmExternAsm />
-    <DllExportILAsmTypeRef />
-    <DllExportTypeRefOptions>0</DllExportTypeRefOptions>
+    <DllExportILAsmTypeRef>System.Runtime.CompilerServices.DefaultInterpolatedStringHandler,,False,False,True;System.Span`,System.Memory,True,False,False;System.ReadOnlySpan`,System.Memory,True,False,False;System.ReadOnlyMemory`,System.Memory,True,False,False;System.Memory`,System.Memory,True,False,False;System.MemoryExtensions,System.Memory,False,False,False;</DllExportILAsmTypeRef>
+    <DllExportTypeRefOptions>1</DllExportTypeRefOptions>
     <DllExportRefPackages>System.Memory,4.6.0,netstandard2.0;System.Runtime.CompilerServices.Unsafe,6.1.0,netstandard2.0;</DllExportRefPackages>
-    <DllExportPreProcType>208</DllExportPreProcType>
-    <DllExportILMerge />
+    <DllExportPreProcType>0</DllExportPreProcType>
     <DllExportPostProcType>0</DllExportPostProcType>
     <DllExportDir>$(MSBuildProjectDirectory)\..\..\..\..\</DllExportDir>
   </PropertyGroup>
@@ -37,10 +36,6 @@
     <Compile Include="..\NetCoreAsset\Basic.cs" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="ILRepack">
-      <Version>2.0.39</Version>
-      <Wz>1</Wz>
-    </PackageReference>
     <PackageReference Include="System.Memory">
       <Version>4.6.0</Version>
       <GeneratePathProperty>true</GeneratePathProperty>
@@ -55,18 +50,6 @@
   <Target Name="DllExportRefProc" BeforeTargets="DllExportPreProc;DllExportMod" Label="8337224c9ad9e356:Ref">
     <Copy SourceFiles="$(PkgSystem_Memory)\lib\netstandard2.0\System.Memory.dll" DestinationFolder="%(RefPkgsDestinationFolders.Identity)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="false" />
     <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="%(RefPkgsDestinationFolders.Identity)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="false" />
-  </Target>
-  <Target Name="DllExportPreProc" BeforeTargets="DllExportMod" Label="8337224c9ad9e356:PreProc">
-    <PropertyGroup>
-      <_PathToResolvedTargetingPack Condition="'%(RuntimeFrameworkName)'=='Microsoft.NETCore.App'">@(ResolvedTargetingPack->'%(Path)\ref\%(TargetFramework)')</_PathToResolvedTargetingPack>
-    </PropertyGroup>
-    <Copy SourceFiles="$(DllExportMetaLibFullPath)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
-    <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir).ilm0\$(TargetName).dll" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
-    <Move SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir).ilm0\$(TargetName).pdb" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'!='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName) /ndebug" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'=='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName) /ndebug" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
-    <RemoveDir Directories="$(TargetDir).ilm0" ContinueOnError="true" />
-    <Delete Files="$(TargetDir)$(DllExportMetaLibName);$(TargetDir)System.Memory.dll;$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll" ContinueOnError="true" />
   </Target>
   <ImportGroup Label=".NET DllExport">
     <Import Project="$(DllExportDir)bin\assets\DllExport\tools\net.r_eg.DllExport.targets" Condition="Exists($([MSBuild]::Escape('$(DllExportDir)bin\assets\DllExport\tools\net.r_eg.DllExport.targets')))" Label="8337224c9ad9e356" />
