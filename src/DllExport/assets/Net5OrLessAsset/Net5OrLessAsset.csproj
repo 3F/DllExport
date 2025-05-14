@@ -9,7 +9,7 @@
   <PropertyGroup>
     <DllExportIdent>93E0F771-CF47-4FC7-B861-D676EA67C601</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
-    <DllExportNamespace>com.github._3F.DllExport</DllExportNamespace>
+    <DllExportNamespace>io.github._3F.DllExport</DllExportNamespace>
     <DllExportDDNSCecil>true</DllExportDDNSCecil>
     <DllExportSkipOnAnyCpu>false</DllExportSkipOnAnyCpu>
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -28,7 +28,7 @@
     <DllExportILAsmTypeRef />
     <DllExportTypeRefOptions>0</DllExportTypeRefOptions>
     <DllExportRefPackages>System.Memory,4.6.0,netstandard2.0;System.Runtime.CompilerServices.Unsafe,6.1.0,netstandard2.0;</DllExportRefPackages>
-    <DllExportPreProcType>208</DllExportPreProcType>
+    <DllExportPreProcType>216</DllExportPreProcType>
     <DllExportILMerge />
     <DllExportPostProcType>0</DllExportPostProcType>
     <DllExportDir>$(MSBuildProjectDirectory)\..\..\..\..\</DllExportDir>
@@ -63,8 +63,8 @@
     <Copy SourceFiles="$(DllExportMetaLibFullPath)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir).ilm0\$(TargetName).dll" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir).ilm0\$(TargetName).pdb" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'!='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName) /ndebug" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'=='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName) /ndebug" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
+    <Exec Condition="'$(IsNetCoreBased)'!='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
+    <Exec Condition="'$(IsNetCoreBased)'=='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
     <RemoveDir Directories="$(TargetDir).ilm0" ContinueOnError="true" />
     <Delete Files="$(TargetDir)$(DllExportMetaLibName);$(TargetDir)System.Memory.dll;$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll" ContinueOnError="true" />
   </Target>

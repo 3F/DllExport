@@ -8,7 +8,7 @@
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    public sealed class AssemblyExternParserAction: IlParser.ParserStateAction
+    public sealed class AssemblyExternParserAction: ParserStateAction
     {
         public override void Execute(ParserStateValues state, string trimmedLine)
         {

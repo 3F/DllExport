@@ -7,6 +7,7 @@
 */
 
 using System;
+using System.Collections.Specialized;
 
 namespace net.r_eg.DllExport.Extensions
 {
@@ -47,6 +48,11 @@ namespace net.r_eg.DllExport.Extensions
         {
             if(string.IsNullOrEmpty(input) || input == "default" || input == "null") return null;
             return input.IsTrue();
+        }
+
+        internal static string GetOrNull(this StringDictionary input, string key)
+        {
+            return input.ContainsKey(key) ? input[key] : null;
         }
     }
 }

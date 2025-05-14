@@ -13,7 +13,7 @@ using net.r_eg.DllExport.ILAsm;
 
 namespace net.r_eg.DllExport.Parsing.Actions
 {
-    public sealed class NormalParserAction(IInputValues input): IlParser.ParserStateAction
+    public sealed class NormalParserAction(IInputValues input): ParserStateAction
     {
         private readonly IInputValues inputValues = input;
 

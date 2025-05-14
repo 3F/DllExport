@@ -96,7 +96,7 @@ namespace net.r_eg.DllExport.Parsing
 
             return PrepareOutput(outputFile, InputValues.InputFileName, f =>
             {
-                return EnsurePdb(f, () => RunCore(cpu, outputFile, resource.ToString(), ilSuffix));
+                return RunCore(cpu, outputFile, resource.ToString(), ilSuffix);
             });
         }
 
@@ -121,11 +121,10 @@ namespace net.r_eg.DllExport.Parsing
 
             int ret = IlParser.RunIlTool
             (
-                String.IsNullOrWhiteSpace(InputValues.OurILAsmPath) ? InputValues.FrameworkPath : InputValues.OurILAsmPath,
+                string.IsNullOrWhiteSpace(InputValues.OurILAsmPath) ? InputValues.FrameworkPath : InputValues.OurILAsmPath,
                 "ilasm.exe", 
-                null, 
-                null, 
-                "ILAsmPath", 
+                requiredPaths: null,
+                workingDirectory: null,
                 GetCommandLineArguments(cpu, fileName, ressourceParam, ilSuffix, str), 
                 DllExportLogginCodes.IlAsmLogging, 
                 DllExportLogginCodes.VerboseToolLogging, 
@@ -138,9 +137,8 @@ namespace net.r_eg.DllExport.Parsing
                         line = line.Substring(col + 1);
                     }
 
-                    return IlAsm
-                            ._NormalizeIlErrorLineRegex
-                            .Replace(line, "")
+                    return _NormalizeIlErrorLineRegex
+                            .Replace(line, string.Empty)
                             .ToLowerInvariant()
                             .StartsWith("warningnonvirtualnonabstractinstancemethodininterfacesettosuch");
                 }
@@ -244,14 +242,12 @@ namespace net.r_eg.DllExport.Parsing
                     path,
                     tool,
                     reqPath, 
-                    null, 
-                    "LibToolPath", 
+                    workingDirectory: null,
                     args, 
                     DllExportLogginCodes.LibToolLooging, 
                     DllExportLogginCodes.LibToolVerboseLooging, 
                     Notifier, 
-                    Timeout, 
-                    null
+                    Timeout
                 );
             }
             catch(Exception ex) {
@@ -447,38 +443,6 @@ namespace net.r_eg.DllExport.Parsing
                 DebugType.DebugImpl => "/DEBUG=IMPL",
                 _ => throw new NotImplementedException()
             };
-        }
-
-        private T EnsurePdb<T>(string inputModule, Func<T> action) where T : struct
-        {
-            string pdb = Path.ChangeExtension(inputModule, ".pdb");
-            string pdbt = Path.ChangeExtension(inputModule, ".pdbt");
-
-            if(File.Exists(pdb))
-            {
-                // Due to possible incorrect ISymUnmanagedWriter when exists initial pdb data for non-modified module.
-                // https://github.com/3F/coreclr/blob/05afa4f81fdf671429b54467c64d65cde6b5fadc/src/debug/ildbsymlib/symwrite.cpp#L308
-                // \- Part of https://github.com/3F/DllExport/issues/90
-
-                if(File.Exists(pdbt)) File.Delete(pdbt);
-                File.Move(pdb, pdbt);
-            }
-
-            try
-            {
-                return action?.Invoke() ?? default;
-            }
-            finally
-            {
-                if(!File.Exists(pdb)) // https://github.com/3F/DllExport/issues/23#issuecomment-263951782
-                {
-                    if(File.Exists(pdbt)) File.Move(pdbt, pdb);
-                }
-                else
-                {
-                    File.Delete(pdbt);
-                }
-            }
         }
 
         private T PrepareOutput<T>(string fullpath, string src, Func<string, T> action) where T: struct

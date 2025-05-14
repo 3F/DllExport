@@ -9,7 +9,7 @@
   <PropertyGroup>
     <DllExportIdent>13833EBA-FF1A-4F54-8A34-4251B02F0762</DllExportIdent>
     <DllExportMetaLibName>DllExport.dll</DllExportMetaLibName>
-    <DllExportNamespace>com.github._3F.DllExport</DllExportNamespace>
+    <DllExportNamespace>io.github._3F.DllExport</DllExportNamespace>
     <DllExportDDNSCecil>true</DllExportDDNSCecil>
     <DllExportSkipOnAnyCpu>false</DllExportSkipOnAnyCpu>
     <PlatformTarget>AnyCPU</PlatformTarget>

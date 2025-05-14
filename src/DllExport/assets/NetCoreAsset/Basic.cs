@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using System.Text;
-using com.github._3F.DllExport;
+using io.github._3F.DllExport;
 
 namespace NetCoreAsset
 {

@@ -20,10 +20,9 @@ namespace net.r_eg.DllExport.Parsing
         public int Run() => IlParser.RunIlTool
         (
             string.IsNullOrWhiteSpace(InputValues.OurILAsmPath) ? InputValues.SdkPath : InputValues.OurILAsmPath,
-            "ildasm.exe", 
-            requiredPaths: null, 
-            workingDirectory: null, 
-            "ILDasmPath", 
+            "ildasm.exe",
+            requiredPaths: null,
+            workingDirectory: null,
             string.Format
             (
                 CultureInfo.InvariantCulture, 
