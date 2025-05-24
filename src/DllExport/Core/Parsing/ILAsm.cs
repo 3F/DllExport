@@ -96,7 +96,7 @@ namespace net.r_eg.DllExport.Parsing
 
             return PrepareOutput(outputFile, InputValues.InputFileName, f =>
             {
-                return RunCore(cpu, outputFile, resource.ToString(), ilSuffix);
+                return FixPdb(f, () => RunCore(cpu, outputFile, resource.ToString(), ilSuffix));
             });
         }
 
@@ -121,7 +121,7 @@ namespace net.r_eg.DllExport.Parsing
 
             int ret = IlParser.RunIlTool
             (
-                string.IsNullOrWhiteSpace(InputValues.OurILAsmPath) ? InputValues.FrameworkPath : InputValues.OurILAsmPath,
+                InputValues.IsILAsmDefault ? InputValues.FrameworkPath : InputValues.OurILAsmPath,
                 "ilasm.exe", 
                 requiredPaths: null,
                 workingDirectory: null,
@@ -407,10 +407,7 @@ namespace net.r_eg.DllExport.Parsing
         [Localizable(false)]
         private string GetKeysToCustomILAsm()
         {
-            if(string.IsNullOrWhiteSpace(InputValues.OurILAsmPath))
-            {
-                return string.Empty;
-            }
+            if(InputValues.IsILAsmDefault) return string.Empty;
 
             StringBuilder sb = new();
 
@@ -443,6 +440,35 @@ namespace net.r_eg.DllExport.Parsing
                 DebugType.DebugImpl => "/DEBUG=IMPL",
                 _ => throw new NotImplementedException()
             };
+        }
+
+        private T FixPdb<T>(string inputModule, Func<T> action) where T : struct
+        {
+            if(InputValues.IsILAsmDefault)
+            {
+                string pdb = Path.ChangeExtension(inputModule, ".pdb");
+                // The original (netfx-based) assembler cannot handle the BSJB format if it exists for some reason; "error : Failed to define a document writer" /F-378
+                // The error can be avoided either by converting to MSF ( https://github.com/3F/coreclr/issues/3#issuecomment-2845660889 ) or delete to regenerate it from scratch;
+                // but regenerated MSF can be still problematic for user's DebugType=portable, thus warn about it
+                if(IsPdbBSJB(pdb)) Notifier.WarnAndRun
+                (
+                    "DllExportSupressWarnBSJB",
+                    DllExportLogginCodes.InvalidPdb,
+                    "Possibly invalid PDB. Check the DebugType or use a different assembler",
+                    () => File.Delete(pdb)
+                );
+            }
+            return action?.Invoke() ?? default;
+        }
+
+        private bool IsPdbBSJB(string pdb)
+        {
+            if(!File.Exists(pdb)) return false;
+
+            using FileStream fs = new(pdb, FileMode.Open, FileAccess.Read);
+            using BinaryReader br = new(fs);
+
+            return br.ReadInt32() == 0x424A5342;
         }
 
         private T PrepareOutput<T>(string fullpath, string src, Func<string, T> action) where T: struct

@@ -9,6 +9,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using net.r_eg.DllExport.Extensions;
 
 namespace net.r_eg.DllExport
 {
@@ -103,6 +104,15 @@ namespace net.r_eg.DllExport
                 EndPosition = endPosition,
                 Message = msg
             });
+        }
+
+        public void WarnAndRun(string env, string code, string message, Action action, Func<bool> limit = null)
+        {
+            if(!Environment.GetEnvironmentVariable(env).IsTrue() && limit?.Invoke() != false)
+            {
+                NotifyWarn(code, message);
+            }
+            action?.Invoke();
         }
 
         #region IDisposable

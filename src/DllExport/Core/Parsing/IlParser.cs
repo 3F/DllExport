@@ -227,15 +227,15 @@ namespace net.r_eg.DllExport.Parsing
             Stopwatch stopwatch = Stopwatch.StartNew();
             do
             {
-                EnumerateStreamLines(process.StandardOutput).ForEach(l =>
-                {
-                    if(Environment.GetEnvironmentVariable("DllExportSupressFindWarnInLine") == null // TODO: option for .targets
-                        && FindWarnInLine(l))
-                    {
-                        notifier.NotifyWarn(toolLoggingCode, l);
-                    }
-                    sbStdout.AppendLine(l);
-                });
+                EnumerateStreamLines(process.StandardOutput)
+                    .ForEach(l => notifier.WarnAndRun
+                    (
+                        "DllExportSupressFindWarnInLine",
+                        toolLoggingCode,
+                        message: l,
+                        action: () => sbStdout.AppendLine(l),
+                        limit:  () => FindWarnInLine(l)
+                    ));
 
                 EnumerateStreamLines(process.StandardError)
                     .Where(line => line != null && suppressErrorOutputLine?.Invoke(line) != true)

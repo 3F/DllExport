@@ -49,6 +49,13 @@ namespace net.r_eg.DllExport
         /// </remarks>
         void Notify(int severity, string code, string fileName, SourceCodePosition? startPosition, SourceCodePosition? endPosition, string message, params object[] values);
 
+        /// <param name="env">Environment variable to suppress the warning.</param>
+        /// <param name="code"></param>
+        /// <param name="message"></param>
+        /// <param name="action">The action will be performed unconditionally after warning.</param>
+        /// <param name="limit">Limit warning (not the action) if predicate returns false.</param>
+        void WarnAndRun(string env, string code, string message, Action action, Func<bool> limit = null);
+
         void Notify(DllExportNotificationEventArgs e);
 
         IDisposable CreateContextName(object context, string name);

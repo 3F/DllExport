@@ -216,6 +216,8 @@ namespace net.r_eg.DllExport.Activator
             set => exportTask.OurILAsmPath = value;
         }
 
+        public bool IsILAsmDefault => exportTask.IsILAsmDefault;
+
         public bool SysObjRebase
         {
             get => exportTask.SysObjRebase;

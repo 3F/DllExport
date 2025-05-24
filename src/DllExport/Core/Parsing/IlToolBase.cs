@@ -19,7 +19,7 @@ namespace net.r_eg.DllExport.Parsing
         public int Timeout { get; set; }
 
         public IInputValues InputValues { get; private set; }
-            = inputValues ?? throw new ArgumentNullException("inputValues");
+            = inputValues ?? throw new ArgumentNullException(nameof(inputValues));
 
         public string TempDirectory { get; set; }
     }

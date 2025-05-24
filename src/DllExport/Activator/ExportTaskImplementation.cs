@@ -173,6 +173,8 @@ namespace net.r_eg.DllExport.Activator
             set => _Values.OurILAsmPath = value;
         }
 
+        public bool IsILAsmDefault => _Values.IsILAsmDefault;
+
         public bool SysObjRebase
         {
             get => _Values.SysObjRebase;
@@ -687,12 +689,13 @@ namespace net.r_eg.DllExport.Activator
         private bool ValidateFrameworkPath()
         {
             string foundPath;
-            if(!String.IsNullOrWhiteSpace(OurILAsmPath)) {
-                // null value is also valid because we can try with env.PATH later for our new ILAsm - https://github.com/3F/coreclr/issues/2
+            if(!IsILAsmDefault)
+            {
+                // to help find a .res -> obj COFF converter https://github.com/3F/coreclr/issues/2
                 ValidateToolPath("cvtres.exe", FrameworkPath, GetFrameworkToolPath, out foundPath);
-                //return CopyIfNotExists("cvtres.exe", OurILAsmPath, FrameworkPath, GetFrameworkToolPath);
             }
-            else if(!ValidateToolPath("ilasm.exe", FrameworkPath, GetFrameworkToolPath, out foundPath)) {
+            else if(!ValidateToolPath("ilasm.exe", FrameworkPath, GetFrameworkToolPath, out foundPath))
+            {
                 return false;
             }
 
@@ -787,11 +790,10 @@ namespace net.r_eg.DllExport.Activator
         // FIXME: two different places (see IlDasm.Run) for the same thing ! be careful
         private bool ValidateSdkPath()
         {
-            if(!String.IsNullOrWhiteSpace(OurILAsmPath)) {
-                return true;
-            }
+            if(!IsILAsmDefault) return true;
 
-            if(!ValidateToolPath("ildasm.exe", SdkPath, GetSdkToolPath, out string foundPath)) {
+            if(!ValidateToolPath("ildasm.exe", SdkPath, GetSdkToolPath, out string foundPath))
+            {
                 return false;
             }
 

@@ -31,5 +31,6 @@ namespace net.r_eg.DllExport
         public static readonly string PeCheck1to1 = "EXP0019";
         public static readonly string PeCheckIl = "EXP0020";
         public static readonly string PeCheck32orPlus = "EXP0021";
+        public static readonly string InvalidPdb = "EXP0022";
     }
 }

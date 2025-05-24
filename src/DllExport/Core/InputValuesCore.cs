@@ -10,7 +10,6 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using net.r_eg.DllExport.ILAsm;
 using net.r_eg.DllExport.Parsing;
@@ -50,6 +49,8 @@ namespace net.r_eg.DllExport
         public bool GenExpLib { get; set; }
 
         public string OurILAsmPath { get; set; }
+
+        public bool IsILAsmDefault => string.IsNullOrWhiteSpace(OurILAsmPath);
 
         public bool SysObjRebase { get; set; }
 

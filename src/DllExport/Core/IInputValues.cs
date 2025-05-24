@@ -43,6 +43,11 @@ namespace net.r_eg.DllExport
 
         string OurILAsmPath { get; set; }
 
+        /// <summary>
+        /// A sign of use <see cref="OurILAsmPath" />
+        /// </summary>
+        bool IsILAsmDefault { get; }
+
         bool SysObjRebase { get; set; }
 
         string ProcEnv { get; set; }
