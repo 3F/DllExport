@@ -190,6 +190,7 @@
     </PropertyGroup>
 
     <PropertyGroup Label="EmitDebugSymbols" Condition="'$(DllExportEmitDebugSymbols)'==''">
+      <DebugSymbols Condition="'$(DebugSymbols)'==''">false</DebugSymbols> <!-- keep it for non-Sdk style projects https://github.com/3F/DllExport/issues/245 -->
       <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' And '$(DebugSymbols)'=='false' And '$(DebugType)'=='none'">Optimize</DllExportEmitDebugSymbols>
       <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' And '$(DebugSymbols)'=='false' And '$(DebugType)'!='none'">PdbOptimize</DllExportEmitDebugSymbols>
       <DllExportEmitDebugSymbols Condition="'$(Optimize)'=='true' And '$(DebugSymbols)'=='true' And '$(DebugType)'!='none'">DebugOptimize</DllExportEmitDebugSymbols>

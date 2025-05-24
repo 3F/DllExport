@@ -26,6 +26,8 @@ namespace net.r_eg.DllExport.UnitedTest._svc
 
         internal const string PRJ_NETFX = "NetfxAsset";
 
+        internal const string PRJ_NETFX_LEGACY = "NetfxLegacyAsset";
+
         internal const string PRJ_NETCORE = "NetCoreAsset";
 
         internal const string PRJ_NETCORE_REF = "NetCoreRefAsset";
@@ -68,6 +70,9 @@ namespace net.r_eg.DllExport.UnitedTest._svc
         /// <see cref="PrjNetfxX64"/> or <see cref="PrjNetfxX86"/> depending on env at runtime
         /// </summary>
         internal static string PrjNetfxRuntime => Is64bit ? PrjNetfxX64 : PrjNetfxX86;
+
+        internal static string PrjNetfxLegacyRuntime
+            => Is64bit ? GetDllPath(PRJ_NETFX_LEGACY, X64) : GetDllPath(PRJ_NETFX_LEGACY, X86);
 
         internal static string BaseFullPath => Path.GetFullPath(Path.Combine
         (

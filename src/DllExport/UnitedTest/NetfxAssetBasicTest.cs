@@ -20,10 +20,12 @@ namespace net.r_eg.DllExport.UnitedTest
 
     public class NetfxAssetBasicTest
     {
-        [Fact]
-        public void AddTest1()
+        [Theory]
+        [InlineData(true)]
+        [InlineData(false)]
+        public void AddTest1(bool sdkStyle)
         {
-            using dynamic l = new ConariX(Assets.PrjNetfxRuntime);
+            using dynamic l = new ConariX(sdkStyle ? Assets.PrjNetfxRuntime : Assets.PrjNetfxLegacyRuntime);
             int x = l.add<int>(5, 7);
 
             Assert.Equal(12, x);
