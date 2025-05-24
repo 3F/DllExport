@@ -122,18 +122,27 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             AddCopyTo(target, $"$({MSBuildProperties.DXP_METALIB_FPATH})", $"$({MSBuildProperties.PRJ_TARGET_DIR})", ignoreErr);
 
-            AddILMergeWrapper(target, ignoreErr, _=>
+            void _AddCmd()
             {
-                if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+                if(fxCmd != corCmd)
                 {
                     AddExecTask(target, fxCmd, "'$(IsNetCoreBased)'!='true'", ignoreErr);
                     AddExecTask(target, corCmd, "'$(IsNetCoreBased)'=='true'", ignoreErr);
                 }
                 else
                 {
-                    AddExecTask(target, fxCmd, null, ignoreErr);
+                    AddExecTask(target, fxCmd, condition: null, ignoreErr);
                 }
-            });
+            }
+
+            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+            {
+                AddILMergeWrapper(target, ignoreErr, _ => _AddCmd());
+            }
+            else
+            {
+                _AddCmd();
+            }
 
             StringBuilder fDel = new(capacity: 120);
             fDel.Append($"$({MSBuildProperties.PRJ_TARGET_DIR})$({MSBuildProperties.DXP_METALIB_NAME})");
