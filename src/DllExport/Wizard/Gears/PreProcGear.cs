@@ -57,7 +57,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             _FxCorArgBuilder sb = new(capacity: 100);
 
-            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+            if((type & CmdType.AnyMerging) != 0)
                 sb.AppendBoth(Path.Combine(ILMERGE_TMP, "$(TargetName).dll")); //F-315, keep it first
 
             if(type.HasFlag(CmdType.Conari))
@@ -71,7 +71,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 sb.AppendCor("Microsoft.CSharp.dll System.Reflection.Emit.dll");
                 sb.AppendCor("System.Reflection.Emit.ILGeneration.dll System.Reflection.Emit.Lightweight.dll");
 #endif
-                sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
             }
 
             if(type.HasFlag(CmdType.MergeRefPkg))
@@ -80,8 +79,10 @@ namespace net.r_eg.DllExport.Wizard.Gears
                     sb.AppendBoth(rp.Name + ".dll");
             }
 
-            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+            if((type & CmdType.AnyMerging) != 0)
             {
+                sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
+
                 _ToolOrLib tool = GetMergeTool(type);
                 prj.SetProperty(MSBuildProperties.DXP_ILMERGE, Config.PreProc.Cmd);
                 Log.send(this, $"Merge modules via {tool.name} {tool.version}: {Config.PreProc.Cmd}");
@@ -135,7 +136,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 }
             }
 
-            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+            if((type & CmdType.AnyMerging) != 0)
             {
                 AddILMergeWrapper(target, ignoreErr, _ => _AddCmd());
             }
@@ -187,7 +188,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         {
             string cmd = sb?.ToString().TrimEnd();
 
-            if((type & (CmdType.ILMerge | CmdType.ILRepack)) != 0)
+            if((type & CmdType.AnyMerging) != 0)
             {
                 _ToolOrLib tool = GetMergeTool(type);
                 StringBuilder ilm = new(100);
@@ -234,8 +235,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             return _Get() != null;
         }
 
-        private _ToolOrLib GetMergeTool(CmdType type)
-            => mTool.GetOrDefault(type & (CmdType.ILMerge | CmdType.ILRepack));
+        private _ToolOrLib GetMergeTool(CmdType type) => mTool.GetOrDefault(type & CmdType.AnyMerging);
 
         private _ToolOrLib GetLib(CmdType type) => mTool.GetOrDefault(type);
 
