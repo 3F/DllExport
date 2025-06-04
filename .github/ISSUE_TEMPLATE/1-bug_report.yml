@@ -1,0 +1,86 @@
+name: 🐞 Bug Report
+description: Found a error or incorrect behavior
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! ⚠ To save time for all of us, please make sure:
+          1. You have read [project-wiki](https://github.com/3F/DllExport/wiki) + search for [similar issue **here**](https://github.com/3F/DllExport/issues?q=is%3Aissue).
+          2. Try MSDN, Stack Overflow, and other relevant places to understand the problem because unexpected behavior in your code with P/Invoke, dotnet domains, ... are not directly related to the .NET DllExport; and this issue tracker is not the best place to start learning the basics of these things.
+  - type: input
+    id: version-dllexport
+    attributes:
+      label: DllExport version
+      description: What version? And what edition (if applicable)?
+      placeholder: ex. 1.8.0.17264+f4deb0e
+    validations:
+      required: true
+  - type: input
+    id: version-good-dllexport
+    attributes:
+      label: Known working version or edition
+      description: (**Optional**) If you know, which DllExport version works correctly for you?
+      placeholder: ex. 1.7.4.29858+c1cc52f
+    validations:
+      required: false
+  - type: dropdown
+    id: environment
+    attributes:
+      label: Environment
+      description: In what environment does the problem occur?
+      options:
+        - Visual Studio IDE
+        - MSBuild
+        - dotnet build
+        - CMake
+        - (other)
+    validations:
+      required: true
+  - type: input
+    id: version-environment
+    attributes:
+      label: Environment version
+      description: What version? And what edition (if applicable)?
+      placeholder: ex. 17.14.10+8b8e13593 for .NET Framework
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened or what did you expect to happen?
+      description: |
+        * **Try to isolate** problem with very simple code. Any demo project would be very helpful; it is highly appreciated!
+        * Don't copy/paste too long text here, such as source code (e.g. [100K+](https://github.com/3F/DllExport/issues/71)). Use attachments (zipped txt etc) instead.
+        * For attachments and screenshots please only [💡 GitHub](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests/) instead of other places. It's free.
+        * Use [**basic formatting**](https://help.github.com/articles/creating-and-highlighting-code-blocks/) to avoid code dancing 🕺
+      placeholder: Tell us what you see and What steps do we need to take to reproduce this?
+    validations:
+      required: true
+  - type: textarea
+    id: config
+    attributes:
+      label: DllExport configuration
+      description: Either copy information from `Data` tab for problematic project. Or write ***n/a*** if this is not applicable for current problem.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Attach relevant logs if applicable
+      description: (**Optional**) Use [binary log](https://msbuildlog.com/#usingbl) (/bl) or diagnostic (/v:diag) level. You can run it as a built-in [`DllExport -hMSBuild ...`](https://github.com/3F/hMSBuild/?tab=readme-ov-file#hmsbuild)
+      placeholder: |
+        ⚠ Use attachments if the log is too long. Syntax: DllExport -hMSBuild /t:Rebuild /bl
+        > msbuild /t:Rebuild /v:diag > build.log
+        > dotnet build -bl
+        For Visual Studio IDE: Tools > Options > Project and Solutions > Build and Run > MSBuild verbosity = [ Diagnostic ]
+        When configuring: DllExport [keys if used] > cfg.log
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/3F/DllExport/blob/master/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's [*Code of Conduct*](https://github.com/3F/DllExport/blob/master/CODE_OF_CONDUCT.md)
+          required: true

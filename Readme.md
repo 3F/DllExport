@@ -18,7 +18,7 @@
 
 Based on *UnmanagedExports* that was created by Robert Giesecke. His [page](https://sites.google.com/site/robertgiesecke/Home/uploads/unmanagedexports).
 
-***.NET DllExport*** is a [different project](https://github.com/3F/DllExport/issues/87#issuecomment-438576100) that was developed by Denis Kuzmin [ 「 ☕ 」 ](https://3F.github.io/fund)
+***[.NET DllExport](https://github.com/3F/DllExport)*** is a [different project](https://github.com/3F/DllExport/issues/87#issuecomment-438576100) that was developed by Denis Kuzmin [ 「 ☕ 」 ](https://3F.github.io/fund)
 
 ```
 Copyright (c) 2009-2015  Robert Giesecke
@@ -28,7 +28,7 @@ Copyright (c) 2016-2025  Denis Kuzmin <x-3F@outlook.com> github/3F
 > [ ***[Quick start](https://github.com/3F/DllExport/wiki/Quick-start)*** ] [ [Examples: C++, C#, Java, ...](https://github.com/3F/DllExport/wiki/Examples) ] 
 > -> { **[Wiki](https://github.com/3F/DllExport/wiki)** } { [🧪 Demo](https://github.com/3F/Examples/tree/master/DllExport/BasicExport) }
 
-[![](https://github.com/3F/DllExport/blob/master/Resources/img/DllExport.png?raw=true)](https://3F.github.io/DllExport/releases/latest/manager/)
+[![](https://github.com/3F/DllExport/blob/33e5cb6da7ac5dd5abf452dc682c00b5bbc53c2b/Resources/img/DllExport.png?raw=true)](https://3F.github.io/DllExport/releases/latest/manager/)
 [![](https://github.com/3F/DllExport/blob/36d452268c1f69b5c8dd5e22cc106c71ac76a82c/Resources/img/screencast_Complex_types.jpg?raw=true)](https://www.youtube.com/watch?v=QXMj9-8XJnY)
 
 Example of using DllExport + [Conari](https://github.com/3F/Conari/wiki/Quick-start):
@@ -175,6 +175,5 @@ Alternatively you can get official compiled versions via [![NuGet](https://img.s
 Or like:
 
 ```batch
-:: ILAsm/9.3.0
 .tools\gnt ILAsm & .\build Release
 ```

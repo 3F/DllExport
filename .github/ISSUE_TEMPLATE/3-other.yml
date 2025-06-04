@@ -1,0 +1,38 @@
+name: Other
+description: Suggestion or information or something else …
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ⚠ Please make sure you have read [project-wiki](https://github.com/3F/DllExport/wiki).
+  - type: input
+    id: version-dllexport
+    attributes:
+      label: DllExport version
+      description: (**Optional**) This is mostly related to the specific version and edition (if applicable)
+      placeholder: ex. 1.8.0.17264+f4deb0e
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: .NET DllExport project is listening ...
+      description: |
+        * Don't copy/paste too long text here, such as source code or log (e.g. [100K+](https://github.com/3F/DllExport/issues/71)). Use attachments (zipped txt etc) instead.
+        * For attachments and screenshots please only [💡 GitHub](https://help.github.com/articles/file-attachments-on-issues-and-pull-requests/) instead of other places. It's free.
+        * Use [**basic formatting**](https://help.github.com/articles/creating-and-highlighting-code-blocks/) to avoid code dancing 🕺
+      placeholder: |
+        Please try MSDN, Stack Overflow, and other relevant places to understand any UNEXPECTED behavior with your code.
+        P/Invoke, dotnet domains, marshaling, multithreading, assembly resolving, scalar & unmanaged native types, ... and so on,
+        are not directly related to the .NET DllExport; and this issue tracker is not the best place to start learning the basics of these things. Thanks!
+    validations:
+      required: true
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://github.com/3F/DllExport/blob/master/CODE_OF_CONDUCT.md).
+      options:
+        - label: I agree to follow this project's [*Code of Conduct*](https://github.com/3F/DllExport/blob/master/CODE_OF_CONDUCT.md)
+          required: true

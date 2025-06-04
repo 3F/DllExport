@@ -1,4 +1,4 @@
-::: .NET DllExport [Offline version]
+::: .NET DllExport [Offline edition]
 ::!  https://github.com/3F/DllExport
 
 
