@@ -24,7 +24,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
         private readonly Dictionary<CmdType, _ToolOrLib> mTool = new()
         {
             { CmdType.ILMerge, new("ilmerge", new("3.0.41"), "$(ILMergeConsolePath)") },
-            { CmdType.ILRepack, new("ILRepack", new("2.0.39"), "$(ILRepack)") },
+            { CmdType.ILRepack, new("ILRepack", new("2.0.43"), "$(ILRepack)") },
             { CmdType.Conari, new("Conari", new("1.5.0")) },
         };
 
@@ -153,8 +153,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             }
             if(type.HasFlag(CmdType.MergeRefPkg))
             {
-                foreach(RefPackage rp in Config.RefPackages)
-                    fDel.Append($";$({MSBuildProperties.PRJ_TARGET_DIR}){rp.Name + ".dll"}");
+                AppendPathsToRefPackages(fDel, Config.Platform);
             }
             target.AddTask("Delete", continueOnError: true, t => t.SetParameter("Files", fDel.ToString()));
         }
@@ -200,6 +199,21 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 return ilm.ToString();
             }
             return cmd;
+        }
+
+        private void AppendPathsToRefPackages(StringBuilder src, Platform platfrom)
+        {
+            string root = $";$({MSBuildProperties.PRJ_TARGET_DIR})";
+            foreach(RefPackage rp in Config.RefPackages)
+            {
+                string name = rp.Name + ".dll";
+                if(platfrom is not Platform.x64 and not Platform.x86)
+                {
+                    src.Append(root).Append(Path.Combine("x64", name));
+                    src.Append(root).Append(Path.Combine("x86", name));
+                }
+                src.Append(root + name);
+            }
         }
 
         #region obsolete since 1.8
