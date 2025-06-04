@@ -72,6 +72,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
 
         protected readonly SolidBrush sbBlack = new(Color.Black);
 
+        private readonly StringFormat rowNumFormat;
+
         private readonly object _eLock = new();
         private bool disposed;
 
@@ -84,6 +86,12 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
         public DataGridViewExt(int rowHeight) // optional arguments in .ctor are not supported in generator due to incorrect activator use
         {
             RowTemplate.Height = this.GetValueUsingDpi(rowHeight);
+
+            rowNumFormat = new()
+            {
+                Alignment = StringAlignment.Near,
+                LineAlignment = StringAlignment.Center,
+            };
 
             CellPainting += onNumberingCellPainting;
             SelectionChanged += onAlwaysSelected;
@@ -190,14 +198,18 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
         protected virtual void numberingRowsHeader(DataGridViewCellPaintingEventArgs e)
         {
             if(e.ColumnIndex != -1) return;
+            if(e.RowIndex == Rows.Count - 1) return;
 
-            e.PaintBackground(e.CellBounds, true);
+            e.PaintBackground(e.CellBounds, false);
             e.Graphics.DrawString
             (
-                $"{(e.RowIndex >= 0 ? e.RowIndex + 1 : Rows.Count)}",
+                e.RowIndex >= 0 ? $"{e.RowIndex + 1}"
+                    : (Rows.Count > 1 ? $"{Rows.Count - 1}" : ""),
+
                 e.CellStyle.Font,
                 sbBlack,
-                e.CellBounds
+                e.CellBounds,
+                rowNumFormat
             );
             e.Handled = true;
         }
@@ -217,6 +229,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Components
             if(!disposed)
             {
                 sbBlack.Dispose();
+                rowNumFormat.Dispose();
                 disposed = true;
             }
             base.Dispose(disposing);

@@ -32,14 +32,6 @@
 
     <PropertyGroup Label="Debug">
       <wDxpMsgLevel Condition="'$(wDxpMsgLevel)'==''">Debug</wDxpMsgLevel>
-      <!-- MsgGuiLevel: 
-            Will show messages via GUI dlg for selected level (any positive number) and above.
-            Levels: 0 - 5 (see Message.Level)
-            '4' = means 4 (Error) + 5 (Fatal) levels.
-            Any negative number disables this.
-            It affects only for messages to GUI.
-      -->
-      <MsgGuiLevel Condition="'$(MsgGuiLevel)'==''">-1</MsgGuiLevel>
     </PropertyGroup>
 
     <DllExportCfgTask 
@@ -58,7 +50,6 @@
         Proxy="$(wProxy)" 
         DxpOpt="$(wDxpOpt)" 
         MsgLevel="$(wDxpMsgLevel)"
-        MsgGuiLevel="$(MsgGuiLevel)" 
     />
 
     <PropertyGroup>

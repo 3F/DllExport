@@ -106,8 +106,7 @@ namespace net.r_eg.DllExport.Wizard.UI
                 sb.AppendLine($"SlnFile: {prj.Config.Wizard.SlnFile}");
                 sb.AppendLine($"SlnDir: {prj.Config.Wizard.SlnDir}");
                 sb.AppendLine($"DxpTarget: {prj.Config.Wizard.DxpTarget}");
-                if(prj.Config.Wizard is DllExportCfgTask o) sb.AppendLine($"MsgLevel: {o.MsgLevelLimit}");
-                sb.AppendLine($"MsgGuiLevel: {prj.Config.Wizard.MsgGuiLevel}");
+                sb.AppendLine($"MsgLevel: {prj.Config.Wizard.MsgLevelLimit}");
                 sb.AppendLine($"LockIfError: {prj.InternalError}");
             });
         }

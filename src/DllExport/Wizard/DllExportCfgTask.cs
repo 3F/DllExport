@@ -16,11 +16,10 @@ using net.r_eg.MvsSln.Log;
 
 namespace net.r_eg.DllExport.Wizard
 {
-    public class DllExportCfgTask: Task, ITask, IWizardConfig, IDisposable
+    public class DllExportCfgTask: Task, ITask, IWizardConfig
     {
         protected readonly string PTN_TIME = CultureInfo.CurrentCulture.DateTimeFormat.LongTimePattern + ".ffff";
 
-        private UI.MsgForm uimsg;
         private readonly string toolDir = Environment.CurrentDirectory;
         private readonly object sync = new();
 
@@ -48,8 +47,6 @@ namespace net.r_eg.DllExport.Wizard
         public string PkgVer { get; set; }
 
         public string Proxy { get; set; }
-
-        public int MsgGuiLevel { get; set; }
 
         public string StoragePath { get; set; }
 
@@ -95,29 +92,19 @@ namespace net.r_eg.DllExport.Wizard
 
         public ActionType Type { get; protected set; }
 
-        internal Message.Level MsgLevelLimit { get; set; }
+        public Message.Level MsgLevelLimit { get; set; }
 
         public override bool Execute()
         {
             UpdateMSBuildValues();
 
-            if(string.IsNullOrWhiteSpace(SlnDir)) {
+            if(string.IsNullOrWhiteSpace(SlnDir))
+            {
                 throw new ArgumentNullException(nameof(SlnDir));
             }
 
-            if(MsgGuiLevel >= 0)
-            {
-                System.Threading.Tasks.Task.Factory.StartNew(() =>
-                {
-                    uimsg = new UI.MsgForm(MsgGuiLevel);
-                    UI.App.RunSTA(uimsg);
-                    uimsg = null;
-                });
-            }
-
-            using(IExecutor exec = new Executor(this)) {
-                return TryExecute(exec, exec.Configure);
-            }
+            using IExecutor exec = new Executor(this);
+            return TryExecute(exec, exec.Configure);
         }
 
         internal bool TryExecute(IExecutor exec, Action act)
@@ -219,7 +206,6 @@ namespace net.r_eg.DllExport.Wizard
             LSender.Send(this, $"StoragePath: '{StoragePath}'", level);
             LSender.Send(this, $"Action: '{Type}'", level);
             LSender.Send(this, $"MsgLevel: '{MsgLevelLimit}'", level);
-            LSender.Send(this, $"MsgGuiLevel: '{MsgGuiLevel}'", level);
         }
 
         private static T ParseEnum<T>(string input, T or = default, bool icase = true)
@@ -259,32 +245,7 @@ namespace net.r_eg.DllExport.Wizard
             if(IgnoreSender(sender, e.type)) return;
             Message.Level level = ChangeLevel(e.type, sender);
 
-            string msg = $"[{e.stamp.ToString(PTN_TIME)}] [{level}] {e.content}";
-
-            uimsg?.AddMsg(msg, level);
-            ConWrite(msg, level);
+            ConWrite($"[{e.stamp.ToString(PTN_TIME)}] [{level}] {e.content}", level);
         }
-
-        #region IDisposable
-
-        private bool disposed;
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool _)
-        {
-            if(!disposed)
-            {
-                if(uimsg?.IsDisposed == false) uimsg.Dispose();
-
-                disposed = true;
-            }
-        }
-
-        #endregion
     }
 }

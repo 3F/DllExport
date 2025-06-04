@@ -120,6 +120,16 @@
   <metadata name="toolTipMain.TrayLocation" type="System.Drawing.Point, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
     <value>17, 17</value>
   </metadata>
+  <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
+  <data name="chkPin.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+    <value>
+        iVBORw0KGgoAAAANSUhEUgAAAAwAAAAMCAYAAABWdVznAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        EAAACxABrSO9dQAAAAd0SU1FB+kFHhIyM8i7DU8AAACvSURBVChTjdG9DgFREIbh4wqUGxKJbdRIqFyB
+        KPwEt0P0RLaioPBTUnF93u8co1hH1pc82TObmZ3drCtIB/1w/C9XZBj6qiAlnN7XLUb4GTVtYE2qtWng
+        q1yseeIr58Y444KubihtLLDEHtY8xRp6yCczHFBHDU0o0WaljBsavgrR0A5fzRYNPdDzVdi0Csd4KnhC
+        Q9qUQt8TTYI7qrDXO6KFaPQXtcGioXk45uPcCzbWFiMyTFJAAAAAAElFTkSuQmCC
+</value>
+  </data>
   <metadata name="gcInstalled.UserAddedColumn" type="System.Boolean, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089">
     <value>True</value>
   </metadata>

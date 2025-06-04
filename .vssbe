@@ -1108,7 +1108,7 @@
           "",
           "#[IO copy.directory(\"$(odir)\", \"$(dbin)/raw.offline/DllExport\", true, true)]",
           "#[IO copy.file(\"$(mgrOffline).bat\", \"$(dbin)/raw.offline/DllExport.bat\", true)]",
-          "##[IO copy.file(\"$(mgrOffline).txt\", \"$(dbin)/raw.offline/Readme.txt\", true)]",
+          "#[IO copy.file(\"$(mgrOffline).txt\", \"$(dbin)/raw.offline/README.txt\", true)]",
           "#[IO copy.file({ \".gitattributes\" }, \"$(dbin)/raw.offline/\", true)]",
           "##[IO write(\"$(dbin)/raw.offline/DllExport_Configure.bat\"): DllExport -action Configure %*]",
           "",

@@ -1,7 +1,6 @@
 
-This is the offline version of the .NET DllExport https://github.com/3F/DllExport
-
-n. Internet connection is NOT required.
+This is an offline* version of the .NET DllExport https://github.com/3F/DllExport
+*n. Internet connection is NOT required.
 
 Note the following,
 

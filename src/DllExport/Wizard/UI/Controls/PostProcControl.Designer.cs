@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelMain = new System.Windows.Forms.Panel();
+            this.txtFilter = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
             this.listActivatedProperties = new System.Windows.Forms.ListBox();
             this.chkSeqDep = new System.Windows.Forms.CheckBox();
             this.linkAboutDependent = new System.Windows.Forms.LinkLabel();
@@ -40,18 +41,18 @@
             this.radioCustom = new System.Windows.Forms.RadioButton();
             this.radioPostProcDisabled = new System.Windows.Forms.RadioButton();
             this.chkX86X64 = new System.Windows.Forms.CheckBox();
-            this.txtPostProc = new System.Windows.Forms.TextBox();
-            this.linkAboutVsSBE = new System.Windows.Forms.LinkLabel();
-            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.dgvProperties = new net.r_eg.DllExport.Wizard.UI.Components.DataGridViewExt();
             this.colName = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.colValue = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.linkAboutVsSBE = new System.Windows.Forms.LinkLabel();
+            this.toolTip = new System.Windows.Forms.ToolTip(this.components);
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dgvProperties)).BeginInit();
             this.SuspendLayout();
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.txtFilter);
             this.panelMain.Controls.Add(this.listActivatedProperties);
             this.panelMain.Controls.Add(this.chkSeqDep);
             this.panelMain.Controls.Add(this.linkAboutDependent);
@@ -61,7 +62,6 @@
             this.panelMain.Controls.Add(this.radioCustom);
             this.panelMain.Controls.Add(this.radioPostProcDisabled);
             this.panelMain.Controls.Add(this.chkX86X64);
-            this.panelMain.Controls.Add(this.txtPostProc);
             this.panelMain.Controls.Add(this.dgvProperties);
             this.panelMain.Controls.Add(this.linkAboutVsSBE);
             this.panelMain.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -70,13 +70,26 @@
             this.panelMain.Size = new System.Drawing.Size(442, 256);
             this.panelMain.TabIndex = 32;
             // 
+            // txtFilter
+            // 
+            this.txtFilter.BackgroundCaption = "Filter by property name ...";
+            this.txtFilter.BackgroundCaptionAlpha = 60;
+            this.txtFilter.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.txtFilter.FontBold = false;
+            this.txtFilter.Location = new System.Drawing.Point(135, 233);
+            this.txtFilter.Margin = new System.Windows.Forms.Padding(0, 1, 0, 0);
+            this.txtFilter.Name = "txtFilter";
+            this.txtFilter.Size = new System.Drawing.Size(304, 20);
+            this.txtFilter.TabIndex = 44;
+            this.txtFilter.TextChanged += new System.EventHandler(this.TxtFilter_TextChanged);
+            // 
             // listActivatedProperties
             // 
             this.listActivatedProperties.FormattingEnabled = true;
             this.listActivatedProperties.IntegralHeight = false;
             this.listActivatedProperties.Location = new System.Drawing.Point(0, 72);
             this.listActivatedProperties.Name = "listActivatedProperties";
-            this.listActivatedProperties.Size = new System.Drawing.Size(133, 115);
+            this.listActivatedProperties.Size = new System.Drawing.Size(133, 181);
             this.listActivatedProperties.TabIndex = 34;
             this.listActivatedProperties.DoubleClick += new System.EventHandler(this.listActivatedProperties_DoubleClick);
             // 
@@ -174,30 +187,6 @@
             this.chkX86X64.Text = "Provide x86+x64 assemblies";
             this.chkX86X64.UseVisualStyleBackColor = true;
             // 
-            // txtPostProc
-            // 
-            this.txtPostProc.BackColor = System.Drawing.SystemColors.Control;
-            this.txtPostProc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.txtPostProc.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtPostProc.Location = new System.Drawing.Point(0, 188);
-            this.txtPostProc.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
-            this.txtPostProc.Multiline = true;
-            this.txtPostProc.Name = "txtPostProc";
-            this.txtPostProc.ReadOnly = true;
-            this.txtPostProc.Size = new System.Drawing.Size(439, 63);
-            this.txtPostProc.TabIndex = 35;
-            // 
-            // linkAboutVsSBE
-            // 
-            this.linkAboutVsSBE.AutoSize = true;
-            this.linkAboutVsSBE.Location = new System.Drawing.Point(330, 27);
-            this.linkAboutVsSBE.Name = "linkAboutVsSBE";
-            this.linkAboutVsSBE.Size = new System.Drawing.Size(107, 13);
-            this.linkAboutVsSBE.TabIndex = 32;
-            this.linkAboutVsSBE.TabStop = true;
-            this.linkAboutVsSBE.Text = "vsSolutionBuildEvent";
-            this.linkAboutVsSBE.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAboutVsSBE_LinkClicked);
-            // 
             // dgvProperties
             // 
             this.dgvProperties.AllowUserToAddRows = false;
@@ -206,13 +195,14 @@
             this.dgvProperties.AllowUserToResizeRows = false;
             this.dgvProperties.AlwaysSelected = false;
             this.dgvProperties.BackgroundColor = System.Drawing.SystemColors.Control;
-            this.dgvProperties.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.dgvProperties.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvProperties.ColumnHeadersVisible = false;
             this.dgvProperties.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.colName,
             this.colValue});
+            this.dgvProperties.DragDropSortable = false;
             this.dgvProperties.Location = new System.Drawing.Point(135, 72);
+            this.dgvProperties.Margin = new System.Windows.Forms.Padding(3, 3, 3, 0);
             this.dgvProperties.MultiSelect = false;
             this.dgvProperties.Name = "dgvProperties";
             this.dgvProperties.NumberingForRowsHeader = false;
@@ -222,7 +212,7 @@
             dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(23)))), ((int)(((byte)(36)))), ((int)(((byte)(47)))));
             this.dgvProperties.RowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvProperties.SelectionMode = System.Windows.Forms.DataGridViewSelectionMode.FullRowSelect;
-            this.dgvProperties.Size = new System.Drawing.Size(304, 115);
+            this.dgvProperties.Size = new System.Drawing.Size(304, 160);
             this.dgvProperties.StandardTab = true;
             this.dgvProperties.TabIndex = 33;
             this.dgvProperties.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvProperties_CellClick);
@@ -241,6 +231,17 @@
             this.colValue.HeaderText = "Value";
             this.colValue.Name = "colValue";
             this.colValue.ReadOnly = true;
+            // 
+            // linkAboutVsSBE
+            // 
+            this.linkAboutVsSBE.AutoSize = true;
+            this.linkAboutVsSBE.Location = new System.Drawing.Point(330, 27);
+            this.linkAboutVsSBE.Name = "linkAboutVsSBE";
+            this.linkAboutVsSBE.Size = new System.Drawing.Size(107, 13);
+            this.linkAboutVsSBE.TabIndex = 32;
+            this.linkAboutVsSBE.TabStop = true;
+            this.linkAboutVsSBE.Text = "vsSolutionBuildEvent";
+            this.linkAboutVsSBE.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkAboutVsSBE_LinkClicked);
             // 
             // PostProcControl
             // 
@@ -267,7 +268,6 @@
         private System.Windows.Forms.RadioButton radioCustom;
         private System.Windows.Forms.RadioButton radioPostProcDisabled;
         private System.Windows.Forms.CheckBox chkX86X64;
-        private System.Windows.Forms.TextBox txtPostProc;
         private System.Windows.Forms.ListBox listActivatedProperties;
         private System.Windows.Forms.LinkLabel linkAboutVsSBE;
         private System.Windows.Forms.ToolTip toolTip;
@@ -275,5 +275,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn colValue;
         private System.Windows.Forms.CheckBox chkSeqDep;
         private Components.DataGridViewExt dgvProperties;
+        private net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt txtFilter;
     }
 }

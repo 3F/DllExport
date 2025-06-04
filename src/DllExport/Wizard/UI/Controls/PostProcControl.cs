@@ -7,21 +7,20 @@
 
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.Extensions;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
 using net.r_eg.MvsSln.Core;
-using net.r_eg.MvsSln.Extensions;
 using static net.r_eg.DllExport.Wizard.PostProc;
 
 namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     public partial class PostProcControl: UserControl
     {
-        private readonly KeyValuePair<Color, Color> colorLineMain = new KeyValuePair<Color, Color>(/*BackColor*/ Color.FromArgb(225, 241, 253), /*ForeColor*/ Color.FromArgb(23, 36, 47));
-        private readonly KeyValuePair<Color, Color> colorLineAct = new KeyValuePair<Color, Color>(/*BackColor*/ Color.FromArgb(245, 242, 203), /*ForeColor*/ Color.FromArgb(23, 36, 47));
+        private readonly DataTable dtRecords = new();
 
         public CmdType Type => GetCmdType();
 
@@ -39,26 +38,35 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
             SetCmdType(instance.Type);
             SetProcEnv(instance.ProcEnv);
-
-            //TODO: implement logic
-            //txtPostProc.Text = instance.Cmd;
-            txtPostProc.Text = $"Some Post-Proc features are not yet available in GUI for v{DllExportVersion.S_PRODUCT}. But you can also configure it with msbuild: https://github.com/3F/DllExport/wiki/PostProc";
         }
 
         public PostProc Export(PostProc obj) => (obj ?? throw new ArgumentNullException(nameof(obj)))
                 .Configure(ProcEnv, Type, Cmd);
 
-        //TODO: select a specific project + add property to the list
         internal void LoadProperties(IXProject project)
         {
-            dgvProperties.UIAction(g => g.Rows.Clear());
+            dtRecords.Rows.Clear();
             if(project == null) return;
 
-            var props = project.GetProperties().ToArray(); // array prevents possible InvalidOperationException
-            dgvProperties.UIAction(g => props.ForEach(p => g.Rows.Add(p.name, p.evaluated)));
+            foreach(var p in project.GetProperties().ToArray()) // array to avoid possible changes (+InvalidOperationException)
+            {
+                // ignore all short environment variables from the manager
+                if(p.name?.Length > 2) dtRecords.Rows.Add(p.name, p.evaluated);
+            }
+            dgvProperties.DataSource = dtRecords;
         }
 
-        public PostProcControl() => InitializeComponent();
+        public PostProcControl()
+        {
+            InitializeComponent();
+
+            dgvProperties.AutoGenerateColumns = false;
+            foreach(DataGridViewColumn col in dgvProperties.Columns)
+            {
+                dtRecords.Columns.Add(col.Name);
+                dgvProperties.Columns[col.Index].DataPropertyName = dgvProperties.Columns[col.Index].Name;
+            }
+        }
 
         private void SetCmdType(CmdType type)
         {
@@ -127,8 +135,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(e.RowIndex >= 0)
             {
                 ActivateProperty(dgvProperties[0, e.RowIndex].Value);
-                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = colorLineAct.Key;
-                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = colorLineAct.Value;
+                dgvProperties.Rows[e.RowIndex].SetRowSelectionColor
+                (
+                    back: Color.FromArgb(245, 242, 203),
+                    fore: Color.FromArgb(23, 36, 47)
+                );
             }
         }
 
@@ -136,8 +147,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         {
             if(e.RowIndex >= 0)
             {
-                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionBackColor = colorLineMain.Key;
-                dgvProperties.Rows[e.RowIndex].DefaultCellStyle.SelectionForeColor = colorLineMain.Value;
+                dgvProperties.Rows[e.RowIndex].SetRowSelectionColor
+                (
+                    back: Color.FromArgb(225, 241, 253),
+                    fore: Color.FromArgb(23, 36, 47)
+                );
             }
         }
 
@@ -147,6 +161,26 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             {
                 listActivatedProperties.Items.RemoveAt(listActivatedProperties.SelectedIndex);
             }
+        }
+
+        private void TxtFilter_TextChanged(object sender, EventArgs e)
+        {
+            if(string.IsNullOrEmpty(txtFilter.Text))
+            {
+                dgvProperties.DataSource = dtRecords;
+                return;
+            }
+
+            DataTable filtered = dtRecords.Clone();
+
+            foreach(DataRow row in dtRecords.Rows)
+            {
+                if(row[colName.Name].ToString().StartsWith(txtFilter.Text, StringComparison.OrdinalIgnoreCase))
+                {
+                    filtered.ImportRow(row);
+                }
+            }
+            dgvProperties.DataSource = filtered;
         }
     }
 }

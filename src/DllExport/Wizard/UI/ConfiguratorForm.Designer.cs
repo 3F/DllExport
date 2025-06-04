@@ -36,6 +36,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConfiguratorForm));
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
             this.panelTop = new System.Windows.Forms.Panel();
             this.progressLine = new net.r_eg.DllExport.Wizard.UI.Controls.ProgressLineControl();
@@ -43,8 +44,8 @@
             this.comboBoxSln = new System.Windows.Forms.ComboBox();
             this.toolTipMain = new System.Windows.Forms.ToolTip(this.components);
             this.btnUpdListOfPkg = new System.Windows.Forms.Button();
-            this.btnToOnline = new System.Windows.Forms.Button();
             this.comboBoxStorage = new System.Windows.Forms.ComboBox();
+            this.chkPin = new System.Windows.Forms.CheckBox();
             this.splitCon = new System.Windows.Forms.SplitContainer();
             this.panelPrjs = new System.Windows.Forms.Panel();
             this.dgvFilter = new net.r_eg.DllExport.Wizard.UI.Components.DataGridViewExt();
@@ -65,6 +66,7 @@
             this.tabAsm = new System.Windows.Forms.TabPage();
             this.asmControl = new net.r_eg.DllExport.Wizard.UI.Controls.AsmControl();
             this.tabRef = new System.Windows.Forms.TabPage();
+            this.refControl = new net.r_eg.DllExport.Wizard.UI.Controls.RefControl();
             this.tabPostProc = new System.Windows.Forms.TabPage();
             this.postProcControl = new net.r_eg.DllExport.Wizard.UI.Controls.PostProcControl();
             this.tabUpdating = new System.Windows.Forms.TabPage();
@@ -79,7 +81,6 @@
             this.lnk3F = new System.Windows.Forms.LinkLabel();
             this.labelSrc = new System.Windows.Forms.Label();
             this.txtBuildInfo = new System.Windows.Forms.TextBox();
-            this.refControl = new net.r_eg.DllExport.Wizard.UI.Controls.RefControl();
             this.panelTop.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitCon)).BeginInit();
             this.splitCon.Panel1.SuspendLayout();
@@ -164,18 +165,6 @@
             this.btnUpdListOfPkg.UseVisualStyleBackColor = true;
             this.btnUpdListOfPkg.Click += new System.EventHandler(this.BtnUpdListOfPkg_Click);
             // 
-            // btnToOnline
-            // 
-            this.btnToOnline.Location = new System.Drawing.Point(6, 73);
-            this.btnToOnline.Name = "btnToOnline";
-            this.btnToOnline.Size = new System.Drawing.Size(148, 23);
-            this.btnToOnline.TabIndex = 15;
-            this.btnToOnline.Text = "Convert to online version";
-            this.toolTipMain.SetToolTip(this.btnToOnline, "It will try to convert to the normal online version");
-            this.btnToOnline.UseVisualStyleBackColor = true;
-            this.btnToOnline.Visible = false;
-            this.btnToOnline.Click += new System.EventHandler(this.BtnToOnline_Click);
-            // 
             // comboBoxStorage
             // 
             this.comboBoxStorage.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -189,6 +178,22 @@
             this.comboBoxStorage.Size = new System.Drawing.Size(170, 21);
             this.comboBoxStorage.TabIndex = 14;
             this.toolTipMain.SetToolTip(this.comboBoxStorage, "Storage");
+            // 
+            // chkPin
+            // 
+            this.chkPin.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.chkPin.AutoSize = true;
+            this.chkPin.FlatStyle = System.Windows.Forms.FlatStyle.Popup;
+            this.chkPin.Image = ((System.Drawing.Image)(resources.GetObject("chkPin.Image")));
+            this.chkPin.Location = new System.Drawing.Point(405, 0);
+            this.chkPin.Name = "chkPin";
+            this.chkPin.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.chkPin.Size = new System.Drawing.Size(33, 17);
+            this.chkPin.TabIndex = 22;
+            this.chkPin.Text = "   ";
+            this.toolTipMain.SetToolTip(this.chkPin, "Pin window");
+            this.chkPin.UseVisualStyleBackColor = true;
+            this.chkPin.CheckedChanged += new System.EventHandler(this.ChkPin_CheckedChanged);
             // 
             // splitCon
             // 
@@ -457,6 +462,15 @@
             this.tabRef.Text = "Ref";
             this.tabRef.UseVisualStyleBackColor = true;
             // 
+            // refControl
+            // 
+            this.refControl.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.refControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.refControl.Location = new System.Drawing.Point(0, 0);
+            this.refControl.Name = "refControl";
+            this.refControl.Size = new System.Drawing.Size(442, 254);
+            this.refControl.TabIndex = 0;
+            // 
             // tabPostProc
             // 
             this.tabPostProc.Controls.Add(this.postProcControl);
@@ -479,7 +493,6 @@
             // 
             // tabUpdating
             // 
-            this.tabUpdating.Controls.Add(this.btnToOnline);
             this.tabUpdating.Controls.Add(this.txtLogUpd);
             this.tabUpdating.Controls.Add(this.panelUpdVerTop);
             this.tabUpdating.Location = new System.Drawing.Point(4, 25);
@@ -539,6 +552,7 @@
             // tabBuildInfo
             // 
             this.tabBuildInfo.BackColor = System.Drawing.SystemColors.Control;
+            this.tabBuildInfo.Controls.Add(this.chkPin);
             this.tabBuildInfo.Controls.Add(this.labelSrcMit);
             this.tabBuildInfo.Controls.Add(this.linkIlasm);
             this.tabBuildInfo.Controls.Add(this.lnkSrc);
@@ -622,15 +636,6 @@
             this.txtBuildInfo.Size = new System.Drawing.Size(436, 207);
             this.txtBuildInfo.TabIndex = 12;
             // 
-            // refControl
-            // 
-            this.refControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.refControl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
-            this.refControl.Location = new System.Drawing.Point(0, 0);
-            this.refControl.Name = "refControl";
-            this.refControl.Size = new System.Drawing.Size(442, 254);
-            this.refControl.TabIndex = 0;
-            // 
             // ConfiguratorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
@@ -646,7 +651,6 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "DllExport";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.ConfiguratorForm_Load);
             this.panelTop.ResumeLayout(false);
             this.splitCon.Panel1.ResumeLayout(false);
@@ -702,7 +706,6 @@
         private System.Windows.Forms.TextBox txtLogUpd;
         private System.Windows.Forms.Panel panelUpdVerTop;
         private System.Windows.Forms.Button btnUpdListOfPkg;
-        private System.Windows.Forms.Button btnToOnline;
         private System.Windows.Forms.TabPage tabData;
         private System.Windows.Forms.Label labelStorage;
         private System.Windows.Forms.ComboBox comboBoxStorage;
@@ -718,5 +721,6 @@
         private Controls.AsmControl asmControl;
         private System.Windows.Forms.TabPage tabRef;
         private Controls.RefControl refControl;
+        private System.Windows.Forms.CheckBox chkPin;
     }
 }

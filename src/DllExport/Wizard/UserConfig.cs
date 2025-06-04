@@ -48,8 +48,7 @@ namespace net.r_eg.DllExport.Wizard
         public List<string> Namespaces { get; set; } =
         [
             NS_DEFAULT_VALUE,
-            "net.r_eg.DllExport",
-            "com.github._3F.DllExport",
+            "io.github._3F.DllExport",
             string.Empty, //https://github.com/3F/DllExport/issues/47
         ];
 

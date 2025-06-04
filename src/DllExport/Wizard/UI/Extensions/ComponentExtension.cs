@@ -86,5 +86,11 @@ namespace net.r_eg.DllExport.Wizard.UI.Extensions
             e.SuppressKeyPress = true;
             e.Handled = true;
         }
+
+        internal static void SetRowSelectionColor(this DataGridViewRow row, Color back, Color fore)
+        {
+            row.DefaultCellStyle.SelectionBackColor = back;
+            row.DefaultCellStyle.SelectionForeColor = fore;
+        }
     }
 }

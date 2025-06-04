@@ -5,6 +5,8 @@
  * See accompanying LICENSE.txt file or visit https://github.com/3F/DllExport
 */
 
+using net.r_eg.MvsSln.Log;
+
 namespace net.r_eg.DllExport.Wizard
 {
     public interface IWizardConfig
@@ -91,12 +93,8 @@ namespace net.r_eg.DllExport.Wizard
         ActionType Type { get; }
 
         /// <summary>
-        /// To show messages via GUI dlg for selected level (any positive number) and above.
-        /// Levels: 0 - 5 (see Message.Level)
-        /// '4' = means 4 (Error) + 5 (Fatal) levels.
-        /// Any negative number disables this.
-        /// It affects only for messages to GUI.
+        /// Message level limitation.
         /// </summary>
-        int MsgGuiLevel { get; }
+        Message.Level MsgLevelLimit { get; }
     }
 }

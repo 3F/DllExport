@@ -27,8 +27,7 @@ namespace net.r_eg.DllExport.Wizard.UI
 {
     internal sealed partial class ConfiguratorForm: Form, IRender
     {
-        private const string CL_TRUE  = " ";
-        private const string CL_FALSE = "";
+        private const string CL_TRUE  = " ", CL_FALSE = "";
 
         private readonly IExecutor exec;
         private readonly Lazy<IExtCfg> extcfg;
@@ -39,7 +38,6 @@ namespace net.r_eg.DllExport.Wizard.UI
         private readonly Caller caller;
         private readonly PackageInfo pkgVer;
         private readonly IConfFormater confFormater;
-        private volatile int prevSlnItemIndex = 0;
         private volatile int selectedProjectIndex = -1;
         private volatile bool _suspendCbSln;
         private readonly string updaterInitName;
@@ -75,7 +73,9 @@ namespace net.r_eg.DllExport.Wizard.UI
             confFormater    = new SimpleConfFormater(exec);
 
             InitializeComponent();
-
+#if !DEBUG
+            TopMost = true;
+#endif
             updaterInitName = tabUpdating.Text;
             Text = GetVersionInfo();
 
@@ -389,7 +389,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             ));
         }
 
-        private void LoadPostProcProperties(IProject prj = null) //TODO: user choice for a specific project
+        private void LoadPostProcProperties(IProject prj = null)
         {
             postProcControl.LoadProperties(prj?.XProject ?? GetProject(0)?.XProject);
         }
@@ -464,30 +464,31 @@ namespace net.r_eg.DllExport.Wizard.UI
 
         private string GetBuildInfo()
         {
-            var sb = new StringBuilder();
+            StringBuilder sb = new();
 
+#if !PUBLIC_RELEASE
             sb.AppendLine(GetVersionInfo(false));
-
-            var info = Path.Combine(exec.Config.PkgPath, "build_info.txt");
+#endif
+            string info = Path.Combine(exec.Config.PkgPath, "build_info.txt");
             if(!File.Exists(info))
             {
-                sb.Append("Detailed information about build was not found. :(");
+                sb.Append("Detailed information about the build is missing :(");
             }
-            else
+            else File.ReadAllLines(info).ForEach(s =>
             {
-                File.ReadAllLines(info).ForEach(s =>
-                {
-                    sb.Append(Regex.Replace(s, @":(\s\s*)(?!generated)", (Match m) => $": {m.Groups[1].Value.Replace(' ', '.')} "));
-                    sb.AppendLine();
-                });
-            }
+                sb.Append(Regex.Replace(s, @":(\s\s*)(?!generated|powered)", m => $": {m.Groups[1].Value.Replace(' ', '.')} "));
+                sb.AppendLine();
+            });
 
             return sb.ToString();
         }
 
         private void ConfiguratorForm_Load(object sender, EventArgs e)
         {
+#if !DEBUG
             this.ForegroundAction();
+#endif
+            chkPin.Checked = TopMost;
 
             if(exec.Config.Distributable)
             {
@@ -497,8 +498,7 @@ namespace net.r_eg.DllExport.Wizard.UI
             else
             {
                 panelUpdVerTop.Enabled = false;
-                btnToOnline.Visible = true;
-                txtLogUpd.SetData($"You are using a package version of type `{exec.Config.PackageType}`.");
+                txtLogUpd.SetData($"Disabled for `{exec.Config.PackageType}` packages.");
             }
         }
 
@@ -514,7 +514,6 @@ namespace net.r_eg.DllExport.Wizard.UI
                 btnApply.Enabled = RenderProjects(box);
                 ShowProgressLine(enabled: false);
             }
-            prevSlnItemIndex = comboBoxSln.SelectedIndex;
         }
 
         private void btnApply_Click(object sender, EventArgs e)
@@ -603,36 +602,8 @@ namespace net.r_eg.DllExport.Wizard.UI
             );
         }
 
+        private void ChkPin_CheckedChanged(object sender, EventArgs e) => TopMost = chkPin.Checked;
+
         private void BtnUpdListOfPkg_Click(object sender, EventArgs e) => UpdateListOfPackages();
-
-        private void BtnToOnline_Click(object sender, EventArgs e)
-        {
-            const string _FAILED = "Failed Task. You only need to try manually.";
-
-            btnToOnline.Visible = false;
-
-            var src = Path.Combine(exec.Config.PkgPath, UserConfig.MGR_FILE);
-            if(!File.Exists(src)) 
-            {
-                txtLogUpd.AppendData($"{UserConfig.MGR_FILE} was not found in `{exec.Config.PkgPath}`.");
-                txtLogUpd.AppendData(_FAILED);
-                return;
-            }
-            File.Copy(src, Path.Combine(exec.Config.SlnDir, UserConfig.MGR_FILE), true);
-
-            Execute
-            (
-                $".\\{UserConfig.MGR_NAME} -action Update",
-                () => 
-                {
-                    caller.Shell($".\\{UserConfig.MGR_NAME} -action Configure");
-                    Close();
-                },
-                (code) =>
-                {
-                    txtLogUpd.UIAction(x => x.AppendData(_FAILED));
-                }
-            );
-        }
     }
 }
