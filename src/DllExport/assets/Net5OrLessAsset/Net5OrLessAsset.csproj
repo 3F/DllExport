@@ -38,7 +38,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="ILRepack">
-      <Version>2.0.39</Version>
+      <Version>2.0.43</Version>
       <Wz>1</Wz>
     </PackageReference>
     <PackageReference Include="System.Memory">
@@ -64,9 +64,9 @@
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir).ilm0\$(TargetName).dll" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir).ilm0\$(TargetName).pdb" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Exec Condition="'$(IsNetCoreBased)'!='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'=='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
+    <Exec Condition="'$(IsNetCoreBased)'=='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /lib:&quot;$(_PathToResolvedTargetingPack)&quot; /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
     <RemoveDir Directories="$(TargetDir).ilm0" ContinueOnError="true" />
-    <Delete Files="$(TargetDir)$(DllExportMetaLibName);$(TargetDir)System.Memory.dll;$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll" ContinueOnError="true" />
+    <Delete Files="$(TargetDir)$(DllExportMetaLibName);$(TargetDir)x64\System.Memory.dll;$(TargetDir)x86\System.Memory.dll;$(TargetDir)System.Memory.dll;$(TargetDir)x64\System.Runtime.CompilerServices.Unsafe.dll;$(TargetDir)x86\System.Runtime.CompilerServices.Unsafe.dll;$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll" ContinueOnError="true" />
   </Target>
   <ImportGroup Label=".NET DllExport">
     <Import Project="$(DllExportDir)bin\assets\DllExport\tools\net.r_eg.DllExport.targets" Condition="Exists($([MSBuild]::Escape('$(DllExportDir)bin\assets\DllExport\tools\net.r_eg.DllExport.targets')))" Label="8337224c9ad9e356" />
