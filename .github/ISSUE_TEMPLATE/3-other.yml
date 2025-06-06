@@ -5,7 +5,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        ⚠ Please make sure you have read [project-wiki](https://github.com/3F/DllExport/wiki).
+        Please make sure you have read [project-wiki](https://github.com/3F/DllExport/wiki).
   - type: input
     id: version-dllexport
     attributes:

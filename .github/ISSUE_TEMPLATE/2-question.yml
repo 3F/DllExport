@@ -24,6 +24,7 @@ body:
         - MSBuild
         - dotnet build
         - CMake
+        - Visual Studio Code (vscode)
         - (other)
     validations:
       required: false
