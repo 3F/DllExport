@@ -81,8 +81,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             if((type & CmdType.AnyMerging) != 0)
             {
-                sb.AppendCor("/lib:\"$(_PathToResolvedTargetingPack)\"");
-
                 _ToolOrLib tool = GetMergeTool(type);
                 prj.SetProperty(MSBuildProperties.DXP_ILMERGE, Config.PreProc.Cmd);
                 Log.send(this, $"Merge modules via {tool.name} {tool.version}: {Config.PreProc.Cmd}");
@@ -111,13 +109,6 @@ namespace net.r_eg.DllExport.Wizard.Gears
 
             target.BeforeTargets = MSBuildTargets.DXP_MAIN;
             target.Label = ID;
-
-            target.AddPropertyGroup().SetProperty
-            (
-                MSBuildProperties._PATH_TO_RSLV_TARGET_PACK,
-                "@(ResolvedTargetingPack->'%(Path)\\ref\\%(TargetFramework)')"
-            )
-            .Condition = "'%(RuntimeFrameworkName)'=='Microsoft.NETCore.App'";
 
             bool ignoreErr = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
 
@@ -194,6 +185,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
                 ilm.Append($"{tool.module} ");
                 ilm.Append(cmd);
                 ilm.Append(" /out:$(TargetFileName)");
+                if((type & CmdType.Lib) == CmdType.Lib) ilm.Append(" $(DllExportPreProcSysLibs)");
                 if((type & CmdType.DebugInfo) == 0) ilm.Append(" /ndebug");
                 if((type & CmdType.Log) == CmdType.Log) ilm.Append($" /log:$(TargetFileName).{tool.name}.log");
                 return ilm.ToString();

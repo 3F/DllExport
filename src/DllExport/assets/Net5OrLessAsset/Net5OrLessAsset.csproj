@@ -28,7 +28,7 @@
     <DllExportILAsmTypeRef />
     <DllExportTypeRefOptions>0</DllExportTypeRefOptions>
     <DllExportRefPackages>System.Memory,4.6.0,netstandard2.0;System.Runtime.CompilerServices.Unsafe,6.1.0,netstandard2.0;</DllExportRefPackages>
-    <DllExportPreProcType>216</DllExportPreProcType>
+    <DllExportPreProcType>472</DllExportPreProcType>
     <DllExportILMerge />
     <DllExportPostProcType>0</DllExportPostProcType>
     <DllExportDir>$(MSBuildProjectDirectory)\..\..\..\..\</DllExportDir>
@@ -57,14 +57,10 @@
     <Copy SourceFiles="$(PkgSystem_Runtime_CompilerServices_Unsafe)\lib\netstandard2.0\System.Runtime.CompilerServices.Unsafe.dll" DestinationFolder="%(RefPkgsDestinationFolders.Identity)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="false" />
   </Target>
   <Target Name="DllExportPreProc" BeforeTargets="DllExportMod" Label="8337224c9ad9e356:PreProc">
-    <PropertyGroup>
-      <_PathToResolvedTargetingPack Condition="'%(RuntimeFrameworkName)'=='Microsoft.NETCore.App'">@(ResolvedTargetingPack->'%(Path)\ref\%(TargetFramework)')</_PathToResolvedTargetingPack>
-    </PropertyGroup>
     <Copy SourceFiles="$(DllExportMetaLibFullPath)" DestinationFolder="$(TargetDir)" SkipUnchangedFiles="true" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetPath)" DestinationFiles="$(TargetDir).ilm0\$(TargetName).dll" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
     <Move SourceFiles="$(TargetDir)$(TargetName).pdb" DestinationFiles="$(TargetDir).ilm0\$(TargetName).pdb" OverwriteReadOnlyFiles="true" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'!='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
-    <Exec Condition="'$(IsNetCoreBased)'=='true'" Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /lib:&quot;$(_PathToResolvedTargetingPack)&quot; /out:$(TargetFileName)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
+    <Exec Command="$(ILRepack) .ilm0\$(TargetName).dll System.Memory.dll System.Runtime.CompilerServices.Unsafe.dll /out:$(TargetFileName) $(DllExportPreProcSysLibs)" WorkingDirectory="$(TargetDir)" ContinueOnError="true" />
     <RemoveDir Directories="$(TargetDir).ilm0" ContinueOnError="true" />
     <Delete Files="$(TargetDir)$(DllExportMetaLibName);$(TargetDir)x64\System.Memory.dll;$(TargetDir)x86\System.Memory.dll;$(TargetDir)System.Memory.dll;$(TargetDir)x64\System.Runtime.CompilerServices.Unsafe.dll;$(TargetDir)x86\System.Runtime.CompilerServices.Unsafe.dll;$(TargetDir)System.Runtime.CompilerServices.Unsafe.dll" ContinueOnError="true" />
   </Target>

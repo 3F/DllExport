@@ -42,6 +42,11 @@ namespace net.r_eg.DllExport.Wizard
 
             MergeRefPkg = 0x80,
 
+            /// <summary>
+            /// Apply /lib using DllExportPreProcSysLibs
+            /// </summary>
+            Lib         = 0x100,
+
             AnyMerging  = ILMerge | ILRepack,
         }
 

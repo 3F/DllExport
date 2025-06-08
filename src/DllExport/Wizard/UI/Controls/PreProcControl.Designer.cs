@@ -42,6 +42,7 @@
             this.chkMergeRef = new System.Windows.Forms.CheckBox();
             this.chkGenDebugInfo = new System.Windows.Forms.CheckBox();
             this.chkLog = new System.Windows.Forms.CheckBox();
+            this.chkLib = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // radioPreProcDisabled
@@ -93,6 +94,7 @@
             this.txtPreProc.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.txtPreProc.Enabled = false;
             this.txtPreProc.Font = new System.Drawing.Font("Consolas", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtPreProc.FontBold = false;
             this.txtPreProc.Location = new System.Drawing.Point(3, 74);
             this.txtPreProc.Multiline = true;
             this.txtPreProc.Name = "txtPreProc";
@@ -187,9 +189,10 @@
             this.chkGenDebugInfo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.chkGenDebugInfo.Location = new System.Drawing.Point(186, 27);
             this.chkGenDebugInfo.Name = "chkGenDebugInfo";
-            this.chkGenDebugInfo.Size = new System.Drawing.Size(120, 17);
+            this.chkGenDebugInfo.Size = new System.Drawing.Size(75, 17);
             this.chkGenDebugInfo.TabIndex = 27;
-            this.chkGenDebugInfo.Text = "Generate debug info";
+            this.chkGenDebugInfo.Text = "Debug info";
+            this.toolTip1.SetToolTip(this.chkGenDebugInfo, "Generate debug info");
             this.chkGenDebugInfo.UseVisualStyleBackColor = true;
             // 
             // chkLog
@@ -197,17 +200,31 @@
             this.chkLog.AutoSize = true;
             this.chkLog.Enabled = false;
             this.chkLog.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.chkLog.Location = new System.Drawing.Point(274, 51);
+            this.chkLog.Location = new System.Drawing.Point(274, 49);
             this.chkLog.Name = "chkLog";
             this.chkLog.Size = new System.Drawing.Size(41, 17);
             this.chkLog.TabIndex = 29;
             this.chkLog.Text = "Log";
             this.chkLog.UseVisualStyleBackColor = true;
             // 
+            // chkLib
+            // 
+            this.chkLib.AutoSize = true;
+            this.chkLib.Enabled = false;
+            this.chkLib.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.chkLib.Location = new System.Drawing.Point(274, 27);
+            this.chkLib.Name = "chkLib";
+            this.chkLib.Size = new System.Drawing.Size(37, 17);
+            this.chkLib.TabIndex = 32;
+            this.chkLib.Text = "Lib";
+            this.toolTip1.SetToolTip(this.chkLib, "Apply /lib using DllExportPreProcSysLibs");
+            this.chkLib.UseVisualStyleBackColor = true;
+            // 
             // PreProcControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.Controls.Add(this.chkLib);
             this.Controls.Add(this.chkMergeRef);
             this.Controls.Add(this.radioILRepack);
             this.Controls.Add(this.chkLog);
@@ -243,5 +260,6 @@
         private System.Windows.Forms.CheckBox chkLog;
         private System.Windows.Forms.RadioButton radioILRepack;
         private System.Windows.Forms.CheckBox chkMergeRef;
+        private System.Windows.Forms.CheckBox chkLib;
     }
 }

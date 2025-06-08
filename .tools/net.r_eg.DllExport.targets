@@ -153,6 +153,28 @@
     <RefPkgsDestinationFolders Include="$(TargetDir)" Condition="'$(DllExportDefPlatform)'!='anycpu' Or '$([MSBuild]::BitwiseAnd($(DllExportPreProcType), 128))'!='0'" />
   </ItemGroup>
 
+  <!-- F-397, 270 -->
+  <Target Name="DllExportPreProcResolveTargeting" BeforeTargets="DllExportPreProc;DllExportMod" Condition="'$(SuppressDllExportPreProcResolveTargeting)'!='true'">
+    <PropertyGroup>
+      <_TfmLeftId>$(TargetFramework)</_TfmLeftId>
+      <_TfmLeftId Condition="$(_TfmLeftId.Contains('-'))">$(_TfmLeftId.Split('-')[0])</_TfmLeftId> <!-- FIXME: -->
+
+      <!-- netcoreapp3.1, netstandard2.1, net5, net6, net7, net8, net9, etc. -->
+      <_PathToResolvedTargetingPack>@(ResolvedFrameworkReference->'%(TargetingPackPath)\ref\$(_TfmLeftId)')</_PathToResolvedTargetingPack>
+
+      <!-- netstandard2.0, netcoreapp2.0, netcoreapp2.1, etc. -->
+      <_PathToResolvedTargetingPack Condition="'$(_PathToResolvedTargetingPack)'=='' And '%(Name)'=='NETStandard.Library'">@(_PackageDependenciesDesignTime->'%(Path)\build\$(_TfmLeftId)\ref')</_PathToResolvedTargetingPack>
+      <_PathToResolvedTargetingPack Condition="'$(_PathToResolvedTargetingPack)'=='' And '%(Name)'=='Microsoft.NETCore.App'">@(_PackageDependenciesDesignTime->'%(Path)\ref\$(_TfmLeftId)')</_PathToResolvedTargetingPack>
+
+      <!-- netfx -->
+      <_PathToResolvedTargetingPack Condition="'$(_PathToResolvedTargetingPack)'==''">$(FrameworkPathOverride)</_PathToResolvedTargetingPack>
+      <_PathToResolvedTargetingPack Condition="'$(_PathToResolvedTargetingPack)'==''">$(_FullFrameworkReferenceAssemblyPaths)</_PathToResolvedTargetingPack>
+
+      <DllExportPreProcSysLibs Condition="'$(_PathToResolvedTargetingPack)'!='' And Exists('$(_PathToResolvedTargetingPack)')">/lib:&quot;$(_PathToResolvedTargetingPack)&quot;</DllExportPreProcSysLibs>
+      <DllExportPreProcSysLibs Condition="'$(_PathToResolvedTargetingPack)'=='' Or '$(SuppressDllExportPreProcSysLibs)'=='true'"></DllExportPreProcSysLibs>
+    </PropertyGroup>
+  </Target>
+
   <Target Name="DllExportMod" BeforeTargets="PostBuildEvent" DependsOnTargets="GetFrameworkPaths">
     <PropertyGroup>
       <DllExportModExecuted>false</DllExportModExecuted>
@@ -251,6 +273,46 @@
       <DllExportMetaXBase Condition="'$(IsNetCoreBased)'=='true'">$(DllExportDirMetaCore)</DllExportMetaXBase>
       <DllExportMetaXBase Condition="'$(IsNetCoreBased)'!='true'">$(DllExportDirMetaFX)</DllExportMetaXBase>
       <DllExportLibPath Condition="'$(DllExportLibPath)'==''">gcache\$(DllExportMetaXBase)\$(DllExportNamespace)\</DllExportLibPath>
+    </PropertyGroup>
+  </Target>
+
+  <!-- Fallback for ILMerge + Lib + netstandard2.0  /F-398 -->
+  <Target Name="DllExportPreProcProcessFrameworkReferences" AfterTargets="DllExportPreProcResolveTargeting" BeforeTargets="DllExportPreProc"
+          Condition="'$(ForceDllExportPreProcProcessFrameworkReferences)'=='true' Or ('$(TargetFramework)'=='netstandard2.0' And '$([MSBuild]::BitwiseAnd($(DllExportPreProcType), 257))'=='257')"
+          DependsOnTargets="AddWindowsSdkKnownFrameworkReferences"
+  > <!-- NOTE: 257 = ILMerge + Lib; MergeRefPkg is optional -->
+    <ItemGroup>
+      <_DxpNETStandardFrameworkReference Include="NETStandard.Library" IsImplicitlyDefined="true" PrivateAssets="all" Pack="false" />
+    </ItemGroup>
+    <!-- https://github.com/dotnet/dotnet/blob/main/src/sdk/src/Tasks/Microsoft.NET.Build.Tasks/ProcessFrameworkReferences.cs -->
+    <ProcessFrameworkReferences FrameworkReferences="@(_DxpNETStandardFrameworkReference)"
+        KnownFrameworkReferences="@(KnownFrameworkReference)"
+        KnownRuntimePacks="@(KnownRuntimePack)"
+        TargetFrameworkIdentifier=".NETStandard"
+        TargetFrameworkVersion="2.1"
+        TargetPlatformIdentifier="$(TargetPlatformIdentifier)"
+        TargetPlatformVersion="$(TargetPlatformVersion)"
+        TargetingPackRoot="$(NetCoreTargetingPackRoot)"
+
+        RuntimeGraphPath="$(RuntimeIdentifierGraphPath)"
+        NETCoreSdkRuntimeIdentifier="$(NETCoreSdkRuntimeIdentifier)"
+        NetCoreRoot="$(NetCoreRoot)"
+        NETCoreSdkVersion="$(NETCoreSdkVersion)"
+
+        RuntimeIdentifier="$(RuntimeIdentifier)"
+        RuntimeIdentifiers="$(RuntimeIdentifiers)"
+        RuntimeFrameworkVersion="$(RuntimeFrameworkVersion)"
+        TargetLatestRuntimePatch="$(TargetLatestRuntimePatch)"
+        TargetLatestRuntimePatchIsDefault="$(_TargetLatestRuntimePatchIsDefault)"
+        EnableWindowsTargeting="$(EnableWindowsTargeting)"
+      >
+      <Output TaskParameter="TargetingPacks" ItemName="DllExportNetStandard21Targeting" />
+    </ProcessFrameworkReferences>
+
+    <PropertyGroup>
+      <DllExportNetStandard21Path>@(DllExportNetStandard21Targeting->'%(Path)\ref\netstandard2.1')</DllExportNetStandard21Path>
+      <DllExportNetStandard21Path Condition="!Exists('$(DllExportNetStandard21Path)')"></DllExportNetStandard21Path>
+      <DllExportPreProcSysLibs Condition="'$(DllExportNetStandard21Path)'!='' And '$(SuppressDllExportPreProcLibNetStandard21)'!='true'">$(DllExportPreProcSysLibs) /lib:&quot;$(DllExportNetStandard21Path)&quot;</DllExportPreProcSysLibs>
     </PropertyGroup>
   </Target>
 

@@ -44,6 +44,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             chkMergeRef.Checked     = (type & CmdType.MergeRefPkg) == CmdType.MergeRefPkg;
             chkIgnoreErrors.Checked = (type & CmdType.IgnoreErr) == CmdType.IgnoreErr;
             chkGenDebugInfo.Checked = (type & CmdType.DebugInfo) == CmdType.DebugInfo;
+            chkLib.Checked          = (type & CmdType.Lib) == CmdType.Lib;
             chkLog.Checked          = (type & CmdType.Log) == CmdType.Log;
         }
 
@@ -59,6 +60,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             if(chkMergeRef.Checked)     ret |= CmdType.MergeRefPkg;
             if(chkIgnoreErrors.Checked) ret |= CmdType.IgnoreErr;
             if(chkGenDebugInfo.Checked) ret |= CmdType.DebugInfo;
+            if(chkLib.Checked)          ret |= CmdType.Lib;
             if(chkLog.Checked)          ret |= CmdType.Log;
 
             return ret;
@@ -108,7 +110,13 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 
         private void RadioILMerge_CheckedChanged(object sender, EventArgs e)
         {
-            chkLog.Enabled = chkGenDebugInfo.Checked = chkGenDebugInfo.Enabled = radioILMerge.Checked || radioILRepack.Checked;
+            chkLog.Enabled =
+                chkLib.Checked =
+                chkLib.Enabled =
+                chkGenDebugInfo.Checked =
+                chkGenDebugInfo.Enabled =
+                    radioILMerge.Checked || radioILRepack.Checked;
+
             if(!radioILMerge.Checked || !radioILRepack.Checked) chkLog.Checked = false;
 
             txtPreProc.BackgroundCaption = chkLog.Enabled ? "Module1 Module2 /arg1 ..." : string.Empty;
