@@ -2,6 +2,64 @@
 .NET DllExport - https://github.com/3F/DllExport
 - - - - - - - - - - - - - - - - - - - - - - - - -
 
+[1.8.1] 2025.06.08
+
+    * FIXED: Possible "The method or operation is not implemented." Issue #245.
+    
+    * FIXED: When using netfx-based assemblers, possible: "Failed to define a document writer."
+    
+    * FIXED: Fixed ILMerge support for rebasing feature. Possible:
+             - "Format of the executable (.exe) or library (.dll) is invalid."
+    
+    * FIXED: Pre-Proc Exec: possible "Input file ... does not exist, cannot create unmanaged exports."
+    
+    * FIXED: Pre-Proc Exec: incorrectly applied $(TargetName).dll from ILMerge / ILRepack
+    
+    * NEW: Added PDB support (MSF + Portable(BSJB)) for 3F's assembler (9.4+)
+           Part of issue #23
+           details: https://github.com/3F/coreclr/issues/3
+           
+    * NEW: Additional [Ref] without strict merging (1.8.0) to support .NET Core targets
+           .NET 9, .NET 8, .NET 7, .NET 6, .NET 5, netcoreapp3.1, ...
+           For example,
+           ```
+            Assembly? _Get(string input, string asm)
+                => input.StartsWith(asm + ",") ? Assembly.LoadFrom(Path.Combine(dir, asm + ".dll")) : null;
+            
+            AppDomain.CurrentDomain.AssemblyResolve += (s, a) => _Get(a.Name, "System.Memory");
+            ```
+            See assets for a full example: https://github.com/3F/DllExport/tree/master/src/DllExport/assets
+    
+    * CHANGED: Remove all x86+x64 .dlls [Ref] dependencies when activated merging.
+    
+    * CHANGED: More control around /lib for ILMerge & ILRepack:
+           + Automatic DllExportPreProcSysLibs property for any related purposes;
+           + UI [Lib] option in Pre-Processing when using ILMerge or ILRepack;
+           + Automatic fallback for ILMerge + Lib + netstandard2.0;
+    
+    * CHANGED: Post-Proc. UI Wizard: Added "Filter by property name ..."
+    
+    * CHANGED: Manager: Removed obsolete MsgGuiLevel feature. Please use wDxpMsgLevel instead.
+               For example: set "wDxpMsgLevel=Trace" & DllExport ...
+    
+    * CHANGED: Pre-Proc. Updated ILRepack 2.0.43
+               https://github.com/gluck/il-repack/releases/tag/2.0.43
+               
+    * CHANGED: Updated 3F's IL Assembler 9.4
+               https://github.com/3F/coreclr/releases/tag/9.4.0
+    
+    * NOTE: To upgrade from older versions:
+            Automatically: DllExport -action Upgrade -dxp-version 1.8.1
+            or
+            Manually: DllExport -mgr-up -dxp-version 1.8.1
+    
+    * NOTE: official manager can be found here:
+            https://3F.github.io/DllExport/releases/latest/manager/
+            * https://github.com/3F/DllExport/releases/tag/1.8.1
+      
+    * NOTE: Symbols (PDB) are available through GitHub Releases in offline edition.
+    
+
 [1.8] 2025.02.25
 
     * NEW: Extends support for .NET 9, .NET 8, .NET 7,
@@ -114,7 +172,7 @@
 
     * CHANGED: Make all paths relative as `$(DllExportDir)..\` in configured project files.
 
-    * CHANGED: Updated wrapper in offline version
+    * CHANGED: Updated wrapper in offline edition
                `offline.DllExport.1.8...zip` https://github.com/3F/DllExport/releases/tag/1.8
 
     * CHANGED: Added netfx4sdk 1.2 helper to build using legacy tfm
@@ -153,7 +211,7 @@
             * https://github.com/3F/DllExport/releases/tag/1.8
             * https://www.nuget.org/packages/DllExport/1.8
             
-    * NOTE: Symbols (PDB) are available through GitHub Releases in offline version.
+    * NOTE: Symbols (PDB) are available through GitHub Releases in offline edition.
 
 
 [1.7.4] 2021.01.02
@@ -351,7 +409,7 @@
     
     * CHANGED: Local scope when invoking .\DllExport manager in project files.
     
-    * CHANGED: Updated logic for an offline versions 
+    * CHANGED: Updated logic for an offline edition 
                 with optional converting to online if needed.
                             
     * CHANGED: Updated MvsSln 2.5.1
@@ -395,7 +453,7 @@
     
     * NEW: Textual export of affected data to diag.
     
-    * CHANGED: Updated logic for an offline versions 
+    * CHANGED: Updated logic for an offline edition 
                 with optional converting to online if needed.
                 
     * CHANGED: `.gitattributes` now will be distributed with packages. 
@@ -687,7 +745,7 @@
             
     * NEW: Wizard. Added sorting an projects in main window by its installing status and by availability.
     * NEW: Wizard. Added filter for list of projects in main wizard window.
-    * NEW: New 'Offline' versions from our packages. See GitHub Releases page.
+    * NEW: New 'Offline' edition from our packages. See GitHub Releases page.
     * NEW: Added key to force update `Reference` without PublicKeyToken. Issue #65.
     * NEW: Added `-force` key for manager to use aggressive behavior, e.g. like removing pkg when updating. 
            Wiki: https://github.com/3F/DllExport/wiki/DllExport-Manager#receiving-new-package-version
