@@ -20,5 +20,7 @@ namespace net.r_eg.DllExport.Wizard
         x86x64 = AnyCPU,
 
         Auto,
+
+        Arm64,
     }
 }

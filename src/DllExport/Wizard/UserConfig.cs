@@ -253,6 +253,9 @@ namespace net.r_eg.DllExport.Wizard
                 case "x64": {
                     return Platform.x64;
                 }
+                case "arm64": {
+                    return Platform.Arm64;
+                }
                 case "anycpu":
                 case "any cpu": {
                     return Platform.AnyCPU;
