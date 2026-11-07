@@ -62,6 +62,14 @@ if "!failedTotal!" LSS "1" set /a failedTotal=0
 
     ::
 
+    call a invokeShortVersion "%rdir%%core% -version" _hmsShortVersion
+    call a initAppVersion Hms %_hmsShortVersion%
+
+    echo. & call a print "Tests - 'PkgTests'"
+    call .\PkgTests gcount failedTotal "%core%" "%rdir%"
+
+    ::
+
     call a disableAppVersion Gnt
     echo. & call a print "Tests - '-hMSBuild -GetNuTool keysAndLogicTests'"
     call %tgnt%keysAndLogicTests gcount failedTotal "%rdir%%core% -GetNuTool " ""

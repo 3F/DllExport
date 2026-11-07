@@ -1,0 +1,6 @@
+# LF protected batch-scripts (.bat/.cmd) 
+# https://github.com/3F/hMSBuild/#lf--crlf
+
+hMSBuild.bat text eol=lf
+netfx4sdk.cmd text eol=lf
+gnt.bat text eol=lf
