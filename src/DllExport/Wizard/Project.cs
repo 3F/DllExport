@@ -708,7 +708,7 @@ namespace net.r_eg.DllExport.Wizard
         {
             if(path == null) return null;
 
-            string ret = Config.Wizard.RootPath?.MakeRelativePath(Path.GetFullPath(path));
+            string ret = Config?.Wizard.RootPath?.MakeRelativePath(Path.GetFullPath(path));
             return prefix ? GetDxpDirBased(ret) : ret;
         }
 

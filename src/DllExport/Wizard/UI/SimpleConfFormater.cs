@@ -82,7 +82,8 @@ namespace net.r_eg.DllExport.Wizard.UI
                             "AssemblyName",
                             "DebugType",
                             "Optimize",
-                            "DebugSymbols"
+                            "DebugSymbols",
+                            "ImplicitUsings"
                     ],
                     prj, sb
                 );

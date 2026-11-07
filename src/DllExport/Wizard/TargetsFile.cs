@@ -68,7 +68,7 @@ namespace net.r_eg.DllExport.Wizard
         }
 
         protected TargetsFile(string file, ActionType type)
-            : base(type == ActionType.Recover || type == ActionType.RecoverInit ? new XProject(file) : new XProject())
+            : base(type is ActionType.Recover or ActionType.RecoverInit ? new XProject(file) : new XProject())
         {
             XProject.Project.FullPath = file; // Only for saving. Loading through `Import` section.
         }

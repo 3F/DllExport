@@ -53,7 +53,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 // ignore all short environment variables from the manager
                 if(p.name?.Length > 2) dtRecords.Rows.Add(p.name, p.evaluated);
             }
-            dgvProperties.DataSource = dtRecords;
         }
 
         public PostProcControl()
@@ -66,6 +65,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
                 dtRecords.Columns.Add(col.Name);
                 dgvProperties.Columns[col.Index].DataPropertyName = dgvProperties.Columns[col.Index].Name;
             }
+            dgvProperties.DataSource = dtRecords;
         }
 
         private void SetCmdType(CmdType type)
