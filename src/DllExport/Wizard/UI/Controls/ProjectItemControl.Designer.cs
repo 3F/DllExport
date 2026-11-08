@@ -25,8 +25,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.chkGenExpLib = new System.Windows.Forms.CheckBox();
             this.numOrdinal = new System.Windows.Forms.NumericUpDown();
             this.labelOrdinals = new System.Windows.Forms.Label();
-            this.rbPlatformAnyCPU = new System.Windows.Forms.RadioButton();
-            this.rbPlatformX64 = new System.Windows.Forms.RadioButton();
+            this.comboPlatform = new System.Windows.Forms.ComboBox();
             this.groupCompiler = new System.Windows.Forms.GroupBox();
             this.txtImageBaseStep = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
             this.txtImageBase = new net.r_eg.DllExport.Wizard.UI.Components.TextBoxExt();
@@ -40,9 +39,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.chkIntermediateFiles = new System.Windows.Forms.CheckBox();
             this.chkCustomILAsm = new System.Windows.Forms.CheckBox();
             this.chkInfPatching = new System.Windows.Forms.CheckBox();
-            this.rbPlatformX86 = new System.Windows.Forms.RadioButton();
             this.groupPlatform = new System.Windows.Forms.GroupBox();
-            this.rbPlatformAuto = new System.Windows.Forms.RadioButton();
             this.labelPlatform = new System.Windows.Forms.Label();
             this.rbCecil = new System.Windows.Forms.RadioButton();
             this.rbDirect = new System.Windows.Forms.RadioButton();
@@ -167,31 +164,20 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.labelOrdinals.TabIndex = 1;
             this.labelOrdinals.Text = "OrdinalBase:";
             // 
-            // rbPlatformAnyCPU
-            // 
-            this.rbPlatformAnyCPU.AutoSize = true;
-            this.rbPlatformAnyCPU.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformAnyCPU.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbPlatformAnyCPU.Location = new System.Drawing.Point(66, 29);
-            this.rbPlatformAnyCPU.Name = "rbPlatformAnyCPU";
-            this.rbPlatformAnyCPU.Size = new System.Drawing.Size(13, 12);
-            this.rbPlatformAnyCPU.TabIndex = 2;
-            this.toolTip.SetToolTip(this.rbPlatformAnyCPU, "(86+64) - Export for both platforms: x86 + x64.");
-            this.rbPlatformAnyCPU.UseVisualStyleBackColor = true;
-            this.rbPlatformAnyCPU.CheckedChanged += new System.EventHandler(this.rbPlatformAnyCPU_CheckedChanged);
-            // 
-            // rbPlatformX64
-            // 
-            this.rbPlatformX64.AutoSize = true;
-            this.rbPlatformX64.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformX64.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbPlatformX64.Location = new System.Drawing.Point(34, 29);
-            this.rbPlatformX64.Name = "rbPlatformX64";
-            this.rbPlatformX64.Size = new System.Drawing.Size(13, 12);
-            this.rbPlatformX64.TabIndex = 1;
-            this.toolTip.SetToolTip(this.rbPlatformX64, "x64 - Export for platform: x64.");
-            this.rbPlatformX64.UseVisualStyleBackColor = true;
-            // 
+            // comboPlatform
+            //
+            this.comboPlatform.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboPlatform.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.comboPlatform.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.comboPlatform.FormattingEnabled = true;
+            this.comboPlatform.Location = new System.Drawing.Point(6, 23);
+            this.comboPlatform.Name = "comboPlatform";
+            this.comboPlatform.Size = new System.Drawing.Size(110, 21);
+            this.comboPlatform.TabIndex = 0;
+            this.toolTip.SetToolTip(this.comboPlatform, "auto - Automatic configuring platform from user settings.\r\nx86, x64, ARM64 - Export for that platform.\r\nx86 + x64 - Export for both platforms: x86 + x64.");
+            this.comboPlatform.SelectedIndexChanged += new System.EventHandler(this.comboPlatform_SelectedIndexChanged);
+            this.comboPlatform.SelectionChangeCommitted += new System.EventHandler(this.comboPlatform_SelectionChangeCommitted);
+            //
             // groupCompiler
             // 
             this.groupCompiler.Controls.Add(this.txtImageBaseStep);
@@ -377,44 +363,15 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         "00/0xFFF0000000000000");
             this.chkInfPatching.UseVisualStyleBackColor = true;
             // 
-            // rbPlatformX86
-            // 
-            this.rbPlatformX86.AutoSize = true;
-            this.rbPlatformX86.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformX86.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbPlatformX86.Location = new System.Drawing.Point(7, 29);
-            this.rbPlatformX86.Name = "rbPlatformX86";
-            this.rbPlatformX86.Size = new System.Drawing.Size(13, 12);
-            this.rbPlatformX86.TabIndex = 0;
-            this.toolTip.SetToolTip(this.rbPlatformX86, "x86 - Export for platform: x86.");
-            this.rbPlatformX86.UseVisualStyleBackColor = true;
-            // 
             // groupPlatform
-            // 
-            this.groupPlatform.Controls.Add(this.rbPlatformAuto);
-            this.groupPlatform.Controls.Add(this.rbPlatformAnyCPU);
-            this.groupPlatform.Controls.Add(this.rbPlatformX64);
-            this.groupPlatform.Controls.Add(this.rbPlatformX86);
+            //
+            this.groupPlatform.Controls.Add(this.comboPlatform);
             this.groupPlatform.Controls.Add(this.labelPlatform);
             this.groupPlatform.Location = new System.Drawing.Point(5, 82);
             this.groupPlatform.Name = "groupPlatform";
             this.groupPlatform.Size = new System.Drawing.Size(122, 49);
             this.groupPlatform.TabIndex = 8;
             this.groupPlatform.TabStop = false;
-            // 
-            // rbPlatformAuto
-            // 
-            this.rbPlatformAuto.AutoSize = true;
-            this.rbPlatformAuto.Checked = true;
-            this.rbPlatformAuto.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.rbPlatformAuto.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.5F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.rbPlatformAuto.Location = new System.Drawing.Point(99, 29);
-            this.rbPlatformAuto.Name = "rbPlatformAuto";
-            this.rbPlatformAuto.Size = new System.Drawing.Size(13, 12);
-            this.rbPlatformAuto.TabIndex = 6;
-            this.rbPlatformAuto.TabStop = true;
-            this.toolTip.SetToolTip(this.rbPlatformAuto, "auto - Automatic configuring platform from user settings.");
-            this.rbPlatformAuto.UseVisualStyleBackColor = true;
             // 
             // labelPlatform
             // 
@@ -423,9 +380,9 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             this.labelPlatform.Font = new System.Drawing.Font("Microsoft Sans Serif", 6.7F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelPlatform.Location = new System.Drawing.Point(1, 11);
             this.labelPlatform.Name = "labelPlatform";
-            this.labelPlatform.Size = new System.Drawing.Size(116, 12);
+            this.labelPlatform.Size = new System.Drawing.Size(42, 12);
             this.labelPlatform.TabIndex = 3;
-            this.labelPlatform.Text = " x86      x64     (86+64)    auto";
+            this.labelPlatform.Text = " Platform:";
             this.toolTip.SetToolTip(this.labelPlatform, "Platform for export:");
             // 
             // rbCecil
@@ -752,10 +709,8 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private System.Windows.Forms.CheckBox chkGenExpLib;
         private System.Windows.Forms.NumericUpDown numOrdinal;
         private System.Windows.Forms.Label labelOrdinals;
-        private System.Windows.Forms.RadioButton rbPlatformAnyCPU;
-        private System.Windows.Forms.RadioButton rbPlatformX64;
+        private System.Windows.Forms.ComboBox comboPlatform;
         private System.Windows.Forms.GroupBox groupCompiler;
-        private System.Windows.Forms.RadioButton rbPlatformX86;
         private System.Windows.Forms.GroupBox groupPlatform;
         private System.Windows.Forms.RadioButton rbCecil;
         private System.Windows.Forms.RadioButton rbDirect;
@@ -781,7 +736,6 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
         private System.Windows.Forms.CheckBox chkPECheck1to1;
         private System.Windows.Forms.ContextMenuStrip menuForInstalled;
         private System.Windows.Forms.ToolStripMenuItem menuItemLimitPKT;
-        private System.Windows.Forms.RadioButton rbPlatformAuto;
         private System.Windows.Forms.LinkLabel linkSysObjRebase;
         private System.Windows.Forms.CheckBox chkRebaseSysObj;
         private System.Windows.Forms.CheckBox chkInfPatching;

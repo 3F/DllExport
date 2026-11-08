@@ -95,6 +95,7 @@ namespace net.r_eg.DllExport.Activator
             {
                 case "x64": AllocateItem("DllExportDirX64", @"$(TargetDir)*.*"); break;
                 case "x86": AllocateItem("DllExportDirX86", @"$(TargetDir)*.*"); break;
+                case "arm64": AllocateItem("DllExportDirArm64", @"$(TargetDir)*.*"); break;
                 default:
                 {
                     AllocateItem("DllExportDirX64", @"$(TargetDir)x64\*.*");

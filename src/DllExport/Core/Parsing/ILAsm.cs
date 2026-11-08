@@ -36,6 +36,12 @@ namespace net.r_eg.DllExport.Parsing
 
         public int ReassembleFile(string outputFile, string ilSuffix, CpuPlatform cpu)
         {
+            // The netfx-based assembler accepts /ARM64, but the exports it produces crash when called
+            if(cpu == CpuPlatform.Arm64 && InputValues.IsILAsmDefault)
+            {
+                throw new NotSupportedException("ARM64 requires 3F's IL Assembler. Set DllExportOurILAsm to true.");
+            }
+
             string currentDirectory = Directory.GetCurrentDirectory();
             Directory.SetCurrentDirectory(TempDirectory);
 
@@ -173,7 +179,7 @@ namespace net.r_eg.DllExport.Parsing
                 {
                     int code = RunLibToolCore(
                         "cmd", 
-                        $"/C \"\"{InputValues.VsDevCmd}\" -no_logo -arch={(cpu == CpuPlatform.X64 ? "amd64" : "x86")} && lib.exe {cfg}\""
+                        $"/C \"\"{InputValues.VsDevCmd}\" -no_logo -arch={(cpu == CpuPlatform.X64 ? "amd64" : cpu == CpuPlatform.Arm64 ? "arm64" : "x86")} && lib.exe {cfg}\""
                     );
 
                     Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"lib tool via VsDevCmd: {code}");
@@ -199,7 +205,7 @@ namespace net.r_eg.DllExport.Parsing
                 {
                     int code = RunLibToolCore(
                         "cmd",
-                        $"/C \"\"{InputValues.VcVarsAll}\" {(cpu == CpuPlatform.X64 ? "x64" : "x86")} && lib.exe {cfg}\""
+                        $"/C \"\"{InputValues.VcVarsAll}\" {(cpu == CpuPlatform.X64 ? "x64" : cpu == CpuPlatform.Arm64 ? "arm64" : "x86")} && lib.exe {cfg}\""
                     );
 
                     Notifier.Notify(-1, DllExportLogginCodes.LibToolLooging, $"lib tool via VcVarsAll: {code}");
@@ -323,7 +329,7 @@ namespace net.r_eg.DllExport.Parsing
 
         private bool CheckPe32orPlus(CpuPlatform cpu, Conari.PE.PEFile pe)
         {
-            if((pe.Magic == Conari.PE.WinNT.Magic.PE64 && cpu == CpuPlatform.X64)
+            if((pe.Magic == Conari.PE.WinNT.Magic.PE64 && (cpu == CpuPlatform.X64 || cpu == CpuPlatform.Arm64))
                 || (pe.Magic == Conari.PE.WinNT.Magic.PE32 && cpu == CpuPlatform.X86))
             {
                 return true;
@@ -395,7 +401,7 @@ namespace net.r_eg.DllExport.Parsing
                 "/" + Path.GetExtension(fileName).Trim(['.', '"']).ToUpperInvariant(),
                 ressourceParam,
                 GetKeysToDebug(InputValues.EmitDebugSymbols), 
-                cpu == CpuPlatform.X86 ? "" : (" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : " /X64")),
+                cpu == CpuPlatform.X86 ? "" : (" /PE64 " + (cpu == CpuPlatform.Itanium ? " /ITANIUM" : cpu == CpuPlatform.Arm64 ? " /ARM64" : " /X64")),
                 keyFile,
                 GetKeysToCustomILAsm()
              );

@@ -9,6 +9,7 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Windows.Forms;
 using net.r_eg.DllExport.Wizard.UI.Extensions;
 
@@ -16,6 +17,16 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
 {
     internal sealed partial class ProjectItemControl: UserControl, IDisposable
     {
+        // in the order shown in comboPlatform
+        private static readonly Platform[] platforms =
+        [
+            Platform.Auto,
+            Platform.x86,
+            Platform.x64,
+            Platform.AnyCPU,
+            Platform.Arm64,
+        ];
+
         public IProject Project { get; private set; }
 
         public bool Installed
@@ -154,6 +165,7 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             Project = project ?? throw  new ArgumentNullException(nameof(project));
 
             InitializeComponent();
+            InitPlatforms();
 
             textBoxIdent.BackColor = SystemColors.Control;
             textBoxIdent.ForeColor = Color.DimGray;
@@ -162,49 +174,32 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             UpdateRebaseChk();
         }
 
+        private void InitPlatforms()
+        {
+            comboPlatform.Items.AddRange(platforms.Select(GetCaption).ToArray());
+            SetPlatform(Platform.Auto);
+        }
+
+        private static string GetCaption(Platform platform) => platform switch
+        {
+            Platform.Auto => "auto",
+            Platform.AnyCPU => "x86 + x64",
+            Platform.Arm64 => "ARM64",
+            _ => platform.ToString(),
+        };
+
         private Platform GetPlatform()
         {
-            if(rbPlatformX86.Checked) {
-                return Platform.x86;
-            }
-
-            if(rbPlatformX64.Checked) {
-                return Platform.x64;
-            }
-
-            if(rbPlatformAnyCPU.Checked) {
-                return Platform.AnyCPU;
-            }
-
-            if(rbPlatformAuto.Checked) {
-                return Platform.Auto;
-            }
-
-            return Platform.Default;
+            int idx = comboPlatform.SelectedIndex;
+            return idx < 0 ? Platform.Default : platforms[idx];
         }
 
         private void SetPlatform(Platform platform)
         {
-            switch(platform)
-            {
-                case Platform.x86: {
-                    rbPlatformX86.Checked = true;
-                    return;
-                }
-                case Platform.x64: {
-                    rbPlatformX64.Checked = true;
-                    return;
-                }
-                case Platform.AnyCPU: {
-                    rbPlatformAnyCPU.Checked = true;
-                    return;
-                }
-                case Platform.Auto:
-                case Platform.Default: {
-                    rbPlatformAuto.Checked = true;
-                    return;
-                }
-            }
+            if(platform == Platform.Default) platform = Platform.Auto;
+
+            int idx = Array.IndexOf(platforms, platform);
+            if(idx >= 0) comboPlatform.SelectedIndex = idx;
         }
 
         private PeCheckType GetPeCheckType()
@@ -321,10 +316,18 @@ namespace net.r_eg.DllExport.Wizard.UI.Controls
             UpdateRebaseChk();
         }
 
-        private void rbPlatformAnyCPU_CheckedChanged(object sender, EventArgs e)
+        private void comboPlatform_SelectedIndexChanged(object sender, EventArgs e)
         {
-            chkRefreshObj.Enabled = !rbPlatformAnyCPU.Checked;
-            if(rbPlatformAnyCPU.Checked) chkRefreshObj.Checked = false;
+            bool anyCpu = GetPlatform() == Platform.AnyCPU;
+
+            chkRefreshObj.Enabled = !anyCpu;
+            if(anyCpu) chkRefreshObj.Checked = false;
+        }
+
+        private void comboPlatform_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            // ARM64 requires 3F's IL Assembler; only when the user picks it, not when a saved config is loaded
+            if(GetPlatform() == Platform.Arm64 && !chkCustomILAsm.Checked) chkOurILAsm.Checked = true;
         }
 
         private void menuItemLimitPKT_Click(object sender, EventArgs e)

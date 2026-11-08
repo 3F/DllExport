@@ -54,6 +54,9 @@ namespace net.r_eg.DllExport
 
                     case "ia64":
                     return CpuPlatform.Itanium;
+
+                    case "arm64":
+                    return CpuPlatform.Arm64;
                 }
             }
             throw new ArgumentException(string.Format(Resources.Unknown_cpu_platform_0_, platformTarget), nameof(platformTarget));

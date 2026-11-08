@@ -360,6 +360,10 @@ namespace net.r_eg.DllExport.Wizard
                     platform = Config.Platform.ToString();
                     break;
                 }
+                case Platform.Arm64: {
+                    platform = "ARM64";
+                    break;
+                }
                 case Platform.AnyCPU: {
                     platform = "AnyCPU";
                     SetProperty(MSBuildProperties.DXP_SKIP_ANYCPU, false);

@@ -18,5 +18,6 @@ namespace net.r_eg.DllExport
         X64,
         Itanium,
         AnyCpu,
+        Arm64,
     }
 }

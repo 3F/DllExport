@@ -199,7 +199,7 @@ namespace net.r_eg.DllExport.Wizard.Gears
             foreach(RefPackage rp in Config.RefPackages)
             {
                 string name = rp.Name + ".dll";
-                if(platfrom is not Platform.x64 and not Platform.x86)
+                if(platfrom is not Platform.x64 and not Platform.x86 and not Platform.Arm64)
                 {
                     src.Append(root).Append(Path.Combine("x64", name));
                     src.Append(root).Append(Path.Combine("x86", name));

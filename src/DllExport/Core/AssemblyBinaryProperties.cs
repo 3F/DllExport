@@ -47,6 +47,7 @@ namespace net.r_eg.DllExport
             get {
                 if(this.PeKind.Contains(ModuleAttributes.ILOnly))
                 {
+                    if(this.MachineKind.Contains(TargetArchitecture.ARM64)) return CpuPlatform.Arm64;
                     return !this.MachineKind.Contains(TargetArchitecture.IA64) ? CpuPlatform.X64 : CpuPlatform.Itanium;
                 }
                 return !this.PeKind.Contains(ModuleAttributes.Required32Bit) ? CpuPlatform.AnyCpu : CpuPlatform.X86;
