@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  DllExport.Lite: .NET DllExport as a plain NuGet package.
+  No DllExport.bat, no Manager, no gcache. NuGet imports this file automatically (packages.config
+  projects import it from the csproj, the same as any package's build targets).
+
+  The metalib (DllExport.dll, next to this file) is prebuilt with the RGiesecke.DllExport namespace.
+  It's referenced here rather than from lib\, so it's compile-only in every project format:
+  - nothing is copied next to the output, and NuGet's binding redirects don't look at it;
+  - Visual Studio installs development dependencies with IncludeAssets that leave out "compile",
+    but "build" (this file) is always included.
+
+  Every property below can be overridden in the project.
+-->
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <DllExportNamespace Condition="'$(DllExportNamespace)'==''">RGiesecke.DllExport</DllExportNamespace>
+    <DllExportMetaLibFullPath Condition="'$(DllExportMetaLibFullPath)'==''">$(MSBuildThisFileDirectory)DllExport.dll</DllExportMetaLibFullPath>
+    <DllExportOurILAsm Condition="'$(DllExportOurILAsm)'==''">true</DllExportOurILAsm>
+    <DllExportPeCheck Condition="'$(DllExportPeCheck)'==''">7</DllExportPeCheck>
+    <DllExportPatches Condition="'$(DllExportPatches)'==''">3</DllExportPatches>
+  </PropertyGroup>
+
+  <ItemGroup Condition="'$(DllExportLiteNoMetaLibReference)' != 'true'">
+    <Reference Include="DllExport, PublicKeyToken=8337224c9ad9e356">
+      <HintPath>$(MSBuildThisFileDirectory)DllExport.dll</HintPath>
+      <Private>False</Private>
+      <Visible>False</Visible>
+    </Reference>
+  </ItemGroup>
+
+  <Import Project="$(MSBuildThisFileDirectory)..\tools\net.r_eg.DllExport.targets" />
+</Project>

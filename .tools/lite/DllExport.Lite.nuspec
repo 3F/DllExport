@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>DllExport.Lite</id>
+    <version>$-version-$</version>
+    <title>.NET DllExport (lite)</title>
+    <authors>github.com/3F/DllExport</authors>
+    <license type="file">LICENSE.txt</license>
+    <owners>reg</owners>
+    <projectUrl>https://github.com/3F/DllExport</projectUrl>
+    <repository type="git" url="https://github.com/3F/DllExport" />
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <developmentDependency>true</developmentDependency>
+    <description>.NET DllExport as a plain NuGet package: no DllExport.bat, no Manager, nothing downloaded.
+
+        Reference the package and mark methods with [RGiesecke.DllExport.DllExport]. The build imports DllExport's usual targets with fixed defaults (RGiesecke.DllExport namespace, 3F's IL Assembler); any DllExport MSBuild property can still be set in the project.
+
+        Installed in Visual Studio, the readable tools\init.ps1 converts projects that use UnmanagedExports or the NotepadPlusPlusPluginPack.Net template's NppPlugin.DllExport, and adds the ARM64 platform. Without Visual Studio, run tools\Convert-ToDllExportLite.ps1 by hand.
+
+        For full configuration through the Manager, use the main DllExport package and DllExport.bat instead:
+        https://github.com/3F/DllExport</description>
+    <summary>.NET DllExport as a plain NuGet package: no DllExport.bat, no Manager</summary>
+    <tags>DllExport unmanaged-exports ildasm ilasm coreclr exported-functions native arm64 unmanaged-export</tags>
+    <releaseNotes> changelog: https://github.com/3F/DllExport/blob/master/changelog.txt </releaseNotes>
+    <copyright>Copyright (c) 2009-2015  Robert Giesecke | Copyright (c) 2016-2026  Denis Kuzmin &lt;x-3F@outlook.com&gt; github/3F </copyright>
+  </metadata>
+</package>
